@@ -33,17 +33,33 @@ import Unison.Target.X86.X86RegisterDecl
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
 import Unison.Target.X86.Registers()
 
+{-
+    o12: [eax] <- (copy) [t4]
+    o13: [] <- RETQ [eax]
+    o18: [] <- (out) [...]
+->
+    o13: [] <- RETQ [42]
+    o18: [] <- (out) [..., t4:eax]
+-}
+
 extractReturnRegs _ (
-  c
+  SingleOperation {oOpr = Virtual VirtualCopy {
+                      oVirtualCopyS = t,
+                      oVirtualCopyD = Register ret}}
+  :
+  j @ SingleOperation {oOpr = Natural bj @ Branch {
+                          oBranchIs = [TargetInstruction RETQ],
+                          oBranchUs = [Register ret']}}
   :
   o @ SingleOperation {oOpr = Virtual
-                               (Delimiter oi @ (Out {oOuts = outs}))}
+                               (Delimiter od @ Out {oOuts = outs})}
   :
-  rest) _ | isTailCall c && all isRegister outs =
+  rest) _ | ret == ret' =
    (
     rest,
-    [c,
-     o {oOpr = Virtual (Delimiter oi {oOuts = []})}]
+    [j {oOpr = Natural bj {oBranchUs = [mkBound (mkMachineImm 42)]}},
+     o {oOpr = Virtual (Delimiter od {oOuts = outs ++
+                                              [preAssign t (Register ret)]})}]
    )
 
 extractReturnRegs _ (o : rest) _ = (rest, [o])

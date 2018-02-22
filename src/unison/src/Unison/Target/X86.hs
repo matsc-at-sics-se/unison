@@ -33,7 +33,7 @@ import qualified Unison.Target.API as API
 import Unison.Target.X86.Common
 import Unison.Target.X86.Registers
 import Unison.Target.X86.OperandInfo
--- import Unison.Target.X86.Transforms
+import Unison.Target.X86.Transforms
 import Unison.Target.X86.Usages
 -- import Unison.Target.X86.X86RegisterDecl
 -- import Unison.Target.X86.X86RegisterClassDecl
@@ -435,6 +435,7 @@ postProcess _ = []
 
 -- | Gives a list of function transformers
 
+transforms ImportPreLift = [peephole extractReturnRegs]
 transforms _ = []
 
 -- | Latency of read-write dependencies
