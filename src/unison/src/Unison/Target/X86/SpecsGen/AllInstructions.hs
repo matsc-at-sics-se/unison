@@ -174,13 +174,14 @@ allInstructions
      XOR32rr, XOR32rr_REV, XOR64i32, XOR64mi32, XOR64mi8, XOR64mr,
      XOR64ri32, XOR64ri8, XOR64rm, XOR64rr, XOR64rr_REV, XOR8i8, XOR8mi,
      XOR8mi8, XOR8mr, XOR8ri, XOR8ri8, XOR8rm, XOR8rr, XOR8rr_REV,
-     MOV16ri_source, MOV16ri_demat, MOV16ri_remat, MOV16ri_alt_source,
-     MOV16ri_alt_demat, MOV16ri_alt_remat, MOV32r0_source,
-     MOV32r0_demat, MOV32r0_remat, MOV32r1_source, MOV32r1_demat,
-     MOV32r1_remat, MOV32r_1_source, MOV32r_1_demat, MOV32r_1_remat,
-     MOV32ri_source, MOV32ri_demat, MOV32ri_remat, MOV32ri64_source,
-     MOV32ri64_demat, MOV32ri64_remat, MOV32ri_alt_source,
-     MOV32ri_alt_demat, MOV32ri_alt_remat, MOV64ri_source,
-     MOV64ri_demat, MOV64ri_remat, MOV64ri32_source, MOV64ri32_demat,
-     MOV64ri32_remat, MOV8ri_source, MOV8ri_demat, MOV8ri_remat]
+     MOVE32, MOVE64, MOV16ri_source, MOV16ri_demat, MOV16ri_remat,
+     MOV16ri_alt_source, MOV16ri_alt_demat, MOV16ri_alt_remat,
+     MOV32r0_source, MOV32r0_demat, MOV32r0_remat, MOV32r1_source,
+     MOV32r1_demat, MOV32r1_remat, MOV32r_1_source, MOV32r_1_demat,
+     MOV32r_1_remat, MOV32ri_source, MOV32ri_demat, MOV32ri_remat,
+     MOV32ri64_source, MOV32ri64_demat, MOV32ri64_remat,
+     MOV32ri_alt_source, MOV32ri_alt_demat, MOV32ri_alt_remat,
+     MOV64ri_source, MOV64ri_demat, MOV64ri_remat, MOV64ri32_source,
+     MOV64ri32_demat, MOV64ri32_remat, MOV8ri_source, MOV8ri_demat,
+     MOV8ri_remat]
 

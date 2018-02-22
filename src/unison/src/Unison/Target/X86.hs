@@ -25,8 +25,8 @@ import Common.Util
 import Unison
 import qualified Unison.Target.API as API
 -- import Unison.Target.RegisterArray
--- import Unison.Target.Query
--- import Unison.Analysis.TemporaryType
+--import Unison.Target.Query
+import Unison.Analysis.TemporaryType
 -- import Unison.Transformations.FoldReservedRegisters
 -- import Unison.Analysis.TransitiveOperations
 
@@ -154,7 +154,21 @@ branchInfo o = error ("unmatched pattern: branchInfo " ++ show (mkSingleOperatio
 --       (defCopies size w dors),
 --       map (const (useCopies size w uors)) us
 --       )
-copies _ _ _ _ _ _ = ([], [[]])
+copies (f, _, cg, ra, _, _) _ t _ d us =
+  let w = widthOfTemp ra cg f t (d:us)
+  in
+     (
+       defCopies w,
+       map (useCopies w) us
+     )
+
+defCopies 4 = [mkNullInstruction, TargetInstruction MOVE32]
+defCopies 8 = [mkNullInstruction, TargetInstruction MOVE64]
+
+useCopies 4 _ = [mkNullInstruction, TargetInstruction MOVE32]
+useCopies 8 _ = [mkNullInstruction, TargetInstruction MOVE64]
+
+widthOfTemp = widthOf (target, [])
 
 -- FIXME: adapt for X86
 -- pushInstruction [r]
@@ -274,8 +288,11 @@ rematInstrs i
 -- fromCopy _ (Natural o @ Linear {oIs = [TargetInstruction i]})
 --   | isSourceInstr i = o {oIs = [mkNullInstruction]}
 
--- fromCopy _ (Natural o) = o
-fromCopy _ o = error ("unmatched pattern: fromCopy " ++ show o)
+fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d} =
+    Linear {oIs = [TargetInstruction i],
+            oUs = [s], oDs = [d]}
+fromCopy _ (Natural o) = o
+--fromCopy _ o = o
 
 -- mkPushRegs i = map (Register . TargetRegister) (pushRegs i)
 
@@ -322,7 +339,7 @@ resources =
      -- Boundle width (times 16 bits): upper bound given by size of compound
      -- instructions to be expanded
 
-     Resource BundleWidth 5,
+     Resource BundleWidth 50,
 
      -- Resources as defined by X86ScheduleV6
 
@@ -403,8 +420,8 @@ implementFrame = const []
 -- isPopRet o = any (\i -> TargetInstruction i `elem` oInstructions o)
 --              [TPOP2_r4_7_RET, VLDMDIA_UPD_d8_15]
 
-addPrologue _ _ = []
-addEpilogue _ _ = []
+addPrologue _ os = os
+addEpilogue _ os = os
 
 -- mkOpt oid inst us ds =
 --   makeOptional $ mkLinear oid [TargetInstruction inst] us ds

@@ -1119,6 +1119,8 @@ instance Show X86Instruction where
         show XOR8rm = "XOR8rm"
         show XOR8rr = "XOR8rr"
         show XOR8rr_REV = "XOR8rr_REV"
+        show MOVE32 = "MOVE32"
+        show MOVE64 = "MOVE64"
         show MOV16ri_source = "MOV16ri_source"
         show MOV16ri_demat = "MOV16ri_demat"
         show MOV16ri_remat = "MOV16ri_remat"

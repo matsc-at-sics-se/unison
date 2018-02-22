@@ -108,7 +108,7 @@ operandInfo i
     = ([TemporaryInfo (RegisterClass GR32) 0 False], [])
   | i `elem`
       [BSF32rr, BSR32rr, BSWAP32r, CMPXCHG32rr, DEC32r, DEC32r_alt,
-       INC32r, INC32r_alt, MOV32rr, MOV32rr_REV, NEG32r, NOT32r,
+       INC32r, INC32r_alt, MOV32rr, MOV32rr_REV, MOVE32, NEG32r, NOT32r,
        POPCNT32rr, RCL32r1, RCL32rCL, RCR32r1, RCR32rCL, ROL32r1,
        ROL32rCL, ROR32r1, ROR32rCL, SAR32r1, SAR32rCL, SHL32r1, SHL32rCL,
        SHR32r1, SHR32rCL]
@@ -180,7 +180,7 @@ operandInfo i
     = ([TemporaryInfo (RegisterClass GR64) 0 False], [])
   | i `elem`
       [BSF64rr, BSR64rr, BSWAP64r, CMPXCHG64rr, DEC64r, INC64r, MOV64rr,
-       MOV64rr_REV, NEG64r, NOT64r, POPCNT64rr, RCL64r1, RCL64rCL,
+       MOV64rr_REV, MOVE64, NEG64r, NOT64r, POPCNT64rr, RCL64r1, RCL64rCL,
        RCR64r1, RCR64rCL, ROL64r1, ROL64rCL, ROR64r1, ROR64rCL, SAR64r1,
        SAR64rCL, SHL64r1, SHL64rCL, SHR64r1, SHR64rCL]
     =

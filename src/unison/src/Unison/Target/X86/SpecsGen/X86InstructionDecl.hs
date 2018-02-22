@@ -1118,6 +1118,8 @@ data X86Instruction = ADC16i16
                     | XOR8rm
                     | XOR8rr
                     | XOR8rr_REV
+                    | MOVE32
+                    | MOVE64
                     | MOV16ri_source
                     | MOV16ri_demat
                     | MOV16ri_remat

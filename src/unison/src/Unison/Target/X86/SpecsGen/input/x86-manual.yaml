@@ -6,3 +6,10 @@ instruction-set:
   - group: MANUAL
     instructions:
 
+        - id:                 MOVE32
+          parent:             MOV32rr
+          type:               copy
+
+        - id:                 MOVE64
+          parent:             MOV64rr
+          type:               copy
