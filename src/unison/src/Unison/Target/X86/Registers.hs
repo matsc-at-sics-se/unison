@@ -201,10 +201,10 @@ reserved = [RSP]
 -- | Caller- and callee-saved registers
 
 -- | Registers that are not preserved across calls
-callerSaved = [RAX, RCX, RDX, RBP, R8, R9, R10, R11, R12, R13, R14, R15]
+callerSaved = [RAX, RCX, RDX, RDI, RSI, R8, R9, R10, R11]
 
 -- | Registers that are preserved across calls
-calleeSaved = [RBX, RDI, RSI]
+calleeSaved = [RBX, RBP, R12, R13, R14, R15]
 
 instance Read X86Register where
   readsPrec _ s = [(readReg s, "")]
