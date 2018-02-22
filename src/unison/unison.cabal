@@ -33,6 +33,7 @@ Library
                    Unison.Target.Query
                    Unison.Target.Hexagon
                    Unison.Target.ARM
+                   Unison.Target.X86
                    Unison.Target.Mips
 
                    Unison.Graphs.Util
@@ -234,6 +235,27 @@ Library
                   Unison.Target.ARM.SpecsGen.AlignedPairs
                   Unison.Target.ARM.SpecsGen.Size
                   Unison.Target.ARM.SpecsGen.Parent
+
+                  Unison.Target.X86.Common
+                  Unison.Target.X86.Registers
+                  Unison.Target.X86.OperandInfo
+                  Unison.Target.X86.Transforms
+                  Unison.Target.X86.Usages
+                  Unison.Target.X86.X86RegisterDecl
+                  Unison.Target.X86.X86RegisterClassDecl
+                  Unison.Target.X86.X86ResourceDecl
+                  Unison.Target.X86.SpecsGen
+                  Unison.Target.X86.SpecsGen.X86InstructionDecl
+                  Unison.Target.X86.SpecsGen.X86ItineraryDecl
+                  Unison.Target.X86.SpecsGen.ReadWriteInfo
+                  Unison.Target.X86.SpecsGen.OperandInfo
+                  Unison.Target.X86.SpecsGen.ReadOp
+                  Unison.Target.X86.SpecsGen.ShowInstance
+                  Unison.Target.X86.SpecsGen.Itinerary
+                  Unison.Target.X86.SpecsGen.InstructionType
+                  Unison.Target.X86.SpecsGen.AlignedPairs
+                  Unison.Target.X86.SpecsGen.Size
+                  Unison.Target.X86.SpecsGen.Parent
 
                   Unison.Target.Mips.Common
                   Unison.Target.Mips.Registers

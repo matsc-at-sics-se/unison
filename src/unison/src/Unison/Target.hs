@@ -14,9 +14,11 @@ module Unison.Target (unisonTargets) where
 import Unison.Target.API (Any(..))
 import Unison.Target.Hexagon as Hexagon (target)
 import Unison.Target.ARM as ARM (target)
+import Unison.Target.X86 as X86 (target)
 import Unison.Target.Mips as Mips (target)
 
 unisonTargets =
     [("Hexagon", Any Hexagon.target),
      ("ARM", Any ARM.target),
+     ("X86", Any X86.target),
      ("Mips", Any Mips.target)]

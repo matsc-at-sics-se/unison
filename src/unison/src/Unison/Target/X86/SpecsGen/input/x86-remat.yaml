@@ -1,0 +1,49 @@
+---
+instruction-set:
+ - group: REMATERIALIZATION
+   instructions:
+     
+   - id: MOV16ri
+     home-class: GR16
+     infinite-class: RM16
+     
+   - id: MOV16ri_alt
+     home-class: GR16
+     infinite-class: RM16
+     
+   - id: MOV32r0
+     home-class: GR32
+     infinite-class: RM32
+     
+   - id: MOV32r1
+     home-class: GR32
+     infinite-class: RM32
+     
+   - id: MOV32r_1
+     home-class: GR32
+     infinite-class: RM32
+     
+   - id: MOV32ri
+     home-class: GR32
+     infinite-class: RM32
+     
+   - id: MOV32ri64
+     home-class: GR32
+     infinite-class: RM32
+     
+   - id: MOV32ri_alt
+     home-class: GR32
+     infinite-class: RM32
+     
+   - id: MOV64ri
+     home-class: GR64
+     infinite-class: RM64
+     
+   - id: MOV64ri32
+     home-class: GR64
+     infinite-class: RM64
+     
+   - id: MOV8ri
+     home-class: GR8
+     infinite-class: RM8
+     

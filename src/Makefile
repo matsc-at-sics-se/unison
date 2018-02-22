@@ -107,6 +107,11 @@ SGARMINPUTYAML = $(SGARMROOTDIR)/input/arm.yaml
 SGARMAUXYAML   = $(SGARMROOTDIR)/input/arm-manual.yaml
 SGARMREMATYAML = $(SGARMROOTDIR)/input/arm-remat.yaml
 
+SGX86ROOTDIR   = $(UNISONDIR)/src/Unison/Target/X86/SpecsGen
+SGX86INPUTYAML = $(SGX86ROOTDIR)/input/x86.yaml
+SGX86AUXYAML   = $(SGX86ROOTDIR)/input/x86-manual.yaml
+SGX86REMATYAML = $(SGX86ROOTDIR)/input/x86-remat.yaml
+
 
 build-specsgen: prepare-specsgen
 	cd $(UNISONSPECSGENDIR); $(CABALBIN) configure; $(CABALBIN) build
@@ -117,7 +122,7 @@ prepare-specsgen:
 install-specsgen:
 	cp $(UNISONSPECSGENDIR)/dist/build/specsgen/specsgen $(BINDIR)
 
-run-specsgen: run-specsgen-hexagon run-specsgen-mips run-specsgen-arm
+run-specsgen: run-specsgen-hexagon run-specsgen-mips run-specsgen-arm run-specsgen-x86
 
 run-specsgen-hexagon:
 	specsgen --targetname=Hexagon $(SGHEXAGONINPUTYAML) $(SGHEXAGONAUXYAML) \
@@ -142,3 +147,16 @@ run-specsgen-arm:
 	         --promoteeffect CPSR \
 	         --infiniteregclass RM32 --infiniteregclass RM64 \
 	         --rematfile=$(SGARMREMATYAML)
+
+run-specsgen-x86:
+	specsgen --targetname=X86 $(SGX86INPUTYAML) $(SGX86AUXYAML) \
+	         --outputdir=$(SGX86ROOTDIR) \
+	         --infiniteregclass M8 \
+	         --infiniteregclass M16 \
+	         --infiniteregclass M32 \
+	         --infiniteregclass M64 \
+	         --infiniteregclass RM8 \
+	         --infiniteregclass RM16 \
+	         --infiniteregclass RM32 \
+		 --infiniteregclass RM64 \
+	         --rematfile=$(SGX86REMATYAML)
