@@ -11,10 +11,10 @@ This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.X86 (target) where
 
--- import Data.Maybe
+import Data.Maybe
 -- import Data.List
 -- import Data.List.Split
--- import qualified Data.Set as S
+import qualified Data.Set as S
 -- import Control.Arrow
 
 import Common.Util
@@ -25,7 +25,7 @@ import Common.Util
 import Unison
 import qualified Unison.Target.API as API
 -- import Unison.Target.RegisterArray
---import Unison.Target.Query
+import Unison.Target.Query
 import Unison.Analysis.TemporaryType
 -- import Unison.Transformations.FoldReservedRegisters
 -- import Unison.Analysis.TransitiveOperations
@@ -108,17 +108,20 @@ branchInfo o = error ("unmatched pattern: branchInfo " ++ show (mkSingleOperatio
 -- | Gives a set of def copies and a list of sets of use copies to extend the
 -- given temporary
 
--- FIXME: adapt for X86
--- -- Do not extend temporaries that are defined by virtual defines and used once
--- copies _fInfo False _t _rs d [_] | isDefine d = ([], [[]])
+-- Do not extend temporaries that are defined by virtual defines and used once
+copies _fInfo False _t _rs d [_] | isDefine d = ([], [[]])
 
--- -- Do not extend temporaries that are only used by virtual kills
--- copies _fInfo False _t _rs _d [u] | isKill u = ([], [[]])
+-- Do not extend temporaries that are only used by virtual kills
+copies _fInfo False _t _rs _d [u] | isKill u = ([], [[]])
 
--- -- Do not extend temporaries pre-assigned to reserved registers
--- copies _ False _ rs _ us | any isReserved rs =
---   ([], replicate (length us) [])
+-- Do not extend temporaries pre-assigned to reserved registers
+copies _ False _ rs _ us | any isReserved rs =
+  ([], replicate (length us) [])
 
+-- Until we can spill to the stack frame, do not extend temporaries pre-assigned to callee-saved registers
+copies (_, cst, _, _, _, _) False t rs _ [_] | not (null rs) && S.member t cst = ([], [[]])
+
+-- FIXME:
 -- -- Add only one store for entry callee-saved temporaries
 -- -- Add only one load for exit callee-saved temporaries
 -- -- Do not add copies for intermediate callee-saved temporaries
@@ -130,19 +133,19 @@ branchInfo o = error ("unmatched pattern: branchInfo " ++ show (mkSingleOperatio
 --         then [mkNullInstruction, TargetInstruction (popInstruction rs)]
 --         else []])
 
--- -- Do not extend non-pre-allocated temporaries that are only "passed through" a
--- -- block without calls
--- copies (f, _, _, _, _, _) False t [] d [u]
---     | isIn d && isOut u && not (any isCall (bCode $ tempBlock (fCode f) t)) =
---     ([], [[]])
+-- Do not extend non-pre-allocated temporaries that are only "passed through" a
+-- block without calls
+copies (f, _, _, _, _, _) False t [] d [u]
+    | isIn d && isOut u && not (any isCall (bCode $ tempBlock (fCode f) t)) =
+    ([], [[]])
 
--- -- Do not extend rematerializable instructions used only once, locally
--- -- FIXME: review whether this is always safe
--- copies (Function {fCode = code}, _, _, _, _, _) False t _ d [u]
---   | isNatural d && (isNatural u || isFun u) &&
---     (isRematerializable (targetInst (oInstructions d))) &&
---     not (mayCrossMemDep readWriteInfo d u code) &&
---     compatibleClassesForTemp t [d, u] = ([], [[]])
+-- Do not extend rematerializable instructions used only once, locally
+-- FIXME: review whether this is always safe
+copies (Function {fCode = code}, _, _, _, _, _) False t _ d [u]
+  | isNatural d && (isNatural u || isFun u) &&
+    (isRematerializable (targetInst (oInstructions d))) &&
+    not (mayCrossMemDep readWriteInfo d u code) &&
+    compatibleClassesForTemp t [d, u] = ([], [[]])
 
 -- copies (f, _, cg, ra, bcfg, sg) _ t _rs d us =
 --   let is     = d:us
@@ -168,8 +171,6 @@ defCopies 8 = [mkNullInstruction, TargetInstruction MOVE64]
 useCopies 4 _ = [mkNullInstruction, TargetInstruction MOVE32]
 useCopies 8 _ = [mkNullInstruction, TargetInstruction MOVE64]
 
-widthOfTemp = widthOf (target, [])
-
 -- FIXME: adapt for X86
 -- pushInstruction [r]
   -- r == R4_7  = TPUSH_r4_7
@@ -194,12 +195,13 @@ widthOfTemp = widthOf (target, [])
 --    map TargetInstruction (moveInstrs size w) ++
 --    map TargetInstruction (loadInstrs size w)
 
--- classOfTemp = classOf (target, [])
--- widthOfTemp = widthOf (target, [])
+classOfTemp = classOf (target, [])
 
--- compatibleClassesForTemp t os =
---   let regs = [S.fromList $ registers $ fromJust (classOfTemp t o) | o <- os]
---   in not $ S.null $ foldl S.intersection (head regs) regs
+widthOfTemp = widthOf (target, [])
+
+compatibleClassesForTemp t os =
+  let regs = [S.fromList $ registers $ fromJust (classOfTemp t o) | o <- os]
+  in not $ S.null $ foldl S.intersection (head regs) regs
 
 -- TODO: add STORE_S, LOAD_S, also GPR <-> SPR moves?
 
@@ -230,7 +232,7 @@ widthOfTemp = widthOf (target, [])
 -- -- VLDRD
 -- loadInstrs _ 2 = [LOAD_D]
 
--- isReserved r = r `elem` reserved
+isReserved r = r `elem` reserved
 
 rematInstrs i
   | isRematerializable i =
