@@ -105,7 +105,7 @@ uniArgs = cmdArgsMode $ modes allModes &= program "uni"
           &= help "Generate assembly code using constraint programming"
 
 import' = Import {
-  targetName      = "Hexagon" &= typ "TARGET" &= explicit &= name "target" &= name "t",
+  targetName      = "X86" &= typ "TARGET" &= explicit &= name "target" &= name "t",
   inFile          = "" &= argPos 1 &= typFile,
   targetOption    = [] &= help "Target-specific option",
   outFile         = Nothing &= name "o" &= help "Output file name" &= typFile,

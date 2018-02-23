@@ -108,7 +108,8 @@ registerAtoms R13 = (R150, R157)
 registerAtoms R14 = (R160, R167)
 registerAtoms R15 = (R170, R177)
 
-registerAtoms EFLAGS = (EFLAGS, EFLAGS)
+-- not really in the register array
+registerAtoms EFLAGS = (R200, R207)
 
 registerAtoms r = error ("unmatched: registerAtoms " ++ show r)
 
@@ -137,6 +138,9 @@ registers (RegisterClass GPR) =
      R160, R161, R162, R163, R164, R165, R166, R167,
      R170, R171, R172, R173, R174, R175, R176, R177]
 
+registers (RegisterClass CCR) =
+    [R200, R201, R202, R203, R204, R205, R206, R207]
+
 registers (RegisterClass GR8) =
     [AL, AH, CL, CH, DL, DH, BL, BH, SIL, DIL, SPL, BPL, R8B, R9B, R10B, R11B, R12B, R13B, R14B, R15B]
 
@@ -160,9 +164,6 @@ registers (RegisterClass GR64) =
 
 registers (RegisterClass GR64_NOSP) =
     [RAX, RCX, RDX, RBX, RSI, RDI,      RBP, R8, R9, R10, R11, R12, R13, R14, R15]
-
-registers (RegisterClass CCR) =
-    [EFLAGS]
 
 registers (RegisterClass ALL) =
   registers (RegisterClass GPR)
@@ -347,6 +348,14 @@ regStrings = M.fromList $
    (R175, "r175"),
    (R176, "r176"),
    (R177 , "r177"),
+   (R200, "r200"),
+   (R201, "r201"),
+   (R202, "r202"),
+   (R203, "r203"),
+   (R204, "r204"),
+   (R205, "r205"),
+   (R206, "r206"),
+   (R207 , "r207"),
    (AL, "al"),
    (CL, "cl"),
    (DL, "dl"),
