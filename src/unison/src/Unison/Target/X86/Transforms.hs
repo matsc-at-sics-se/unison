@@ -62,5 +62,24 @@ extractReturnRegs _ (
                                               [preAssign t (Register ret)]})}]
    )
 
+{-
+    o13: [] <- RETQ []
+    o18: [] <- (out) [...]
+->
+    o13: [] <- RETQ [42]
+    o18: [] <- (out) [...]
+-}
+
+extractReturnRegs _ (
+  j @ SingleOperation {oOpr = Natural bj @ Branch {
+                          oBranchIs = [TargetInstruction RETQ],
+                          oBranchUs = []}}
+  :
+  rest) _ =
+   (
+    rest,
+    [j {oOpr = Natural bj {oBranchUs = [mkBound (mkMachineImm 42)]}}]
+   )
+
 extractReturnRegs _ (o : rest) _ = (rest, [o])
 
