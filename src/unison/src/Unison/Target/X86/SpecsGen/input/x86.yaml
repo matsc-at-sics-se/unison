@@ -15137,6 +15137,7 @@ instruction-set:
           affected-by:
           itinerary:          IIC_BIN_NONMEM
 
+        - id:                 TAILJMPd
           type:               call
           operands:
            - dst:             bound

@@ -1032,6 +1032,7 @@ data X86Instruction = ADC16i16
                     | SUB8rm
                     | SUB8rr
                     | SUB8rr_REV
+                    | TAILJMPd
                     | TAILJMPd64
                     | TAILJMPd64_REX
                     | TAILJMPm

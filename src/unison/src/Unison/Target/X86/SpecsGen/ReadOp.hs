@@ -1031,6 +1031,7 @@ readOp "SUB8ri8" = SUB8ri8
 readOp "SUB8rm" = SUB8rm
 readOp "SUB8rr" = SUB8rr
 readOp "SUB8rr_REV" = SUB8rr_REV
+readOp "TAILJMPd" = TAILJMPd
 readOp "TAILJMPd64" = TAILJMPd64
 readOp "TAILJMPd64_REX" = TAILJMPd64_REX
 readOp "TAILJMPm" = TAILJMPm

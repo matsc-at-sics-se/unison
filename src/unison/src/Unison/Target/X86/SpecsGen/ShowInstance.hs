@@ -1033,6 +1033,7 @@ instance Show X86Instruction where
         show SUB8rm = "SUB8rm"
         show SUB8rr = "SUB8rr"
         show SUB8rr_REV = "SUB8rr_REV"
+        show TAILJMPd = "TAILJMPd"
         show TAILJMPd64 = "TAILJMPd64"
         show TAILJMPd64_REX = "TAILJMPd64_REX"
         show TAILJMPm = "TAILJMPm"

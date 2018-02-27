@@ -274,7 +274,8 @@ operandInfo i
      [])
   | i `elem`
       [ADC8rr, ADC8rr_REV, ADD8rr, ADD8rr_REV, AND8rr, AND8rr_REV, OR8rr,
-       OR8rr_REV, SBB8rr, SBB8rr_REV, SUB8rr, XCHG8rr, XOR8rr, XOR8rr_REV]
+       OR8rr_REV, SBB8rr, SBB8rr_REV, SUB8rr, SUB8rr_REV, XCHG8rr, XOR8rr,
+       XOR8rr_REV]
     =
     ([TemporaryInfo (RegisterClass GR8) 0 False,
       TemporaryInfo (RegisterClass GR8) 0 False],
@@ -328,9 +329,9 @@ operandInfo i
        CMP64i32, CMP8i8, OR16i16, OR32i32, OR64i32, OR8i8, PUSH16i8,
        PUSH32i8, PUSH64i32, PUSH64i8, PUSHi16, PUSHi32, RETIW, RETL, RETQ,
        SBB16i16, SBB32i32, SBB64i32, SBB8i8, SUB16i16, SUB32i32, SUB64i32,
-       SUB8i8, SUB8rr_REV, TAILJMPd64, TAILJMPd64_REX, TAILJMPr,
-       TAILJMPr64, TAILJMPr64_REX, TEST16i16, TEST32i32, TEST64i32,
-       TEST8i8, XOR16i16, XOR32i32, XOR64i32, XOR8i8]
+       SUB8i8, TAILJMPd, TAILJMPd64, TAILJMPd64_REX, TAILJMPr, TAILJMPr64,
+       TAILJMPr64_REX, TEST16i16, TEST32i32, TEST64i32, TEST8i8, XOR16i16,
+       XOR32i32, XOR64i32, XOR8i8]
     = ([BoundInfo], [])
   | i `elem` [MOV16ri, MOV16ri_alt] =
     ([BoundInfo], [TemporaryInfo (RegisterClass GR16) 1 False])

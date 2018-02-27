@@ -46,7 +46,7 @@ alignedPairs i ([_], [])
        JL_4, JMP16r, JMP32r, JMP64r, JMP_1, JMP_2, JMP_4, JNE_1, JNE_2,
        JNE_4, JNO_1, JNO_2, JNO_4, JNP_1, JNP_2, JNP_4, JNS_1, JNS_2,
        JNS_4, JO_1, JO_2, JO_4, JP_1, JP_2, JP_4, JRCXZ, JS_1, JS_2, JS_4,
-       LOOP, LOOPE, LOOPNE, SUB8rr_REV, TAILJMPd64, TAILJMPd64_REX,
+       LOOP, LOOPE, LOOPNE, TAILJMPd, TAILJMPd64, TAILJMPd64_REX,
        TAILJMPr, TAILJMPr64, TAILJMPr64_REX]
     = []
 alignedPairs i ([_, _], [])
@@ -229,9 +229,10 @@ alignedPairs i ([src1, _], [src1'])
        SHR64ri, SHR8ri, SHRD16rrCL, SHRD32rrCL, SHRD64rrCL, SUB16ri,
        SUB16ri8, SUB16rr, SUB16rr_REV, SUB32ri, SUB32ri8, SUB32rr,
        SUB32rr_REV, SUB64ri32, SUB64ri8, SUB64rr, SUB64rr_REV, SUB8ri,
-       SUB8ri8, SUB8rr, XOR16ri, XOR16ri8, XOR16rr, XOR16rr_REV, XOR32ri,
-       XOR32ri8, XOR32rr, XOR32rr_REV, XOR64ri32, XOR64ri8, XOR64rr,
-       XOR64rr_REV, XOR8ri, XOR8ri8, XOR8rr, XOR8rr_REV]
+       SUB8ri8, SUB8rr, SUB8rr_REV, XOR16ri, XOR16ri8, XOR16rr,
+       XOR16rr_REV, XOR32ri, XOR32ri8, XOR32rr, XOR32rr_REV, XOR64ri32,
+       XOR64ri8, XOR64rr, XOR64rr_REV, XOR8ri, XOR8ri8, XOR8rr,
+       XOR8rr_REV]
     = [(src1, src1')]
 alignedPairs i ([src1, _, _], [src1'])
   | i `elem`
