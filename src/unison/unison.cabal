@@ -293,6 +293,8 @@ Library
                  aeson-pretty >= 0.8.1,
                  bytestring >= 0.9,
                  unordered-containers >= 0.2,
+                 -- 0.6.* gives problems with old ghcs
+                 transformers-compat == 0.5.*,
                  yaml >= 0.8,
                  scientific >= 0.3,
                  directory >= 1.2,
@@ -300,7 +302,7 @@ Library
                  HUnit
 
   Ghc-options: -fwarn-dodgy-exports -fwarn-dodgy-imports -fwarn-unused-matches
-               -fwarn-unused-imports -fwarn-unused-binds -O2
+               -fwarn-unused-imports -fwarn-unused-binds
 
 Executable uni
 
