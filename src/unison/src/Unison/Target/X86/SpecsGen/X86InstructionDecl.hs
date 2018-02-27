@@ -49,8 +49,11 @@ data X86Instruction = ADC16i16
                     | ADD16mr
                     | ADD16ri
                     | ADD16ri8
+                    | ADD16ri8_DB
+                    | ADD16ri_DB
                     | ADD16rm
                     | ADD16rr
+                    | ADD16rr_DB
                     | ADD16rr_REV
                     | ADD32i32
                     | ADD32mi
@@ -58,17 +61,23 @@ data X86Instruction = ADC16i16
                     | ADD32mr
                     | ADD32ri
                     | ADD32ri8
+                    | ADD32ri8_DB
+                    | ADD32ri_DB
                     | ADD32rm
                     | ADD32rr
+                    | ADD32rr_DB
                     | ADD32rr_REV
                     | ADD64i32
                     | ADD64mi32
                     | ADD64mi8
                     | ADD64mr
                     | ADD64ri32
+                    | ADD64ri32_DB
                     | ADD64ri8
+                    | ADD64ri8_DB
                     | ADD64rm
                     | ADD64rr
+                    | ADD64rr_DB
                     | ADD64rr_REV
                     | ADD8i8
                     | ADD8mi

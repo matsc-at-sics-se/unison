@@ -736,6 +736,32 @@ instruction-set:
           affected-by:
           itinerary:          IIC_BIN_NONMEM
 
+        - id:                 ADD16ri8_DB
+          type:               linear
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+           - EFLAGS:          register
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 ADD16ri_DB
+          type:               linear
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+           - EFLAGS:          register
+          affected-by:
+          itinerary:          NoItinerary
+
         - id:                 ADD16rm
           type:               linear
           operands:
@@ -765,6 +791,19 @@ instruction-set:
            - EFLAGS:          register
           affected-by:
           itinerary:          IIC_BIN_NONMEM
+
+        - id:                 ADD16rr_DB
+          type:               linear
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, GR16]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+           - EFLAGS:          register
+          affected-by:
+          itinerary:          NoItinerary
 
         - id:                 ADD16rr_REV
           type:               linear
@@ -870,6 +909,32 @@ instruction-set:
           affected-by:
           itinerary:          IIC_BIN_NONMEM
 
+        - id:                 ADD32ri8_DB
+          type:               linear
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+           - EFLAGS:          register
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 ADD32ri_DB
+          type:               linear
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+           - EFLAGS:          register
+          affected-by:
+          itinerary:          NoItinerary
+
         - id:                 ADD32rm
           type:               linear
           operands:
@@ -899,6 +964,19 @@ instruction-set:
            - EFLAGS:          register
           affected-by:
           itinerary:          IIC_BIN_NONMEM
+
+        - id:                 ADD32rr_DB
+          type:               linear
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, GR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+           - EFLAGS:          register
+          affected-by:
+          itinerary:          NoItinerary
 
         - id:                 ADD32rr_REV
           type:               linear
@@ -991,6 +1069,19 @@ instruction-set:
           affected-by:
           itinerary:          IIC_BIN_NONMEM
 
+        - id:                 ADD64ri32_DB
+          type:               linear
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+           - EFLAGS:          register
+          affected-by:
+          itinerary:          NoItinerary
+
         - id:                 ADD64ri8
           type:               linear
           operands:
@@ -1003,6 +1094,19 @@ instruction-set:
            - EFLAGS:          register
           affected-by:
           itinerary:          IIC_BIN_NONMEM
+
+        - id:                 ADD64ri8_DB
+          type:               linear
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+           - EFLAGS:          register
+          affected-by:
+          itinerary:          NoItinerary
 
         - id:                 ADD64rm
           type:               linear
@@ -1033,6 +1137,19 @@ instruction-set:
            - EFLAGS:          register
           affected-by:
           itinerary:          IIC_BIN_NONMEM
+
+        - id:                 ADD64rr_DB
+          type:               linear
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, GR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+           - EFLAGS:          register
+          affected-by:
+          itinerary:          NoItinerary
 
         - id:                 ADD64rr_REV
           type:               linear

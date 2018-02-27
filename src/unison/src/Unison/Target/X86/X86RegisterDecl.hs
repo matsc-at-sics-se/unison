@@ -13,6 +13,7 @@ module Unison.Target.X86.X86RegisterDecl (X86Register (..)) where
 
 data X86Register =
     EFLAGS |
+    RIP |
     R000 |
     R001 |
     R002 |
@@ -149,6 +150,14 @@ data X86Register =
     R205 |
     R206 |
     R207 | 
+    R210 |
+    R211 |
+    R212 |
+    R213 |
+    R214 |
+    R215 |
+    R216 |
+    R217 | 
     AL |
     CL |
     DL |
