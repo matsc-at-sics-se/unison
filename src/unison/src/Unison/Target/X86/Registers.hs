@@ -110,6 +110,7 @@ registerAtoms R15 = (R170, R177)
 
 -- not really in the register array
 registerAtoms EFLAGS = (R200, R207)
+registerAtoms RIP = (R210, R217)
 
 registerAtoms r = error ("unmatched: registerAtoms " ++ show r)
 
@@ -139,7 +140,7 @@ registers (RegisterClass GPR) =
      R170, R171, R172, R173, R174, R175, R176, R177]
 
 registers (RegisterClass CCR) =
-    [R200, R201, R202, R203, R204, R205, R206, R207]
+    [EFLAGS, RIP]
 
 registers (RegisterClass GR8) =
     [AL, AH, CL, CH, DL, DH, BL, BH, SIL, DIL, SPL, BPL, R8B, R9B, R10B, R11B, R12B, R13B, R14B, R15B]
@@ -221,7 +222,9 @@ instance Show X86Register where
              Nothing -> error $ "unmatched: show X86Register"
 
 regStrings = M.fromList $
-  [(R000, "r000"),
+  [(EFLAGS, "eflags"),
+   (RIP, "rip"),
+   (R000, "r000"),
    (R001, "r001"),
    (R002, "r002"),
    (R003, "r003"),
@@ -357,6 +360,14 @@ regStrings = M.fromList $
    (R205, "r205"),
    (R206, "r206"),
    (R207 , "r207"),
+   (R210, "r210"),
+   (R211, "r211"),
+   (R212, "r212"),
+   (R213, "r213"),
+   (R214, "r214"),
+   (R215, "r215"),
+   (R216, "r216"),
+   (R217 , "r217"),
    (AL, "al"),
    (CL, "cl"),
    (DL, "dl"),
@@ -424,6 +435,5 @@ regStrings = M.fromList $
    (R12, "r12"),
    (R13, "r13"),
    (R14, "r14"),
-   (R15, "r15"),
-   (EFLAGS, "eflags")]
+   (R15, "r15")]
 
