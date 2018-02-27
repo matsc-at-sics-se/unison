@@ -172,14 +172,12 @@ registers rc = error ("unmatched: registers " ++ show rc)
 
 -- | Index type (low/high/copy) of subregisters
 
--- FIXME: sub_16bit of non-32bit temp
--- FIXME: sub_8bit of non-16bit temp
--- FIXME: sub_8bit_hi of whatever
 subRegIndexType sr
     | sr == (NamedSubRegIndex "sub_32bit") ||
       sr == (NamedSubRegIndex "sub_16bit") ||
       sr == (NamedSubRegIndex "sub_8bit") ||
-      sr == (NamedSubRegIndex "sub_8bit_hi") = LowSubRegIndex
+      sr == (NamedSubRegIndex "sub_8bit_hi") ||
+      sr == (RawSubRegIndex 4) = LowSubRegIndex
 subRegIndexType subreg = error ("unmatched: subRegIndexType " ++ show subreg)
 
 -- | Map from infinite register class to register usage

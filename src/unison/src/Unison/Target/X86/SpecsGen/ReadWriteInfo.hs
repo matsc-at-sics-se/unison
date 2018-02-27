@@ -34,9 +34,8 @@ readWriteInfo i
        PUSHES32, PUSHFS16, PUSHFS32, PUSHFS64, PUSHGS16, PUSHGS32,
        PUSHGS64, PUSHSS16, PUSHSS32, RETIL, RETIQ, RETIW, RETL, RETQ,
        RETW, REX64_PREFIX, RORX32ri, RORX64ri, SARX32rr, SARX64rr,
-       SHLX32rr, SHLX64rr, SHRX32rr, SHRX64rr, STC, STD, SUBREG_TO_REG,
-       UD2B, XCHG16rm, XCHG16rr, XCHG32rm, XCHG32rr, XCHG64rm, XCHG64rr,
-       XCHG8rm, XCHG8rr]
+       SHLX32rr, SHLX64rr, SHRX32rr, SHRX64rr, STC, STD, UD2B, XCHG16rm,
+       XCHG16rr, XCHG32rm, XCHG32rr, XCHG64rm, XCHG64rr, XCHG8rm, XCHG8rr]
     = ([], [])
   | i `elem`
       [CMPXCHG16rm, CMPXCHG32rm, CMPXCHG64rm, CMPXCHG8rm, MOV8mr_NOREX]
@@ -146,15 +145,14 @@ readWriteInfo i
        SUB16rr_REV, SUB32mi, SUB32mi8, SUB32mr, SUB32ri, SUB32ri8,
        SUB32rm, SUB32rr, SUB32rr_REV, SUB64mi32, SUB64mi8, SUB64mr,
        SUB64ri32, SUB64ri8, SUB64rm, SUB64rr, SUB64rr_REV, SUB8mi, SUB8mr,
-       SUB8ri, SUB8ri8, SUB8rm, SUB8rr, SUB8rr_REV, TEST16mi, TEST16ri,
-       TEST16rm, TEST16rr, TEST32mi, TEST32ri, TEST32rm, TEST32rr,
-       TEST64mi32, TEST64ri32, TEST64rm, TEST64rr, TEST8mi, TEST8ri,
-       TEST8ri_NOREX, TEST8rm, TEST8rr, XOR16mi, XOR16mi8, XOR16mr,
-       XOR16ri, XOR16ri8, XOR16rm, XOR16rr, XOR16rr_REV, XOR32mi,
-       XOR32mi8, XOR32mr, XOR32ri, XOR32ri8, XOR32rm, XOR32rr,
-       XOR32rr_REV, XOR64mi32, XOR64mi8, XOR64mr, XOR64ri32, XOR64ri8,
-       XOR64rm, XOR64rr, XOR64rr_REV, XOR8mi, XOR8mr, XOR8ri, XOR8ri8,
-       XOR8rm, XOR8rr, XOR8rr_REV]
+       SUB8ri, SUB8ri8, SUB8rm, SUB8rr, TEST16mi, TEST16ri, TEST16rm,
+       TEST16rr, TEST32mi, TEST32ri, TEST32rm, TEST32rr, TEST64mi32,
+       TEST64ri32, TEST64rm, TEST64rr, TEST8mi, TEST8ri, TEST8ri_NOREX,
+       TEST8rm, TEST8rr, XOR16mi, XOR16mi8, XOR16mr, XOR16ri, XOR16ri8,
+       XOR16rm, XOR16rr, XOR16rr_REV, XOR32mi, XOR32mi8, XOR32mr, XOR32ri,
+       XOR32ri8, XOR32rm, XOR32rr, XOR32rr_REV, XOR64mi32, XOR64mi8,
+       XOR64mr, XOR64ri32, XOR64ri8, XOR64rm, XOR64rr, XOR64rr_REV,
+       XOR8mi, XOR8mr, XOR8ri, XOR8ri8, XOR8rm, XOR8rr, XOR8rr_REV]
     = ([], [OtherSideEffect EFLAGS])
   | i `elem` [ADJCALLSTACKDOWN32, ADJCALLSTACKUP32] =
     ([], [OtherSideEffect ESP, OtherSideEffect EFLAGS])
@@ -327,7 +325,7 @@ readWriteInfo i
      [OtherSideEffect RAX, OtherSideEffect ESI])
   | i `elem`
       [CALL16m, CALL16r, CALL32m, CALL32r, CALLpcrel16, CALLpcrel32,
-       TAILJMPd, TAILJMPr, TCRETURNdi, TCRETURNri]
+       SUB8rr_REV, TAILJMPr, TCRETURNdi, TCRETURNri]
     = ([OtherSideEffect ESP], [])
   | i `elem` [MOV64o32a, MOV64o64a] =
     ([OtherSideEffect RAX], [Memory "mem"])

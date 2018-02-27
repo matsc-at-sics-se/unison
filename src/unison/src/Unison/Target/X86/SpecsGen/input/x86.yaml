@@ -15137,21 +15137,6 @@ instruction-set:
           affected-by:
           itinerary:          IIC_BIN_NONMEM
 
-        - id:                 SUBREG_TO_REG
-          type:               linear
-          operands:
-           - dst:             bound
-           - implsrc:         bound
-           - subsrc:          bound
-           - subidx:          bound
-          uses:               [implsrc, subsrc, subidx]
-          defines:            [dst]
-          size:               0
-          affects:
-          affected-by:
-          itinerary:          NoItinerary
-
-        - id:                 TAILJMPd
           type:               call
           operands:
            - dst:             bound
