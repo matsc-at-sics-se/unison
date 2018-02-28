@@ -161,4 +161,7 @@ run-specsgen-x86:
 	         --infiniteregclass RM16 \
 	         --infiniteregclass RM32 \
 		 --infiniteregclass RM64 \
+		 --promoteeffect CL:GR8 \
+		 --promoteeffect RAX:GR64 \
+		 --promoteeffect RDX:GR64 \
 	         --rematfile=$(SGX86REMATYAML)

@@ -13,7 +13,8 @@ module Unison.Target.X86.Common
     (unitLatency, align, 
      defaultMIRPred, defaultUniPred, isRematerializable, isSourceInstr,
      isDematInstr, isRematInstr, sourceInstr, dematInstr, rematInstr,
-     originalInstr, spillInstrs, condMoveInstrs) where
+     originalInstr, spillInstrs, condMoveInstrs, promotedRegs, readsSideEffect,
+     writesSideEffect) where
 
 import qualified Data.Map as M
 import Data.Tuple
@@ -21,7 +22,9 @@ import Data.Tuple
 import MachineIR
 import Unison
 import qualified Unison.Target.API as API
+import qualified Unison.Target.X86.SpecsGen as SpecsGen
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
+import Unison.Target.X86.X86RegisterDecl
 
 unitLatency to = API.isBoolOption "unit-latency" to
 align to = API.isBoolOption "align" to
@@ -85,3 +88,9 @@ condMoveInstrs = [CMOVA16rm, CMOVA16rr,
      CMOVP64rr, CMOVS16rm, CMOVS16rr, CMOVS32rm, CMOVS32rr, CMOVS64rm,
      CMOVS64rr]
 
+promotedRegs = [CL, RAX, RDX]
+
+readsSideEffect i eff =
+  (OtherSideEffect eff) `elem` (fst $ SpecsGen.readWriteInfo i)
+writesSideEffect i eff =
+  (OtherSideEffect eff) `elem` (snd $ SpecsGen.readWriteInfo i)

@@ -19,7 +19,7 @@ import qualified Data.Set as S
 
 import Common.Util
 
--- import MachineIR hiding (parse)
+import MachineIR
 -- import MachineIR.Transformations.AddImplicitRegs
 
 import Unison
@@ -437,7 +437,33 @@ stackDirection = API.StackGrowsDown
 
 -- | Target dependent pre-processing functions
 
-preProcess _ = []
+preProcess _ = [mapToMachineInstruction promoteImplicitOperands]
+
+-- This transformation adds implicit uses and definitions that have been
+-- promoted with specsgen. The order of the operands is:
+-- 1. explicit defs
+-- 2. implicit defs
+-- 3. explicit uses
+-- 4. implicit uses
+-- 5. rest (for example, memory annotations to be lifted)
+-- The transformation relies on the register lifting functionality in 'uni
+-- import' to lift the added implicit uses and definitions to temporaries.
+promoteImplicitOperands
+  mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = mos} =
+    let mos' = promoteImplicitRegs i promotedRegs mos
+    in mi {msOperands = mos'}
+
+promoteImplicitOperands mi = mi
+
+promoteImplicitRegs i regs mos =
+  let oif = operandInfo i
+      ws  = filter (writesSideEffect i) regs
+      firstImpDef = length (snd oif) - length ws
+      (eds, mos1) = splitAt firstImpDef mos
+      rs  = filter (readsSideEffect i) regs
+      firstImpUse = length (fst oif) - length rs
+      (eus, mos2) = splitAt firstImpUse mos1
+  in eds ++ map mkMachineReg ws ++ eus ++ map mkMachineReg rs ++ mos2
 
 -- | Target dependent post-processing functions
 
