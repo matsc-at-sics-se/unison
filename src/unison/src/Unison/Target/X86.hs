@@ -481,6 +481,7 @@ postProcess _ = []
 -- | Gives a list of function transformers
 
 transforms ImportPreLift = [peephole extractReturnRegs]
+transforms ImportPostLift = [mapToOperation handlePromotedOperands]
 transforms _ = []
 
 -- | Latency of read-write dependencies

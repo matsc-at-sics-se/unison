@@ -10,7 +10,8 @@ Main authors:
 This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.X86.Transforms
-    (extractReturnRegs) where
+    (extractReturnRegs,
+     handlePromotedOperands) where
 
 import qualified Data.Map as M
 import qualified Data.Set as S
@@ -82,4 +83,21 @@ extractReturnRegs _ (
    )
 
 extractReturnRegs _ (o : rest) _ = (rest, [o])
+
+{-
+    o10: [t14,t15] <- IMUL64m [%stack.0,1,_,8,_,t13] (mem: 1)
+->
+    o10: [t14:rax,t15:rdx] <- IMUL64m [%stack.0,1,_,8,_,t13:rax] (mem: 1)
+    FIXME: for IMUL64m, writesSideEffect = [rax,rdx,eflags] (expected), readsSideEffect = [mem-mem] (WRONG)
+    FIXME: find and augment the actual operands (last n uses, last m reads?)
+-}
+
+handlePromotedOperands
+  o @ SingleOperation {
+    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction i], oDs = defs, oUs = uses})} |
+  let
+    ws  = filter (writesSideEffect i) promotedRegs
+    rs  = filter (readsSideEffect i) promotedRegs
+  in {- trace ("handlePromotedOperands " ++ show o ++ " " ++ show ws ++ " " ++ show rs) -} False = undefined
+handlePromotedOperands o = o
 
