@@ -6,6 +6,14 @@ instruction-set:
   - group: MANUAL
     instructions:
 
+        - id:                 MOVE8
+          parent:             MOV8rr
+          type:               copy
+
+        - id:                 MOVE16
+          parent:             MOV16rr
+          type:               copy
+
         - id:                 MOVE32
           parent:             MOV32rr
           type:               copy

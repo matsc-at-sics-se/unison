@@ -11,6 +11,7 @@ This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.X86 (target) where
 
+import Debug.Trace
 import Data.Maybe
 -- import Data.List
 -- import Data.List.Split
@@ -166,9 +167,13 @@ copies (f, _, cg, ra, _, _) _ t _ d us =
        map (useCopies w) us
      )
 
+defCopies 1 = [mkNullInstruction, TargetInstruction MOVE8]
+defCopies 2 = [mkNullInstruction, TargetInstruction MOVE16]
 defCopies 4 = [mkNullInstruction, TargetInstruction MOVE32]
 defCopies 8 = [mkNullInstruction, TargetInstruction MOVE64]
 
+useCopies 1 _ = [mkNullInstruction, TargetInstruction MOVE8]
+useCopies 2 _ = [mkNullInstruction, TargetInstruction MOVE16]
 useCopies 4 _ = [mkNullInstruction, TargetInstruction MOVE32]
 useCopies 8 _ = [mkNullInstruction, TargetInstruction MOVE64]
 
@@ -238,7 +243,8 @@ isReserved r = r `elem` reserved
 rematInstrs i
   | isRematerializable i =
       Just (sourceInstr i, dematInstr i, rematInstr i)
-  | otherwise = error ("unmatched: rematInstrs " ++ show i)
+  | otherwise = trace ("consider rematInstrs " ++ show i) Nothing
+  -- otherwise = error ("unmatched: rematInstrs " ++ show i)
 
 -- | Transforms copy instructions into natural instructions
 

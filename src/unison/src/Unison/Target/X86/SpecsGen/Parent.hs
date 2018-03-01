@@ -181,6 +181,7 @@ parent i
   | i `elem`
       [MOV16ri_alt_demat, MOV16ri_alt_remat, MOV16ri_alt_source]
     = Just MOV16ri_alt
+  | i `elem` [MOVE16] = Just MOV16rr
   | i `elem` [MOV32r0_demat, MOV32r0_remat, MOV32r0_source] =
     Just MOV32r0
   | i `elem` [MOV32r1_demat, MOV32r1_remat, MOV32r1_source] =
@@ -202,4 +203,5 @@ parent i
   | i `elem` [MOVE64] = Just MOV64rr
   | i `elem` [MOV8ri_demat, MOV8ri_remat, MOV8ri_source] =
     Just MOV8ri
+  | i `elem` [MOVE8] = Just MOV8rr
 

@@ -187,8 +187,8 @@ itinerary i
        MOV16rr_REV, MOV32ri, MOV32ri_alt, MOV32ri_alt_remat,
        MOV32ri_remat, MOV32rr, MOV32rr_REV, MOV64ri, MOV64ri32,
        MOV64ri32_remat, MOV64ri_remat, MOV64rr, MOV64rr_REV, MOV8ri,
-       MOV8ri_alt, MOV8ri_remat, MOV8rr, MOV8rr_NOREX, MOV8rr_REV, MOVE32,
-       MOVE64]
+       MOV8ri_alt, MOV8ri_remat, MOV8rr, MOV8rr_NOREX, MOV8rr_REV, MOVE16,
+       MOVE32, MOVE64, MOVE8]
     = IIC_MOV
   | i `elem`
       [MOVBE16mr, MOVBE16rm, MOVBE32mr, MOVBE32rm, MOVBE64mr, MOVBE64rm]

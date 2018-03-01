@@ -27,8 +27,8 @@ instructionType i
        MOV32r1_remat, MOV32r_1_demat, MOV32r_1_remat, MOV32ri64_demat,
        MOV32ri64_remat, MOV32ri_alt_demat, MOV32ri_alt_remat,
        MOV32ri_demat, MOV32ri_remat, MOV64ri32_demat, MOV64ri32_remat,
-       MOV64ri_demat, MOV64ri_remat, MOV8ri_demat, MOV8ri_remat, MOVE32,
-       MOVE64]
+       MOV64ri_demat, MOV64ri_remat, MOV8ri_demat, MOV8ri_remat, MOVE16,
+       MOVE32, MOVE64, MOVE8]
     = CopyInstructionType
   | i `elem`
       [ADC16i16, ADC16mi, ADC16mi8, ADC16mr, ADC16ri, ADC16ri8, ADC16rm,
