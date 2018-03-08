@@ -69,6 +69,26 @@ extractReturnRegs _ (
     [j {oOpr = Natural bj {oBranchUs = [mkBound (mkMachineImm 42)]}}]
    )
 
+{-
+    o13: [] <- TCRETURNdi64 [@spio_map_unix_error,0]
+    o20: [] <- (out) [rsp,edi,esi]
+->
+    o13: [] <- TCRETURNdi64 [@spio_map_unix_error,0]
+    o20: [] <- (out) []
+-}
+
+extractReturnRegs _ (
+  j @ SingleOperation {oOpr = Natural (TailCall {})}
+  :
+  o @ SingleOperation {oOpr = Virtual (Delimiter od @ Out {})}
+  :
+  rest) _ =
+   (
+    rest,
+    [j,
+     o {oOpr = Virtual (Delimiter od {oOuts = []})}]
+   )
+
 extractReturnRegs _ (o : rest) _ = (rest, [o])
 
 {-
