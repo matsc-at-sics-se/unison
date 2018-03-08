@@ -95,7 +95,6 @@ extractReturnRegs _ (o : rest) _ = (rest, [o])
     o10: [t14,t15] <- IMUL64m [%stack.0,1,_,8,_,t13] (mem: 1)
 ->
     o10: [t14:rax,t15:rdx] <- IMUL64m [%stack.0,1,_,8,_,t13:rax] (mem: 1)
-    FIXME: for IMUL64m, writesSideEffect = [rax,rdx,eflags] (expected), readsSideEffect = [mem-mem] (WRONG)
 -}
 
 handlePromotedOperands
