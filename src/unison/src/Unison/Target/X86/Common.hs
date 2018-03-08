@@ -88,6 +88,8 @@ condMoveInstrs = [CMOVA16rm, CMOVA16rr,
      CMOVP64rr, CMOVS16rm, CMOVS16rr, CMOVS32rm, CMOVS32rr, CMOVS64rm,
      CMOVS64rr]
 
+-- This list should contain exactly the registers that are promoted by
+-- 'specsgen' (see 'run-specsgen-x86' recipe in Makefile).
 promotedRegs = [CL, RAX, RDX]
 
 readsSideEffect i eff =
