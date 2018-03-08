@@ -161,7 +161,24 @@ run-specsgen-x86:
 	         --infiniteregclass RM16 \
 	         --infiniteregclass RM32 \
 		 --infiniteregclass RM64 \
-		 --promoteeffect CL:GR8 \
+		 --promoteeffect AL:GR8 \
+		 --promoteeffect AH:GR8 \
+		 --promoteeffect AX:GR16 \
+		 --promoteeffect EAX:GR32 \
 		 --promoteeffect RAX:GR64 \
+		 --promoteeffect EBX:GR32 \
+		 --promoteeffect RBX:GR64 \
+		 --promoteeffect CL:GR8 \
+		 --promoteeffect CX:GR16 \
+		 --promoteeffect ECX:GR32 \
+		 --promoteeffect RCX:GR64 \
+		 --promoteeffect DX:GR16 \
+		 --promoteeffect EDX:GR32 \
 		 --promoteeffect RDX:GR64 \
+		 --promoteeffect EBP:GR32 \
+		 --promoteeffect RBP:GR64 \
+		 --promoteeffect EDI:GR32 \
+		 --promoteeffect RDI:GR64 \
+		 --promoteeffect ESI:GR32 \
+		 --promoteeffect RSI:GR64 \
 	         --rematfile=$(SGX86REMATYAML)

@@ -86,7 +86,15 @@ instance Read X86Instruction where
 
 -- | Gives the type of natural operation according to the instruction
 
-instructionType i = SpecsGen.instructionType i
+instructionType i
+    | i `elem` [TCRETURNdi, TCRETURNdi64,
+                TCRETURNmi, TCRETURNmi64,
+                TCRETURNri, TCRETURNri64,
+                TAILJMPd, TAILJMPd64, TAILJMPd64_REX,
+                TAILJMPm, TAILJMPm64, TAILJMPm64_REX,
+                TAILJMPr, TAILJMPr64, TAILJMPr64_REX
+                ] = TailCallInstructionType
+    | otherwise = SpecsGen.instructionType i
 
 -- | Gives the target of a jump instruction and the type of jump
 
@@ -488,7 +496,8 @@ postProcess _ = []
 -- | Gives a list of function transformers
 
 transforms ImportPreLift = [peephole extractReturnRegs]
-transforms ImportPostLift = [mapToOperation handlePromotedOperands]
+transforms ImportPostLift = [mapToOperation handlePromotedOperands,
+                             mapToOperation handleStackOperands]
 transforms _ = []
 
 -- | Latency of read-write dependencies

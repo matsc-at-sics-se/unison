@@ -11,25 +11,12 @@ This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.X86.Transforms
     (extractReturnRegs,
-     handlePromotedOperands) where
+     handlePromotedOperands,
+     handleStackOperands) where
 
-import qualified Data.Map as M
-import qualified Data.Set as S
-import Data.Word
-import Data.Bits
-import Data.List
-import Data.Maybe
-
-import Common.Util
-import Unison
 import MachineIR
-import Unison.Target.Query
-import qualified Unison.Graphs.CG as CG
-import qualified Unison.Graphs.Partition as P
+import Unison
 import Unison.Target.X86.Common
-import Unison.Target.X86.OperandInfo
-import Unison.Target.X86.Usages
-import Unison.Target.X86.X86ResourceDecl
 import Unison.Target.X86.X86RegisterDecl
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
 import Unison.Target.X86.Registers()
@@ -109,3 +96,47 @@ preAssignOperands ops regs =
       (original, promoted) = splitAt (no - nr) ops
       promoted' = map (\(t, r) -> preAssign t r) (zip promoted regOps)
   in original ++ promoted'
+
+{-
+    o97: [t94] <- MOV32rm [%stack.0,4,t93,0,_] (mem: 0)
+frame:
+    %stack.0: offset = 80, size = 12, align = 8
+->
+    o97: [t94] <- MOV32rm [rsp,4,t93,80,_] (mem: 0)
+
+FIXME: consider mfiFixed attribute
+-}
+
+handleStackOperands
+  o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [(Bound MachineFrameIndex {mfiIndex = off1}),
+                                                           use2,
+                                                           use3,
+                                                           (Bound MachineImm {miValue = off2}),
+                                                           use5]})}
+  = let use1' = mkRegister (mkTargetRegister RSP)
+        use4' = mkBound (mkMachineImm (off1 + off2))
+    in
+    o {oOpr = Natural ni {oUs = [use1',use2,use3,use4',use5]}}
+handleStackOperands
+  o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [(Bound MachineFrameIndex {mfiIndex = off1}),
+                                                           use2,
+                                                           use3,
+                                                           (Bound MachineImm {miValue = off2}),
+                                                           use5,
+                                                           use6]})}
+  = let use1' = mkRegister (mkTargetRegister RSP)
+        use4' = mkBound (mkMachineImm (off1 + off2))
+    in
+    o {oOpr = Natural ni {oUs = [use1',use2,use3,use4',use5,use6]}}
+handleStackOperands
+  o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [use1,
+                                                           (Bound MachineFrameIndex {mfiIndex = off1}),
+                                                           use3,
+                                                           use4,
+                                                           (Bound MachineImm {miValue = off2}),
+                                                           use6]})}
+  = let use2' = mkRegister (mkTargetRegister RSP)
+        use5' = mkBound (mkMachineImm (off1 + off2))
+    in
+    o {oOpr = Natural ni {oUs = [use1,use2',use3,use4,use5',use6]}}
+handleStackOperands o = o

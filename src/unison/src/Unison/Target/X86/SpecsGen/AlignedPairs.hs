@@ -4,37 +4,56 @@ module Unison.Target.X86.SpecsGen.AlignedPairs (alignedPairs) where
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
 alignedPairs i ([], [])
   | i `elem`
-      [CBW, CDQ, CLC, CLD, CMC, CWD, CWDE, LEAVE, LEAVE64, NOOP, PUSHA16,
-       PUSHA32, PUSHCS16, PUSHCS32, PUSHDS16, PUSHDS32, PUSHES16,
-       PUSHES32, PUSHF16, PUSHF32, PUSHF64, PUSHFS16, PUSHFS32, PUSHFS64,
-       PUSHGS16, PUSHGS32, PUSHGS64, PUSHSS16, PUSHSS32, REPNE_PREFIX,
-       REP_MOVSB_32, REP_MOVSB_64, REP_MOVSD_32, REP_MOVSD_64,
-       REP_MOVSQ_64, REP_MOVSW_32, REP_MOVSW_64, REP_PREFIX, REP_STOSB_32,
-       REP_STOSB_64, REP_STOSD_32, REP_STOSW_32, REP_STOSW_64, RETW,
+      [CLC, CLD, CMC, NOOP, PUSHCS16, PUSHCS32, PUSHDS16, PUSHDS32,
+       PUSHES16, PUSHES32, PUSHF16, PUSHF32, PUSHF64, PUSHFS16, PUSHFS32,
+       PUSHFS64, PUSHGS16, PUSHGS32, PUSHGS64, PUSHSS16, PUSHSS32, RETW,
        REX64_PREFIX, STC, STD, UD2B]
     = []
-alignedPairs i ([], [_]) | i `elem` [CDQE] = []
 alignedPairs i ([], [_])
   | i `elem`
       [MOV32r0, MOV32r0_source, MOV32r1, MOV32r1_source, MOV32r_1,
        MOV32r_1_source, SETAEr, SETAr, SETBEr, SETB_C16r, SETB_C32r,
        SETB_C64r, SETB_C8r, SETBr, SETEr, SETGEr, SETGr, SETLEr, SETLr,
-       SETNEr, SETNOr, SETNPr, SETNSr, SETOr, SETPr, SETSr, STOSB, STOSL,
-       STOSW]
-    = []
-alignedPairs i ([], [_, _])
-  | i `elem`
-      [MOV16o16a, MOV16o32a, MOV16o64a, MOV32o16a, MOV32o32a, MOV32o64a,
-       MOV8o16a, MOV8o32a, MOV8o64a]
+       SETNEr, SETNOr, SETNPr, SETNSr, SETOr, SETPr, SETSr]
     = []
 alignedPairs i ([], [_])
   | i `elem` [POP16r, POP16rmr, POP32r, POP32rmr, POP64r, POP64rmr] =
     []
-alignedPairs i ([_], [])
-  | i `elem` [REP_STOSD_64, REP_STOSQ_64] = []
+alignedPairs i ([_], [_]) | i `elem` [CBW] = []
+alignedPairs i ([_], [_, _])
+  | i `elem` [MOV8o16a, MOV8o32a, MOV8o64a] = []
+alignedPairs i ([_, _, _], [_, _]) | i `elem` [REP_STOSB_32] = []
+alignedPairs i ([_, _], [_, _]) | i `elem` [STOSB] = []
+alignedPairs i ([_, _, _], [_, _]) | i `elem` [REP_STOSB_64] = []
+alignedPairs i ([_], [_, _]) | i `elem` [CWD] = []
+alignedPairs i ([_], [_]) | i `elem` [CWDE] = []
+alignedPairs i ([_], [_, _])
+  | i `elem` [MOV16o16a, MOV16o32a, MOV16o64a] = []
+alignedPairs i ([_, _, _], [_, _]) | i `elem` [REP_STOSW_32] = []
+alignedPairs i ([_, _], [_, _]) | i `elem` [STOSW] = []
+alignedPairs i ([_, _, _], [_, _]) | i `elem` [REP_STOSW_64] = []
+alignedPairs i ([_], [_, _]) | i `elem` [CDQ] = []
+alignedPairs i ([_], [_]) | i `elem` [CDQE] = []
+alignedPairs i ([_], [_, _])
+  | i `elem` [MOV32o16a, MOV32o32a, MOV32o64a] = []
+alignedPairs i ([_, _, _, _, _, _, _], [])
+  | i `elem` [PUSHA16, PUSHA32] = []
+alignedPairs i ([_, _, _], [_, _]) | i `elem` [REP_STOSD_32] = []
+alignedPairs i ([_, _], [_, _]) | i `elem` [STOSL] = []
+alignedPairs i ([_], [_]) | i `elem` [LEAVE] = []
+alignedPairs i ([_], [_])
+  | i `elem` [REPNE_PREFIX, REP_PREFIX] = []
+alignedPairs i ([_, _, _], [_, _, _])
+  | i `elem` [REP_MOVSB_32, REP_MOVSD_32, REP_MOVSW_32] = []
 alignedPairs i ([_], [_, _]) | i `elem` [CQO] = []
-alignedPairs i ([_], [_]) | i `elem` [STOSQ] = []
 alignedPairs i ([_], [_, _]) | i `elem` [MOV64o32a, MOV64o64a] = []
+alignedPairs i ([_, _, _], [_, _])
+  | i `elem` [REP_STOSD_64, REP_STOSQ_64] = []
+alignedPairs i ([_, _], [_, _]) | i `elem` [STOSQ] = []
+alignedPairs i ([_], [_]) | i `elem` [LEAVE64] = []
+alignedPairs i ([_, _, _], [_, _, _])
+  | i `elem` [REP_MOVSB_64, REP_MOVSD_64, REP_MOVSQ_64, REP_MOVSW_64]
+    = []
 alignedPairs i ([_], []) | i `elem` [RETIW] = []
 alignedPairs i ([_, _], []) | i `elem` [RETIL, RETIQ] = []
 alignedPairs i ([_, _], [])
@@ -46,29 +65,32 @@ alignedPairs i ([_], [])
   | i `elem`
       [CALL16r, CALL32r, CALL64pcrel32, CALL64r, CALLpcrel16,
        CALLpcrel32, JAE_1, JAE_2, JAE_4, JA_1, JA_2, JA_4, JBE_1, JBE_2,
-       JBE_4, JB_1, JB_2, JB_4, JCXZ, JECXZ, JE_1, JE_2, JE_4, JGE_1,
-       JGE_2, JGE_4, JG_1, JG_2, JG_4, JLE_1, JLE_2, JLE_4, JL_1, JL_2,
-       JL_4, JMP16r, JMP32r, JMP64r, JMP_1, JMP_2, JMP_4, JNE_1, JNE_2,
-       JNE_4, JNO_1, JNO_2, JNO_4, JNP_1, JNP_2, JNP_4, JNS_1, JNS_2,
-       JNS_4, JO_1, JO_2, JO_4, JP_1, JP_2, JP_4, JRCXZ, JS_1, JS_2, JS_4,
-       LOOP, LOOPE, LOOPNE, TAILJMPd, TAILJMPd64, TAILJMPd64_REX,
-       TAILJMPr, TAILJMPr64, TAILJMPr64_REX]
+       JBE_4, JB_1, JB_2, JB_4, JE_1, JE_2, JE_4, JGE_1, JGE_2, JGE_4,
+       JG_1, JG_2, JG_4, JLE_1, JLE_2, JLE_4, JL_1, JL_2, JL_4, JMP16r,
+       JMP32r, JMP64r, JMP_1, JMP_2, JMP_4, JNE_1, JNE_2, JNE_4, JNO_1,
+       JNO_2, JNO_4, JNP_1, JNP_2, JNP_4, JNS_1, JNS_2, JNS_4, JO_1, JO_2,
+       JO_4, JP_1, JP_2, JP_4, JS_1, JS_2, JS_4, LOOP, LOOPE, LOOPNE,
+       TAILJMPd, TAILJMPd64, TAILJMPd64_REX, TAILJMPr, TAILJMPr64,
+       TAILJMPr64_REX]
     = []
+alignedPairs i ([_, _], []) | i `elem` [JCXZ] = []
+alignedPairs i ([_, _], []) | i `elem` [JECXZ] = []
+alignedPairs i ([_, _], []) | i `elem` [JRCXZ] = []
 alignedPairs i ([_, _], [])
   | i `elem` [TCRETURNdi, TCRETURNdi64, TCRETURNri, TCRETURNri64] =
     []
 alignedPairs i ([_, _, _, _, _], [])
   | i `elem`
-      [CALL16m, CALL32m, CALL64m, CMPXCHG8B, DEC16m, DEC32m, DEC64m,
-       DEC8m, INC16m, INC32m, INC64m, INC8m, JMP16m, JMP32m, JMP64m,
-       NEG16m, NEG32m, NEG64m, NEG8m, NOT16m, NOT32m, NOT64m, NOT8m,
-       POP16rmm, POP32rmm, POP64rmm, RCL16m1, RCL32m1, RCL64m1, RCL8m1,
-       RCR16m1, RCR32m1, RCR64m1, RCR8m1, ROL16m1, ROL32m1, ROL64m1,
-       ROL8m1, ROR16m1, ROR32m1, ROR64m1, ROR8m1, SAR16m1, SAR32m1,
-       SAR64m1, SAR8m1, SETAEm, SETAm, SETBEm, SETBm, SETEm, SETGEm,
-       SETGm, SETLEm, SETLm, SETNEm, SETNOm, SETNPm, SETNSm, SETOm, SETPm,
-       SETSm, SHL16m1, SHL32m1, SHL64m1, SHL8m1, SHR16m1, SHR32m1,
-       SHR64m1, SHR8m1, TAILJMPm, TAILJMPm64, TAILJMPm64_REX]
+      [CALL16m, CALL32m, CALL64m, DEC16m, DEC32m, DEC64m, DEC8m, INC16m,
+       INC32m, INC64m, INC8m, JMP16m, JMP32m, JMP64m, NEG16m, NEG32m,
+       NEG64m, NEG8m, NOT16m, NOT32m, NOT64m, NOT8m, POP16rmm, POP32rmm,
+       POP64rmm, RCL16m1, RCL32m1, RCL64m1, RCL8m1, RCR16m1, RCR32m1,
+       RCR64m1, RCR8m1, ROL16m1, ROL32m1, ROL64m1, ROL8m1, ROR16m1,
+       ROR32m1, ROR64m1, ROR8m1, SAR16m1, SAR32m1, SAR64m1, SAR8m1,
+       SETAEm, SETAm, SETBEm, SETBm, SETEm, SETGEm, SETGm, SETLEm, SETLm,
+       SETNEm, SETNOm, SETNPm, SETNSm, SETOm, SETPm, SETSm, SHL16m1,
+       SHL32m1, SHL64m1, SHL8m1, SHR16m1, SHR32m1, SHR64m1, SHR8m1,
+       TAILJMPm, TAILJMPm64, TAILJMPm64_REX]
     = []
 alignedPairs i ([_, _, _, _, _, _], [])
   | i `elem`
@@ -78,7 +100,9 @@ alignedPairs i ([_, _, _, _, _, _], [])
        SHL16mCL, SHL32mCL, SHL64mCL, SHL8mCL, SHR16mCL, SHR32mCL,
        SHR64mCL, SHR8mCL]
     = []
-alignedPairs i ([_, _, _, _, _, _, _], [_, _])
+alignedPairs i ([_, _, _, _, _, _, _, _, _], [_, _])
+  | i `elem` [CMPXCHG8B] = []
+alignedPairs i ([_, _, _, _, _, _, _, _, _], [_, _])
   | i `elem` [CMPXCHG16B] = []
 alignedPairs i ([_, _, _, _, _, _], [])
   | i `elem`
@@ -132,15 +156,6 @@ alignedPairs i ([_], [])
   | i `elem`
       [PUSH16r, PUSH16rmr, PUSH32r, PUSH32rmr, PUSH64r, PUSH64rmr]
     = []
-alignedPairs i ([_], [])
-  | i `elem`
-      [ADC16i16, ADC32i32, ADC8i8, ADD16i16, ADD32i32, ADD8i8, AND16i16,
-       AND32i32, AND8i8, CMP16i16, CMP32i32, CMP8i8, DIV16r, DIV32r,
-       DIV8r, IDIV16r, IDIV32r, IDIV8r, IMUL16r, IMUL32r, IMUL8r, MUL16r,
-       MUL32r, MUL8r, OR16i16, OR32i32, OR8i8, SBB16i16, SBB32i32, SBB8i8,
-       SUB16i16, SUB32i32, SUB8i8, TEST16i16, TEST32i32, TEST8i8,
-       XCHG16ar, XCHG32ar, XCHG32ar64, XOR16i16, XOR32i32, XOR8i8]
-    = []
 alignedPairs i ([_], [_])
   | i `elem`
       [BSF16rr, BSF32rr, BSF64rr, BSR16rr, BSR32rr, BSR64rr, CMPXCHG16rr,
@@ -163,6 +178,30 @@ alignedPairs i ([_], [_])
     = []
 alignedPairs i ([src], [src'])
   | i `elem` [BSWAP32r, BSWAP64r] = [(src, src')]
+alignedPairs i ([_, _], []) | i `elem` [CMP8i8, TEST8i8] = []
+alignedPairs i ([_, _], [_])
+  | i `elem` [ADC8i8, ADD8i8, AND8i8, OR8i8, SBB8i8, SUB8i8, XOR8i8]
+    = []
+alignedPairs i ([_, _], [_, _]) | i `elem` [IMUL8r, MUL8r] = []
+alignedPairs i ([_, _], []) | i `elem` [CMP16i16, TEST16i16] = []
+alignedPairs i ([_, _], [_, _]) | i `elem` [DIV8r, IDIV8r] = []
+alignedPairs i ([_, _], [_])
+  | i `elem`
+      [ADC16i16, ADD16i16, AND16i16, OR16i16, SBB16i16, SUB16i16,
+       XCHG16ar, XOR16i16]
+    = []
+alignedPairs i ([_, _], [_, _]) | i `elem` [IMUL16r, MUL16r] = []
+alignedPairs i ([_, _, _], [_, _])
+  | i `elem` [DIV16r, IDIV16r] = []
+alignedPairs i ([_, _], []) | i `elem` [CMP32i32, TEST32i32] = []
+alignedPairs i ([_, _], [_])
+  | i `elem`
+      [ADC32i32, ADD32i32, AND32i32, OR32i32, SBB32i32, SUB32i32,
+       XCHG32ar, XCHG32ar64, XOR32i32]
+    = []
+alignedPairs i ([_, _], [_, _]) | i `elem` [IMUL32r, MUL32r] = []
+alignedPairs i ([_, _, _], [_, _])
+  | i `elem` [DIV32r, IDIV32r] = []
 alignedPairs i ([_, _], []) | i `elem` [CMP64i32, TEST64i32] = []
 alignedPairs i ([_, _], [_])
   | i `elem`
@@ -208,19 +247,21 @@ alignedPairs i ([_, _], [])
        BTS32rr, BTS64ri8, BTS64rr, CMP16ri, CMP16ri8, CMP16rr,
        CMP16rr_REV, CMP32ri, CMP32ri8, CMP32rr, CMP32rr_REV, CMP64ri32,
        CMP64ri8, CMP64rr, CMP64rr_REV, CMP8ri, CMP8ri8, CMP8rr,
-       CMP8rr_REV, LODSB, LODSL, LODSW, MOV16ao16, MOV16ao32, MOV16ao64,
-       MOV32ao16, MOV32ao32, MOV32ao64, MOV8ao16, MOV8ao32, MOV8ao64,
-       TEST16ri, TEST16rr, TEST32ri, TEST32rr, TEST64ri32, TEST64rr,
-       TEST8ri, TEST8rr]
+       CMP8rr_REV, TEST16ri, TEST16rr, TEST32ri, TEST32rr, TEST64ri32,
+       TEST64rr, TEST8ri, TEST8rr]
     = []
 alignedPairs i ([_, _], [_])
-  | i `elem` [LODSQ, MOV64ao32, MOV64ao64] = []
+  | i `elem` [MOV8ao16, MOV8ao32, MOV8ao64] = []
+alignedPairs i ([_, _], [_])
+  | i `elem` [MOV16ao16, MOV16ao32, MOV16ao64] = []
+alignedPairs i ([_, _], [_])
+  | i `elem` [MOV32ao16, MOV32ao32, MOV32ao64] = []
+alignedPairs i ([_, _], [_]) | i `elem` [MOV64ao32, MOV64ao64] = []
 alignedPairs i ([_, _], [_])
   | i `elem`
       [ANDN32rr, ANDN64rr, IMUL16rri, IMUL16rri8, IMUL32rri, IMUL32rri8,
-       IMUL64rri32, IMUL64rri8, MOVSB, MOVSL, MOVSQ, MOVSW, RORX32ri,
-       RORX64ri, SARX32rr, SARX64rr, SHLX32rr, SHLX64rr, SHRX32rr,
-       SHRX64rr]
+       IMUL64rri32, IMUL64rri8, RORX32ri, RORX64ri, SARX32rr, SARX64rr,
+       SHLX32rr, SHLX64rr, SHRX32rr, SHRX64rr]
     = []
 alignedPairs i ([src1, _], [src1'])
   | i `elem`
@@ -262,16 +303,19 @@ alignedPairs i ([src1, _, _], [src1'])
       [SHLD16rrCL, SHLD32rrCL, SHLD64rrCL, SHRD16rrCL, SHRD32rrCL,
        SHRD64rrCL]
     = [(src1, src1')]
+alignedPairs i ([_, _, _, _], [_, _, _])
+  | i `elem` [MOVSB, MOVSL, MOVSQ, MOVSW] = []
+alignedPairs i ([_, _, _], [_, _]) | i `elem` [LODSB] = []
+alignedPairs i ([_, _, _], [_, _]) | i `elem` [LODSW] = []
+alignedPairs i ([_, _, _], [_, _]) | i `elem` [LODSL] = []
+alignedPairs i ([_, _, _], [_, _]) | i `elem` [LODSQ] = []
 alignedPairs i ([src1, _, _], [src1'])
   | i `elem`
       [SHLD16rri8, SHLD32rri8, SHLD64rri8, SHRD16rri8, SHRD32rri8,
        SHRD64rri8]
     = [(src1, src1')]
 alignedPairs i ([_, _, _, _, _], [])
-  | i `elem`
-      [DIV16m, DIV32m, DIV8m, IDIV16m, IDIV32m, IDIV8m, IMUL16m, IMUL32m,
-       IMUL8m, MUL16m, MUL32m, MUL8m, PUSH16rmm, PUSH32rmm, PUSH64rmm]
-    = []
+  | i `elem` [PUSH16rmm, PUSH32rmm, PUSH64rmm] = []
 alignedPairs i ([_, _, _, _, _], [_])
   | i `elem`
       [BSF16rm, BSF32rm, BSF64rm, BSR16rm, BSR32rm, BSR64rm, LEA16r,
@@ -282,6 +326,18 @@ alignedPairs i ([_, _, _, _, _], [_])
        MOVZX32rm8, MOVZX64rm16, MOVZX64rm8, POPCNT16rm, POPCNT32rm,
        POPCNT64rm]
     = []
+alignedPairs i ([_, _, _, _, _, _], [_, _])
+  | i `elem` [IMUL8m, MUL8m] = []
+alignedPairs i ([_, _, _, _, _, _], [_, _])
+  | i `elem` [DIV8m, IDIV8m] = []
+alignedPairs i ([_, _, _, _, _, _], [_, _])
+  | i `elem` [IMUL16m, MUL16m] = []
+alignedPairs i ([_, _, _, _, _, _, _], [_, _])
+  | i `elem` [DIV16m, IDIV16m] = []
+alignedPairs i ([_, _, _, _, _, _], [_, _])
+  | i `elem` [IMUL32m, MUL32m] = []
+alignedPairs i ([_, _, _, _, _, _, _], [_, _])
+  | i `elem` [DIV32m, IDIV32m] = []
 alignedPairs i ([_, _, _, _, _, _], [_, _])
   | i `elem` [IMUL64m, MUL64m] = []
 alignedPairs i ([_, _, _, _, _, _, _], [_, _])

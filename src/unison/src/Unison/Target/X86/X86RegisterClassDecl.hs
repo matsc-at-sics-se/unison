@@ -23,6 +23,11 @@ data X86RegisterClass =
     GR32_NOAX |
     GR64 |
     GR64_NOSP |
+    Ptr_rc |
+    Ptr_rc_nosp |
+    Ptr_rc_norex |
+    Ptr_rc_norex_nosp |
+    Ptr_rc_tailcall |
     M8 |
     M16 |
     M32 |
