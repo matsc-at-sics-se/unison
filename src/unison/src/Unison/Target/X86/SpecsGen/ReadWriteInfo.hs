@@ -38,54 +38,9 @@ readWriteInfo i
        STD, UD2B, XCHG16rm, XCHG16rr, XCHG32rm, XCHG32rr, XCHG64rm,
        XCHG64rr, XCHG8rm, XCHG8rr]
     = ([], [])
+  | i `elem` [MOV8mr_NOREX] = ([], [Memory "mem"])
   | i `elem`
-      [CMPXCHG16rm, CMPXCHG32rm, CMPXCHG64rm, CMPXCHG8rm, MOV8mr_NOREX]
-    = ([], [Memory "mem"])
-  | i `elem`
-      [ADC8mi8, ADD8mi8, AND8mi8, BTC16mi8, BTC16mr, BTC32mi8, BTC32mr,
-       BTC64mi8, BTC64mr, BTR16mi8, BTR16mr, BTR32mi8, BTR32mr, BTR64mi8,
-       BTR64mr, BTS16mi8, BTS16mr, BTS32mi8, BTS32mr, BTS64mi8, BTS64mr,
-       OR8mi8, SBB8mi8, SUB8mi8, XOR8mi8]
-    = ([], [Memory "mem", OtherSideEffect EFLAGS])
-  | i `elem`
-      [PUSH16i8, PUSH16r, PUSH16rmm, PUSH16rmr, PUSH32i8, PUSH32r,
-       PUSH32rmm, PUSH32rmr, PUSHi16, PUSHi32]
-    = ([], [Memory "mem", OtherSideEffect ESP])
-  | i `elem` [PUSH64i32, PUSH64i8, PUSH64r, PUSH64rmm, PUSH64rmr] =
-    ([], [Memory "mem", OtherSideEffect RSP])
-  | i `elem` [ADC8i8, ADD8i8, AND8i8, OR8i8, SBB8i8, SUB8i8, XOR8i8]
-    = ([], [OtherSideEffect AL, OtherSideEffect EFLAGS])
-  | i `elem` [IMUL8r, MUL8m, MUL8r] =
-    ([],
-     [OtherSideEffect AL, OtherSideEffect EFLAGS, OtherSideEffect AX])
-  | i `elem` [XCHG16ar] = ([], [OtherSideEffect AX])
-  | i `elem` [CWD] = ([], [OtherSideEffect AX, OtherSideEffect DX])
-  | i `elem` [DIV16r, IDIV16r, IMUL16r, MUL16r] =
-    ([],
-     [OtherSideEffect AX, OtherSideEffect DX, OtherSideEffect EFLAGS])
-  | i `elem`
-      [ADC16i16, ADD16i16, AND16i16, OR16i16, SBB16i16, SUB16i16,
-       XOR16i16]
-    = ([], [OtherSideEffect AX, OtherSideEffect EFLAGS])
-  | i `elem` [XCHG32ar, XCHG32ar64] = ([], [OtherSideEffect EAX])
-  | i `elem` [CDQ] = ([], [OtherSideEffect EAX, OtherSideEffect EDX])
-  | i `elem` [DIV32r, IDIV32r, IMUL32r, MUL32r] =
-    ([],
-     [OtherSideEffect EAX, OtherSideEffect EDX, OtherSideEffect EFLAGS])
-  | i `elem`
-      [ADC32i32, ADD32i32, AND32i32, OR32i32, SBB32i32, SUB32i32,
-       XOR32i32]
-    = ([], [OtherSideEffect EAX, OtherSideEffect EFLAGS])
-  | i `elem` [REP_MOVSB_32, REP_MOVSD_32, REP_MOVSW_32] =
-    ([],
-     [OtherSideEffect ECX, OtherSideEffect EDI, OtherSideEffect ESI])
-  | i `elem`
-      [ADC16mi, ADC16mi8, ADC16mr, ADC16ri, ADC16ri8, ADC16rm, ADC16rr,
-       ADC16rr_REV, ADC32mi, ADC32mi8, ADC32mr, ADC32ri, ADC32ri8,
-       ADC32rm, ADC32rr, ADC32rr_REV, ADC64mi32, ADC64mi8, ADC64mr,
-       ADC64ri32, ADC64ri8, ADC64rm, ADC64rr, ADC64rr_REV, ADC8mi, ADC8mr,
-       ADC8ri, ADC8ri8, ADC8rm, ADC8rr, ADC8rr_REV, ADCX32rr, ADCX64rr,
-       ADD16mi, ADD16mi8, ADD16mr, ADD16ri, ADD16ri8, ADD16ri8_DB,
+      [ADD16mi, ADD16mi8, ADD16mr, ADD16ri, ADD16ri8, ADD16ri8_DB,
        ADD16ri_DB, ADD16rm, ADD16rr, ADD16rr_DB, ADD16rr_REV, ADD32mi,
        ADD32mi8, ADD32mr, ADD32ri, ADD32ri8, ADD32ri8_DB, ADD32ri_DB,
        ADD32rm, ADD32rr, ADD32rr_DB, ADD32rr_REV, ADD64mi32, ADD64mi8,
@@ -131,119 +86,155 @@ readWriteInfo i
        ROR16ri, ROR32m1, ROR32mi, ROR32r1, ROR32ri, ROR64m1, ROR64mi,
        ROR64r1, ROR64ri, ROR8m1, ROR8mi, ROR8r1, ROR8ri, SAR16m1, SAR16mi,
        SAR16r1, SAR16ri, SAR32m1, SAR32mi, SAR32r1, SAR32ri, SAR64m1,
-       SAR64mi, SAR64r1, SAR64ri, SAR8m1, SAR8mi, SAR8r1, SAR8ri, SBB16mi,
-       SBB16mi8, SBB16mr, SBB16ri, SBB16ri8, SBB16rm, SBB16rr,
-       SBB16rr_REV, SBB32mi, SBB32mi8, SBB32mr, SBB32ri, SBB32ri8,
-       SBB32rm, SBB32rr, SBB32rr_REV, SBB64mi32, SBB64mi8, SBB64mr,
-       SBB64ri32, SBB64ri8, SBB64rm, SBB64rr, SBB64rr_REV, SBB8mi, SBB8mr,
-       SBB8ri, SBB8ri8, SBB8rm, SBB8rr, SBB8rr_REV, SETB_C16r, SETB_C32r,
-       SETB_C64r, SETB_C8r, SHL16m1, SHL16mi, SHL16r1, SHL16ri, SHL32m1,
-       SHL32mi, SHL32r1, SHL32ri, SHL64m1, SHL64mi, SHL64r1, SHL64ri,
-       SHL8m1, SHL8mi, SHL8r1, SHL8ri, SHLD16mri8, SHLD16rri8, SHLD32mri8,
-       SHLD32rri8, SHLD64mri8, SHLD64rri8, SHR16m1, SHR16mi, SHR16r1,
-       SHR16ri, SHR32m1, SHR32mi, SHR32r1, SHR32ri, SHR64m1, SHR64mi,
-       SHR64r1, SHR64ri, SHR8m1, SHR8mi, SHR8r1, SHR8ri, SHRD16mri8,
-       SHRD16rri8, SHRD32mri8, SHRD32rri8, SHRD64mri8, SHRD64rri8,
-       SUB16mi, SUB16mi8, SUB16mr, SUB16ri, SUB16ri8, SUB16rm, SUB16rr,
-       SUB16rr_REV, SUB32mi, SUB32mi8, SUB32mr, SUB32ri, SUB32ri8,
-       SUB32rm, SUB32rr, SUB32rr_REV, SUB64mi32, SUB64mi8, SUB64mr,
-       SUB64ri32, SUB64ri8, SUB64rm, SUB64rr, SUB64rr_REV, SUB8mi, SUB8mr,
-       SUB8ri, SUB8ri8, SUB8rm, SUB8rr, SUB8rr_REV, TEST16mi, TEST16ri,
-       TEST16rm, TEST16rr, TEST32mi, TEST32ri, TEST32rm, TEST32rr,
-       TEST64mi32, TEST64ri32, TEST64rm, TEST64rr, TEST8mi, TEST8ri,
-       TEST8ri_NOREX, TEST8rm, TEST8rr, XOR16mi, XOR16mi8, XOR16mr,
-       XOR16ri, XOR16ri8, XOR16rm, XOR16rr, XOR16rr_REV, XOR32mi,
-       XOR32mi8, XOR32mr, XOR32ri, XOR32ri8, XOR32rm, XOR32rr,
-       XOR32rr_REV, XOR64mi32, XOR64mi8, XOR64mr, XOR64ri32, XOR64ri8,
-       XOR64rm, XOR64rr, XOR64rr_REV, XOR8mi, XOR8mr, XOR8ri, XOR8ri8,
-       XOR8rm, XOR8rr, XOR8rr_REV]
+       SAR64mi, SAR64r1, SAR64ri, SAR8m1, SAR8mi, SAR8r1, SAR8ri, SHL16m1,
+       SHL16mi, SHL16r1, SHL16ri, SHL32m1, SHL32mi, SHL32r1, SHL32ri,
+       SHL64m1, SHL64mi, SHL64r1, SHL64ri, SHL8m1, SHL8mi, SHL8r1, SHL8ri,
+       SHLD16mri8, SHLD16rri8, SHLD32mri8, SHLD32rri8, SHLD64mri8,
+       SHLD64rri8, SHR16m1, SHR16mi, SHR16r1, SHR16ri, SHR32m1, SHR32mi,
+       SHR32r1, SHR32ri, SHR64m1, SHR64mi, SHR64r1, SHR64ri, SHR8m1,
+       SHR8mi, SHR8r1, SHR8ri, SHRD16mri8, SHRD16rri8, SHRD32mri8,
+       SHRD32rri8, SHRD64mri8, SHRD64rri8, SUB16mi, SUB16mi8, SUB16mr,
+       SUB16ri, SUB16ri8, SUB16rm, SUB16rr, SUB16rr_REV, SUB32mi,
+       SUB32mi8, SUB32mr, SUB32ri, SUB32ri8, SUB32rm, SUB32rr,
+       SUB32rr_REV, SUB64mi32, SUB64mi8, SUB64mr, SUB64ri32, SUB64ri8,
+       SUB64rm, SUB64rr, SUB64rr_REV, SUB8mi, SUB8mr, SUB8ri, SUB8ri8,
+       SUB8rm, SUB8rr, SUB8rr_REV, TEST16mi, TEST16ri, TEST16rm, TEST16rr,
+       TEST32mi, TEST32ri, TEST32rm, TEST32rr, TEST64mi32, TEST64ri32,
+       TEST64rm, TEST64rr, TEST8mi, TEST8ri, TEST8ri_NOREX, TEST8rm,
+       TEST8rr, XOR16mi, XOR16mi8, XOR16mr, XOR16ri, XOR16ri8, XOR16rm,
+       XOR16rr, XOR16rr_REV, XOR32mi, XOR32mi8, XOR32mr, XOR32ri,
+       XOR32ri8, XOR32rm, XOR32rr, XOR32rr_REV, XOR64mi32, XOR64mi8,
+       XOR64mr, XOR64ri32, XOR64ri8, XOR64rm, XOR64rr, XOR64rr_REV,
+       XOR8mi, XOR8mr, XOR8ri, XOR8ri8, XOR8rm, XOR8rr, XOR8rr_REV]
     = ([], [OtherSideEffect EFLAGS])
-  | i `elem` [ADJCALLSTACKDOWN32, ADJCALLSTACKUP32] =
-    ([], [OtherSideEffect ESP, OtherSideEffect EFLAGS])
-  | i `elem` [XCHG64ar] = ([], [OtherSideEffect RAX])
-  | i `elem`
-      [ADC64i32, ADD64i32, AND64i32, OR64i32, SBB64i32, SUB64i32,
-       XOR64i32]
-    = ([], [OtherSideEffect RAX, OtherSideEffect EFLAGS])
-  | i `elem` [CQO] = ([], [OtherSideEffect RAX, OtherSideEffect RDX])
-  | i `elem` [DIV64r, IDIV64r, IMUL64r, MUL64r] =
-    ([],
-     [OtherSideEffect RAX, OtherSideEffect RDX, OtherSideEffect EFLAGS])
-  | i `elem` [REP_MOVSB_64, REP_MOVSD_64, REP_MOVSQ_64, REP_MOVSW_64]
-    =
-    ([],
-     [OtherSideEffect RCX, OtherSideEffect RDI, OtherSideEffect RSI])
-  | i `elem` [ADJCALLSTACKDOWN64, ADJCALLSTACKUP64] =
-    ([], [OtherSideEffect RSP, OtherSideEffect EFLAGS])
   | i `elem`
       [MOV8rm_NOREX, MOVSX16rm8, MOVSX32_NOREXrm8, MOVZX16rm8,
        MOVZX32_NOREXrm8, MOVZX64rm16, MOVZX64rm8, RORX32mi, RORX64mi,
        SARX32rm, SARX64rm, SHLX32rm, SHLX64rm, SHRX32rm, SHRX64rm]
     = ([Memory "mem"], [])
+  | i `elem` [CMPXCHG16rm, CMPXCHG32rm, CMPXCHG64rm, CMPXCHG8rm] =
+    ([Memory "mem"], [Memory "mem"])
+  | i `elem`
+      [ADD8mi8, AND8mi8, BTC16mi8, BTC16mr, BTC32mi8, BTC32mr, BTC64mi8,
+       BTC64mr, BTR16mi8, BTR16mr, BTR32mi8, BTR32mr, BTR64mi8, BTR64mr,
+       BTS16mi8, BTS16mr, BTS32mi8, BTS32mr, BTS64mi8, BTS64mr, OR8mi8,
+       SUB8mi8, XOR8mi8]
+    = ([Memory "mem"], [Memory "mem", OtherSideEffect EFLAGS])
   | i `elem` [MOV8ao16, MOV8ao32, MOV8ao64] =
     ([Memory "mem"], [OtherSideEffect AL])
-  | i `elem` [IMUL8m] =
-    ([Memory "mem"],
-     [OtherSideEffect AL, OtherSideEffect EFLAGS, OtherSideEffect AX])
   | i `elem` [MOV16ao16, MOV16ao32, MOV16ao64] =
     ([Memory "mem"], [OtherSideEffect AX])
-  | i `elem` [DIV16m, IDIV16m, IMUL16m, MUL16m] =
-    ([Memory "mem"],
-     [OtherSideEffect AX, OtherSideEffect DX, OtherSideEffect EFLAGS])
   | i `elem` [MOV32ao16, MOV32ao32, MOV32ao64] =
     ([Memory "mem"], [OtherSideEffect EAX])
-  | i `elem` [DIV32m, IDIV32m, IMUL32m, MUL32m] =
-    ([Memory "mem"],
-     [OtherSideEffect EAX, OtherSideEffect EDX, OtherSideEffect EFLAGS])
-  | i `elem` [LEAVE] =
-    ([Memory "mem"], [OtherSideEffect EBP, OtherSideEffect ESP])
-  | i `elem` [ADCX32rm, ADCX64rm, BT16mr, BT32mr, BT64mr, CMP8mi8] =
+  | i `elem` [BT16mr, BT32mr, BT64mr, CMP8mi8] =
     ([Memory "mem"], [OtherSideEffect EFLAGS])
-  | i `elem` [POP16r, POP16rmm, POP16rmr, POP32r, POP32rmm, POP32rmr]
-    = ([Memory "mem"], [OtherSideEffect ESP])
   | i `elem` [MOV64ao32, MOV64ao64] =
     ([Memory "mem"], [OtherSideEffect RAX])
-  | i `elem` [DIV64m, IDIV64m, IMUL64m, MUL64m] =
-    ([Memory "mem"],
-     [OtherSideEffect RAX, OtherSideEffect RDX, OtherSideEffect EFLAGS])
-  | i `elem` [LEAVE64] =
-    ([Memory "mem"], [OtherSideEffect RBP, OtherSideEffect RSP])
-  | i `elem` [POP64r, POP64rmm, POP64rmr] =
-    ([Memory "mem"], [OtherSideEffect RSP])
+  | i `elem` [IMUL8m] =
+    ([Memory "mem", OtherSideEffect AL],
+     [OtherSideEffect AL, OtherSideEffect EFLAGS, OtherSideEffect AX])
   | i `elem` [DIV8m, IDIV8m] =
     ([Memory "mem", OtherSideEffect AX],
      [OtherSideEffect AL, OtherSideEffect AH, OtherSideEffect EFLAGS])
+  | i `elem` [IMUL16m, MUL16m] =
+    ([Memory "mem", OtherSideEffect AX],
+     [OtherSideEffect AX, OtherSideEffect DX, OtherSideEffect EFLAGS])
+  | i `elem` [DIV16m, IDIV16m] =
+    ([Memory "mem", OtherSideEffect AX, OtherSideEffect DX],
+     [OtherSideEffect AX, OtherSideEffect DX, OtherSideEffect EFLAGS])
+  | i `elem` [IMUL32m, MUL32m] =
+    ([Memory "mem", OtherSideEffect EAX],
+     [OtherSideEffect EAX, OtherSideEffect EDX, OtherSideEffect EFLAGS])
+  | i `elem` [DIV32m, IDIV32m] =
+    ([Memory "mem", OtherSideEffect EAX, OtherSideEffect EDX],
+     [OtherSideEffect EAX, OtherSideEffect EDX, OtherSideEffect EFLAGS])
+  | i `elem` [LEAVE] =
+    ([Memory "mem", OtherSideEffect EBP, OtherSideEffect ESP],
+     [OtherSideEffect EBP, OtherSideEffect ESP])
+  | i `elem` [ADC8mi8, SBB8mi8] =
+    ([Memory "mem", OtherSideEffect EFLAGS],
+     [Memory "mem", OtherSideEffect EFLAGS])
+  | i `elem` [ADCX32rm, ADCX64rm] =
+    ([Memory "mem", OtherSideEffect EFLAGS], [OtherSideEffect EFLAGS])
   | i `elem` [TAILJMPm, TCRETURNmi] =
     ([Memory "mem", OtherSideEffect ESP], [])
+  | i `elem` [PUSH16rmm, PUSH32rmm] =
+    ([Memory "mem", OtherSideEffect ESP],
+     [Memory "mem", OtherSideEffect ESP])
+  | i `elem` [POP16r, POP16rmm, POP16rmr, POP32r, POP32rmm, POP32rmr]
+    = ([Memory "mem", OtherSideEffect ESP], [OtherSideEffect ESP])
+  | i `elem` [IMUL64m, MUL64m] =
+    ([Memory "mem", OtherSideEffect RAX],
+     [OtherSideEffect RAX, OtherSideEffect RDX, OtherSideEffect EFLAGS])
+  | i `elem` [DIV64m, IDIV64m] =
+    ([Memory "mem", OtherSideEffect RAX, OtherSideEffect RDX],
+     [OtherSideEffect RAX, OtherSideEffect RDX, OtherSideEffect EFLAGS])
+  | i `elem` [LEAVE64] =
+    ([Memory "mem", OtherSideEffect RBP, OtherSideEffect RSP],
+     [OtherSideEffect RBP, OtherSideEffect RSP])
   | i `elem` [TAILJMPm64, TAILJMPm64_REX, TCRETURNmi64] =
     ([Memory "mem", OtherSideEffect RSP], [])
+  | i `elem` [PUSH64rmm] =
+    ([Memory "mem", OtherSideEffect RSP],
+     [Memory "mem", OtherSideEffect RSP])
+  | i `elem` [POP64r, POP64rmm, POP64rmr] =
+    ([Memory "mem", OtherSideEffect RSP], [OtherSideEffect RSP])
   | i `elem` [MOV8o16a, MOV8o32a, MOV8o64a] =
     ([OtherSideEffect AL], [Memory "mem"])
+  | i `elem` [ADD8i8, AND8i8, OR8i8, SUB8i8, XOR8i8] =
+    ([OtherSideEffect AL],
+     [OtherSideEffect AL, OtherSideEffect EFLAGS])
+  | i `elem` [IMUL8r, MUL8m, MUL8r] =
+    ([OtherSideEffect AL],
+     [OtherSideEffect AL, OtherSideEffect EFLAGS, OtherSideEffect AX])
   | i `elem` [CBW] = ([OtherSideEffect AL], [OtherSideEffect AX])
-  | i `elem` [REP_STOSB_32] =
-    ([OtherSideEffect AL], [OtherSideEffect ECX, OtherSideEffect EDI])
   | i `elem` [CMP8i8, TEST8i8] =
     ([OtherSideEffect AL], [OtherSideEffect EFLAGS])
-  | i `elem` [REP_STOSB_64] =
-    ([OtherSideEffect AL], [OtherSideEffect RCX, OtherSideEffect RDI])
+  | i `elem` [REP_STOSB_32] =
+    ([OtherSideEffect AL, OtherSideEffect ECX, OtherSideEffect EDI],
+     [OtherSideEffect ECX, OtherSideEffect EDI])
   | i `elem` [STOSB] =
-    ([OtherSideEffect AL, OtherSideEffect EFLAGS],
+    ([OtherSideEffect AL, OtherSideEffect EDI, OtherSideEffect EFLAGS],
      [OtherSideEffect EDI])
+  | i `elem` [ADC8i8, SBB8i8] =
+    ([OtherSideEffect AL, OtherSideEffect EFLAGS],
+     [OtherSideEffect AL, OtherSideEffect EFLAGS])
+  | i `elem` [REP_STOSB_64] =
+    ([OtherSideEffect AL, OtherSideEffect RCX, OtherSideEffect RDI],
+     [OtherSideEffect RCX, OtherSideEffect RDI])
   | i `elem` [MOV16o16a, MOV16o32a, MOV16o64a] =
     ([OtherSideEffect AX], [Memory "mem"])
   | i `elem` [DIV8r, IDIV8r] =
     ([OtherSideEffect AX],
      [OtherSideEffect AL, OtherSideEffect AH, OtherSideEffect EFLAGS])
+  | i `elem` [XCHG16ar] =
+    ([OtherSideEffect AX], [OtherSideEffect AX])
+  | i `elem` [CWD] =
+    ([OtherSideEffect AX], [OtherSideEffect AX, OtherSideEffect DX])
+  | i `elem` [IMUL16r, MUL16r] =
+    ([OtherSideEffect AX],
+     [OtherSideEffect AX, OtherSideEffect DX, OtherSideEffect EFLAGS])
+  | i `elem` [ADD16i16, AND16i16, OR16i16, SUB16i16, XOR16i16] =
+    ([OtherSideEffect AX],
+     [OtherSideEffect AX, OtherSideEffect EFLAGS])
   | i `elem` [CWDE] = ([OtherSideEffect AX], [OtherSideEffect EAX])
-  | i `elem` [REP_STOSW_32] =
-    ([OtherSideEffect AX], [OtherSideEffect ECX, OtherSideEffect EDI])
   | i `elem` [CMP16i16, TEST16i16] =
     ([OtherSideEffect AX], [OtherSideEffect EFLAGS])
-  | i `elem` [REP_STOSW_64] =
-    ([OtherSideEffect AX], [OtherSideEffect RCX, OtherSideEffect RDI])
+  | i `elem` [DIV16r, IDIV16r] =
+    ([OtherSideEffect AX, OtherSideEffect DX],
+     [OtherSideEffect AX, OtherSideEffect DX, OtherSideEffect EFLAGS])
+  | i `elem` [REP_STOSW_32] =
+    ([OtherSideEffect AX, OtherSideEffect ECX, OtherSideEffect EDI],
+     [OtherSideEffect ECX, OtherSideEffect EDI])
   | i `elem` [STOSW] =
-    ([OtherSideEffect AX, OtherSideEffect EFLAGS],
+    ([OtherSideEffect AX, OtherSideEffect EDI, OtherSideEffect EFLAGS],
      [OtherSideEffect EDI])
+  | i `elem` [ADC16i16, SBB16i16] =
+    ([OtherSideEffect AX, OtherSideEffect EFLAGS],
+     [OtherSideEffect AX, OtherSideEffect EFLAGS])
+  | i `elem` [REP_STOSW_64] =
+    ([OtherSideEffect AX, OtherSideEffect RCX, OtherSideEffect RDI],
+     [OtherSideEffect RCX, OtherSideEffect RDI])
   | i `elem`
       [RCL16mCL, RCL16rCL, RCL32mCL, RCL32rCL, RCL64mCL, RCL64rCL,
        RCL8mCL, RCL8rCL, RCR16mCL, RCR16rCL, RCR32mCL, RCR32rCL, RCR64mCL,
@@ -260,23 +251,52 @@ readWriteInfo i
   | i `elem` [JCXZ] = ([OtherSideEffect CX], [])
   | i `elem` [MOV32o16a, MOV32o32a, MOV32o64a] =
     ([OtherSideEffect EAX], [Memory "mem"])
-  | i `elem` [REP_STOSD_32] =
-    ([OtherSideEffect EAX], [OtherSideEffect ECX, OtherSideEffect EDI])
+  | i `elem` [XCHG32ar, XCHG32ar64] =
+    ([OtherSideEffect EAX], [OtherSideEffect EAX])
+  | i `elem` [CDQ] =
+    ([OtherSideEffect EAX], [OtherSideEffect EAX, OtherSideEffect EDX])
+  | i `elem` [IMUL32r, MUL32r] =
+    ([OtherSideEffect EAX],
+     [OtherSideEffect EAX, OtherSideEffect EDX, OtherSideEffect EFLAGS])
+  | i `elem` [ADD32i32, AND32i32, OR32i32, SUB32i32, XOR32i32] =
+    ([OtherSideEffect EAX],
+     [OtherSideEffect EAX, OtherSideEffect EFLAGS])
   | i `elem` [CMP32i32, TEST32i32] =
     ([OtherSideEffect EAX], [OtherSideEffect EFLAGS])
   | i `elem` [CDQE] = ([OtherSideEffect EAX], [OtherSideEffect RAX])
-  | i `elem` [STOSL] =
-    ([OtherSideEffect EAX, OtherSideEffect EFLAGS],
-     [OtherSideEffect EDI])
   | i `elem` [CMPXCHG8B] =
-    ([OtherSideEffect EBX, OtherSideEffect ECX],
+    ([OtherSideEffect EAX, OtherSideEffect EBX, OtherSideEffect ECX,
+      OtherSideEffect EDX],
      [OtherSideEffect EAX, OtherSideEffect EDX, OtherSideEffect EFLAGS])
+  | i `elem` [REP_STOSD_32] =
+    ([OtherSideEffect EAX, OtherSideEffect ECX, OtherSideEffect EDI],
+     [OtherSideEffect ECX, OtherSideEffect EDI])
+  | i `elem` [STOSL] =
+    ([OtherSideEffect EAX, OtherSideEffect EDI,
+      OtherSideEffect EFLAGS],
+     [OtherSideEffect EDI])
+  | i `elem` [DIV32r, IDIV32r] =
+    ([OtherSideEffect EAX, OtherSideEffect EDX],
+     [OtherSideEffect EAX, OtherSideEffect EDX, OtherSideEffect EFLAGS])
+  | i `elem` [ADC32i32, SBB32i32] =
+    ([OtherSideEffect EAX, OtherSideEffect EFLAGS],
+     [OtherSideEffect EAX, OtherSideEffect EFLAGS])
   | i `elem` [JECXZ] = ([OtherSideEffect ECX], [])
+  | i `elem` [REP_MOVSB_32, REP_MOVSD_32, REP_MOVSW_32] =
+    ([OtherSideEffect ECX, OtherSideEffect EDI, OtherSideEffect ESI],
+     [OtherSideEffect ECX, OtherSideEffect EDI, OtherSideEffect ESI])
+  | i `elem` [REPNE_PREFIX, REP_PREFIX] =
+    ([OtherSideEffect ECX, OtherSideEffect EFLAGS],
+     [OtherSideEffect ECX])
   | i `elem` [PUSHA16, PUSHA32] =
     ([OtherSideEffect EDI, OtherSideEffect ESI, OtherSideEffect EBP,
       OtherSideEffect EBX, OtherSideEffect EDX, OtherSideEffect ECX,
-      OtherSideEffect EAX],
+      OtherSideEffect EAX, OtherSideEffect ESP],
      [Memory "mem", OtherSideEffect ESP])
+  | i `elem` [MOVSB, MOVSL, MOVSQ, MOVSW] =
+    ([OtherSideEffect EDI, OtherSideEffect ESI,
+      OtherSideEffect EFLAGS],
+     [OtherSideEffect EDI, OtherSideEffect ESI])
   | i `elem`
       [CMOVA16rm, CMOVA16rr, CMOVA32rm, CMOVA32rr, CMOVA64rm, CMOVA64rr,
        CMOVAE16rm, CMOVAE16rr, CMOVAE32rm, CMOVAE32rr, CMOVAE64rm,
@@ -306,46 +326,91 @@ readWriteInfo i
        SETNPm, SETNPr, SETNSm, SETNSr, SETOm, SETOr, SETPm, SETPr, SETSm,
        SETSr]
     = ([OtherSideEffect EFLAGS], [])
-  | i `elem` [PUSHF16, PUSHF32] =
-    ([OtherSideEffect EFLAGS], [Memory "mem", OtherSideEffect ESP])
-  | i `elem` [PUSHF64] =
-    ([OtherSideEffect EFLAGS], [Memory "mem", OtherSideEffect RSP])
+  | i `elem`
+      [ADC16mi, ADC16mi8, ADC16mr, ADC16ri, ADC16ri8, ADC16rm, ADC16rr,
+       ADC16rr_REV, ADC32mi, ADC32mi8, ADC32mr, ADC32ri, ADC32ri8,
+       ADC32rm, ADC32rr, ADC32rr_REV, ADC64mi32, ADC64mi8, ADC64mr,
+       ADC64ri32, ADC64ri8, ADC64rm, ADC64rr, ADC64rr_REV, ADC8mi, ADC8mr,
+       ADC8ri, ADC8ri8, ADC8rm, ADC8rr, ADC8rr_REV, ADCX32rr, ADCX64rr,
+       SBB16mi, SBB16mi8, SBB16mr, SBB16ri, SBB16ri8, SBB16rm, SBB16rr,
+       SBB16rr_REV, SBB32mi, SBB32mi8, SBB32mr, SBB32ri, SBB32ri8,
+       SBB32rm, SBB32rr, SBB32rr_REV, SBB64mi32, SBB64mi8, SBB64mr,
+       SBB64ri32, SBB64ri8, SBB64rm, SBB64rr, SBB64rr_REV, SBB8mi, SBB8mr,
+       SBB8ri, SBB8ri8, SBB8rm, SBB8rr, SBB8rr_REV, SETB_C16r, SETB_C32r,
+       SETB_C64r, SETB_C8r]
+    = ([OtherSideEffect EFLAGS], [OtherSideEffect EFLAGS])
   | i `elem` [LODSB] =
-    ([OtherSideEffect EFLAGS],
+    ([OtherSideEffect ESI, OtherSideEffect EFLAGS],
      [OtherSideEffect AL, OtherSideEffect ESI])
   | i `elem` [LODSW] =
-    ([OtherSideEffect EFLAGS],
+    ([OtherSideEffect ESI, OtherSideEffect EFLAGS],
      [OtherSideEffect AX, OtherSideEffect ESI])
   | i `elem` [LODSL] =
-    ([OtherSideEffect EFLAGS],
+    ([OtherSideEffect ESI, OtherSideEffect EFLAGS],
      [OtherSideEffect EAX, OtherSideEffect ESI])
-  | i `elem` [REPNE_PREFIX, REP_PREFIX] =
-    ([OtherSideEffect EFLAGS], [OtherSideEffect ECX])
-  | i `elem` [MOVSB, MOVSL, MOVSQ, MOVSW] =
-    ([OtherSideEffect EFLAGS],
-     [OtherSideEffect EDI, OtherSideEffect ESI])
   | i `elem` [LODSQ] =
-    ([OtherSideEffect EFLAGS],
+    ([OtherSideEffect ESI, OtherSideEffect EFLAGS],
      [OtherSideEffect RAX, OtherSideEffect ESI])
   | i `elem`
       [CALL16m, CALL16r, CALL32m, CALL32r, CALLpcrel16, CALLpcrel32,
        TAILJMPd, TAILJMPr, TCRETURNdi, TCRETURNri]
     = ([OtherSideEffect ESP], [])
+  | i `elem`
+      [PUSH16i8, PUSH16r, PUSH16rmr, PUSH32i8, PUSH32r, PUSH32rmr,
+       PUSHi16, PUSHi32]
+    = ([OtherSideEffect ESP], [Memory "mem", OtherSideEffect ESP])
+  | i `elem` [ADJCALLSTACKDOWN32, ADJCALLSTACKUP32] =
+    ([OtherSideEffect ESP],
+     [OtherSideEffect ESP, OtherSideEffect EFLAGS])
+  | i `elem` [PUSHF16, PUSHF32] =
+    ([OtherSideEffect ESP, OtherSideEffect EFLAGS],
+     [Memory "mem", OtherSideEffect ESP])
   | i `elem` [MOV64o32a, MOV64o64a] =
     ([OtherSideEffect RAX], [Memory "mem"])
   | i `elem` [CMP64i32, TEST64i32] =
     ([OtherSideEffect RAX], [OtherSideEffect EFLAGS])
-  | i `elem` [REP_STOSD_64, REP_STOSQ_64] =
-    ([OtherSideEffect RAX], [OtherSideEffect RCX, OtherSideEffect RDI])
-  | i `elem` [STOSQ] =
+  | i `elem` [XCHG64ar] =
+    ([OtherSideEffect RAX], [OtherSideEffect RAX])
+  | i `elem` [ADD64i32, AND64i32, OR64i32, SUB64i32, XOR64i32] =
+    ([OtherSideEffect RAX],
+     [OtherSideEffect RAX, OtherSideEffect EFLAGS])
+  | i `elem` [CQO] =
+    ([OtherSideEffect RAX], [OtherSideEffect RAX, OtherSideEffect RDX])
+  | i `elem` [IMUL64r, MUL64r] =
+    ([OtherSideEffect RAX],
+     [OtherSideEffect RAX, OtherSideEffect RDX, OtherSideEffect EFLAGS])
+  | i `elem` [ADC64i32, SBB64i32] =
     ([OtherSideEffect RAX, OtherSideEffect EFLAGS],
-     [OtherSideEffect RDI])
+     [OtherSideEffect RAX, OtherSideEffect EFLAGS])
   | i `elem` [CMPXCHG16B] =
-    ([OtherSideEffect RBX, OtherSideEffect RCX],
+    ([OtherSideEffect RAX, OtherSideEffect RBX, OtherSideEffect RCX,
+      OtherSideEffect RDX],
+     [OtherSideEffect RAX, OtherSideEffect RDX, OtherSideEffect EFLAGS])
+  | i `elem` [REP_STOSD_64, REP_STOSQ_64] =
+    ([OtherSideEffect RAX, OtherSideEffect RCX, OtherSideEffect RDI],
+     [OtherSideEffect RCX, OtherSideEffect RDI])
+  | i `elem` [STOSQ] =
+    ([OtherSideEffect RAX, OtherSideEffect RDI,
+      OtherSideEffect EFLAGS],
+     [OtherSideEffect RDI])
+  | i `elem` [DIV64r, IDIV64r] =
+    ([OtherSideEffect RAX, OtherSideEffect RDX],
      [OtherSideEffect RAX, OtherSideEffect RDX, OtherSideEffect EFLAGS])
   | i `elem` [JRCXZ] = ([OtherSideEffect RCX], [])
+  | i `elem` [REP_MOVSB_64, REP_MOVSD_64, REP_MOVSQ_64, REP_MOVSW_64]
+    =
+    ([OtherSideEffect RCX, OtherSideEffect RDI, OtherSideEffect RSI],
+     [OtherSideEffect RCX, OtherSideEffect RDI, OtherSideEffect RSI])
   | i `elem`
       [CALL64m, CALL64pcrel32, CALL64r, TAILJMPd64, TAILJMPd64_REX,
        TAILJMPr64, TAILJMPr64_REX, TCRETURNdi64, TCRETURNri64]
     = ([OtherSideEffect RSP], [])
+  | i `elem` [PUSH64i32, PUSH64i8, PUSH64r, PUSH64rmr] =
+    ([OtherSideEffect RSP], [Memory "mem", OtherSideEffect RSP])
+  | i `elem` [ADJCALLSTACKDOWN64, ADJCALLSTACKUP64] =
+    ([OtherSideEffect RSP],
+     [OtherSideEffect RSP, OtherSideEffect EFLAGS])
+  | i `elem` [PUSHF64] =
+    ([OtherSideEffect RSP, OtherSideEffect EFLAGS],
+     [Memory "mem", OtherSideEffect RSP])
 
