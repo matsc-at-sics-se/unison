@@ -109,15 +109,15 @@ registerAtoms R14 = (R160, R167)
 registerAtoms R15 = (R170, R177)
 
 -- not really in the register array
-registerAtoms RIP = (R200, R207)
-registerAtoms EFLAGS = (R210, R217)
+registerAtoms EFLAGS = (R200, R207)
+registerAtoms RIP = (R210, R217)
 
 registerAtoms r = error ("unmatched: registerAtoms " ++ show r)
 
 -- | Register classes
 regClasses =
     map RegisterClass [CCR, GR8, GR8_NOREX, GR16, GR32, GR32_NOREX, GR32_NOAX, GR64, GR64_NOSP,
-                       Ptr_rc, Ptr_rc_nosp, Ptr_rc_norex, Ptr_rc_norex_nosp, Ptr_rc_tailcall] ++
+                       Ptr_rc, Ptr_rc_nosp, Ptr_rc_norex, Ptr_rc_norex_nosp, Ptr_rc_tailcall, AUX] ++
     map InfiniteRegisterClass [M8, M16, M32, M64, RM8, RM16, RM32, RM64]
 
 -- | Individual registers of each register class (octal, internal names)
@@ -141,7 +141,8 @@ registers (RegisterClass GPR) =
      R170, R171, R172, R173, R174, R175, R176, R177]
 
 registers (RegisterClass CCR) =
-    [RIP, EFLAGS]
+    [R200, R201, R202, R203, R204, R205, R206, R207,
+     R210, R211, R212, R213, R214, R215, R216, R217]
 
 registers (RegisterClass GR8) =
     [AL, AH, CL, CH, DL, DH, BL, BH, SIL, DIL, SPL, BPL, R8B, R9B, R10B, R11B, R12B, R13B, R14B, R15B]
@@ -168,10 +169,10 @@ registers (RegisterClass GR64_NOSP) =
     [RAX, RCX, RDX, RBX, RSI, RDI,      RBP, R8, R9, R10, R11, R12, R13, R14, R15     ]
 
 registers (RegisterClass Ptr_rc) =
-    [RAX, RCX, RDX, RBX, RSI, RDI, RSP, RBP, R8, R9, R10, R11, R12, R13, R14, R15, RIP]
+    registers (RegisterClass GR64)
 
 registers (RegisterClass Ptr_rc_nosp) =
-    [RAX, RCX, RDX, RBX, RSI, RDI,      RBP, R8, R9, R10, R11, R12, R13, R14, R15     ]
+    registers (RegisterClass GR64_NOSP)
 
 registers (RegisterClass Ptr_rc_norex) =
     [RAX, RCX, RDX, RBX, RSI, RDI, RSP, RBP,                                       RIP]
@@ -182,8 +183,11 @@ registers (RegisterClass Ptr_rc_norex_nosp) =
 registers (RegisterClass Ptr_rc_tailcall) =
     [RAX, RCX, RDX,      RSI, RDI,           R8, R9, R11, RIP                    ]
 
+registers (RegisterClass AUX) =
+    [EFLAGS, RIP]
+
 registers (RegisterClass ALL) =
-  registers (RegisterClass GPR)
+    registers (RegisterClass GPR)
 
 registers rc = error ("unmatched: registers " ++ show rc)
 

@@ -28,6 +28,7 @@ data X86RegisterClass =
     Ptr_rc_norex |
     Ptr_rc_norex_nosp |
     Ptr_rc_tailcall |
+    AUX |
     M8 |
     M16 |
     M32 |
