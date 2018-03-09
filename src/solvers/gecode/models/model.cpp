@@ -1112,7 +1112,12 @@ void Model::post_processor_resources_constraints(block b) {
 
   // The capacity of processor resources cannot be exceeded at any issue cycle:
 
+  vector<resource> essential_r;
   map<resource, vector<UsageTask> > r2tasks;
+
+  for (resource r : input->R)
+    if (!contains(input->subsumed_resources[b], r))
+      essential_r.push_back(r);
 
   for (operation o : input->ops[b]) {
 
@@ -1126,7 +1131,7 @@ void Model::post_processor_resources_constraints(block b) {
     // Complete map with tasks grouped by consumption
     for (unsigned int ii = 0; ii < input->instructions[o].size(); ii++) {
       instruction i = input->instructions[o][ii];
-      for (resource r : input->R) {
+      for (resource r : essential_r) {
         int con = input->con[i][r],
             dur = input->dur[i][r];
         if (con > 0 && dur > 0)
@@ -1136,7 +1141,7 @@ void Model::post_processor_resources_constraints(block b) {
 
     // For each operation, resource and consumption, define a task possibly
     // related to several instructions
-    for (resource r : input->R) {
+    for (resource r : essential_r) {
       for (auto ctts : rc2tasks[r]) {
         IntArgs iis;
         vector<int> durs, offs;
@@ -1180,7 +1185,7 @@ void Model::post_processor_resources_constraints(block b) {
     }
   }
 
-  for (resource r : input->R) {
+  for (resource r : essential_r) {
 
     IntVarArgs rc; // Start time of each task
     IntVarArgs rdur; // Duration of each task
