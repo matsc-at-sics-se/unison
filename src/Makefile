@@ -138,6 +138,7 @@ run-specsgen-mips:
 	         --outputdir=$(SGMIPSROOTDIR) \
 	         --infiniteregclass m32 --infiniteregclass m64 \
 	         --infiniteregclass RM32 --infiniteregclass RM64 \
+	         --boundregclass ptr_rc \
 	         --rematfile=$(SGMIPSREMATYAML)
 
 run-specsgen-arm:
