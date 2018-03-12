@@ -44,7 +44,8 @@ data Uni =
                outFile :: Maybe FilePath, baseFile :: Maybe FilePath,
                scaleFreq :: Bool, oldModel :: Bool, applyBaseFile :: Bool,
                tightPressureBound :: Bool, strictlyBetter :: Bool,
-               unsatisfiable :: Bool, noCC :: Bool} |
+               unsatisfiable :: Bool, noCC :: Bool,
+               mirVersion :: MachineIRVersion} |
     Export    {targetName :: String, inFile :: FilePath, targetOption :: [String],
                outFile :: Maybe FilePath, debug :: Bool, removeReds :: Bool,
                keepNops :: Bool, baseFile :: Maybe FilePath,
@@ -62,7 +63,7 @@ data Uni =
     Lint      {targetName :: String, inFile :: FilePath, targetOption :: [String],
                outFile :: Maybe FilePath, allTemporariesDefined :: Bool,
                singleDefinitions :: Bool, allTemporariesUsed :: Bool,
-               allRegistersDefined :: Bool, noReadWriteOverlaps :: Bool,
+               allRegistersDefined :: Bool,
                allRegClassesDefined :: Bool, noEmptyRegClass :: Bool,
                consistentOperandInfo :: Bool, consistentOperands :: Bool,
                consistentPreAssignments :: Bool, noRedefinitions :: Bool,
@@ -171,7 +172,6 @@ lint' = Lint {
   singleDefinitions        = True,
   allTemporariesUsed       = True,
   allRegistersDefined      = True,
-  noReadWriteOverlaps      = True,
   allRegClassesDefined     = True,
   noEmptyRegClass          = True,
   consistentOperandInfo    = True,
