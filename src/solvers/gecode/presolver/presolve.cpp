@@ -138,7 +138,7 @@ void presolve(Parameters & input, PresolverOptions & options) {
            << "proven absence of solutions with cost less or equal than "
            << show(input.maxf, ", ", "", "{}") << endl;
     // ensure infeasible MiniZinc model
-    input.nogoods.push_back(UnisonConstraintExpr(OR_EXPR, {}, {}));
+    input.nogoods.push_back(UnisonConstraintExpr(AND_EXPR, {}, {}));
     return;
   }
 
