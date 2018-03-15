@@ -653,8 +653,9 @@ int main(int argc, char* argv[]) {
     emit_output_exit(base, results, gd, go);
   }
 
-  Gecode::SpaceStatus ss = status_lb(base);
-  assert(ss != SS_FAILED); // At this point the problem should be solvable
+  // At this point, the state will be failed if the presolver detected infeasibility
+  // Gecode::SpaceStatus ss = status_lb(base);
+  // assert(ss != SS_FAILED);
 
   if (options.verbose())
     cerr << global() << "variables: "
