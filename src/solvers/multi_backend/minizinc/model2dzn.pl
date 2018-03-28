@@ -784,7 +784,7 @@ compute_operands_array(Tempss, Uses, OperandsArray) :-
 	),
 	keysort(KL1, KL5),
 	keyclumped(KL5, KL6),
-	KL6 = [-1-_|KL7],
+	(KL6 = [-1-_|KL7] -> true ; KL6 = KL7),
 	(   foreach(Q-Clump,KL7),
 	    foreach(Set,OperandsArray),
 	    count(Q,0,_)
