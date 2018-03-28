@@ -148,7 +148,7 @@ registers (RegisterClass GR8) =
     [AL, AH, CL, CH, DL, DH, BL, BH, SIL, DIL, SPL, BPL, R8B, R9B, R10B, R11B, R12B, R13B, R14B, R15B]
 
 registers (RegisterClass GR8_NOREX) =
-    [AL, AH, CL, CH, DL, DH, BL, BH, SIL, DIL, SPL, BPL                                              ]
+    [AL, AH, CL, CH, DL, DH, BL, BH                                                                  ]
 
 registers (RegisterClass GR16) =
     [AX, CX, DX, BX, SI, DI, SP, BP, R8W, R9W, R10W, R11W, R12W, R13W, R14W, R15W]
@@ -162,8 +162,8 @@ registers (RegisterClass GR32_NOREX) =
 registers (RegisterClass GR32_NOAX) =
     [     ECX, EDX, EBX, ESI, EDI, ESP, EBP, R8D, R9D, R10D, R11D, R12D, R13D, R14D, R15D]
 
-registers (RegisterClass GR64) =
-    [RAX, RCX, RDX, RBX, RSI, RDI, RSP, RBP, R8, R9, R10, R11, R12, R13, R14, R15, RIP]
+registers (RegisterClass GR64) = {- llvm/lib/Target/X86/X86RegisterInfo includes RIP, saying it's inaccurate -}
+    [RAX, RCX, RDX, RBX, RSI, RDI, RSP, RBP, R8, R9, R10, R11, R12, R13, R14, R15     ]
 
 registers (RegisterClass GR64_NOSP) =
     [RAX, RCX, RDX, RBX, RSI, RDI,      RBP, R8, R9, R10, R11, R12, R13, R14, R15     ]
