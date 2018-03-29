@@ -15,6 +15,7 @@ data X86RegisterClass =
     ALL |
     CCR |
     GPR |
+    FPR |
     GR8 |
     GR8_NOREX |
     GR16 |
@@ -30,6 +31,9 @@ data X86RegisterClass =
     Ptr_rc_norex |
     Ptr_rc_norex_nosp |
     Ptr_rc_tailcall |
+    FR32 |
+    FR64 |
+    VR128 |
     AUX |
     M8 |
     M16 |

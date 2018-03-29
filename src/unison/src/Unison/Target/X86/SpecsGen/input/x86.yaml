@@ -1300,6 +1300,176 @@ instruction-set:
           affected-by:
           itinerary:          IIC_BIN_NONMEM
 
+        - id:                 ADDPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_ALU_F64P_RM
+
+        - id:                 ADDPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64P_RR
+
+        - id:                 ADDPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_ALU_F32P_RM
+
+        - id:                 ADDPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32P_RR
+
+        - id:                 ADDSDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64S_RM
+
+        - id:                 ADDSDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, FR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64S_RR
+
+        - id:                 ADDSSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32S_RM
+
+        - id:                 ADDSSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, FR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32S_RR
+
+        - id:                 ADDSUBPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64P_RR
+
+        - id:                 ADDSUBPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64P_RR
+
+        - id:                 ADDSUBPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32P_RR
+
+        - id:                 ADDSUBPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32P_RR
+
         - id:                 ADJCALLSTACKDOWN32
           type:               linear
           operands:
@@ -1961,6 +2131,118 @@ instruction-set:
            - EFLAGS:          register
           affected-by:
           itinerary:          IIC_BIN_NONMEM
+
+        - id:                 ANDNPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 ANDNPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 ANDNPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 ANDNPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 ANDPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 ANDPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 ANDPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 ANDPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
 
         - id:                 BSF16rm
           type:               linear
@@ -5083,6 +5365,250 @@ instruction-set:
           affected-by:
           itinerary:          IIC_BIN_NONMEM
 
+        - id:                 CMPPDrmi
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+           - cc:              bound
+          uses:               [src1, src21, src22, src23, src24, src25, cc]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64P_RM
+
+        - id:                 CMPPDrmi_alt
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+           - cc:              bound
+          uses:               [src1, src21, src22, src23, src24, src25, cc]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_ALU_F64P_RM
+
+        - id:                 CMPPDrri
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+           - cc:              bound
+          uses:               [src1, src2, cc]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64P_RR
+
+        - id:                 CMPPDrri_alt
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+           - cc:              bound
+          uses:               [src1, src2, cc]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64P_RR
+
+        - id:                 CMPPSrmi
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+           - cc:              bound
+          uses:               [src1, src21, src22, src23, src24, src25, cc]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32P_RM
+
+        - id:                 CMPPSrmi_alt
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+           - cc:              bound
+          uses:               [src1, src21, src22, src23, src24, src25, cc]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_ALU_F32P_RM
+
+        - id:                 CMPPSrri
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+           - cc:              bound
+          uses:               [src1, src2, cc]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32P_RR
+
+        - id:                 CMPPSrri_alt
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+           - cc:              bound
+          uses:               [src1, src2, cc]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32P_RR
+
+        - id:                 CMPSDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+           - cc:              bound
+          uses:               [src1, src21, src22, src23, src24, src25, cc]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64S_RM
+
+        - id:                 CMPSDrm_alt
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+           - cc:              bound
+          uses:               [src1, src21, src22, src23, src24, src25, cc]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_ALU_F32S_RM
+
+        - id:                 CMPSDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, FR64]
+           - cc:              bound
+          uses:               [src1, src2, cc]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64S_RR
+
+        - id:                 CMPSDrr_alt
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, FR64]
+           - cc:              bound
+          uses:               [src1, src2, cc]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32S_RR
+
+        - id:                 CMPSSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+           - cc:              bound
+          uses:               [src1, src21, src22, src23, src24, src25, cc]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32S_RM
+
+        - id:                 CMPSSrm_alt
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+           - cc:              bound
+          uses:               [src1, src21, src22, src23, src24, src25, cc]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_ALU_F32S_RM
+
+        - id:                 CMPSSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, FR32]
+           - cc:              bound
+          uses:               [src1, src2, cc]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32S_RR
+
+        - id:                 CMPSSrr_alt
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, FR32]
+           - cc:              bound
+          uses:               [src1, src2, cc]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32S_RR
+
         - id:                 CMPXCHG16B
           type:               linear
           operands:
@@ -5247,6 +5773,66 @@ instruction-set:
           affected-by:
           itinerary:          IIC_CMPXCHG_REG8
 
+        - id:                 COMISDrm
+          type:               linear
+          operands:
+           - src1:            [register, use, FR64]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            []
+          size:               0
+          affects:
+           - EFLAGS:          register
+          affected-by:
+          itinerary:          IIC_SSE_COMIS_RM
+
+        - id:                 COMISDrr
+          type:               linear
+          operands:
+           - src1:            [register, use, FR64]
+           - src2:            [register, use, FR64]
+          uses:               [src1, src2]
+          defines:            []
+          size:               0
+          affects:
+           - EFLAGS:          register
+          affected-by:
+          itinerary:          IIC_SSE_COMIS_RR
+
+        - id:                 COMISSrm
+          type:               linear
+          operands:
+           - src1:            [register, use, FR32]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            []
+          size:               0
+          affects:
+           - EFLAGS:          register
+          affected-by:
+          itinerary:          IIC_SSE_COMIS_RM
+
+        - id:                 COMISSrr
+          type:               linear
+          operands:
+           - src1:            [register, use, FR32]
+           - src2:            [register, use, FR32]
+          uses:               [src1, src2]
+          defines:            []
+          size:               0
+          affects:
+           - EFLAGS:          register
+          affected-by:
+          itinerary:          IIC_SSE_COMIS_RR
+
         - id:                 CQO
           type:               linear
           operands:
@@ -5259,6 +5845,496 @@ instruction-set:
           affected-by:
            - RAX:             register
           itinerary:          IIC_CBW
+
+        - id:                 CVTDQ2PDrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_CVT_PD_RR
+
+        - id:                 CVTDQ2PDrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_PD_RM
+
+        - id:                 CVTDQ2PSrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_CVT_PS_RM
+
+        - id:                 CVTDQ2PSrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_PS_RR
+
+        - id:                 CVTPD2DQrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_PD_RM
+
+        - id:                 CVTPD2DQrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_PD_RR
+
+        - id:                 CVTPD2PSrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_PD_RM
+
+        - id:                 CVTPD2PSrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_PD_RR
+
+        - id:                 CVTPS2DQrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_PS_RM
+
+        - id:                 CVTPS2DQrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_PS_RR
+
+        - id:                 CVTPS2PDrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_PD_RM
+
+        - id:                 CVTPS2PDrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_PD_RR
+
+        - id:                 CVTSD2SI64rr
+          type:               linear
+          operands:
+           - dst:             [register, def, GR64]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_SD2SI_RR
+
+        - id:                 CVTSD2SIrr
+          type:               linear
+          operands:
+           - dst:             [register, def, GR32]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_SD2SI_RR
+
+        - id:                 CVTSD2SSrm
+          type:               linear
+          operands:
+           - dst:             [register, def, FR32]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_Scalar_RM
+
+        - id:                 CVTSD2SSrr
+          type:               linear
+          operands:
+           - dst:             [register, def, FR32]
+           - src:             [register, use, FR64]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_Scalar_RR
+
+        - id:                 CVTSI2SD64rm
+          type:               linear
+          operands:
+           - dst:             [register, def, FR64]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_Scalar_RM
+
+        - id:                 CVTSI2SD64rr
+          type:               linear
+          operands:
+           - dst:             [register, def, FR64]
+           - src:             [register, use, GR64]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_Scalar_RR
+
+        - id:                 CVTSI2SDrm
+          type:               linear
+          operands:
+           - dst:             [register, def, FR64]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_Scalar_RM
+
+        - id:                 CVTSI2SDrr
+          type:               linear
+          operands:
+           - dst:             [register, def, FR64]
+           - src:             [register, use, GR32]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_Scalar_RR
+
+        - id:                 CVTSI2SS64rm
+          type:               linear
+          operands:
+           - dst:             [register, def, FR32]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_Scalar_RM
+
+        - id:                 CVTSI2SS64rr
+          type:               linear
+          operands:
+           - dst:             [register, def, FR32]
+           - src:             [register, use, GR64]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_Scalar_RR
+
+        - id:                 CVTSI2SSrm
+          type:               linear
+          operands:
+           - dst:             [register, def, FR32]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_Scalar_RM
+
+        - id:                 CVTSI2SSrr
+          type:               linear
+          operands:
+           - dst:             [register, def, FR32]
+           - src:             [register, use, GR32]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_Scalar_RR
+
+        - id:                 CVTSS2SDrm
+          type:               linear
+          operands:
+           - dst:             [register, def, FR64]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_Scalar_RM
+
+        - id:                 CVTSS2SDrr
+          type:               linear
+          operands:
+           - dst:             [register, def, FR64]
+           - src:             [register, use, FR32]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_Scalar_RR
+
+        - id:                 CVTSS2SI64rr
+          type:               linear
+          operands:
+           - dst:             [register, def, GR64]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_SS2SI64_RR
+
+        - id:                 CVTSS2SIrr
+          type:               linear
+          operands:
+           - dst:             [register, def, GR32]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_SS2SI32_RR
+
+        - id:                 CVTTPD2DQrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_PD_RM
+
+        - id:                 CVTTPD2DQrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_PD_RR
+
+        - id:                 CVTTPS2DQrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_PS_RM
+
+        - id:                 CVTTPS2DQrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_PS_RR
+
+        - id:                 CVTTSD2SI64rr
+          type:               linear
+          operands:
+           - dst:             [register, def, GR64]
+           - src:             [register, use, FR64]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_SD2SI_RR
+
+        - id:                 CVTTSD2SIrr
+          type:               linear
+          operands:
+           - dst:             [register, def, GR32]
+           - src:             [register, use, FR64]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_SD2SI_RR
+
+        - id:                 CVTTSS2SI64rr
+          type:               linear
+          operands:
+           - dst:             [register, def, GR64]
+           - src:             [register, use, FR32]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_SS2SI64_RR
+
+        - id:                 CVTTSS2SIrr
+          type:               linear
+          operands:
+           - dst:             [register, def, GR32]
+           - src:             [register, use, FR32]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_CVT_SS2SI32_RR
 
         - id:                 CWD
           type:               linear
@@ -5567,6 +6643,180 @@ instruction-set:
            - AX:              register
           itinerary:          IIC_DIV8_REG
 
+        - id:                 DIVPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_DIV_F64P_RM
+
+        - id:                 DIVPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_DIV_F64P_RR
+
+        - id:                 DIVPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_DIV_F64P_RM
+
+        - id:                 DIVPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_DIV_F32P_RR
+
+        - id:                 DIVSDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_DIV_F64S_RM
+
+        - id:                 DIVSDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, FR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_DIV_F64S_RR
+
+        - id:                 DIVSSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_DIV_F64S_RM
+
+        - id:                 DIVSSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, FR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_DIV_F32S_RR
+
+        - id:                 DPPDrmi
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+           - src3:            bound
+          uses:               [src1, src21, src22, src23, src24, src25, src3]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_DPPD_RM
+
+        - id:                 DPPDrri
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+           - src3:            bound
+          uses:               [src1, src2, src3]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_DPPD_RR
+
+        - id:                 DPPSrmi
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+           - src3:            bound
+          uses:               [src1, src21, src22, src23, src24, src25, src3]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_DPPD_RM
+
+        - id:                 DPPSrri
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+           - src3:            bound
+          uses:               [src1, src2, src3]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_DPPS_RR
+
         - id:                 ENTER
           type:               linear
           operands:
@@ -5578,6 +6828,571 @@ instruction-set:
           affects:
           affected-by:
           itinerary:          IIC_ENTER
+
+        - id:                 FNSTCW16m
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+          uses:               [dst1, dst2, dst3, dst4, dst5]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_FNSTCW
+
+        - id:                 FsANDNPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 FsANDNPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, FR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
+
+        - id:                 FsANDNPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 FsANDNPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, FR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
+
+        - id:                 FsANDPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 FsANDPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, FR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
+
+        - id:                 FsANDPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 FsANDPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, FR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
+
+        - id:                 FsFLD0SD
+          type:               linear
+          operands:
+           - dst:             [register, def, FR64]
+          uses:               []
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 FsFLD0SS
+          type:               linear
+          operands:
+           - dst:             [register, def, FR32]
+          uses:               []
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 FsMOVAPDrm
+          type:               linear
+          operands:
+           - dst:             [register, def, FR64]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVA_P_RM
+
+        - id:                 FsMOVAPSrm
+          type:               linear
+          operands:
+           - dst:             [register, def, FR32]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVA_P_RM
+
+        - id:                 FsORPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 FsORPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, FR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
+
+        - id:                 FsORPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 FsORPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, FR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
+
+        - id:                 FsVMOVAPDrm
+          type:               linear
+          operands:
+           - dst:             [register, def, FR64]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVA_P_RM
+
+        - id:                 FsVMOVAPSrm
+          type:               linear
+          operands:
+           - dst:             [register, def, FR32]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVA_P_RM
+
+        - id:                 FsXORPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 FsXORPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, FR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
+
+        - id:                 FsXORPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 FsXORPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, FR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
+
+        - id:                 FvANDNPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 FvANDNPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
+
+        - id:                 FvANDNPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 FvANDNPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
+
+        - id:                 FvANDPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 FvANDPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
+
+        - id:                 FvANDPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 FvANDPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
+
+        - id:                 FvORPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 FvORPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
+
+        - id:                 FvORPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 FvORPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
+
+        - id:                 FvXORPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 FvXORPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
+
+        - id:                 FvXORPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 FvXORPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
 
         - id:                 IDIV16m
           type:               linear
@@ -7197,6 +9012,462 @@ instruction-set:
           affected-by:
           itinerary:          IIC_LOOPNE
 
+        - id:                 MAXCPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_ALU_F64P_RM
+
+        - id:                 MAXCPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64P_RR
+
+        - id:                 MAXCPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_ALU_F32P_RM
+
+        - id:                 MAXCPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32P_RR
+
+        - id:                 MAXCSDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64S_RM
+
+        - id:                 MAXCSDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, FR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64S_RR
+
+        - id:                 MAXCSSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32S_RM
+
+        - id:                 MAXCSSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, FR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32S_RR
+
+        - id:                 MAXPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_ALU_F64P_RM
+
+        - id:                 MAXPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64P_RR
+
+        - id:                 MAXPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_ALU_F32P_RM
+
+        - id:                 MAXPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32P_RR
+
+        - id:                 MAXSDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64S_RM
+
+        - id:                 MAXSDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, FR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64S_RR
+
+        - id:                 MAXSSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32S_RM
+
+        - id:                 MAXSSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, FR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32S_RR
+
+        - id:                 MINCPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_ALU_F64P_RM
+
+        - id:                 MINCPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64P_RR
+
+        - id:                 MINCPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_ALU_F32P_RM
+
+        - id:                 MINCPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32P_RR
+
+        - id:                 MINCSDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64S_RM
+
+        - id:                 MINCSDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, FR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64S_RR
+
+        - id:                 MINCSSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32S_RM
+
+        - id:                 MINCSSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, FR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32S_RR
+
+        - id:                 MINPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_ALU_F64P_RM
+
+        - id:                 MINPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64P_RR
+
+        - id:                 MINPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_ALU_F32P_RM
+
+        - id:                 MINPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32P_RR
+
+        - id:                 MINSDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64S_RM
+
+        - id:                 MINSDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, FR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64S_RR
+
+        - id:                 MINSSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32S_RM
+
+        - id:                 MINSSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, FR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32S_RR
+
         - id:                 MOV16ao16
           type:               linear
           operands:
@@ -7757,6 +10028,63 @@ instruction-set:
           affected-by:
           itinerary:          IIC_MOV
 
+        - id:                 MOV64toPQIrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_MOVDQ
+
+        - id:                 MOV64toPQIrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, GR64]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVDQ
+
+        - id:                 MOV64toSDrm
+          type:               linear
+          operands:
+           - dst:             [register, def, FR64]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVDQ
+
+        - id:                 MOV64toSDrr
+          type:               linear
+          operands:
+           - dst:             [register, def, FR64]
+           - src:             [register, use, GR64]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVDQ
+
         - id:                 MOV8ao16
           type:               linear
           operands:
@@ -7983,6 +10311,118 @@ instruction-set:
           affected-by:
           itinerary:          IIC_MOV
 
+        - id:                 MOVAPDmr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, VR128]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVA_P_MR
+
+        - id:                 MOVAPDrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVA_P_RM
+
+        - id:                 MOVAPDrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVA_P_RR
+
+        - id:                 MOVAPDrr_REV
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVA_P_RR
+
+        - id:                 MOVAPSmr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, VR128]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVA_P_MR
+
+        - id:                 MOVAPSrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVA_P_RM
+
+        - id:                 MOVAPSrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVA_P_RR
+
+        - id:                 MOVAPSrr_REV
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVA_P_RR
+
         - id:                 MOVBE16mr
           type:               linear
           operands:
@@ -8079,6 +10519,555 @@ instruction-set:
           affected-by:
           itinerary:          IIC_MOVBE
 
+        - id:                 MOVDDUPrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_LH
+
+        - id:                 MOVDDUPrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_LH
+
+        - id:                 MOVDI2PDIrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVDQ
+
+        - id:                 MOVDI2PDIrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, GR32]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVDQ
+
+        - id:                 MOVDI2SSrm
+          type:               linear
+          operands:
+           - dst:             [register, def, FR32]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVDQ
+
+        - id:                 MOVDI2SSrr
+          type:               linear
+          operands:
+           - dst:             [register, def, FR32]
+           - src:             [register, use, GR32]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVDQ
+
+        - id:                 MOVDQAmr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, VR128]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+           - mem:             memory
+          affected-by:
+          itinerary:          IIC_SSE_MOVA_P_MR
+
+        - id:                 MOVDQArm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_MOVA_P_RM
+
+        - id:                 MOVDQArr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVA_P_RR
+
+        - id:                 MOVDQArr_REV
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVA_P_RR
+
+        - id:                 MOVDQUmr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, VR128]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+           - mem:             memory
+          affected-by:
+          itinerary:          IIC_SSE_MOVU_P_MR
+
+        - id:                 MOVDQUrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_MOVU_P_RM
+
+        - id:                 MOVDQUrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVU_P_RR
+
+        - id:                 MOVDQUrr_REV
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVU_P_RR
+
+        - id:                 MOVHLPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_LH
+
+        - id:                 MOVHPDmr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, VR128]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_LH
+
+        - id:                 MOVHPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_LH
+
+        - id:                 MOVHPSmr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, VR128]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_LH
+
+        - id:                 MOVHPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_LH
+
+        - id:                 MOVLHPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_LH
+
+        - id:                 MOVLPDmr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, VR128]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_LH
+
+        - id:                 MOVLPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_LH
+
+        - id:                 MOVLPSmr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, VR128]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_LH
+
+        - id:                 MOVLPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_LH
+
+        - id:                 MOVNTDQArm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 MOVNTDQmr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, VR128]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVNT
+
+        - id:                 MOVNTPDmr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, VR128]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVNT
+
+        - id:                 MOVNTPSmr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, VR128]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVNT
+
+        - id:                 MOVNTSD
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, VR128]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 MOVNTSS
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, VR128]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 MOVPDI2DImr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, VR128]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVDQ
+
+        - id:                 MOVPDI2DIrr
+          type:               linear
+          operands:
+           - dst:             [register, def, GR32]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVD_ToGP
+
+        - id:                 MOVPQI2QImr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, VR128]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVDQ
+
+        - id:                 MOVPQI2QIrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVQ_RR
+
+        - id:                 MOVPQIto64rm
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, VR128]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+           - mem:             memory
+          affected-by:
+          itinerary:          IIC_SSE_MOVDQ
+
+        - id:                 MOVPQIto64rr
+          type:               linear
+          operands:
+           - dst:             [register, def, GR64]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVD_ToGP
+
+        - id:                 MOVQI2PQIrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVDQ
+
         - id:                 MOVSB
           type:               linear
           operands:
@@ -8096,6 +11085,118 @@ instruction-set:
            - ESI:             register
            - EFLAGS:          register
           itinerary:          IIC_MOVS
+
+        - id:                 MOVSDmr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, FR64]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_S_MR
+
+        - id:                 MOVSDrm
+          type:               linear
+          operands:
+           - dst:             [register, def, FR64]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_S_RM
+
+        - id:                 MOVSDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, FR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_S_RR
+
+        - id:                 MOVSDrr_REV
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, FR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_S_RR
+
+        - id:                 MOVSDto64mr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, FR64]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVDQ
+
+        - id:                 MOVSDto64rr
+          type:               linear
+          operands:
+           - dst:             [register, def, GR64]
+           - src:             [register, use, FR64]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVD_ToGP
+
+        - id:                 MOVSHDUPrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_LH
+
+        - id:                 MOVSHDUPrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_LH
 
         - id:                 MOVSL
           type:               linear
@@ -8115,6 +11216,34 @@ instruction-set:
            - EFLAGS:          register
           itinerary:          IIC_MOVS
 
+        - id:                 MOVSLDUPrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_LH
+
+        - id:                 MOVSLDUPrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_LH
+
         - id:                 MOVSQ
           type:               linear
           operands:
@@ -8132,6 +11261,90 @@ instruction-set:
            - ESI:             register
            - EFLAGS:          register
           itinerary:          IIC_MOVS
+
+        - id:                 MOVSS2DImr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, FR32]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVDQ
+
+        - id:                 MOVSS2DIrr
+          type:               linear
+          operands:
+           - dst:             [register, def, GR32]
+           - src:             [register, use, FR32]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVD_ToGP
+
+        - id:                 MOVSSmr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, FR32]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_S_MR
+
+        - id:                 MOVSSrm
+          type:               linear
+          operands:
+           - dst:             [register, def, FR32]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_S_RM
+
+        - id:                 MOVSSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, FR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_S_RR
+
+        - id:                 MOVSSrr_REV
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, FR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOV_S_RR
 
         - id:                 MOVSW
           type:               linear
@@ -8349,6 +11562,162 @@ instruction-set:
           affected-by:
           itinerary:          IIC_MOVSX
 
+        - id:                 MOVUPDmr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, VR128]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVU_P_MR
+
+        - id:                 MOVUPDrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVU_P_RM
+
+        - id:                 MOVUPDrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVU_P_RR
+
+        - id:                 MOVUPDrr_REV
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVU_P_RR
+
+        - id:                 MOVUPSmr
+          type:               linear
+          operands:
+           - dst1:            [register, use, ptr_rc]
+           - dst2:            bound
+           - dst3:            [register, use, ptr_rc_nosp]
+           - dst4:            bound
+           - dst5:            bound
+           - src:             [register, use, VR128]
+          uses:               [dst1, dst2, dst3, dst4, dst5, src]
+          defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVU_P_MR
+
+        - id:                 MOVUPSrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVU_P_RM
+
+        - id:                 MOVUPSrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVU_P_RR
+
+        - id:                 MOVUPSrr_REV
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVU_P_RR
+
+        - id:                 MOVZPQILo2PQIrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVDQ
+
+        - id:                 MOVZPQILo2PQIrr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src:             [register, use, VR128]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVQ_RR
+
+        - id:                 MOVZQI2PQIrm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, ptr_rc]
+           - src2:            bound
+           - src3:            [register, use, ptr_rc_nosp]
+           - src4:            bound
+           - src5:            bound
+          uses:               [src1, src2, src3, src4, src5]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MOVDQ
+
         - id:                 MOVZX16rm8
           type:               linear
           operands:
@@ -8521,6 +11890,36 @@ instruction-set:
           affected-by:
           itinerary:          IIC_MOVZX
 
+        - id:                 MPSADBWrmi
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+           - src3:            bound
+          uses:               [src1, src21, src22, src23, src24, src25, src3]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MPSADBW_RM
+
+        - id:                 MPSADBWrri
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+           - src3:            bound
+          uses:               [src1, src2, src3]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MPSADBW_RR
+
         - id:                 MUL16m
           type:               linear
           operands:
@@ -8659,6 +12058,120 @@ instruction-set:
           affected-by:
            - AL:              register
           itinerary:          IIC_MUL8
+
+        - id:                 MULPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_MUL_F64P_RM
+
+        - id:                 MULPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MUL_F64P_RR
+
+        - id:                 MULPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_MUL_F64P_RM
+
+        - id:                 MULPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MUL_F32P_RR
+
+        - id:                 MULSDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MUL_F64S_RM
+
+        - id:                 MULSDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, FR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MUL_F64S_RR
+
+        - id:                 MULSSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MUL_F64S_RM
+
+        - id:                 MULSSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, FR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_MUL_F32S_RR
 
         - id:                 NEG16m
           type:               linear
@@ -9471,6 +12984,398 @@ instruction-set:
           affected-by:
           itinerary:          IIC_BIN_NONMEM
 
+        - id:                 ORPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 ORPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 ORPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 ORPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 PADDBrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALU_P_RM
+
+        - id:                 PADDBrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALU_P_RR
+
+        - id:                 PADDDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALU_P_RM
+
+        - id:                 PADDDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALU_P_RR
+
+        - id:                 PADDQrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALUQ_P_RM
+
+        - id:                 PADDQrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALUQ_P_RR
+
+        - id:                 PADDWrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALU_P_RM
+
+        - id:                 PADDWrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALU_P_RR
+
+        - id:                 PANDNrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 PANDNrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
+
+        - id:                 PANDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 PANDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
+
+        - id:                 PCMPEQBrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALU_P_RM
+
+        - id:                 PCMPEQBrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALU_P_RR
+
+        - id:                 PCMPEQDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALU_P_RM
+
+        - id:                 PCMPEQDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALU_P_RR
+
+        - id:                 PCMPEQQrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 PCMPEQQrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 PCMPEQWrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALU_P_RM
+
+        - id:                 PCMPEQWrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALU_P_RR
+
+        - id:                 PMULDQrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 PMULDQrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 PMULUDQrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 PMULUDQrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
         - id:                 POP16r
           type:               linear
           operands:
@@ -9698,6 +13603,720 @@ instruction-set:
            - EFLAGS:          register
           affected-by:
           itinerary:          IIC_SSE_POPCNT_RR
+
+        - id:                 PORrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 PORrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
+
+        - id:                 PSHUFBrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_PSHUFB_RM
+
+        - id:                 PSHUFBrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_PSHUFB_RR
+
+        - id:                 PSHUFDmi
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src11:           [register, use, ptr_rc]
+           - src12:           bound
+           - src13:           [register, use, ptr_rc_nosp]
+           - src14:           bound
+           - src15:           bound
+           - src2:            bound
+          uses:               [src11, src12, src13, src14, src15, src2]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_PSHUF_MI
+
+        - id:                 PSHUFDri
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, VR128]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_PSHUF_RI
+
+        - id:                 PSHUFHWmi
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src11:           [register, use, ptr_rc]
+           - src12:           bound
+           - src13:           [register, use, ptr_rc_nosp]
+           - src14:           bound
+           - src15:           bound
+           - src2:            bound
+          uses:               [src11, src12, src13, src14, src15, src2]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_PSHUF_MI
+
+        - id:                 PSHUFHWri
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, VR128]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_PSHUF_RI
+
+        - id:                 PSHUFLWmi
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src11:           [register, use, ptr_rc]
+           - src12:           bound
+           - src13:           [register, use, ptr_rc_nosp]
+           - src14:           bound
+           - src15:           bound
+           - src2:            bound
+          uses:               [src11, src12, src13, src14, src15, src2]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_PSHUF_MI
+
+        - id:                 PSHUFLWri
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, VR128]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_PSHUF_RI
+
+        - id:                 PSLLDQri
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSHDQ_P_RI
+
+        - id:                 PSLLDri
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RI
+
+        - id:                 PSLLDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RM
+
+        - id:                 PSLLDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RR
+
+        - id:                 PSLLQri
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RI
+
+        - id:                 PSLLQrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RM
+
+        - id:                 PSLLQrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RR
+
+        - id:                 PSLLWri
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RI
+
+        - id:                 PSLLWrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RM
+
+        - id:                 PSLLWrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RR
+
+        - id:                 PSRADri
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RI
+
+        - id:                 PSRADrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RM
+
+        - id:                 PSRADrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RR
+
+        - id:                 PSRAWri
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RI
+
+        - id:                 PSRAWrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RM
+
+        - id:                 PSRAWrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RR
+
+        - id:                 PSRLDQri
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSHDQ_P_RI
+
+        - id:                 PSRLDri
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RI
+
+        - id:                 PSRLDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RM
+
+        - id:                 PSRLDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RR
+
+        - id:                 PSRLQri
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RI
+
+        - id:                 PSRLQrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RM
+
+        - id:                 PSRLQrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RR
+
+        - id:                 PSRLWri
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RI
+
+        - id:                 PSRLWrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RM
+
+        - id:                 PSRLWrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTSH_P_RR
+
+        - id:                 PSUBBrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALU_P_RM
+
+        - id:                 PSUBBrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALU_P_RR
+
+        - id:                 PSUBDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALU_P_RM
+
+        - id:                 PSUBDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALU_P_RR
+
+        - id:                 PSUBQrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALUQ_P_RM
+
+        - id:                 PSUBQrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALUQ_P_RR
+
+        - id:                 PSUBWrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALU_P_RM
+
+        - id:                 PSUBWrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_INTALU_P_RR
+
+        - id:                 PUNPCKLBWrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_UNPCK
+
+        - id:                 PUNPCKLBWrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_UNPCK
+
+        - id:                 PUNPCKLDQrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_UNPCK
+
+        - id:                 PUNPCKLDQrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_UNPCK
+
+        - id:                 PUNPCKLQDQrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_UNPCK
+
+        - id:                 PUNPCKLQDQrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_UNPCK
+
+        - id:                 PUNPCKLWDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_UNPCK
+
+        - id:                 PUNPCKLWDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_UNPCK
 
         - id:                 PUSH16i8
           type:               linear
@@ -10145,6 +14764,34 @@ instruction-set:
           affected-by:
            - ESP:             register
           itinerary:          IIC_PUSH_IMM
+
+        - id:                 PXORrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RM
+
+        - id:                 PXORrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_BIT_P_RR
 
         - id:                 RCL16m1
           type:               linear
@@ -11931,6 +16578,126 @@ instruction-set:
            - src2:            bound
           uses:               [src1, src2]
           defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 ROUNDPDm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src11:           [register, use, ptr_rc]
+           - src12:           bound
+           - src13:           [register, use, ptr_rc_nosp]
+           - src14:           bound
+           - src15:           bound
+           - src2:            bound
+          uses:               [src11, src12, src13, src14, src15, src2]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ROUNDPS_REG
+
+        - id:                 ROUNDPDr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, VR128]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ROUNDPS_REG
+
+        - id:                 ROUNDPSm
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src11:           [register, use, ptr_rc]
+           - src12:           bound
+           - src13:           [register, use, ptr_rc_nosp]
+           - src14:           bound
+           - src15:           bound
+           - src2:            bound
+          uses:               [src11, src12, src13, src14, src15, src2]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ROUNDPS_MEM
+
+        - id:                 ROUNDPSr
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+           - src1:            [register, use, VR128]
+           - src2:            bound
+          uses:               [src1, src2]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ROUNDPS_REG
+
+        - id:                 ROUNDSDm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+           - src3:            bound
+          uses:               [src1, src21, src22, src23, src24, src25, src3]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 ROUNDSDr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, FR64]
+           - src3:            bound
+          uses:               [src1, src2, src3]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 ROUNDSSm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+           - src3:            bound
+          uses:               [src1, src21, src22, src23, src24, src25, src3]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 ROUNDSSr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, FR32]
+           - src3:            bound
+          uses:               [src1, src2, src3]
+          defines:            [src1]
           size:               0
           affects:
           affected-by:
@@ -14636,6 +19403,64 @@ instruction-set:
           affected-by:
           itinerary:          NoItinerary
 
+        - id:                 SQRTSDm
+          type:               linear
+          operands:
+           - dst:             [register, def, FR64]
+           - src11:           [register, use, ptr_rc]
+           - src12:           bound
+           - src13:           [register, use, ptr_rc_nosp]
+           - src14:           bound
+           - src15:           bound
+          uses:               [src11, src12, src13, src14, src15]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_SQRTSD_RM
+
+        - id:                 SQRTSDr
+          type:               linear
+          operands:
+           - dst:             [register, def, FR64]
+           - src1:            [register, use, FR64]
+          uses:               [src1]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_SQRTSD_RR
+
+        - id:                 SQRTSSm
+          type:               linear
+          operands:
+           - dst:             [register, def, FR32]
+           - src11:           [register, use, ptr_rc]
+           - src12:           bound
+           - src13:           [register, use, ptr_rc_nosp]
+           - src14:           bound
+           - src15:           bound
+          uses:               [src11, src12, src13, src14, src15]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_SQRTSS_RM
+
+        - id:                 SQRTSSr
+          type:               linear
+          operands:
+           - dst:             [register, def, FR32]
+           - src1:            [register, use, FR32]
+          uses:               [src1]
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_SQRTSS_RR
+
         - id:                 STC
           type:               linear
           operands:
@@ -15254,6 +20079,120 @@ instruction-set:
           affected-by:
           itinerary:          IIC_BIN_NONMEM
 
+        - id:                 SUBPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_ALU_F64P_RM
+
+        - id:                 SUBPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64P_RR
+
+        - id:                 SUBPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+           - mem:             memory
+          itinerary:          IIC_SSE_ALU_F32P_RM
+
+        - id:                 SUBPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32P_RR
+
+        - id:                 SUBSDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64S_RM
+
+        - id:                 SUBSDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, FR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F64S_RR
+
+        - id:                 SUBSSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32S_RM
+
+        - id:                 SUBSSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, FR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_ALU_F32S_RR
+
         - id:                 TAILJMPd
           type:               call
           operands:
@@ -15770,11 +20709,93 @@ instruction-set:
           affected-by:
           itinerary:          IIC_BIN_NONMEM
 
+        - id:                 UCOMISDrm
+          type:               linear
+          operands:
+           - src1:            [register, use, FR64]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            []
+          size:               0
+          affects:
+           - EFLAGS:          register
+          affected-by:
+          itinerary:          IIC_SSE_COMIS_RM
+
+        - id:                 UCOMISDrr
+          type:               linear
+          operands:
+           - src1:            [register, use, FR64]
+           - src2:            [register, use, FR64]
+          uses:               [src1, src2]
+          defines:            []
+          size:               0
+          affects:
+           - EFLAGS:          register
+          affected-by:
+          itinerary:          IIC_SSE_COMIS_RR
+
+        - id:                 UCOMISSrm
+          type:               linear
+          operands:
+           - src1:            [register, use, FR32]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            []
+          size:               0
+          affects:
+           - EFLAGS:          register
+          affected-by:
+          itinerary:          IIC_SSE_COMIS_RM
+
+        - id:                 UCOMISSrr
+          type:               linear
+          operands:
+           - src1:            [register, use, FR32]
+           - src2:            [register, use, FR32]
+          uses:               [src1, src2]
+          defines:            []
+          size:               0
+          affects:
+           - EFLAGS:          register
+          affected-by:
+          itinerary:          IIC_SSE_COMIS_RR
+
         - id:                 UD2B
           type:               linear
           operands:
           uses:               []
           defines:            []
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 V_SET0
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+          uses:               []
+          defines:            [dst]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 V_SETALLONES
+          type:               linear
+          operands:
+           - dst:             [register, def, VR128]
+          uses:               []
+          defines:            [dst]
           size:               0
           affects:
           affected-by:
@@ -16481,4 +21502,60 @@ instruction-set:
            - EFLAGS:          register
           affected-by:
           itinerary:          IIC_BIN_NONMEM
+
+        - id:                 XORPDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 XORPDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 XORPSrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
+
+        - id:                 XORPSrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          NoItinerary
 

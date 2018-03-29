@@ -88,6 +88,18 @@ data X86Instruction = ADC16i16
                     | ADD8rm
                     | ADD8rr
                     | ADD8rr_REV
+                    | ADDPDrm
+                    | ADDPDrr
+                    | ADDPSrm
+                    | ADDPSrr
+                    | ADDSDrm
+                    | ADDSDrr
+                    | ADDSSrm
+                    | ADDSSrr
+                    | ADDSUBPDrm
+                    | ADDSUBPDrr
+                    | ADDSUBPSrm
+                    | ADDSUBPSrr
                     | ADJCALLSTACKDOWN32
                     | ADJCALLSTACKDOWN64
                     | ADJCALLSTACKUP32
@@ -132,6 +144,14 @@ data X86Instruction = ADC16i16
                     | ANDN32rr
                     | ANDN64rm
                     | ANDN64rr
+                    | ANDNPDrm
+                    | ANDNPDrr
+                    | ANDNPSrm
+                    | ANDNPSrr
+                    | ANDPDrm
+                    | ANDPDrr
+                    | ANDPSrm
+                    | ANDPSrr
                     | BSF16rm
                     | BSF16rr
                     | BSF32rm
@@ -341,6 +361,22 @@ data X86Instruction = ADC16i16
                     | CMP8rm
                     | CMP8rr
                     | CMP8rr_REV
+                    | CMPPDrmi
+                    | CMPPDrmi_alt
+                    | CMPPDrri
+                    | CMPPDrri_alt
+                    | CMPPSrmi
+                    | CMPPSrmi_alt
+                    | CMPPSrri
+                    | CMPPSrri_alt
+                    | CMPSDrm
+                    | CMPSDrm_alt
+                    | CMPSDrr
+                    | CMPSDrr_alt
+                    | CMPSSrm
+                    | CMPSSrm_alt
+                    | CMPSSrr
+                    | CMPSSrr_alt
                     | CMPXCHG16B
                     | CMPXCHG16rm
                     | CMPXCHG16rr
@@ -351,7 +387,47 @@ data X86Instruction = ADC16i16
                     | CMPXCHG8B
                     | CMPXCHG8rm
                     | CMPXCHG8rr
+                    | COMISDrm
+                    | COMISDrr
+                    | COMISSrm
+                    | COMISSrr
                     | CQO
+                    | CVTDQ2PDrm
+                    | CVTDQ2PDrr
+                    | CVTDQ2PSrm
+                    | CVTDQ2PSrr
+                    | CVTPD2DQrm
+                    | CVTPD2DQrr
+                    | CVTPD2PSrm
+                    | CVTPD2PSrr
+                    | CVTPS2DQrm
+                    | CVTPS2DQrr
+                    | CVTPS2PDrm
+                    | CVTPS2PDrr
+                    | CVTSD2SI64rr
+                    | CVTSD2SIrr
+                    | CVTSD2SSrm
+                    | CVTSD2SSrr
+                    | CVTSI2SD64rm
+                    | CVTSI2SD64rr
+                    | CVTSI2SDrm
+                    | CVTSI2SDrr
+                    | CVTSI2SS64rm
+                    | CVTSI2SS64rr
+                    | CVTSI2SSrm
+                    | CVTSI2SSrr
+                    | CVTSS2SDrm
+                    | CVTSS2SDrr
+                    | CVTSS2SI64rr
+                    | CVTSS2SIrr
+                    | CVTTPD2DQrm
+                    | CVTTPD2DQrr
+                    | CVTTPS2DQrm
+                    | CVTTPS2DQrr
+                    | CVTTSD2SI64rr
+                    | CVTTSD2SIrr
+                    | CVTTSS2SI64rr
+                    | CVTTSS2SIrr
                     | CWD
                     | CWDE
                     | DEC16m
@@ -372,7 +448,58 @@ data X86Instruction = ADC16i16
                     | DIV64r
                     | DIV8m
                     | DIV8r
+                    | DIVPDrm
+                    | DIVPDrr
+                    | DIVPSrm
+                    | DIVPSrr
+                    | DIVSDrm
+                    | DIVSDrr
+                    | DIVSSrm
+                    | DIVSSrr
+                    | DPPDrmi
+                    | DPPDrri
+                    | DPPSrmi
+                    | DPPSrri
                     | ENTER
+                    | FNSTCW16m
+                    | FsANDNPDrm
+                    | FsANDNPDrr
+                    | FsANDNPSrm
+                    | FsANDNPSrr
+                    | FsANDPDrm
+                    | FsANDPDrr
+                    | FsANDPSrm
+                    | FsANDPSrr
+                    | FsFLD0SD
+                    | FsFLD0SS
+                    | FsMOVAPDrm
+                    | FsMOVAPSrm
+                    | FsORPDrm
+                    | FsORPDrr
+                    | FsORPSrm
+                    | FsORPSrr
+                    | FsVMOVAPDrm
+                    | FsVMOVAPSrm
+                    | FsXORPDrm
+                    | FsXORPDrr
+                    | FsXORPSrm
+                    | FsXORPSrr
+                    | FvANDNPDrm
+                    | FvANDNPDrr
+                    | FvANDNPSrm
+                    | FvANDNPSrr
+                    | FvANDPDrm
+                    | FvANDPDrr
+                    | FvANDPSrm
+                    | FvANDPSrr
+                    | FvORPDrm
+                    | FvORPDrr
+                    | FvORPSrm
+                    | FvORPSrr
+                    | FvXORPDrm
+                    | FvXORPDrr
+                    | FvXORPSrm
+                    | FvXORPSrr
                     | IDIV16m
                     | IDIV16r
                     | IDIV32m
@@ -490,6 +617,38 @@ data X86Instruction = ADC16i16
                     | LOOP
                     | LOOPE
                     | LOOPNE
+                    | MAXCPDrm
+                    | MAXCPDrr
+                    | MAXCPSrm
+                    | MAXCPSrr
+                    | MAXCSDrm
+                    | MAXCSDrr
+                    | MAXCSSrm
+                    | MAXCSSrr
+                    | MAXPDrm
+                    | MAXPDrr
+                    | MAXPSrm
+                    | MAXPSrr
+                    | MAXSDrm
+                    | MAXSDrr
+                    | MAXSSrm
+                    | MAXSSrr
+                    | MINCPDrm
+                    | MINCPDrr
+                    | MINCPSrm
+                    | MINCPSrr
+                    | MINCSDrm
+                    | MINCSDrr
+                    | MINCSSrm
+                    | MINCSSrr
+                    | MINPDrm
+                    | MINPDrr
+                    | MINPSrm
+                    | MINPSrr
+                    | MINSDrm
+                    | MINSDrr
+                    | MINSSrm
+                    | MINSSrr
                     | MOV16ao16
                     | MOV16ao32
                     | MOV16ao64
@@ -531,6 +690,10 @@ data X86Instruction = ADC16i16
                     | MOV64rm
                     | MOV64rr
                     | MOV64rr_REV
+                    | MOV64toPQIrm
+                    | MOV64toPQIrr
+                    | MOV64toSDrm
+                    | MOV64toSDrr
                     | MOV8ao16
                     | MOV8ao32
                     | MOV8ao64
@@ -547,15 +710,76 @@ data X86Instruction = ADC16i16
                     | MOV8rr
                     | MOV8rr_NOREX
                     | MOV8rr_REV
+                    | MOVAPDmr
+                    | MOVAPDrm
+                    | MOVAPDrr
+                    | MOVAPDrr_REV
+                    | MOVAPSmr
+                    | MOVAPSrm
+                    | MOVAPSrr
+                    | MOVAPSrr_REV
                     | MOVBE16mr
                     | MOVBE16rm
                     | MOVBE32mr
                     | MOVBE32rm
                     | MOVBE64mr
                     | MOVBE64rm
+                    | MOVDDUPrm
+                    | MOVDDUPrr
+                    | MOVDI2PDIrm
+                    | MOVDI2PDIrr
+                    | MOVDI2SSrm
+                    | MOVDI2SSrr
+                    | MOVDQAmr
+                    | MOVDQArm
+                    | MOVDQArr
+                    | MOVDQArr_REV
+                    | MOVDQUmr
+                    | MOVDQUrm
+                    | MOVDQUrr
+                    | MOVDQUrr_REV
+                    | MOVHLPSrr
+                    | MOVHPDmr
+                    | MOVHPDrm
+                    | MOVHPSmr
+                    | MOVHPSrm
+                    | MOVLHPSrr
+                    | MOVLPDmr
+                    | MOVLPDrm
+                    | MOVLPSmr
+                    | MOVLPSrm
+                    | MOVNTDQArm
+                    | MOVNTDQmr
+                    | MOVNTPDmr
+                    | MOVNTPSmr
+                    | MOVNTSD
+                    | MOVNTSS
+                    | MOVPDI2DImr
+                    | MOVPDI2DIrr
+                    | MOVPQI2QImr
+                    | MOVPQI2QIrr
+                    | MOVPQIto64rm
+                    | MOVPQIto64rr
+                    | MOVQI2PQIrm
                     | MOVSB
+                    | MOVSDmr
+                    | MOVSDrm
+                    | MOVSDrr
+                    | MOVSDrr_REV
+                    | MOVSDto64mr
+                    | MOVSDto64rr
+                    | MOVSHDUPrm
+                    | MOVSHDUPrr
                     | MOVSL
+                    | MOVSLDUPrm
+                    | MOVSLDUPrr
                     | MOVSQ
+                    | MOVSS2DImr
+                    | MOVSS2DIrr
+                    | MOVSSmr
+                    | MOVSSrm
+                    | MOVSSrr
+                    | MOVSSrr_REV
                     | MOVSW
                     | MOVSX16rm8
                     | MOVSX16rr8
@@ -571,6 +795,17 @@ data X86Instruction = ADC16i16
                     | MOVSX64rr16
                     | MOVSX64rr32
                     | MOVSX64rr8
+                    | MOVUPDmr
+                    | MOVUPDrm
+                    | MOVUPDrr
+                    | MOVUPDrr_REV
+                    | MOVUPSmr
+                    | MOVUPSrm
+                    | MOVUPSrr
+                    | MOVUPSrr_REV
+                    | MOVZPQILo2PQIrm
+                    | MOVZPQILo2PQIrr
+                    | MOVZQI2PQIrm
                     | MOVZX16rm8
                     | MOVZX16rr8
                     | MOVZX32_NOREXrm8
@@ -583,6 +818,8 @@ data X86Instruction = ADC16i16
                     | MOVZX64rm8
                     | MOVZX64rr16
                     | MOVZX64rr8
+                    | MPSADBWrmi
+                    | MPSADBWrri
                     | MUL16m
                     | MUL16r
                     | MUL32m
@@ -591,6 +828,14 @@ data X86Instruction = ADC16i16
                     | MUL64r
                     | MUL8m
                     | MUL8r
+                    | MULPDrm
+                    | MULPDrr
+                    | MULPSrm
+                    | MULPSrr
+                    | MULSDrm
+                    | MULSDrr
+                    | MULSSrm
+                    | MULSSrr
                     | NEG16m
                     | NEG16r
                     | NEG32m
@@ -647,6 +892,34 @@ data X86Instruction = ADC16i16
                     | OR8rm
                     | OR8rr
                     | OR8rr_REV
+                    | ORPDrm
+                    | ORPDrr
+                    | ORPSrm
+                    | ORPSrr
+                    | PADDBrm
+                    | PADDBrr
+                    | PADDDrm
+                    | PADDDrr
+                    | PADDQrm
+                    | PADDQrr
+                    | PADDWrm
+                    | PADDWrr
+                    | PANDNrm
+                    | PANDNrr
+                    | PANDrm
+                    | PANDrr
+                    | PCMPEQBrm
+                    | PCMPEQBrr
+                    | PCMPEQDrm
+                    | PCMPEQDrr
+                    | PCMPEQQrm
+                    | PCMPEQQrr
+                    | PCMPEQWrm
+                    | PCMPEQWrr
+                    | PMULDQrm
+                    | PMULDQrr
+                    | PMULUDQrm
+                    | PMULUDQrr
                     | POP16r
                     | POP16rmm
                     | POP16rmr
@@ -662,6 +935,58 @@ data X86Instruction = ADC16i16
                     | POPCNT32rr
                     | POPCNT64rm
                     | POPCNT64rr
+                    | PORrm
+                    | PORrr
+                    | PSHUFBrm
+                    | PSHUFBrr
+                    | PSHUFDmi
+                    | PSHUFDri
+                    | PSHUFHWmi
+                    | PSHUFHWri
+                    | PSHUFLWmi
+                    | PSHUFLWri
+                    | PSLLDQri
+                    | PSLLDri
+                    | PSLLDrm
+                    | PSLLDrr
+                    | PSLLQri
+                    | PSLLQrm
+                    | PSLLQrr
+                    | PSLLWri
+                    | PSLLWrm
+                    | PSLLWrr
+                    | PSRADri
+                    | PSRADrm
+                    | PSRADrr
+                    | PSRAWri
+                    | PSRAWrm
+                    | PSRAWrr
+                    | PSRLDQri
+                    | PSRLDri
+                    | PSRLDrm
+                    | PSRLDrr
+                    | PSRLQri
+                    | PSRLQrm
+                    | PSRLQrr
+                    | PSRLWri
+                    | PSRLWrm
+                    | PSRLWrr
+                    | PSUBBrm
+                    | PSUBBrr
+                    | PSUBDrm
+                    | PSUBDrr
+                    | PSUBQrm
+                    | PSUBQrr
+                    | PSUBWrm
+                    | PSUBWrr
+                    | PUNPCKLBWrm
+                    | PUNPCKLBWrr
+                    | PUNPCKLDQrm
+                    | PUNPCKLDQrr
+                    | PUNPCKLQDQrm
+                    | PUNPCKLQDQrr
+                    | PUNPCKLWDrm
+                    | PUNPCKLWDrr
                     | PUSH16i8
                     | PUSH16r
                     | PUSH16rmm
@@ -696,6 +1021,8 @@ data X86Instruction = ADC16i16
                     | PUSHSS32
                     | PUSHi16
                     | PUSHi32
+                    | PXORrm
+                    | PXORrr
                     | RCL16m1
                     | RCL16mCL
                     | RCL16mi
@@ -819,6 +1146,14 @@ data X86Instruction = ADC16i16
                     | RORX32ri
                     | RORX64mi
                     | RORX64ri
+                    | ROUNDPDm
+                    | ROUNDPDr
+                    | ROUNDPSm
+                    | ROUNDPSr
+                    | ROUNDSDm
+                    | ROUNDSDr
+                    | ROUNDSSm
+                    | ROUNDSSr
                     | SAR16m1
                     | SAR16mCL
                     | SAR16mi
@@ -999,6 +1334,10 @@ data X86Instruction = ADC16i16
                     | SHRX32rr
                     | SHRX64rm
                     | SHRX64rr
+                    | SQRTSDm
+                    | SQRTSDr
+                    | SQRTSSm
+                    | SQRTSSr
                     | STC
                     | STD
                     | STOSB
@@ -1041,6 +1380,14 @@ data X86Instruction = ADC16i16
                     | SUB8rm
                     | SUB8rr
                     | SUB8rr_REV
+                    | SUBPDrm
+                    | SUBPDrr
+                    | SUBPSrm
+                    | SUBPSrr
+                    | SUBSDrm
+                    | SUBSDrr
+                    | SUBSSrm
+                    | SUBSSrr
                     | TAILJMPd
                     | TAILJMPd64
                     | TAILJMPd64_REX
@@ -1077,7 +1424,13 @@ data X86Instruction = ADC16i16
                     | TEST8ri_NOREX
                     | TEST8rm
                     | TEST8rr
+                    | UCOMISDrm
+                    | UCOMISDrr
+                    | UCOMISSrm
+                    | UCOMISSrr
                     | UD2B
+                    | V_SET0
+                    | V_SETALLONES
                     | XCHG16ar
                     | XCHG16rm
                     | XCHG16rr
@@ -1126,6 +1479,10 @@ data X86Instruction = ADC16i16
                     | XOR8rm
                     | XOR8rr
                     | XOR8rr_REV
+                    | XORPDrm
+                    | XORPDrr
+                    | XORPSrm
+                    | XORPSrr
                     | MOVE8
                     | MOVE16
                     | MOVE32

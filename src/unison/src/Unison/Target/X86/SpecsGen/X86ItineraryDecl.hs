@@ -8,6 +8,14 @@ data X86Itinerary = IIC_BIN_CARRY_NONMEM
                   | IIC_BIN_NONMEM
                   | IIC_BIN_MEM
                   | NoItinerary
+                  | IIC_SSE_ALU_F64P_RM
+                  | IIC_SSE_ALU_F64P_RR
+                  | IIC_SSE_ALU_F32P_RM
+                  | IIC_SSE_ALU_F32P_RR
+                  | IIC_SSE_ALU_F64S_RM
+                  | IIC_SSE_ALU_F64S_RR
+                  | IIC_SSE_ALU_F32S_RM
+                  | IIC_SSE_ALU_F32S_RR
                   | IIC_BIT_SCAN_MEM
                   | IIC_BIT_SCAN_REG
                   | IIC_BSWAP
@@ -35,6 +43,17 @@ data X86Itinerary = IIC_BIN_CARRY_NONMEM
                   | IIC_CMPXCHG_8B
                   | IIC_CMPXCHG_MEM8
                   | IIC_CMPXCHG_REG8
+                  | IIC_SSE_COMIS_RM
+                  | IIC_SSE_COMIS_RR
+                  | IIC_SSE_CVT_PD_RR
+                  | IIC_SSE_CVT_PD_RM
+                  | IIC_SSE_CVT_PS_RM
+                  | IIC_SSE_CVT_PS_RR
+                  | IIC_SSE_CVT_SD2SI_RR
+                  | IIC_SSE_CVT_Scalar_RM
+                  | IIC_SSE_CVT_Scalar_RR
+                  | IIC_SSE_CVT_SS2SI64_RR
+                  | IIC_SSE_CVT_SS2SI32_RR
                   | IIC_UNARY_MEM
                   | IIC_UNARY_REG
                   | IIC_DIV16
@@ -42,7 +61,20 @@ data X86Itinerary = IIC_BIN_CARRY_NONMEM
                   | IIC_DIV64
                   | IIC_DIV8_MEM
                   | IIC_DIV8_REG
+                  | IIC_SSE_DIV_F64P_RM
+                  | IIC_SSE_DIV_F64P_RR
+                  | IIC_SSE_DIV_F32P_RR
+                  | IIC_SSE_DIV_F64S_RM
+                  | IIC_SSE_DIV_F64S_RR
+                  | IIC_SSE_DIV_F32S_RR
+                  | IIC_SSE_DPPD_RM
+                  | IIC_SSE_DPPD_RR
+                  | IIC_SSE_DPPS_RR
                   | IIC_ENTER
+                  | IIC_FNSTCW
+                  | IIC_SSE_BIT_P_RM
+                  | IIC_SSE_BIT_P_RR
+                  | IIC_SSE_MOVA_P_RM
                   | IIC_IDIV16
                   | IIC_IDIV32
                   | IIC_IDIV64
@@ -78,27 +110,61 @@ data X86Itinerary = IIC_BIN_CARRY_NONMEM
                   | IIC_MOV_MEM
                   | IIC_MOV
                   | IIC_ALU_NONMEM
+                  | IIC_SSE_MOVDQ
+                  | IIC_SSE_MOVA_P_MR
+                  | IIC_SSE_MOVA_P_RR
                   | IIC_MOVBE
+                  | IIC_SSE_MOV_LH
+                  | IIC_SSE_MOVU_P_MR
+                  | IIC_SSE_MOVU_P_RM
+                  | IIC_SSE_MOVU_P_RR
+                  | IIC_SSE_MOVNT
+                  | IIC_SSE_MOVD_ToGP
+                  | IIC_SSE_MOVQ_RR
                   | IIC_MOVS
+                  | IIC_SSE_MOV_S_MR
+                  | IIC_SSE_MOV_S_RM
+                  | IIC_SSE_MOV_S_RR
                   | IIC_MOVSX_R16_M8
                   | IIC_MOVSX_R16_R8
                   | IIC_MOVSX
                   | IIC_MOVZX_R16_M8
                   | IIC_MOVZX_R16_R8
                   | IIC_MOVZX
+                  | IIC_SSE_MPSADBW_RM
+                  | IIC_SSE_MPSADBW_RR
                   | IIC_MUL16_MEM
                   | IIC_MUL16_REG
                   | IIC_MUL32_MEM
                   | IIC_MUL32_REG
                   | IIC_MUL64
                   | IIC_MUL8
+                  | IIC_SSE_MUL_F64P_RM
+                  | IIC_SSE_MUL_F64P_RR
+                  | IIC_SSE_MUL_F32P_RR
+                  | IIC_SSE_MUL_F64S_RM
+                  | IIC_SSE_MUL_F64S_RR
+                  | IIC_SSE_MUL_F32S_RR
                   | IIC_NOP
                   | IIC_ALU_MEM
+                  | IIC_SSE_INTALU_P_RM
+                  | IIC_SSE_INTALU_P_RR
+                  | IIC_SSE_INTALUQ_P_RM
+                  | IIC_SSE_INTALUQ_P_RR
                   | IIC_POP_REG16
                   | IIC_POP_MEM
                   | IIC_POP_REG
                   | IIC_SSE_POPCNT_RM
                   | IIC_SSE_POPCNT_RR
+                  | IIC_SSE_PSHUFB_RM
+                  | IIC_SSE_PSHUFB_RR
+                  | IIC_SSE_PSHUF_MI
+                  | IIC_SSE_PSHUF_RI
+                  | IIC_SSE_INTSHDQ_P_RI
+                  | IIC_SSE_INTSH_P_RI
+                  | IIC_SSE_INTSH_P_RM
+                  | IIC_SSE_INTSH_P_RR
+                  | IIC_SSE_UNPCK
                   | IIC_PUSH_IMM
                   | IIC_PUSH_REG
                   | IIC_PUSH_MEM
@@ -111,6 +177,8 @@ data X86Itinerary = IIC_BIN_CARRY_NONMEM
                   | IIC_REP_STOS
                   | IIC_RET_IMM
                   | IIC_RET
+                  | IIC_SSE_ROUNDPS_REG
+                  | IIC_SSE_ROUNDPS_MEM
                   | IIC_SET_M
                   | IIC_SET_R
                   | IIC_SHD16_MEM_CL
@@ -125,6 +193,10 @@ data X86Itinerary = IIC_BIN_CARRY_NONMEM
                   | IIC_SHD64_MEM_IM
                   | IIC_SHD64_REG_CL
                   | IIC_SHD64_REG_IM
+                  | IIC_SSE_SQRTSD_RM
+                  | IIC_SSE_SQRTSD_RR
+                  | IIC_SSE_SQRTSS_RM
+                  | IIC_SSE_SQRTSS_RR
                   | IIC_STC
                   | IIC_STD
                   | IIC_STOS
