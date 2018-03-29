@@ -73,6 +73,7 @@ registerAtoms R15W = (R170, R171)
 -- | Register atoms of 4-byte registers
 
 registerAtoms EAX = (R000, R003)
+registerAtoms FAX = (R004, R007) {- handy shorthand in function calls -}
 registerAtoms ECX = (R010, R013)
 registerAtoms EDX = (R020, R023)
 registerAtoms EBX = (R030, R033)
@@ -108,6 +109,13 @@ registerAtoms R13 = (R150, R157)
 registerAtoms R14 = (R160, R167)
 registerAtoms R15 = (R170, R177)
 
+-- | Register atoms of 16-byte "registers"
+
+registerAtoms RCX_RDX = (R010, R027)
+registerAtoms RSI_RDI = (R040, R057)
+registerAtoms R8_R9 = (R100, R117)
+registerAtoms R10_R11 = (R120, R137)
+
 -- not really in the register array
 registerAtoms EFLAGS = (R200, R207)
 registerAtoms RIP = (R210, R217)
@@ -116,7 +124,7 @@ registerAtoms r = error ("unmatched: registerAtoms " ++ show r)
 
 -- | Register classes
 regClasses =
-    map RegisterClass [CCR, GR8, GR8_NOREX, GR16, GR32, GR32_NOREX, GR32_NOAX, GR64, GR64_NOSP,
+    map RegisterClass [CCR, GR8, GR8_NOREX, GR16, GR32, GR32_NOREX, GR32_NOAX, GR32_AUX, GR64, GR64_NOSP, GR128_AUX,
                        Ptr_rc, Ptr_rc_nosp, Ptr_rc_norex, Ptr_rc_norex_nosp, Ptr_rc_tailcall, AUX] ++
     map InfiniteRegisterClass [M8, M16, M32, M64, RM8, RM16, RM32, RM64]
 
@@ -162,11 +170,17 @@ registers (RegisterClass GR32_NOREX) =
 registers (RegisterClass GR32_NOAX) =
     [     ECX, EDX, EBX, ESI, EDI, ESP, EBP, R8D, R9D, R10D, R11D, R12D, R13D, R14D, R15D]
 
+registers (RegisterClass GR32_AUX) =
+    [FAX]
+
 registers (RegisterClass GR64) = {- llvm/lib/Target/X86/X86RegisterInfo includes RIP, saying it's inaccurate -}
     [RAX, RCX, RDX, RBX, RSI, RDI, RSP, RBP, R8, R9, R10, R11, R12, R13, R14, R15     ]
 
 registers (RegisterClass GR64_NOSP) =
     [RAX, RCX, RDX, RBX, RSI, RDI,      RBP, R8, R9, R10, R11, R12, R13, R14, R15     ]
+
+registers (RegisterClass GR128_AUX) =
+    [RCX_RDX, RSI_RDI, R8_R9, R10_R11]
 
 registers (RegisterClass Ptr_rc) =
     registers (RegisterClass GR64)
@@ -425,6 +439,7 @@ regStrings = M.fromList $
    (R14W, "r14w"),
    (R15W, "r15w"),
    (EAX, "eax"),
+   (FAX, "fax"),
    (ECX, "ecx"),
    (EDX, "edx"),
    (EBX, "ebx"),
@@ -455,5 +470,9 @@ regStrings = M.fromList $
    (R12, "r12"),
    (R13, "r13"),
    (R14, "r14"),
-   (R15, "r15")]
+   (R15, "r15"),
+   (RCX_RDX, "rcx_rdx"),
+   (RSI_RDI, "rsi_rdi"),
+   (R8_R9, "r8_r9"),
+   (R10_R11, "r10_r11")]
 

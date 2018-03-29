@@ -195,6 +195,7 @@ data X86Register =
     R14W |
     R15W |
     EAX |
+    FAX |
     ECX |
     EDX |
     EBX |
@@ -225,5 +226,9 @@ data X86Register =
     R12 |
     R13 |
     R14 |
-    R15
+    R15 |
+    RCX_RDX |
+    RSI_RDI |
+    R8_R9 |
+    R10_R11
     deriving (Eq, Ord)
