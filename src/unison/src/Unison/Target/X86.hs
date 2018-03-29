@@ -256,42 +256,12 @@ rematInstrs i
 
 -- | Transforms copy instructions into natural instructions
 
--- FIXME: adapt for X86
--- -- handle regular copies
--- fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
---   | i `elem` [MOVE, MOVE_ALL, MOVE_D] =
---     Linear {oIs = [TargetInstruction (fromCopyInstr i (s, d))],
---             oUs = [s] ++ defaultUniPred,
---             oDs = [d]}
---   | i `elem` [STORE, STORE_T, STORE_D] =
---     Linear {oIs = [TargetInstruction (fromCopyInstr i (s, d))],
---             oUs  = [mkOprX86SP, mkBoundMachineFrameObject i d, s] ++
---                    defaultUniPred,
---             oDs  = []}
---   | i `elem` [LOAD, LOAD_T, LOAD_D] =
---     Linear {oIs = [TargetInstruction (fromCopyInstr i (s, d))],
---             oUs  = [mkOprX86SP, mkBoundMachineFrameObject i s] ++
---                    defaultUniPred,
---             oDs  = [d]}
---   | i `elem` [TPUSH2_r4_7, TPUSH2_r4_11] =
---     let w = i == TPUSH2_r4_11
---     in Linear {oIs = [TargetInstruction (fromCopyInstr i (s, d))],
---                oUs = [mkOprX86SP | w] ++ defaultUniPred ++
---                      map (Register . TargetRegister) (pushRegs i ++ [LR]),
---                oDs = [mkOprX86SP | w]}
---   | i `elem` [VSTMDDB_UPD_d8_15] =
---     Linear {oIs = [TargetInstruction (fromCopyInstr i (s, d))],
---             oUs = [mkOprX86SP] ++ defaultUniPred ++ mkPushRegs i,
---             oDs = [mkOprX86SP]}
---   | i `elem` [TPOP2_r4_7, TPOP2_r4_7_RET, TPOP2_r4_11, TPOP2_r4_11_RET] =
---     let w = i `elem` [TPOP2_r4_11, TPOP2_r4_11_RET]
---     in Linear {oIs = [TargetInstruction (fromCopyInstr i (s, d))],
---                oUs = [mkOprX86SP | w] ++ defaultUniPred ++ mkPushRegs i,
---                oDs = [mkOprX86SP | w]}
---   | i `elem` [VLDMDIA_UPD_d8_15] =
---     Linear {oIs = [TargetInstruction (fromCopyInstr i (s, d))],
---             oUs = [mkOprX86SP] ++ defaultUniPred ++ mkPushRegs i,
---             oDs = [mkOprX86SP]}
+-- handle regular copies
+fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
+  | i `elem` [MOVE8, MOVE16, MOVE32, MOVE64] =
+    Linear {oIs = [TargetInstruction (fromCopyInstr i)],
+            oUs = [s],
+            oDs = [d]}
 
 -- -- handle rematerialization copies
 -- fromCopy (Just (Linear {oUs = us}))
@@ -323,30 +293,8 @@ fromCopy _ (Natural o) = o
 --   | i `elem` [STORE, STORE_T, LOAD, LOAD_T] = 1
 --   | i `elem` [STORE_D, LOAD_D] = 2
 
--- fromCopyInstr MOVE     _ = TMOVr
--- fromCopyInstr MOVE_D   _ = VMOVD
--- fromCopyInstr STORE    _ = T2STRi12
--- fromCopyInstr STORE_T  _ = TSTRi
--- fromCopyInstr STORE_D  _ = VSTRD
--- fromCopyInstr LOAD     _ = T2LDRi12
--- fromCopyInstr LOAD_T   _ = TLDRi
--- fromCopyInstr LOAD_D   _ = VLDRD
--- fromCopyInstr MOVE_ALL (s, d)
---   | isGPR s && isGPR d = TMOVr
---   | isGPR s && isSPR d = VMOVSR
---   | isSPR s && isGPR d = VMOVRS
---   | isSPR s && isSPR d = VMOVS
--- fromCopyInstr TPUSH2_r4_7 _  = TPUSH
--- fromCopyInstr TPUSH2_r4_11 _ = T2STMDB_UPD
--- fromCopyInstr VSTMDDB_UPD_d8_15 _ = VSTMDDB_UPD
--- fromCopyInstr TPOP2_r4_7 _      = TPOP
--- fromCopyInstr TPOP2_r4_7_RET _  = TPOP_RET
--- fromCopyInstr TPOP2_r4_11 _     = T2LDMIA_UPD
--- fromCopyInstr TPOP2_r4_11_RET _ = T2LDMIA_RET
--- fromCopyInstr VLDMDIA_UPD_d8_15 _ = VLDMDIA_UPD
-
--- isSPR r = rTargetReg (regId r) `elem` registers (RegisterClass SPR)
--- isGPR r = rTargetReg (regId r) `elem` registers (RegisterClass GPR)
+fromCopyInstr i
+  | isJust (SpecsGen.parent i) = fromJust (SpecsGen.parent i)
 
 -- | Declares target architecture resources
 

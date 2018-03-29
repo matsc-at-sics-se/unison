@@ -11,7 +11,7 @@ This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.X86.Common
     (unitLatency, align, 
-     defaultMIRPred, defaultUniPred, isRematerializable, isSourceInstr,
+     isRematerializable, isSourceInstr,
      isDematInstr, isRematInstr, sourceInstr, dematInstr, rematInstr,
      originalInstr, spillInstrs, condMoveInstrs, promotedRegs, readsSideEffect,
      writesSideEffect) where
@@ -28,10 +28,6 @@ import Unison.Target.X86.X86RegisterDecl
 
 unitLatency to = API.isBoolOption "unit-latency" to
 align to = API.isBoolOption "align" to
-
-defaultMIRPred = [mkMachineImm 14, mkMachineNullReg]
-
-defaultUniPred = map mkBound defaultMIRPred
 
 data RematTriple = RematTriple {
   source :: X86Instruction,
