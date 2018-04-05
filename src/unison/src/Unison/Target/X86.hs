@@ -263,23 +263,22 @@ fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
             oUs = [s],
             oDs = [d]}
 
--- -- handle rematerialization copies
--- fromCopy (Just (Linear {oUs = us}))
---          Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
---   | isDematInstr i =
---     Linear {oIs = [mkNullInstruction], oUs = [s], oDs = [d]}
---   | isRematInstr i =
---     Linear {oIs = [TargetInstruction (originalInstr i)], oUs = us, oDs = [d]}
+-- handle rematerialization copies
+fromCopy (Just (Linear {oUs = us}))
+         Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
+  | isDematInstr i =
+    Linear {oIs = [mkNullInstruction], oUs = [s], oDs = [d]}
+  | isRematInstr i =
+    Linear {oIs = [TargetInstruction (originalInstr i)], oUs = us, oDs = [d]}
+  | True =
+    Linear {oIs = [TargetInstruction i], oUs = [s], oDs = [d]}
 
--- -- handle rematerialization sources
--- fromCopy _ (Natural o @ Linear {oIs = [TargetInstruction i]})
---   | isSourceInstr i = o {oIs = [mkNullInstruction]}
+-- handle rematerialization sources
+fromCopy _ (Natural o @ Linear {oIs = [TargetInstruction i]})
+  | isSourceInstr i = o {oIs = [mkNullInstruction]}
 
-fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d} =
-    Linear {oIs = [TargetInstruction i],
-            oUs = [s], oDs = [d]}
 fromCopy _ (Natural o) = o
---fromCopy _ o = o
+fromCopy _ o = error ("unmatched pattern: fromCopy " ++ show o)
 
 -- mkPushRegs i = map (Register . TargetRegister) (pushRegs i)
 
