@@ -24,6 +24,29 @@ itineraryUsage' to i it =
        [u {occupation = 1, offset = 0} | u  <- us]
      else us
 
+-- these are NoItinirary, but they are real instructions nevertheless AFAIK
+itineraryUsage i _
+  | i `elem`
+      [ANDNPDrm, ANDNPDrr, ANDNPSrm, ANDNPSrr, ANDPDrm,
+       ANDPDrr, ANDPSrm, ANDPSrr, BTR64rr, FsFLD0SD, FsFLD0SS, MOV16ao64,
+       MOV16o64a, 
+       MOV32ao64, MOV32o64a, 
+       MOV32r1, MOV32r1_remat,
+       MOV32r_1, MOV32r_1_remat,
+       MOV32ri64, MOV32ri64_remat,
+       MOV64ao64, MOV64o64a,
+       MOV8ao64, MOV8o64a, MOVNTDQArm,
+       MOVNTSD, MOVNTSS, ORPDrm, ORPDrr, ORPSrm, ORPSrr, PCMPEQQrm,
+       PCMPEQQrr, PMULDQrm, PMULDQrr, PMULUDQrm, PMULUDQrr,
+       RORX32mi, RORX32ri, RORX64mi, RORX64ri,
+       ROUNDSDm, ROUNDSDr, ROUNDSSm, ROUNDSSr, SARX32rm, SARX32rr,
+       SARX64rm, SARX64rr, SETB_C16r, SETB_C32r, SETB_C64r, SETB_C8r,
+       SHLX32rm, SHLX32rr, SHLX64rm, SHLX64rr, SHRX32rm, SHRX32rr,
+       SHRX64rm, SHRX64rr, TCRETURNdi, TCRETURNdi64, TCRETURNmi,
+       TCRETURNmi64, TCRETURNri, TCRETURNri64, UD2B, V_SET0, V_SETALLONES,
+       XORPDrm, XORPDrr, XORPSrm, XORPSrr]
+  = [mkUsage Pipe 1 1]
+
 itineraryUsage _ it
   | it `elem` [NoItinerary] = []
 
