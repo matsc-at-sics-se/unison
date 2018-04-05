@@ -74,22 +74,37 @@ registerAtoms R15W = (R170, R171)
 -- | Register atoms of 4-byte registers
 
 registerAtoms EAX = (R000, R003)
-registerAtoms FAX = (R004, R007) {- handy shorthand in function calls -}
+registerAtoms EAX_HI = (R004, R007) {- handy shorthand in function calls -}
 registerAtoms ECX = (R010, R013)
+registerAtoms ECX_HI = (R014, R017)
 registerAtoms EDX = (R020, R023)
+registerAtoms EDX_HI = (R024, R027)
 registerAtoms EBX = (R030, R033)
+registerAtoms EBX_HI = (R034, R037)
 registerAtoms ESI = (R040, R043)
+registerAtoms ESI_HI = (R044, R047)
 registerAtoms EDI = (R050, R053)
+registerAtoms EDI_HI = (R054, R057)
 registerAtoms ESP = (R060, R063)
+registerAtoms ESP_HI = (R064, R067)
 registerAtoms EBP = (R070, R073)
+registerAtoms EBP_HI = (R074, R077)
 registerAtoms R8D = (R100, R103)
+registerAtoms R8D_HI = (R104, R107)
 registerAtoms R9D = (R110, R113)
+registerAtoms R9D_HI = (R114, R117)
 registerAtoms R10D = (R120, R123)
+registerAtoms R10D_HI = (R124, R127)
 registerAtoms R11D = (R130, R133)
+registerAtoms R11D_HI = (R134, R137)
 registerAtoms R12D = (R140, R143)
+registerAtoms R12D_HI = (R144, R147)
 registerAtoms R13D = (R150, R153)
+registerAtoms R13D_HI = (R154, R157)
 registerAtoms R14D = (R160, R163)
+registerAtoms R14D_HI = (R164, R167)
 registerAtoms R15D = (R170, R173)
+registerAtoms R15D_HI = (R174, R177)
 
 -- | Register atoms of 8-byte registers
 
@@ -211,7 +226,8 @@ registers (RegisterClass GR32_NOAX) =
     [     ECX, EDX, EBX, ESI, EDI, ESP, EBP, R8D, R9D, R10D, R11D, R12D, R13D, R14D, R15D]
 
 registers (RegisterClass GR32_AUX) =
-    [FAX]
+    [EAX_HI, ECX_HI, EDX_HI, EBX_HI, ESI_HI, EDI_HI, ESP_HI, EBP_HI,
+     R8D_HI, R9D_HI, R10D_HI, R11D_HI, R12D_HI, R13D_HI, R14D_HI, R15D_HI]
 
 registers (RegisterClass GR64) = {- llvm/lib/Target/X86/X86RegisterInfo includes RIP, saying it's inaccurate -}
     [RAX, RCX, RDX, RBX, RSI, RDI, RSP, RBP, R8, R9, R10, R11, R12, R13, R14, R15, RIP]
@@ -616,7 +632,6 @@ regStrings = M.fromList $
    (R14W, "r14w"),
    (R15W, "r15w"),
    (EAX, "eax"),
-   (FAX, "fax"),
    (ECX, "ecx"),
    (EDX, "edx"),
    (EBX, "ebx"),
@@ -632,6 +647,22 @@ regStrings = M.fromList $
    (R13D, "r13d"),
    (R14D, "r14d"),
    (R15D, "r15d"),
+   (EAX_HI, "eax_hi"),
+   (ECX_HI, "ecx_hi"),
+   (EDX_HI, "edx_hi"),
+   (EBX_HI, "ebx_hi"),
+   (ESI_HI, "esi_hi"),
+   (EDI_HI, "edi_hi"),
+   (ESP_HI, "esp_hi"),
+   (EBP_HI, "ebp_hi"),
+   (R8D_HI, "r8d_hi"),
+   (R9D_HI, "r9d_hi"),
+   (R10D_HI, "r10d_hi"),
+   (R11D_HI, "r11d_hi"),
+   (R12D_HI, "r12d_hi"),
+   (R13D_HI, "r13d_hi"),
+   (R14D_HI, "r14d_hi"),
+   (R15D_HI, "r15d_hi"),
    (RAX, "rax"),
    (RCX, "rcx"),
    (RDX, "rdx"),

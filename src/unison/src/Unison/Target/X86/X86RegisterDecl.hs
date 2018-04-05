@@ -323,7 +323,6 @@ data X86Register =
     R14W |
     R15W |
     EAX |
-    FAX |
     ECX |
     EDX |
     EBX |
@@ -339,6 +338,22 @@ data X86Register =
     R13D |
     R14D |
     R15D |
+    EAX_HI |
+    ECX_HI |
+    EDX_HI |
+    EBX_HI |
+    ESI_HI |
+    EDI_HI |
+    ESP_HI |
+    EBP_HI |
+    R8D_HI |
+    R9D_HI |
+    R10D_HI |
+    R11D_HI |
+    R12D_HI |
+    R13D_HI |
+    R14D_HI |
+    R15D_HI |
     RAX |
     RCX |
     RDX |
