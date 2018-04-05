@@ -14206,6 +14206,118 @@ instruction-set:
           affected-by:
           itinerary:          IIC_SSE_INTALU_P_RR
 
+        - id:                 PUNPCKHBWrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_UNPCK
+
+        - id:                 PUNPCKHBWrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_UNPCK
+
+        - id:                 PUNPCKHDQrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_UNPCK
+
+        - id:                 PUNPCKHDQrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_UNPCK
+
+        - id:                 PUNPCKHQDQrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_UNPCK
+
+        - id:                 PUNPCKHQDQrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_UNPCK
+
+        - id:                 PUNPCKHWDrm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src21:           [register, use, ptr_rc]
+           - src22:           bound
+           - src23:           [register, use, ptr_rc_nosp]
+           - src24:           bound
+           - src25:           bound
+          uses:               [src1, src21, src22, src23, src24, src25]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_UNPCK
+
+        - id:                 PUNPCKHWDrr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, VR128]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+          affects:
+          affected-by:
+          itinerary:          IIC_SSE_UNPCK
+
         - id:                 PUNPCKLBWrm
           type:               linear
           operands:

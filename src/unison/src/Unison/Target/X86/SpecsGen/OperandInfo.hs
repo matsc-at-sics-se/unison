@@ -645,9 +645,10 @@ operandInfo i
        PADDBrr, PADDDrr, PADDQrr, PADDWrr, PANDNrr, PANDrr, PCMPEQBrr,
        PCMPEQDrr, PCMPEQQrr, PCMPEQWrr, PMULDQrr, PMULUDQrr, PORrr,
        PSHUFBrr, PSLLDrr, PSLLQrr, PSLLWrr, PSRADrr, PSRAWrr, PSRLDrr,
-       PSRLQrr, PSRLWrr, PSUBBrr, PSUBDrr, PSUBQrr, PSUBWrr, PUNPCKLBWrr,
-       PUNPCKLDQrr, PUNPCKLQDQrr, PUNPCKLWDrr, PXORrr, SUBPDrr, SUBPSrr,
-       XORPDrr, XORPSrr]
+       PSRLQrr, PSRLWrr, PSUBBrr, PSUBDrr, PSUBQrr, PSUBWrr, PUNPCKHBWrr,
+       PUNPCKHDQrr, PUNPCKHQDQrr, PUNPCKHWDrr, PUNPCKLBWrr, PUNPCKLDQrr,
+       PUNPCKLQDQrr, PUNPCKLWDrr, PXORrr, SUBPDrr, SUBPSrr, XORPDrr,
+       XORPSrr]
     =
     ([TemporaryInfo (RegisterClass VR128) 0 False,
       TemporaryInfo (RegisterClass VR128) 0 False],
@@ -669,8 +670,9 @@ operandInfo i
        PANDrm, PCMPEQBrm, PCMPEQDrm, PCMPEQQrm, PCMPEQWrm, PMULDQrm,
        PMULUDQrm, PORrm, PSHUFBrm, PSLLDrm, PSLLQrm, PSLLWrm, PSRADrm,
        PSRAWrm, PSRLDrm, PSRLQrm, PSRLWrm, PSUBBrm, PSUBDrm, PSUBQrm,
-       PSUBWrm, PUNPCKLBWrm, PUNPCKLDQrm, PUNPCKLQDQrm, PUNPCKLWDrm,
-       PXORrm, SUBPDrm, SUBPSrm, XORPDrm, XORPSrm]
+       PSUBWrm, PUNPCKHBWrm, PUNPCKHDQrm, PUNPCKHQDQrm, PUNPCKHWDrm,
+       PUNPCKLBWrm, PUNPCKLDQrm, PUNPCKLQDQrm, PUNPCKLWDrm, PXORrm,
+       SUBPDrm, SUBPSrm, XORPDrm, XORPSrm]
     =
     ([TemporaryInfo (RegisterClass VR128) 0 False,
       TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,

@@ -979,6 +979,14 @@ data X86Instruction = ADC16i16
                     | PSUBQrr
                     | PSUBWrm
                     | PSUBWrr
+                    | PUNPCKHBWrm
+                    | PUNPCKHBWrr
+                    | PUNPCKHDQrm
+                    | PUNPCKHDQrr
+                    | PUNPCKHQDQrm
+                    | PUNPCKHQDQrr
+                    | PUNPCKHWDrm
+                    | PUNPCKHWDrr
                     | PUNPCKLBWrm
                     | PUNPCKLBWrr
                     | PUNPCKLDQrm

@@ -318,19 +318,20 @@ alignedPairs i ([src1, _], [src1'])
        PCMPEQWrr, PMULDQrr, PMULUDQrr, PORrr, PSHUFBrr, PSLLDQri, PSLLDri,
        PSLLDrr, PSLLQri, PSLLQrr, PSLLWri, PSLLWrr, PSRADri, PSRADrr,
        PSRAWri, PSRAWrr, PSRLDQri, PSRLDri, PSRLDrr, PSRLQri, PSRLQrr,
-       PSRLWri, PSRLWrr, PSUBBrr, PSUBDrr, PSUBQrr, PSUBWrr, PUNPCKLBWrr,
-       PUNPCKLDQrr, PUNPCKLQDQrr, PUNPCKLWDrr, PXORrr, ROL16ri, ROL32ri,
-       ROL64ri, ROL8ri, ROR16ri, ROR32ri, ROR64ri, ROR8ri, SAR16ri,
-       SAR32ri, SAR64ri, SAR8ri, SBB16ri, SBB16ri8, SBB16rr, SBB16rr_REV,
-       SBB32ri, SBB32ri8, SBB32rr, SBB32rr_REV, SBB64ri32, SBB64ri8,
-       SBB64rr, SBB64rr_REV, SBB8ri, SBB8ri8, SBB8rr, SBB8rr_REV, SHL16ri,
-       SHL32ri, SHL64ri, SHL8ri, SHR16ri, SHR32ri, SHR64ri, SHR8ri,
-       SUB16ri, SUB16ri8, SUB16rr, SUB16rr_REV, SUB32ri, SUB32ri8,
-       SUB32rr, SUB32rr_REV, SUB64ri32, SUB64ri8, SUB64rr, SUB64rr_REV,
-       SUB8ri, SUB8ri8, SUB8rr, SUB8rr_REV, SUBPDrr, SUBPSrr, SUBSDrr,
-       SUBSSrr, XOR16ri, XOR16ri8, XOR16rr, XOR16rr_REV, XOR32ri,
-       XOR32ri8, XOR32rr, XOR32rr_REV, XOR64ri32, XOR64ri8, XOR64rr,
-       XOR64rr_REV, XOR8ri, XOR8ri8, XOR8rr, XOR8rr_REV, XORPDrr, XORPSrr]
+       PSRLWri, PSRLWrr, PSUBBrr, PSUBDrr, PSUBQrr, PSUBWrr, PUNPCKHBWrr,
+       PUNPCKHDQrr, PUNPCKHQDQrr, PUNPCKHWDrr, PUNPCKLBWrr, PUNPCKLDQrr,
+       PUNPCKLQDQrr, PUNPCKLWDrr, PXORrr, ROL16ri, ROL32ri, ROL64ri,
+       ROL8ri, ROR16ri, ROR32ri, ROR64ri, ROR8ri, SAR16ri, SAR32ri,
+       SAR64ri, SAR8ri, SBB16ri, SBB16ri8, SBB16rr, SBB16rr_REV, SBB32ri,
+       SBB32ri8, SBB32rr, SBB32rr_REV, SBB64ri32, SBB64ri8, SBB64rr,
+       SBB64rr_REV, SBB8ri, SBB8ri8, SBB8rr, SBB8rr_REV, SHL16ri, SHL32ri,
+       SHL64ri, SHL8ri, SHR16ri, SHR32ri, SHR64ri, SHR8ri, SUB16ri,
+       SUB16ri8, SUB16rr, SUB16rr_REV, SUB32ri, SUB32ri8, SUB32rr,
+       SUB32rr_REV, SUB64ri32, SUB64ri8, SUB64rr, SUB64rr_REV, SUB8ri,
+       SUB8ri8, SUB8rr, SUB8rr_REV, SUBPDrr, SUBPSrr, SUBSDrr, SUBSSrr,
+       XOR16ri, XOR16ri8, XOR16rr, XOR16rr_REV, XOR32ri, XOR32ri8,
+       XOR32rr, XOR32rr_REV, XOR64ri32, XOR64ri8, XOR64rr, XOR64rr_REV,
+       XOR8ri, XOR8ri8, XOR8rr, XOR8rr_REV, XORPDrr, XORPSrr]
     = [(src1, src1')]
 alignedPairs i ([src1, _, _], [src1'])
   | i `elem`
@@ -421,10 +422,11 @@ alignedPairs i ([src1, _, _, _, _, _], [src1'])
        PCMPEQBrm, PCMPEQDrm, PCMPEQQrm, PCMPEQWrm, PMULDQrm, PMULUDQrm,
        PORrm, PSHUFBrm, PSLLDrm, PSLLQrm, PSLLWrm, PSRADrm, PSRAWrm,
        PSRLDrm, PSRLQrm, PSRLWrm, PSUBBrm, PSUBDrm, PSUBQrm, PSUBWrm,
-       PUNPCKLBWrm, PUNPCKLDQrm, PUNPCKLQDQrm, PUNPCKLWDrm, PXORrm,
-       SBB16rm, SBB32rm, SBB64rm, SBB8rm, SUB16rm, SUB32rm, SUB64rm,
-       SUB8rm, SUBPDrm, SUBPSrm, SUBSDrm, SUBSSrm, XOR16rm, XOR32rm,
-       XOR64rm, XOR8rm, XORPDrm, XORPSrm]
+       PUNPCKHBWrm, PUNPCKHDQrm, PUNPCKHQDQrm, PUNPCKHWDrm, PUNPCKLBWrm,
+       PUNPCKLDQrm, PUNPCKLQDQrm, PUNPCKLWDrm, PXORrm, SBB16rm, SBB32rm,
+       SBB64rm, SBB8rm, SUB16rm, SUB32rm, SUB64rm, SUB8rm, SUBPDrm,
+       SUBPSrm, SUBSDrm, SUBSSrm, XOR16rm, XOR32rm, XOR64rm, XOR8rm,
+       XORPDrm, XORPSrm]
     = [(src1, src1')]
 alignedPairs i ([src1, _, _, _, _, _, _], [src1'])
   | i `elem`
