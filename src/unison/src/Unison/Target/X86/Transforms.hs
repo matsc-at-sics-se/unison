@@ -124,38 +124,7 @@ frame:
     o97: [t94] <- MOV32rm [rsp,4,t93,80,_] (mem: 0)
 
 FIXME: consider mfiFixed attribute
+RETIRED for now.
 -}
 
-handleStackOperands
-  o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [(Bound MachineFrameIndex {mfiIndex = off1}),
-                                                           use2,
-                                                           use3,
-                                                           (Bound MachineImm {miValue = off2}),
-                                                           use5]})}
-  = let use1' = mkRegister (mkTargetRegister RSP)
-        use4' = mkBound (mkMachineImm (off1 + off2))
-    in
-    o {oOpr = Natural ni {oUs = [use1',use2,use3,use4',use5]}}
-handleStackOperands
-  o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [(Bound MachineFrameIndex {mfiIndex = off1}),
-                                                           use2,
-                                                           use3,
-                                                           (Bound MachineImm {miValue = off2}),
-                                                           use5,
-                                                           use6]})}
-  = let use1' = mkRegister (mkTargetRegister RSP)
-        use4' = mkBound (mkMachineImm (off1 + off2))
-    in
-    o {oOpr = Natural ni {oUs = [use1',use2,use3,use4',use5,use6]}}
-handleStackOperands
-  o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [use1,
-                                                           (Bound MachineFrameIndex {mfiIndex = off1}),
-                                                           use3,
-                                                           use4,
-                                                           (Bound MachineImm {miValue = off2}),
-                                                           use6]})}
-  = let use2' = mkRegister (mkTargetRegister RSP)
-        use5' = mkBound (mkMachineImm (off1 + off2))
-    in
-    o {oOpr = Natural ni {oUs = [use1,use2',use3,use4,use5',use6]}}
 handleStackOperands o = o

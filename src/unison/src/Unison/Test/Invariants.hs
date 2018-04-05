@@ -154,6 +154,7 @@ consistentSingleOperandInfo (MOperand {}, TemporaryInfo {}) = Nothing
 consistentSingleOperandInfo (Bound _, BoundInfo)       = Nothing
 consistentSingleOperandInfo (BlockRef _, BlockRefInfo) = Nothing
 consistentSingleOperandInfo (Bound MachineNullReg, TemporaryInfo {}) = Nothing
+consistentSingleOperandInfo (Bound (MachineFrameIndex {}), TemporaryInfo {}) = Nothing
 consistentSingleOperandInfo (o, oi) =
     Just ("operand " ++ show o ++ " is inconsistent with the operand info " ++ show oi ++ " given in the target description")
 
@@ -201,6 +202,7 @@ consistentOperandGroup os wInfo oi =
 consistentOperand _
   (_, TemporaryInfo {oiRegClass = AbstractRegisterClass {}}) = Nothing
 consistentOperand _ (Bound MachineNullReg, TemporaryInfo {}) = Nothing
+consistentOperand _ (Bound (MachineFrameIndex {}), TemporaryInfo {}) = Nothing
 consistentOperand (rc2u, t2w) (o, TemporaryInfo {oiRegClass = rc}) =
     if null (extractTemps o) then
        Just ("operand " ++ show o ++ " has no temporaries")
