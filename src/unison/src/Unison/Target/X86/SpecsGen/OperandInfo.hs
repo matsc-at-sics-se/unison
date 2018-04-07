@@ -642,13 +642,14 @@ operandInfo i
        FvANDPDrr, FvANDPSrr, FvORPDrr, FvORPSrr, FvXORPDrr, FvXORPSrr,
        MAXCPDrr, MAXCPSrr, MAXPDrr, MAXPSrr, MINCPDrr, MINCPSrr, MINPDrr,
        MINPSrr, MOVHLPSrr, MOVLHPSrr, MULPDrr, MULPSrr, ORPDrr, ORPSrr,
-       PADDBrr, PADDDrr, PADDQrr, PADDWrr, PANDNrr, PANDrr, PCMPEQBrr,
-       PCMPEQDrr, PCMPEQQrr, PCMPEQWrr, PMULDQrr, PMULUDQrr, PORrr,
-       PSHUFBrr, PSLLDrr, PSLLQrr, PSLLWrr, PSRADrr, PSRAWrr, PSRLDrr,
-       PSRLQrr, PSRLWrr, PSUBBrr, PSUBDrr, PSUBQrr, PSUBWrr, PUNPCKHBWrr,
-       PUNPCKHDQrr, PUNPCKHQDQrr, PUNPCKHWDrr, PUNPCKLBWrr, PUNPCKLDQrr,
-       PUNPCKLQDQrr, PUNPCKLWDrr, PXORrr, SUBPDrr, SUBPSrr, XORPDrr,
-       XORPSrr]
+       PACKSSDWrr, PACKSSWBrr, PACKUSDWrr, PACKUSWBrr, PADDBrr, PADDDrr,
+       PADDQrr, PADDWrr, PANDNrr, PANDrr, PCMPEQBrr, PCMPEQDrr, PCMPEQQrr,
+       PCMPEQWrr, PCMPGTBrr, PCMPGTDrr, PCMPGTQrr, PCMPGTWrr, PMULDQrr,
+       PMULUDQrr, PORrr, PSHUFBrr, PSLLDrr, PSLLQrr, PSLLWrr, PSRADrr,
+       PSRAWrr, PSRLDrr, PSRLQrr, PSRLWrr, PSUBBrr, PSUBDrr, PSUBQrr,
+       PSUBWrr, PUNPCKHBWrr, PUNPCKHDQrr, PUNPCKHQDQrr, PUNPCKHWDrr,
+       PUNPCKLBWrr, PUNPCKLDQrr, PUNPCKLQDQrr, PUNPCKLWDrr, PXORrr,
+       SUBPDrr, SUBPSrr, XORPDrr, XORPSrr]
     =
     ([TemporaryInfo (RegisterClass VR128) 0 False,
       TemporaryInfo (RegisterClass VR128) 0 False],
@@ -666,13 +667,14 @@ operandInfo i
        FvANDPDrm, FvANDPSrm, FvORPDrm, FvORPSrm, FvXORPDrm, FvXORPSrm,
        MAXCPDrm, MAXCPSrm, MAXPDrm, MAXPSrm, MINCPDrm, MINCPSrm, MINPDrm,
        MINPSrm, MOVHPDrm, MOVHPSrm, MOVLPDrm, MOVLPSrm, MULPDrm, MULPSrm,
-       ORPDrm, ORPSrm, PADDBrm, PADDDrm, PADDQrm, PADDWrm, PANDNrm,
-       PANDrm, PCMPEQBrm, PCMPEQDrm, PCMPEQQrm, PCMPEQWrm, PMULDQrm,
-       PMULUDQrm, PORrm, PSHUFBrm, PSLLDrm, PSLLQrm, PSLLWrm, PSRADrm,
-       PSRAWrm, PSRLDrm, PSRLQrm, PSRLWrm, PSUBBrm, PSUBDrm, PSUBQrm,
-       PSUBWrm, PUNPCKHBWrm, PUNPCKHDQrm, PUNPCKHQDQrm, PUNPCKHWDrm,
-       PUNPCKLBWrm, PUNPCKLDQrm, PUNPCKLQDQrm, PUNPCKLWDrm, PXORrm,
-       SUBPDrm, SUBPSrm, XORPDrm, XORPSrm]
+       ORPDrm, ORPSrm, PACKSSDWrm, PACKSSWBrm, PACKUSDWrm, PACKUSWBrm,
+       PADDBrm, PADDDrm, PADDQrm, PADDWrm, PANDNrm, PANDrm, PCMPEQBrm,
+       PCMPEQDrm, PCMPEQQrm, PCMPEQWrm, PCMPGTBrm, PCMPGTDrm, PCMPGTQrm,
+       PCMPGTWrm, PMULDQrm, PMULUDQrm, PORrm, PSHUFBrm, PSLLDrm, PSLLQrm,
+       PSLLWrm, PSRADrm, PSRAWrm, PSRLDrm, PSRLQrm, PSRLWrm, PSUBBrm,
+       PSUBDrm, PSUBQrm, PSUBWrm, PUNPCKHBWrm, PUNPCKHDQrm, PUNPCKHQDQrm,
+       PUNPCKHWDrm, PUNPCKLBWrm, PUNPCKLDQrm, PUNPCKLQDQrm, PUNPCKLWDrm,
+       PXORrm, SUBPDrm, SUBPSrm, XORPDrm, XORPSrm]
     =
     ([TemporaryInfo (RegisterClass VR128) 0 False,
       TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,

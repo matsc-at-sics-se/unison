@@ -896,6 +896,14 @@ data X86Instruction = ADC16i16
                     | ORPDrr
                     | ORPSrm
                     | ORPSrr
+                    | PACKSSDWrm
+                    | PACKSSDWrr
+                    | PACKSSWBrm
+                    | PACKSSWBrr
+                    | PACKUSDWrm
+                    | PACKUSDWrr
+                    | PACKUSWBrm
+                    | PACKUSWBrr
                     | PADDBrm
                     | PADDBrr
                     | PADDDrm
@@ -916,6 +924,14 @@ data X86Instruction = ADC16i16
                     | PCMPEQQrr
                     | PCMPEQWrm
                     | PCMPEQWrr
+                    | PCMPGTBrm
+                    | PCMPGTBrr
+                    | PCMPGTDrm
+                    | PCMPGTDrr
+                    | PCMPGTQrm
+                    | PCMPGTQrr
+                    | PCMPGTWrm
+                    | PCMPGTWrr
                     | PMULDQrm
                     | PMULDQrr
                     | PMULUDQrm
