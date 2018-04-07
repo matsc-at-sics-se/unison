@@ -277,6 +277,7 @@ subRegIndexType sr
       sr == (NamedSubRegIndex "sub_16bit") ||
       sr == (NamedSubRegIndex "sub_8bit") ||
       sr == (NamedSubRegIndex "sub_8bit_hi") ||
+      sr == (RawSubRegIndex 3) ||
       sr == (RawSubRegIndex 4) = LowSubRegIndex
 subRegIndexType subreg = error ("unmatched: subRegIndexType " ++ show subreg)
 
