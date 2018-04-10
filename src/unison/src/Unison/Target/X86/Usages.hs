@@ -1,9 +1,6 @@
 module Unison.Target.X86.Usages (usages) where
 
-import Data.List
-
 import Unison
-
 import Unison.Target.X86.Common
 import Unison.Target.X86.X86ResourceDecl
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
@@ -24,7 +21,7 @@ itineraryUsage' to i it =
        [u {occupation = 1, offset = 0} | u  <- us]
      else us
 
--- these are NoItinirary, but they are real instructions nevertheless AFAIK
+-- these are NoItinerary, but they are real instructions nevertheless AFAIK
 itineraryUsage i _
   | i `elem`
       [ANDNPDrm, ANDNPDrr, ANDNPSrm, ANDNPSrr, ANDPDrm,
