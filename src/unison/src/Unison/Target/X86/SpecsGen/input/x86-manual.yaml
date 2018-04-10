@@ -21,3 +21,17 @@ instruction-set:
         - id:                 MOVE64
           parent:             MOV64rr
           type:               copy
+
+        - id:                 SUBRSP_pseudo
+          parent:             SUB64ri8
+          operands:
+           - imm:             bound
+          uses:               [imm]
+          defines:            []
+
+        - id:                 ADDRSP_pseudo
+          parent:             ADD64ri8
+          operands:
+           - imm:             bound
+          uses:               [imm]
+          defines:            []

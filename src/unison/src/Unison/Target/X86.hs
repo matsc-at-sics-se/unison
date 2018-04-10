@@ -13,10 +13,9 @@ module Unison.Target.X86 (target) where
 
 import Debug.Trace
 import Data.Maybe
--- import Data.List
--- import Data.List.Split
+import Data.List.Split
 import qualified Data.Set as S
--- import Control.Arrow
+import Control.Arrow
 
 import Common.Util
 
@@ -36,7 +35,7 @@ import Unison.Target.X86.Registers
 import Unison.Target.X86.OperandInfo
 import Unison.Target.X86.Transforms
 import Unison.Target.X86.Usages
--- import Unison.Target.X86.X86RegisterDecl
+import Unison.Target.X86.X86RegisterDecl
 -- import Unison.Target.X86.X86RegisterClassDecl
 import Unison.Target.X86.X86ResourceDecl
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
@@ -315,31 +314,10 @@ resources =
 
 nop = Linear [TargetInstruction NOOP] [] []
 
--- FIXME: adapt for X86
 readWriteInfo i
---  -- copies do not have memory side effects (loads and stores do not alias
---  -- with other memory accesses as they operate on spill slots only)
---  | SpecsGen.instructionType i == CopyInstructionType = SpecsGen.readWriteInfo i
---  -- complete memory side effects (some mayLoad/mayStore info is missing)
---  | SpecsGen.itinerary i `elem`
---    [IIC_iLoad_m, IIC_iLoad_mu, IIC_iLoad_mBr, IIC_iLoad_bh_ru, IIC_iLoad_bh_iu,
---     IIC_iLoad_bh_r, IIC_iLoad_bh_si, IIC_iLoad_d_r, IIC_iLoad_d_ru,
---     IIC_iLoad_i, IIC_iLoadiALU, IIC_iLoad_ru, IIC_iLoad_iu, IIC_iLoad_r,
---     IIC_iLoad_si, IIC_fpLoad_mu, IIC_fpLoad_m, IIC_fpLoad64, IIC_fpLoad32,
---     IIC_iLoad_bh_i, IIC_iLoad_d_i] =
---      first addMem $ SpecsGen.readWriteInfo i
---  | SpecsGen.itinerary i `elem`
---    [IIC_iStore_r, IIC_iStore_bh_r, IIC_iStore_m, IIC_iStore_mu,
---     IIC_iStore_bh_ru, IIC_iStore_bh_iu, IIC_iStore_ru, IIC_iStore_bh_si,
---     IIC_iStore_d_r, IIC_iStore_d_ru, IIC_iStore_iu, IIC_iStore_si,
---     IIC_fpStore_mu, IIC_fpStore_m, IIC_fpStore64, IIC_fpStore32,
---     IIC_iStore_bh_i, IIC_iStore_i] =
---      second addMem $ SpecsGen.readWriteInfo i
---  | i `elem` [TSUBspi_pseudo, TADDspi_pseudo] =
---      second (++ [OtherSideEffect SP]) $ SpecsGen.readWriteInfo i
+  | i `elem` [SUBRSP_pseudo, ADDRSP_pseudo] =
+      second (++ [OtherSideEffect SP]) $ SpecsGen.readWriteInfo i
   | otherwise = SpecsGen.readWriteInfo i
-
--- addMem = (++ [Memory "mem"])
 
 -- | Implementation of frame setup and destroy operations. All functions
 -- observed so far have a reserved call frame (hasReservedCallFrame(MF)), which
@@ -351,48 +329,26 @@ implementFrame = const []
 -- | Adds function prologue, see corresponding logic in X86FrameLowering.cpp
 -- ("emitPrologue")
 
--- FIXME: adapt for X86
+-- We need a stack frame iff there are 1) spills or 2) non-fixed stack objects
+-- or SP-relative stores. This takes care of 1), the transformation
+-- 'enforceStackFrame' at AugmentPostRW takes care of 2) which is a static
+-- condition. Additionally, we need to adjust the SP by 1 if we have an **even**
+-- number of callee-saved spills for alignment reasons.
 
--- -- We need a stack frame iff there are 1) spills or 2) non-fixed stack objects
--- -- or SP-relative stores. This takes care of 1), the transformation
--- -- 'enforceStackFrame' at AugmentPostRW takes care of 2) which is a static
--- -- condition. Additionally, we need to adjust the SP by 1 if we have an odd
--- -- number of callee-saved spills for alignment reasons (see
--- -- http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.faqs/ka4127.html).
--- -- This is not yet supported, instead, 'uni normalize' removes SP adjustments in
--- -- such cases to ensure a fair comparison to LLVM.
+addPrologue (_, oid, _) (e:code) =
+  let subSp = mkLinear oid [TargetInstruction SUBRSP_pseudo] [Bound mkMachineFrameSize] []
+  in [e] ++ [subSp] ++ code
 
--- addPrologue (_, oid, _) (e:code) =
---   let subSp = mkAct $ mkOpt oid TSUBspi_pseudo [Bound mkMachineFrameSize] []
---   in case split (keepDelimsR $ whenElt isFPPush) code of
---       [before, after] -> [e] ++ before ++ [subSp] ++ after
---       _ -> case split (dropInitBlank $ condense $ whenElt isStoreCopy) code of
---             before : after -> [e] ++ before ++ [subSp] ++ concat after
-
--- isFPPush o = TargetInstruction (VSTMDDB_UPD_d8_15) `elem` oInstructions o
--- isStoreCopy o = any (\i -> TargetInstruction i `elem` oInstructions o)
---                 [STORE, STORE_D, TPUSH2_r4_7, VSTMDDB_UPD_d8_15]
-
--- addEpilogue (_, oid, _) code =
---   let addSp = mkAct $ mkOpt oid TADDspi_pseudo [Bound mkMachineFrameSize] []
---   in case split (keepDelimsL $
---                  whenElt (\o -> isPopRet o || isBranch o || isTailCall o))
---           code of
---       f : e -> f ++ [addSp] ++ concat e
---       os    -> error ("unhandled epilogue: " ++ show os)
-
--- isPopRet o = any (\i -> TargetInstruction i `elem` oInstructions o)
---              [TPOP2_r4_7_RET, VLDMDIA_UPD_d8_15]
-
-addPrologue _ os = os
-addEpilogue _ os = os
+addEpilogue (_, oid, _) code =
+  let addSp = mkLinear oid [TargetInstruction ADDRSP_pseudo] [Bound mkMachineFrameSize] []
+  in case split (keepDelimsL $
+                 whenElt (\o -> isBranch o || isTailCall o))
+          code of
+      f : e -> f ++ [addSp] ++ concat e
+      os    -> error ("unhandled epilogue: " ++ show os)
 
 -- mkOpt oid inst us ds =
 --   makeOptional $ mkLinear oid [TargetInstruction inst] us ds
-
--- mkAct = addActivators (map TargetInstruction spillInstrs)
-
--- addActivators = mapToActivators . (++)
 
 -- | Direction in which the stack grows
 stackDirection = API.StackGrowsDown
@@ -429,7 +385,23 @@ promoteImplicitRegs i regs mos =
 
 -- | Target dependent post-processing functions
 
-postProcess _ = []
+postProcess to = [expandPseudos to]
+
+expandPseudos to = mapToMachineBlock (expandBlockPseudos (expandPseudo to))
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SUBRSP_pseudo,
+                                   msOperands = [off]}
+  = let sp = mkMachineReg RSP
+    in [[mi {msOpcode = mkMachineTargetOpc SUB64ri8,
+             msOperands = [sp, sp, off]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADDRSP_pseudo,
+                                   msOperands = [off]}
+  = let sp = mkMachineReg RSP
+    in [[mi {msOpcode = mkMachineTargetOpc ADD64ri8,
+             msOperands = [sp, sp, off]}]]
+
+expandPseudo _ mi = [[mi]]
 
 -- pushRegs i
 --   | i `elem` [TPUSH2_r4_7, TPOP2_r4_7, TPOP2_r4_7_RET] =
@@ -443,8 +415,9 @@ postProcess _ = []
 -- | Gives a list of function transformers
 
 transforms ImportPreLift = [peephole extractReturnRegs]
-transforms ImportPostLift = [mapToOperation handlePromotedOperands,
-                             mapToOperation handleStackOperands]
+transforms ImportPostLift = [mapToOperation handlePromotedOperands]
+transforms ExportPreLow = [myLowerFrameIndices]
+transforms AugmentPostRW = [mapToOperation stackIndexReadsSP]
 transforms _ = []
 
 -- | Latency of read-write dependencies

@@ -1042,9 +1042,9 @@ operandInfo i
       BoundInfo, BoundInfo],
      [])
   | i `elem`
-      [CALL64pcrel32, CALLpcrel16, CALLpcrel32, PUSH16i8, PUSH32i8,
-       PUSH64i32, PUSH64i8, PUSHi16, PUSHi32, RETIW, RETL, RETQ, TAILJMPd,
-       TAILJMPd64, TAILJMPd64_REX]
+      [ADDRSP_pseudo, CALL64pcrel32, CALLpcrel16, CALLpcrel32, PUSH16i8,
+       PUSH32i8, PUSH64i32, PUSH64i8, PUSHi16, PUSHi32, RETIW, RETL, RETQ,
+       SUBRSP_pseudo, TAILJMPd, TAILJMPd64, TAILJMPd64_REX]
     = ([BoundInfo], [])
   | i `elem` [MOV16ri, MOV16ri_alt] =
     ([BoundInfo], [TemporaryInfo (RegisterClass GR16) 1 False])
@@ -1092,10 +1092,8 @@ operandInfo i
     =
     ([BoundInfo, TemporaryInfo (RegisterClass GR8) 0 False],
      [TemporaryInfo (RegisterClass GR8) 1 False])
-  | i `elem`
-      [ADJCALLSTACKDOWN32, ADJCALLSTACKDOWN64, ADJCALLSTACKUP32,
-       ADJCALLSTACKUP64, ENTER, RETIL, RETIQ, TCRETURNdi, TCRETURNdi64]
-    = ([BoundInfo, BoundInfo], [])
+  | i `elem` [ENTER, RETIL, RETIQ, TCRETURNdi, TCRETURNdi64] =
+    ([BoundInfo, BoundInfo], [])
   | i `elem` [MOV16ao16, MOV16ao32, MOV16ao64] =
     ([BoundInfo, BoundInfo],
      [TemporaryInfo (RegisterClass GR16) 1 False])

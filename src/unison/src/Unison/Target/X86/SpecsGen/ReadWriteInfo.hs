@@ -102,12 +102,12 @@ readWriteInfo i
        ADD32rm, ADD32rr, ADD32rr_DB, ADD32rr_REV, ADD64mi32, ADD64mi8,
        ADD64mr, ADD64ri32, ADD64ri32_DB, ADD64ri8, ADD64ri8_DB, ADD64rm,
        ADD64rr, ADD64rr_DB, ADD64rr_REV, ADD8mi, ADD8mr, ADD8ri, ADD8ri8,
-       ADD8rm, ADD8rr, ADD8rr_REV, AND16mi, AND16mi8, AND16mr, AND16ri,
-       AND16ri8, AND16rm, AND16rr, AND16rr_REV, AND32mi, AND32mi8,
-       AND32mr, AND32ri, AND32ri8, AND32rm, AND32rr, AND32rr_REV,
-       AND64mi32, AND64mi8, AND64mr, AND64ri32, AND64ri8, AND64rm,
-       AND64rr, AND64rr_REV, AND8mi, AND8mr, AND8ri, AND8ri8, AND8rm,
-       AND8rr, AND8rr_REV, ANDN32rm, ANDN32rr, ANDN64rm, ANDN64rr,
+       ADD8rm, ADD8rr, ADD8rr_REV, ADDRSP_pseudo, AND16mi, AND16mi8,
+       AND16mr, AND16ri, AND16ri8, AND16rm, AND16rr, AND16rr_REV, AND32mi,
+       AND32mi8, AND32mr, AND32ri, AND32ri8, AND32rm, AND32rr,
+       AND32rr_REV, AND64mi32, AND64mi8, AND64mr, AND64ri32, AND64ri8,
+       AND64rm, AND64rr, AND64rr_REV, AND8mi, AND8mr, AND8ri, AND8ri8,
+       AND8rm, AND8rr, AND8rr_REV, ANDN32rm, ANDN32rr, ANDN64rm, ANDN64rr,
        BSF16rm, BSF16rr, BSF32rm, BSF32rr, BSF64rm, BSF64rr, BSR16rm,
        BSR16rr, BSR32rm, BSR32rr, BSR64rm, BSR64rr, BT16mi8, BT16ri8,
        BT16rr, BT32mi8, BT32ri8, BT32rr, BT64mi8, BT64ri8, BT64rr,
@@ -155,11 +155,11 @@ readWriteInfo i
        SUB32ri8, SUB32rm, SUB32rr, SUB32rr_REV, SUB64mi32, SUB64mi8,
        SUB64mr, SUB64ri32, SUB64ri8, SUB64rm, SUB64rr, SUB64rr_REV,
        SUB8mi, SUB8mr, SUB8ri, SUB8ri8, SUB8rm, SUB8rr, SUB8rr_REV,
-       TEST16mi, TEST16ri, TEST16rm, TEST16rr, TEST32mi, TEST32ri,
-       TEST32rm, TEST32rr, TEST64mi32, TEST64ri32, TEST64rm, TEST64rr,
-       TEST8mi, TEST8ri, TEST8ri_NOREX, TEST8rm, TEST8rr, UCOMISDrm,
-       UCOMISDrr, UCOMISSrm, UCOMISSrr, XOR16mi, XOR16mi8, XOR16mr,
-       XOR16ri, XOR16ri8, XOR16rm, XOR16rr, XOR16rr_REV, XOR32mi,
+       SUBRSP_pseudo, TEST16mi, TEST16ri, TEST16rm, TEST16rr, TEST32mi,
+       TEST32ri, TEST32rm, TEST32rr, TEST64mi32, TEST64ri32, TEST64rm,
+       TEST64rr, TEST8mi, TEST8ri, TEST8ri_NOREX, TEST8rm, TEST8rr,
+       UCOMISDrm, UCOMISDrr, UCOMISSrm, UCOMISSrr, XOR16mi, XOR16mi8,
+       XOR16mr, XOR16ri, XOR16ri8, XOR16rm, XOR16rr, XOR16rr_REV, XOR32mi,
        XOR32mi8, XOR32mr, XOR32ri, XOR32ri8, XOR32rm, XOR32rr,
        XOR32rr_REV, XOR64mi32, XOR64mi8, XOR64mr, XOR64ri32, XOR64ri8,
        XOR64rm, XOR64rr, XOR64rr_REV, XOR8mi, XOR8mr, XOR8ri, XOR8ri8,
@@ -424,9 +424,6 @@ readWriteInfo i
       [PUSH16i8, PUSH16r, PUSH16rmr, PUSH32i8, PUSH32r, PUSH32rmr,
        PUSHi16, PUSHi32]
     = ([OtherSideEffect ESP], [Memory "mem", OtherSideEffect ESP])
-  | i `elem` [ADJCALLSTACKDOWN32, ADJCALLSTACKUP32] =
-    ([OtherSideEffect ESP],
-     [OtherSideEffect ESP, OtherSideEffect EFLAGS])
   | i `elem` [PUSHF16, PUSHF32] =
     ([OtherSideEffect ESP, OtherSideEffect EFLAGS],
      [Memory "mem", OtherSideEffect ESP])
@@ -472,9 +469,6 @@ readWriteInfo i
     = ([OtherSideEffect RSP], [])
   | i `elem` [PUSH64i32, PUSH64i8, PUSH64r, PUSH64rmr] =
     ([OtherSideEffect RSP], [Memory "mem", OtherSideEffect RSP])
-  | i `elem` [ADJCALLSTACKDOWN64, ADJCALLSTACKUP64] =
-    ([OtherSideEffect RSP],
-     [OtherSideEffect RSP, OtherSideEffect EFLAGS])
   | i `elem` [PUSHF64] =
     ([OtherSideEffect RSP, OtherSideEffect EFLAGS],
      [Memory "mem", OtherSideEffect RSP])

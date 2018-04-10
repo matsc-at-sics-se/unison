@@ -57,11 +57,6 @@ alignedPairs i ([_, _, _], [_, _, _])
     = []
 alignedPairs i ([_], []) | i `elem` [RETIW] = []
 alignedPairs i ([_, _], []) | i `elem` [RETIL, RETIQ] = []
-alignedPairs i ([_, _], [])
-  | i `elem`
-      [ADJCALLSTACKDOWN32, ADJCALLSTACKDOWN64, ADJCALLSTACKUP32,
-       ADJCALLSTACKUP64]
-    = []
 alignedPairs i ([_], [])
   | i `elem`
       [CALL16r, CALL32r, CALL64pcrel32, CALL64r, CALLpcrel16,
@@ -154,7 +149,8 @@ alignedPairs i ([_, _, _, _, _, _], [])
   | i `elem` [OR32mrLocked] = []
 alignedPairs i ([_], [])
   | i `elem`
-      [PUSH16i8, PUSH32i8, PUSH64i32, PUSH64i8, PUSHi16, PUSHi32]
+      [ADDRSP_pseudo, PUSH16i8, PUSH32i8, PUSH64i32, PUSH64i8, PUSHi16,
+       PUSHi32, SUBRSP_pseudo]
     = []
 alignedPairs i ([_, _], []) | i `elem` [ENTER] = []
 alignedPairs i ([_], [])

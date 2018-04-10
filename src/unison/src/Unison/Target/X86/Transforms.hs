@@ -12,10 +12,14 @@ This file is part of Unison, see http://unison-code.github.io
 module Unison.Target.X86.Transforms
     (extractReturnRegs,
      handlePromotedOperands,
-     handleStackOperands) where
+     myLowerFrameIndices,
+     stackIndexReadsSP) where
 
+import qualified Data.Map as M
+import qualified Data.Set as S
 import MachineIR
 import Unison
+import Unison.Analysis.FrameOffsets
 import Unison.Target.X86.Common
 import Unison.Target.X86.X86RegisterDecl
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
@@ -116,15 +120,72 @@ preAssignOperands ops regs =
       promoted' = map (\(t, r) -> preAssign t r) (zip promoted regOps)
   in original ++ promoted'
 
-{-
-    o97: [t94] <- MOV32rm [%stack.0,4,t93,0,_] (mem: 0)
-frame:
-    %stack.0: offset = 80, size = 12, align = 8
-->
-    o97: [t94] <- MOV32rm [rsp,4,t93,80,_] (mem: 0)
+-- This transform replaces stack frame object indices in the code by actual
+-- RSP + immediates.  It essentially overrules lowerFrameIndices.
 
-FIXME: consider mfiFixed attribute
-RETIRED for now.
--}
+myLowerFrameIndices f @ Function {fCode = code, fFixedStackFrame = fobjs,
+                                  fStackFrame = objs} =
+  let occ = slotSet (fobjs ++ objs)
+      fsize    = if S.null occ then 0 else - S.findMin occ
+      code'    = replaceFIsByImms fsize True fobjs code
+      code''   = replaceFIsByImms fsize False objs code'
+  in f {fCode = code''}
 
-handleStackOperands o = o
+replaceFIsByImms fsize fixed objs code =
+  let idxToOff = M.fromList [(foIndex fo, (foOffset fo) + fsize) | fo <- objs]
+  in mapToOperationInBlocks
+     (liftFIif fixed idxToOff) code
+
+liftFIif fixed idxToOff (Bundle os) =
+  mkBundle $ map (liftFIif fixed idxToOff) os
+
+liftFIif fixed idxToOff
+  o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [(Bound (MachineFrameIndex idx fixed' off1)),
+                                                           use2,
+                                                           use3,
+                                                           (Bound (MachineImm off2)),
+                                                           use5]})}
+  | fixed == fixed'
+  = let use1' = mkRegister (mkTargetRegister RSP)
+        use4' = mkBound (mkMachineImm $ (idxToOff M.! idx) + off1 + off2)
+    in
+    o {oOpr = Natural ni {oUs = [use1',use2,use3,use4',use5]}}
+liftFIif fixed idxToOff
+  o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [(Bound (MachineFrameIndex idx fixed' off1)),
+                                                           use2,
+                                                           use3,
+                                                           (Bound (MachineImm off2)),
+                                                           use5,
+                                                           use6]})}
+  | fixed == fixed'
+  = let use1' = mkRegister (mkTargetRegister RSP)
+        use4' = mkBound (mkMachineImm $ (idxToOff M.! idx) + off1 + off2)
+    in
+    o {oOpr = Natural ni {oUs = [use1',use2,use3,use4',use5,use6]}}
+liftFIif fixed idxToOff
+  o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [use1,
+                                                           (Bound (MachineFrameIndex idx fixed' off1)),
+                                                           use3,
+                                                           use4,
+                                                           (Bound (MachineImm off2)),
+                                                           use6]})}
+  | fixed == fixed'
+  = let use2' = mkRegister (mkTargetRegister RSP)
+        use5' = mkBound (mkMachineImm $ (idxToOff M.! idx) + off1 + off2)
+    in
+    o {oOpr = Natural ni {oUs = [use1,use2',use3,use4,use5',use6]}}
+liftFIif _ _ o = o
+
+stackIndexReadsSP
+  o @ SingleOperation {oAs = as @ Attributes {aReads = areads},
+                       oOpr = Natural (Linear {oUs = [(Bound (MachineFrameIndex _ _ _)), _, _, _, _]})}
+  = let areads' = [OtherSideEffect SP] ++ areads
+    in o {oAs = as {aReads = areads'}}
+
+stackIndexReadsSP
+  o @ SingleOperation {oAs = as @ Attributes {aReads = areads},
+                       oOpr = Natural (Linear {oUs = [_, (Bound (MachineFrameIndex _ _ _)), _, _, _, _]})}
+  = let areads' = [OtherSideEffect SP] ++ areads
+    in o {oAs = as {aReads = areads'}}
+
+stackIndexReadsSP o = o

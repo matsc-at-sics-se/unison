@@ -100,10 +100,6 @@ data X86Instruction = ADC16i16
                     | ADDSUBPDrr
                     | ADDSUBPSrm
                     | ADDSUBPSrr
-                    | ADJCALLSTACKDOWN32
-                    | ADJCALLSTACKDOWN64
-                    | ADJCALLSTACKUP32
-                    | ADJCALLSTACKUP64
                     | AND16i16
                     | AND16mi
                     | AND16mi8
@@ -1511,6 +1507,8 @@ data X86Instruction = ADC16i16
                     | MOVE16
                     | MOVE32
                     | MOVE64
+                    | SUBRSP_pseudo
+                    | ADDRSP_pseudo
                     | MOV16ri_source
                     | MOV16ri_demat
                     | MOV16ri_remat
