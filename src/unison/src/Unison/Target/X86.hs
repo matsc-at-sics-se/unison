@@ -20,26 +20,20 @@ import Control.Arrow
 import Common.Util
 
 import MachineIR
--- import MachineIR.Transformations.AddImplicitRegs
 
 import Unison
 import qualified Unison.Target.API as API
--- import Unison.Target.RegisterArray
+import Unison.Target.RegisterArray
 import Unison.Target.Query
 import Unison.Analysis.TemporaryType
--- import Unison.Transformations.FoldReservedRegisters
--- import Unison.Analysis.TransitiveOperations
-
 import Unison.Target.X86.Common
 import Unison.Target.X86.Registers
 import Unison.Target.X86.OperandInfo
 import Unison.Target.X86.Transforms
 import Unison.Target.X86.Usages
 import Unison.Target.X86.X86RegisterDecl
--- import Unison.Target.X86.X86RegisterClassDecl
 import Unison.Target.X86.X86ResourceDecl
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
--- import Unison.Target.X86.SpecsGen.X86ItineraryDecl
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
 
 target =
@@ -127,20 +121,19 @@ copies _fInfo False _t _rs _d [u] | isKill u = ([], [[]])
 copies _ False _ rs _ us | any isReserved rs =
   ([], replicate (length us) [])
 
--- Until we can spill to the stack frame, do not extend temporaries pre-assigned to callee-saved registers
-copies (_, cst, _, _, _, _) False t rs _ [_] | not (null rs) && S.member t cst = ([], [[]])
-
--- FIXME:
--- -- Add only one store for entry callee-saved temporaries
--- -- Add only one load for exit callee-saved temporaries
--- -- Do not add copies for intermediate callee-saved temporaries
--- copies (f, cst, _, _, _, _) False t rs _ [_] | not (null rs) && S.member t cst =
---       (if isEntryTemp (fCode f) t
---        then [mkNullInstruction, TargetInstruction (pushInstruction rs)]
---        else [],
---        [if isExitTemp (fCode f) t
---         then [mkNullInstruction, TargetInstruction (popInstruction rs)]
---         else []])
+-- Add only one store for entry calle-saved temporaries
+-- Add only one load for exit calle-saved temporaries
+-- Do not add copies for intermediate calle-saved temporaries
+copies (f, cst, _, _, _, _) False t [r] _d [_u]
+  | S.member t cst =
+    (
+      if isEntryTemp (fCode f) t
+      then [mkNullInstruction, TargetInstruction (pushInstruction r)]
+      else [],
+      [if isExitTemp (fCode f) t
+       then [mkNullInstruction, TargetInstruction (popInstruction r)]
+       else []]
+    )
 
 -- Do not extend non-pre-allocated temporaries that are only "passed through" a
 -- block without calls
@@ -174,39 +167,19 @@ copies (f, _, cg, ra, _, _) _ t _ d us =
        map (useCopies w) us
      )
 
-defCopies 1 = [mkNullInstruction, TargetInstruction MOVE8]
-defCopies 2 = [mkNullInstruction, TargetInstruction MOVE16]
-defCopies 4 = [mkNullInstruction, TargetInstruction MOVE32]
-defCopies 8 = [mkNullInstruction, TargetInstruction MOVE64]
+defCopies 1 = [mkNullInstruction, TargetInstruction MOVE8, TargetInstruction STORE8]
+defCopies 2 = [mkNullInstruction, TargetInstruction MOVE16, TargetInstruction STORE16]
+defCopies 4 = [mkNullInstruction, TargetInstruction MOVE32, TargetInstruction STORE32]
+defCopies 8 = [mkNullInstruction, TargetInstruction MOVE64, TargetInstruction STORE64]
 
-useCopies 1 _ = [mkNullInstruction, TargetInstruction MOVE8]
-useCopies 2 _ = [mkNullInstruction, TargetInstruction MOVE16]
-useCopies 4 _ = [mkNullInstruction, TargetInstruction MOVE32]
-useCopies 8 _ = [mkNullInstruction, TargetInstruction MOVE64]
+useCopies 1 _ = [mkNullInstruction, TargetInstruction MOVE8, TargetInstruction LOAD8]
+useCopies 2 _ = [mkNullInstruction, TargetInstruction MOVE16, TargetInstruction LOAD16]
+useCopies 4 _ = [mkNullInstruction, TargetInstruction MOVE32, TargetInstruction LOAD32]
+useCopies 8 _ = [mkNullInstruction, TargetInstruction MOVE64, TargetInstruction LOAD64]
 
--- FIXME: adapt for X86
--- pushInstruction [r]
-  -- r == R4_7  = TPUSH_r4_7
-  -- r == R8_11 = TPUSH_r8_11
-  -- r == D8_15 = VSTMDDB_UPD_d8_15
+pushInstruction _ = STORE64
 
--- popInstruction [r]
-  -- r == R4_7  = TPOP_r4_7
-  -- r == R8_11 = TPOP_r8_11
-  -- r == D8_15 = VLDMDIA_UPD_d8_15
-
--- FIXME: adapt for X86
--- defCopies _ _ [Register (TargetRegister R7)] = []
--- defCopies size w _ =
---   [mkNullInstruction] ++
---    map TargetInstruction (moveInstrs size w) ++
---    map TargetInstruction (storeInstrs size w)
-
--- useCopies _ _ [Register (TargetRegister R7)] = []
--- useCopies size w _ =
---   [mkNullInstruction] ++
---    map TargetInstruction (moveInstrs size w) ++
---    map TargetInstruction (loadInstrs size w)
+popInstruction _ = LOAD64
 
 classOfTemp = classOf (target, [])
 
@@ -216,42 +189,20 @@ compatibleClassesForTemp t os =
   let regs = [S.fromList $ registers $ fromJust (classOfTemp t o) | o <- os]
   in not $ S.null $ foldl S.intersection (head regs) regs
 
--- TODO: add STORE_S, LOAD_S, also GPR <-> SPR moves?
-
--- FIXME: adapt for X86
--- -- TMOVr, {TMOVr, VMOVS, VMOVSR, VMOVRS} (MOVE_ALL is instanciated after
--- -- register allocation since their properties are all the same -- except TMOVr
--- -- has size 2)
--- moveInstrs size 1
---   | size = [MOVE, MOVE_ALL]
---   | otherwise = [MOVE_ALL]
-
--- -- VMOVD
--- moveInstrs _ 2 = [MOVE_D]
-
--- -- {T2STRi12, tSTRi}
--- storeInstrs size 1
---   | size = [STORE, STORE_T]
---   | otherwise = [STORE]
-
--- -- VSTRD
--- storeInstrs _ 2 = [STORE_D]
-
--- -- {T2LDRi12, tLDRi}
--- loadInstrs size 1
---   | size = [LOAD, LOAD_T]
---   | otherwise = [LOAD]
-
--- -- VLDRD
--- loadInstrs _ 2 = [LOAD_D]
-
 isReserved r = r `elem` reserved
 
+-- NOTE: LEA is remat. if it depends on %rsp and no other reg
+-- It will only be treated as a remat. candidate if that is the case
 rematInstrs i
   | isRematerializable i =
       Just (sourceInstr i, dematInstr i, rematInstr i)
+  | i `elem` [MOV8rm, MOV16rm, MOV32rm, MOV64rm,
+              IMUL64rmi32,
+              MOVSX16rm8, MOVSX32rm8, MOVSX32_NOREXrm8, MOVSX32rm16, MOVSX64rm8, MOVSX64rm16, MOVSX64rm32, 
+              SETAEr, SETAr, SETBEr, SETBr, SETEr, SETGEr, SETGr, SETLEr, SETLr,
+              SETNEr, SETNOr, SETNPr, SETNSr, SETOr, SETPr, SETSr,
+              SETB_C8r, SETB_C16r, SETB_C32r, SETB_C64r] = Nothing
   | otherwise = trace ("consider rematInstrs " ++ show i) Nothing
-  -- otherwise = error ("unmatched: rematInstrs " ++ show i)
 
 -- | Transforms copy instructions into natural instructions
 
@@ -260,6 +211,23 @@ fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
   | i `elem` [MOVE8, MOVE16, MOVE32, MOVE64] =
     Linear {oIs = [TargetInstruction (fromCopyInstr i)],
             oUs = [s],
+            oDs = [d]}
+  | i `elem` [STORE8, STORE16, STORE32, STORE64] =
+    Linear {oIs = [TargetInstruction (fromCopyInstr i)],
+            oUs = [mkBoundMachineFrameObject i d,
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg,
+                   s],
+            oDs = []}
+  | i `elem` [LOAD8, LOAD16, LOAD32, LOAD64] =
+    Linear {oIs = [TargetInstruction (fromCopyInstr i)],
+            oUs = [mkBoundMachineFrameObject i s,
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg],
             oDs = [d]}
 
 -- handle rematerialization copies
@@ -279,20 +247,18 @@ fromCopy _ (Natural o @ Linear {oIs = [TargetInstruction i]})
 fromCopy _ (Natural o) = o
 fromCopy _ o = error ("unmatched pattern: fromCopy " ++ show o)
 
--- mkPushRegs i = map (Register . TargetRegister) (pushRegs i)
-
--- mkOprX86SP = Register $ mkTargetRegister SP
-
--- mkBoundMachineFrameObject i (Register r) =
---     let size = stackSize i
---     in mkBound (mkMachineFrameObject (infRegPlace r) (Just size) size)
-
--- stackSize i
---   | i `elem` [STORE, STORE_T, LOAD, LOAD_T] = 1
---   | i `elem` [STORE_D, LOAD_D] = 2
-
 fromCopyInstr i
   | isJust (SpecsGen.parent i) = fromJust (SpecsGen.parent i)
+
+mkBoundMachineFrameObject i (Register r) =
+    let size = stackSize i
+    in mkBound (mkMachineFrameObject (infRegPlace r) (Just size) size)
+
+stackSize op
+  | op `elem` [STORE8, LOAD8] = 1
+  | op `elem` [STORE16, LOAD16] = 2
+  | op `elem` [STORE32, LOAD32] = 4
+  | op `elem` [STORE64, LOAD64] = 8
 
 -- | Declares target architecture resources
 
@@ -347,9 +313,6 @@ addEpilogue (_, oid, _) code =
       f : e -> f ++ [addSp] ++ concat e
       os    -> error ("unhandled epilogue: " ++ show os)
 
--- mkOpt oid inst us ds =
---   makeOptional $ mkLinear oid [TargetInstruction inst] us ds
-
 -- | Direction in which the stack grows
 stackDirection = API.StackGrowsDown
 
@@ -402,15 +365,6 @@ expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADDRSP_pseudo,
              msOperands = [sp, sp, off]}]]
 
 expandPseudo _ mi = [[mi]]
-
--- pushRegs i
---   | i `elem` [TPUSH2_r4_7, TPOP2_r4_7, TPOP2_r4_7_RET] =
---       [R4, R5, R6, R7]
---   | i `elem` [TPUSH2_r4_11, TPOP2_r4_11, TPOP2_r4_11_RET] =
---       pushRegs TPUSH2_r4_7 ++ [R8, R9, R10, R11]
---   | i `elem` [VSTMDDB_UPD_d8_15, VLDMDIA_UPD_d8_15] =
---       [D8, D9, D10, D11, D12, D13, D14, D15]
--- pushRegs i = error ("unmatched: pushRegs " ++ show i)
 
 -- | Gives a list of function transformers
 
