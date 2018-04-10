@@ -1503,12 +1503,23 @@ data X86Instruction = ADC16i16
                     | XORPDrr
                     | XORPSrm
                     | XORPSrr
+                    | STORE8
+                    | STORE16
+                    | STORE32
+                    | STORE64
+                    | LOAD8
+                    | LOAD16
+                    | LOAD32
+                    | LOAD64
                     | MOVE8
                     | MOVE16
                     | MOVE32
                     | MOVE64
                     | SUBRSP_pseudo
                     | ADDRSP_pseudo
+                    | MOV8ri_source
+                    | MOV8ri_demat
+                    | MOV8ri_remat
                     | MOV16ri_source
                     | MOV16ri_demat
                     | MOV16ri_remat
@@ -1539,8 +1550,14 @@ data X86Instruction = ADC16i16
                     | MOV64ri32_source
                     | MOV64ri32_demat
                     | MOV64ri32_remat
-                    | MOV8ri_source
-                    | MOV8ri_demat
-                    | MOV8ri_remat
+                    | LEA16r_source
+                    | LEA16r_demat
+                    | LEA16r_remat
+                    | LEA32r_source
+                    | LEA32r_demat
+                    | LEA32r_remat
+                    | LEA64r_source
+                    | LEA64r_demat
+                    | LEA64r_remat
                     deriving (Eq, Ord)
 

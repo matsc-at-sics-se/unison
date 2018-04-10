@@ -6,6 +6,102 @@ instruction-set:
   - group: MANUAL
     instructions:
 
+        - id:                 STORE8
+          parent:             MOV8mr
+          type:               copy
+          operands:
+           - rd:              [register, def, M8]
+           - rt:              [register, use, GR8]
+          uses:               [rt]
+          defines:            [rd]
+          affects:
+          affected-by:
+           - SP:              register
+
+        - id:                 STORE16
+          parent:             MOV16mr
+          type:               copy
+          operands:
+           - rd:              [register, def, M16]
+           - rt:              [register, use, GR16]
+          uses:               [rt]
+          defines:            [rd]
+          affects:
+          affected-by:
+           - SP:              register
+
+        - id:                 STORE32
+          parent:             MOV32mr
+          type:               copy
+          operands:
+           - rd:              [register, def, M32]
+           - rt:              [register, use, GR32]
+          uses:               [rt]
+          defines:            [rd]
+          affects:
+          affected-by:
+           - SP:              register
+
+        - id:                 STORE64
+          parent:             MOV64mr
+          type:               copy
+          operands:
+           - rd:              [register, def, M64]
+           - rt:              [register, use, GR64]
+          uses:               [rt]
+          defines:            [rd]
+          affects:
+          affected-by:
+           - SP:              register
+
+        - id:                 LOAD8
+          parent:             MOV8rm
+          type:               copy
+          operands:
+           - rd:              [register, def, GR8]
+           - rt:              [register, use, M8]
+          uses:               [rt]
+          defines:            [rd]
+          affects:
+          affected-by:
+           - SP:              register
+
+        - id:                 LOAD16
+          parent:             MOV16rm
+          type:               copy
+          operands:
+           - rd:              [register, def, GR16]
+           - rt:              [register, use, M16]
+          uses:               [rt]
+          defines:            [rd]
+          affects:
+          affected-by:
+           - SP:              register
+
+        - id:                 LOAD32
+          parent:             MOV32rm
+          type:               copy
+          operands:
+           - rd:              [register, def, GR32]
+           - rt:              [register, use, M32]
+          uses:               [rt]
+          defines:            [rd]
+          affects:
+          affected-by:
+           - SP:              register
+
+        - id:                 LOAD64
+          parent:             MOV64rm
+          type:               copy
+          operands:
+           - rd:              [register, def, GR64]
+           - rt:              [register, use, M64]
+          uses:               [rt]
+          defines:            [rd]
+          affects:
+          affected-by:
+           - SP:              register
+
         - id:                 MOVE8
           parent:             MOV8rr
           type:               copy

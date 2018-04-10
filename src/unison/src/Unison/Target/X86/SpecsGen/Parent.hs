@@ -241,12 +241,21 @@ parent i
        XORPSrr]
     = Nothing
   | i `elem` [ADDRSP_pseudo] = Just ADD64ri8
+  | i `elem` [LEA16r_demat, LEA16r_remat, LEA16r_source] =
+    Just LEA16r
+  | i `elem` [LEA32r_demat, LEA32r_remat, LEA32r_source] =
+    Just LEA32r
+  | i `elem` [LEA64r_demat, LEA64r_remat, LEA64r_source] =
+    Just LEA64r
+  | i `elem` [STORE16] = Just MOV16mr
   | i `elem` [MOV16ri_demat, MOV16ri_remat, MOV16ri_source] =
     Just MOV16ri
   | i `elem`
       [MOV16ri_alt_demat, MOV16ri_alt_remat, MOV16ri_alt_source]
     = Just MOV16ri_alt
+  | i `elem` [LOAD16] = Just MOV16rm
   | i `elem` [MOVE16] = Just MOV16rr
+  | i `elem` [STORE32] = Just MOV32mr
   | i `elem` [MOV32r0_demat, MOV32r0_remat, MOV32r0_source] =
     Just MOV32r0
   | i `elem` [MOV32r1_demat, MOV32r1_remat, MOV32r1_source] =
@@ -260,14 +269,19 @@ parent i
   | i `elem`
       [MOV32ri_alt_demat, MOV32ri_alt_remat, MOV32ri_alt_source]
     = Just MOV32ri_alt
+  | i `elem` [LOAD32] = Just MOV32rm
   | i `elem` [MOVE32] = Just MOV32rr
+  | i `elem` [STORE64] = Just MOV64mr
   | i `elem` [MOV64ri_demat, MOV64ri_remat, MOV64ri_source] =
     Just MOV64ri
   | i `elem` [MOV64ri32_demat, MOV64ri32_remat, MOV64ri32_source] =
     Just MOV64ri32
+  | i `elem` [LOAD64] = Just MOV64rm
   | i `elem` [MOVE64] = Just MOV64rr
+  | i `elem` [STORE8] = Just MOV8mr
   | i `elem` [MOV8ri_demat, MOV8ri_remat, MOV8ri_source] =
     Just MOV8ri
+  | i `elem` [LOAD8] = Just MOV8rm
   | i `elem` [MOVE8] = Just MOV8rr
   | i `elem` [SUBRSP_pseudo] = Just SUB64ri8
 

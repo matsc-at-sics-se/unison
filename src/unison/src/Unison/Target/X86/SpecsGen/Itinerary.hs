@@ -176,9 +176,10 @@ itinerary i
        JNO_1, JNO_2, JNO_4, JNP_1, JNP_2, JNP_4, JNS_1, JNS_2, JNS_4,
        JO_1, JO_2, JO_4, JP_1, JP_2, JP_4, JS_1, JS_2, JS_4]
     = IIC_Jcc
-  | i `elem` [LEA32r, LEA64_32r, LEA64r] = IIC_LEA
+  | i `elem` [LEA32r, LEA32r_remat, LEA64_32r, LEA64r, LEA64r_remat]
+    = IIC_LEA
   | i `elem` [LEAVE, LEAVE64] = IIC_LEAVE
-  | i `elem` [LEA16r] = IIC_LEA_16
+  | i `elem` [LEA16r, LEA16r_remat] = IIC_LEA_16
   | i `elem` [LODSB, LODSL, LODSQ, LODSW] = IIC_LODS
   | i `elem` [LOOP] = IIC_LOOP
   | i `elem` [LOOPE] = IIC_LOOPE
@@ -210,11 +211,12 @@ itinerary i
   | i `elem` [MOVZX16rm8] = IIC_MOVZX_R16_M8
   | i `elem` [MOVZX16rr8] = IIC_MOVZX_R16_R8
   | i `elem`
-      [MOV16ao16, MOV16ao32, MOV16mi, MOV16mr, MOV16o16a, MOV16o32a,
-       MOV16rm, MOV32ao16, MOV32ao32, MOV32mi, MOV32mr, MOV32o16a,
-       MOV32o32a, MOV32rm, MOV64ao32, MOV64mi32, MOV64mr, MOV64o32a,
-       MOV64rm, MOV8ao16, MOV8ao32, MOV8mi, MOV8mr, MOV8mr_NOREX,
-       MOV8o16a, MOV8o32a, MOV8rm, MOV8rm_NOREX]
+      [LOAD16, LOAD32, LOAD64, LOAD8, MOV16ao16, MOV16ao32, MOV16mi,
+       MOV16mr, MOV16o16a, MOV16o32a, MOV16rm, MOV32ao16, MOV32ao32,
+       MOV32mi, MOV32mr, MOV32o16a, MOV32o32a, MOV32rm, MOV64ao32,
+       MOV64mi32, MOV64mr, MOV64o32a, MOV64rm, MOV8ao16, MOV8ao32, MOV8mi,
+       MOV8mr, MOV8mr_NOREX, MOV8o16a, MOV8o32a, MOV8rm, MOV8rm_NOREX,
+       STORE16, STORE32, STORE64, STORE8]
     = IIC_MOV_MEM
   | i `elem` [MUL16m] = IIC_MUL16_MEM
   | i `elem` [MUL16r] = IIC_MUL16_REG
@@ -479,9 +481,10 @@ itinerary i
       [ADD16ri8_DB, ADD16ri_DB, ADD16rr_DB, ADD32ri8_DB, ADD32ri_DB,
        ADD32rr_DB, ADD64ri32_DB, ADD64ri8_DB, ADD64rr_DB, ANDNPDrm,
        ANDNPDrr, ANDNPSrm, ANDNPSrr, ANDPDrm, ANDPDrr, ANDPSrm, ANDPSrr,
-       BTR64rr, FsFLD0SD, FsFLD0SS, MOV16ao64, MOV16o64a,
-       MOV16ri_alt_demat, MOV16ri_alt_source, MOV16ri_demat,
-       MOV16ri_source, MOV32ao64, MOV32o64a, MOV32r0_demat,
+       BTR64rr, FsFLD0SD, FsFLD0SS, LEA16r_demat, LEA16r_source,
+       LEA32r_demat, LEA32r_source, LEA64r_demat, LEA64r_source,
+       MOV16ao64, MOV16o64a, MOV16ri_alt_demat, MOV16ri_alt_source,
+       MOV16ri_demat, MOV16ri_source, MOV32ao64, MOV32o64a, MOV32r0_demat,
        MOV32r0_source, MOV32r1, MOV32r1_demat, MOV32r1_remat,
        MOV32r1_source, MOV32r_1, MOV32r_1_demat, MOV32r_1_remat,
        MOV32r_1_source, MOV32ri64, MOV32ri64_demat, MOV32ri64_remat,

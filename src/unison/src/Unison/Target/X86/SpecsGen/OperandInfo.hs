@@ -146,7 +146,10 @@ operandInfo i
   | i `elem` [MOVSX64rr16, MOVZX64rr16] =
     ([TemporaryInfo (RegisterClass GR16) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
-  | i `elem` [MOV16ri_alt_demat, MOV16ri_demat] =
+  | i `elem` [STORE16] =
+    ([TemporaryInfo (RegisterClass GR16) 0 False],
+     [TemporaryInfo (InfiniteRegisterClass M16) 1 False])
+  | i `elem` [LEA16r_demat, MOV16ri_alt_demat, MOV16ri_demat] =
     ([TemporaryInfo (RegisterClass GR16) 0 False],
      [TemporaryInfo (InfiniteRegisterClass RM16) 0 False])
   | i `elem` [MOV16o16a, MOV16o32a, MOV16o64a] =
@@ -267,9 +270,12 @@ operandInfo i
   | i `elem` [CDQE, MOVSX64rr32] =
     ([TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem` [STORE32] =
+    ([TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (InfiniteRegisterClass M32) 1 False])
   | i `elem`
-      [MOV32r0_demat, MOV32r1_demat, MOV32r_1_demat, MOV32ri64_demat,
-       MOV32ri_alt_demat, MOV32ri_demat]
+      [LEA32r_demat, MOV32r0_demat, MOV32r1_demat, MOV32r_1_demat,
+       MOV32ri64_demat, MOV32ri_alt_demat, MOV32ri_demat]
     =
     ([TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (InfiniteRegisterClass RM32) 0 False])
@@ -398,7 +404,10 @@ operandInfo i
     ([TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False,
       TemporaryInfo (RegisterClass GR64) 1 False])
-  | i `elem` [MOV64ri32_demat, MOV64ri_demat] =
+  | i `elem` [STORE64] =
+    ([TemporaryInfo (RegisterClass GR64) 0 False],
+     [TemporaryInfo (InfiniteRegisterClass M64) 1 False])
+  | i `elem` [LEA64r_demat, MOV64ri32_demat, MOV64ri_demat] =
     ([TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (InfiniteRegisterClass RM64) 0 False])
   | i `elem` [MOV64toPQIrr] =
@@ -506,6 +515,11 @@ operandInfo i
       TemporaryInfo (RegisterClass GR64_NOSP) 0 False, BoundInfo,
       BoundInfo],
      [TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem` [LEA64r_source] =
+    ([TemporaryInfo (RegisterClass GR64) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass GR64_NOSP) 0 False, BoundInfo,
+      BoundInfo],
+     [TemporaryInfo (InfiniteRegisterClass RM64) 0 False])
   | i `elem` [CBW, MOVSX16rr8, MOVZX16rr8] =
     ([TemporaryInfo (RegisterClass GR8) 0 False],
      [TemporaryInfo (RegisterClass GR16) 1 False])
@@ -521,6 +535,9 @@ operandInfo i
     =
     ([TemporaryInfo (RegisterClass GR8) 0 False],
      [TemporaryInfo (RegisterClass GR8) 1 False])
+  | i `elem` [STORE8] =
+    ([TemporaryInfo (RegisterClass GR8) 0 False],
+     [TemporaryInfo (InfiniteRegisterClass M8) 1 False])
   | i `elem` [MOV8ri_demat] =
     ([TemporaryInfo (RegisterClass GR8) 0 False],
      [TemporaryInfo (InfiniteRegisterClass RM8) 0 False])
@@ -598,16 +615,28 @@ operandInfo i
      [TemporaryInfo (RegisterClass GR8_NOREX) 1 False])
   | i `elem` [TEST8ri_NOREX] =
     ([TemporaryInfo (RegisterClass GR8_NOREX) 0 False, BoundInfo], [])
-  | i `elem` [MOV16ri_alt_remat, MOV16ri_remat] =
+  | i `elem` [LOAD16] =
+    ([TemporaryInfo (InfiniteRegisterClass M16) 0 False],
+     [TemporaryInfo (RegisterClass GR16) 1 False])
+  | i `elem` [LOAD32] =
+    ([TemporaryInfo (InfiniteRegisterClass M32) 0 False],
+     [TemporaryInfo (RegisterClass GR32) 1 False])
+  | i `elem` [LOAD64] =
+    ([TemporaryInfo (InfiniteRegisterClass M64) 0 False],
+     [TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem` [LOAD8] =
+    ([TemporaryInfo (InfiniteRegisterClass M8) 0 False],
+     [TemporaryInfo (RegisterClass GR8) 1 False])
+  | i `elem` [LEA16r_remat, MOV16ri_alt_remat, MOV16ri_remat] =
     ([TemporaryInfo (InfiniteRegisterClass RM16) 0 False],
      [TemporaryInfo (RegisterClass GR16) 1 False])
   | i `elem`
-      [MOV32r0_remat, MOV32r1_remat, MOV32r_1_remat, MOV32ri64_remat,
-       MOV32ri_alt_remat, MOV32ri_remat]
+      [LEA32r_remat, MOV32r0_remat, MOV32r1_remat, MOV32r_1_remat,
+       MOV32ri64_remat, MOV32ri_alt_remat, MOV32ri_remat]
     =
     ([TemporaryInfo (InfiniteRegisterClass RM32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [MOV64ri32_remat, MOV64ri_remat] =
+  | i `elem` [LEA64r_remat, MOV64ri32_remat, MOV64ri_remat] =
     ([TemporaryInfo (InfiniteRegisterClass RM64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem` [MOV8ri_remat] =
@@ -785,6 +814,16 @@ operandInfo i
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo],
      [TemporaryInfo (RegisterClass GR8) 1 False])
+  | i `elem` [LEA16r_source] =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo],
+     [TemporaryInfo (InfiniteRegisterClass RM16) 0 False])
+  | i `elem` [LEA32r_source] =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo],
+     [TemporaryInfo (InfiniteRegisterClass RM32) 0 False])
   | i `elem`
       [CVTDQ2PDrm, CVTDQ2PSrm, CVTPD2DQrm, CVTPD2PSrm, CVTPS2DQrm,
        CVTPS2PDrm, CVTTPD2DQrm, CVTTPS2DQrm, MOV64toPQIrm, MOVAPDrm,

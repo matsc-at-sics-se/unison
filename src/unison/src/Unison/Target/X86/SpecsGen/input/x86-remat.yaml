@@ -3,6 +3,10 @@ instruction-set:
  - group: REMATERIALIZATION
    instructions:
      
+   - id: MOV8ri
+     home-class: GR8
+     infinite-class: RM8
+          
    - id: MOV16ri
      home-class: GR16
      infinite-class: RM16
@@ -43,7 +47,14 @@ instruction-set:
      home-class: GR64
      infinite-class: RM64
      
-   - id: MOV8ri
-     home-class: GR8
-     infinite-class: RM8
+   - id: LEA16r
+     home-class: GR16
+     infinite-class: RM16
      
+   - id: LEA32r
+     home-class: GR32
+     infinite-class: RM32
+     
+   - id: LEA64r
+     home-class: GR64
+     infinite-class: RM64

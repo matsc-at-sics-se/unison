@@ -26,12 +26,14 @@ readWriteInfo i
        FsMOVAPSrm, FsORPDrr, FsORPSrr, FsVMOVAPDrm, FsVMOVAPSrm,
        FsXORPDrr, FsXORPSrr, FvANDNPDrr, FvANDNPSrr, FvANDPDrr, FvANDPSrr,
        FvORPDrr, FvORPSrr, FvXORPDrr, FvXORPSrr, JMP16m, JMP16r, JMP32m,
-       JMP32r, JMP64m, JMP64r, JMP_1, JMP_2, JMP_4, LEA16r, LEA32r,
-       LEA64_32r, LEA64r, LOOP, LOOPE, LOOPNE, MAXCPDrr, MAXCPSrr,
-       MAXCSDrm, MAXCSDrr, MAXCSSrm, MAXCSSrr, MAXPDrr, MAXPSrr, MAXSDrm,
-       MAXSDrr, MAXSSrm, MAXSSrr, MINCPDrr, MINCPSrr, MINCSDrm, MINCSDrr,
-       MINCSSrm, MINCSSrr, MINPDrr, MINPSrr, MINSDrm, MINSDrr, MINSSrm,
-       MINSSrr, MOV16mi, MOV16mr, MOV16ri, MOV16ri_alt, MOV16ri_alt_demat,
+       JMP32r, JMP64m, JMP64r, JMP_1, JMP_2, JMP_4, LEA16r, LEA16r_demat,
+       LEA16r_remat, LEA16r_source, LEA32r, LEA32r_demat, LEA32r_remat,
+       LEA32r_source, LEA64_32r, LEA64r, LEA64r_demat, LEA64r_remat,
+       LEA64r_source, LOOP, LOOPE, LOOPNE, MAXCPDrr, MAXCPSrr, MAXCSDrm,
+       MAXCSDrr, MAXCSSrm, MAXCSSrr, MAXPDrr, MAXPSrr, MAXSDrm, MAXSDrr,
+       MAXSSrm, MAXSSrr, MINCPDrr, MINCPSrr, MINCSDrm, MINCSDrr, MINCSSrm,
+       MINCSSrr, MINPDrr, MINPSrr, MINSDrm, MINSDrr, MINSSrm, MINSSrr,
+       MOV16mi, MOV16mr, MOV16ri, MOV16ri_alt, MOV16ri_alt_demat,
        MOV16ri_alt_remat, MOV16ri_alt_source, MOV16ri_demat,
        MOV16ri_remat, MOV16ri_source, MOV16rm, MOV16rr, MOV16rr_REV,
        MOV32mi, MOV32mr, MOV32r0_demat, MOV32r0_source, MOV32r1_demat,
@@ -472,4 +474,7 @@ readWriteInfo i
   | i `elem` [PUSHF64] =
     ([OtherSideEffect RSP, OtherSideEffect EFLAGS],
      [Memory "mem", OtherSideEffect RSP])
+  | i `elem`
+      [LOAD16, LOAD32, LOAD64, LOAD8, STORE16, STORE32, STORE64, STORE8]
+    = ([OtherSideEffect SP], [])
 

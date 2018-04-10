@@ -159,33 +159,38 @@ alignedPairs i ([_], [])
     = []
 alignedPairs i ([_], [_])
   | i `elem`
+      [LOAD16, LOAD32, LOAD64, LOAD8, STORE16, STORE32, STORE64, STORE8]
+    = []
+alignedPairs i ([_], [_])
+  | i `elem`
       [BSF16rr, BSF32rr, BSF64rr, BSR16rr, BSR32rr, BSR64rr, CMPXCHG16rr,
        CMPXCHG32rr, CMPXCHG64rr, CMPXCHG8rr, CVTDQ2PDrr, CVTDQ2PSrr,
        CVTPD2DQrr, CVTPD2PSrr, CVTPS2DQrr, CVTPS2PDrr, CVTSD2SI64rr,
        CVTSD2SIrr, CVTSD2SSrr, CVTSI2SD64rr, CVTSI2SDrr, CVTSI2SS64rr,
        CVTSI2SSrr, CVTSS2SDrr, CVTSS2SI64rr, CVTSS2SIrr, CVTTPD2DQrr,
        CVTTPS2DQrr, CVTTSD2SI64rr, CVTTSD2SIrr, CVTTSS2SI64rr,
-       CVTTSS2SIrr, MOV16ri, MOV16ri_alt, MOV16ri_alt_demat,
-       MOV16ri_alt_remat, MOV16ri_alt_source, MOV16ri_demat,
-       MOV16ri_remat, MOV16ri_source, MOV16rr, MOV16rr_REV, MOV32r0_demat,
-       MOV32r0_remat, MOV32r1_demat, MOV32r1_remat, MOV32r_1_demat,
-       MOV32r_1_remat, MOV32ri, MOV32ri64, MOV32ri64_demat,
-       MOV32ri64_remat, MOV32ri64_source, MOV32ri_alt, MOV32ri_alt_demat,
-       MOV32ri_alt_remat, MOV32ri_alt_source, MOV32ri_demat,
-       MOV32ri_remat, MOV32ri_source, MOV32rr, MOV32rr_REV, MOV64ri,
-       MOV64ri32, MOV64ri32_demat, MOV64ri32_remat, MOV64ri32_source,
-       MOV64ri_demat, MOV64ri_remat, MOV64ri_source, MOV64rr, MOV64rr_REV,
-       MOV64toPQIrr, MOV64toSDrr, MOV8ri, MOV8ri_alt, MOV8ri_demat,
-       MOV8ri_remat, MOV8ri_source, MOV8rr, MOV8rr_NOREX, MOV8rr_REV,
-       MOVAPDrr, MOVAPDrr_REV, MOVAPSrr, MOVAPSrr_REV, MOVDDUPrr,
-       MOVDI2PDIrr, MOVDI2SSrr, MOVDQArr, MOVDQArr_REV, MOVDQUrr,
-       MOVDQUrr_REV, MOVE16, MOVE32, MOVE64, MOVE8, MOVPDI2DIrr,
-       MOVPQI2QIrr, MOVPQIto64rr, MOVSDto64rr, MOVSHDUPrr, MOVSLDUPrr,
-       MOVSS2DIrr, MOVSX16rr8, MOVSX32_NOREXrr8, MOVSX32rr16, MOVSX32rr8,
-       MOVSX64rr16, MOVSX64rr32, MOVSX64rr8, MOVUPDrr, MOVUPDrr_REV,
-       MOVUPSrr, MOVUPSrr_REV, MOVZPQILo2PQIrr, MOVZX16rr8,
-       MOVZX32_NOREXrr8, MOVZX32rr16, MOVZX32rr8, MOVZX64rr16, MOVZX64rr8,
-       POPCNT16rr, POPCNT32rr, POPCNT64rr]
+       CVTTSS2SIrr, LEA16r_demat, LEA16r_remat, LEA32r_demat,
+       LEA32r_remat, LEA64r_demat, LEA64r_remat, MOV16ri, MOV16ri_alt,
+       MOV16ri_alt_demat, MOV16ri_alt_remat, MOV16ri_alt_source,
+       MOV16ri_demat, MOV16ri_remat, MOV16ri_source, MOV16rr, MOV16rr_REV,
+       MOV32r0_demat, MOV32r0_remat, MOV32r1_demat, MOV32r1_remat,
+       MOV32r_1_demat, MOV32r_1_remat, MOV32ri, MOV32ri64,
+       MOV32ri64_demat, MOV32ri64_remat, MOV32ri64_source, MOV32ri_alt,
+       MOV32ri_alt_demat, MOV32ri_alt_remat, MOV32ri_alt_source,
+       MOV32ri_demat, MOV32ri_remat, MOV32ri_source, MOV32rr, MOV32rr_REV,
+       MOV64ri, MOV64ri32, MOV64ri32_demat, MOV64ri32_remat,
+       MOV64ri32_source, MOV64ri_demat, MOV64ri_remat, MOV64ri_source,
+       MOV64rr, MOV64rr_REV, MOV64toPQIrr, MOV64toSDrr, MOV8ri,
+       MOV8ri_alt, MOV8ri_demat, MOV8ri_remat, MOV8ri_source, MOV8rr,
+       MOV8rr_NOREX, MOV8rr_REV, MOVAPDrr, MOVAPDrr_REV, MOVAPSrr,
+       MOVAPSrr_REV, MOVDDUPrr, MOVDI2PDIrr, MOVDI2SSrr, MOVDQArr,
+       MOVDQArr_REV, MOVDQUrr, MOVDQUrr_REV, MOVE16, MOVE32, MOVE64,
+       MOVE8, MOVPDI2DIrr, MOVPQI2QIrr, MOVPQIto64rr, MOVSDto64rr,
+       MOVSHDUPrr, MOVSLDUPrr, MOVSS2DIrr, MOVSX16rr8, MOVSX32_NOREXrr8,
+       MOVSX32rr16, MOVSX32rr8, MOVSX64rr16, MOVSX64rr32, MOVSX64rr8,
+       MOVUPDrr, MOVUPDrr_REV, MOVUPSrr, MOVUPSrr_REV, MOVZPQILo2PQIrr,
+       MOVZX16rr8, MOVZX32_NOREXrr8, MOVZX32rr16, MOVZX32rr8, MOVZX64rr16,
+       MOVZX64rr8, POPCNT16rr, POPCNT32rr, POPCNT64rr]
     = []
 alignedPairs i ([src], [src'])
   | i `elem` [BSWAP32r, BSWAP64r] = [(src, src')]
@@ -360,16 +365,16 @@ alignedPairs i ([_, _, _, _, _], [_])
        CVTDQ2PSrm, CVTPD2DQrm, CVTPD2PSrm, CVTPS2DQrm, CVTPS2PDrm,
        CVTSD2SSrm, CVTSI2SD64rm, CVTSI2SDrm, CVTSI2SS64rm, CVTSI2SSrm,
        CVTSS2SDrm, CVTTPD2DQrm, CVTTPS2DQrm, FsMOVAPDrm, FsMOVAPSrm,
-       FsVMOVAPDrm, FsVMOVAPSrm, LEA16r, LEA32r, LEA64_32r, LEA64r,
-       MOV16rm, MOV32rm, MOV64rm, MOV64toPQIrm, MOV64toSDrm, MOV8rm,
-       MOV8rm_NOREX, MOVAPDrm, MOVAPSrm, MOVBE16rm, MOVBE32rm, MOVBE64rm,
-       MOVDDUPrm, MOVDI2PDIrm, MOVDI2SSrm, MOVDQArm, MOVDQUrm, MOVNTDQArm,
-       MOVQI2PQIrm, MOVSDrm, MOVSHDUPrm, MOVSLDUPrm, MOVSSrm, MOVSX16rm8,
-       MOVSX32_NOREXrm8, MOVSX32rm16, MOVSX32rm8, MOVSX64rm16,
-       MOVSX64rm32, MOVSX64rm8, MOVUPDrm, MOVUPSrm, MOVZPQILo2PQIrm,
-       MOVZQI2PQIrm, MOVZX16rm8, MOVZX32_NOREXrm8, MOVZX32rm16,
-       MOVZX32rm8, MOVZX64rm16, MOVZX64rm8, POPCNT16rm, POPCNT32rm,
-       POPCNT64rm]
+       FsVMOVAPDrm, FsVMOVAPSrm, LEA16r, LEA16r_source, LEA32r,
+       LEA32r_source, LEA64_32r, LEA64r, LEA64r_source, MOV16rm, MOV32rm,
+       MOV64rm, MOV64toPQIrm, MOV64toSDrm, MOV8rm, MOV8rm_NOREX, MOVAPDrm,
+       MOVAPSrm, MOVBE16rm, MOVBE32rm, MOVBE64rm, MOVDDUPrm, MOVDI2PDIrm,
+       MOVDI2SSrm, MOVDQArm, MOVDQUrm, MOVNTDQArm, MOVQI2PQIrm, MOVSDrm,
+       MOVSHDUPrm, MOVSLDUPrm, MOVSSrm, MOVSX16rm8, MOVSX32_NOREXrm8,
+       MOVSX32rm16, MOVSX32rm8, MOVSX64rm16, MOVSX64rm32, MOVSX64rm8,
+       MOVUPDrm, MOVUPSrm, MOVZPQILo2PQIrm, MOVZQI2PQIrm, MOVZX16rm8,
+       MOVZX32_NOREXrm8, MOVZX32rm16, MOVZX32rm8, MOVZX64rm16, MOVZX64rm8,
+       POPCNT16rm, POPCNT32rm, POPCNT64rm]
     = []
 alignedPairs i ([_, _, _, _, _, _], [_, _])
   | i `elem` [IMUL8m, MUL8m] = []
