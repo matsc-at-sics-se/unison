@@ -17,9 +17,7 @@ module Unison.Target.X86.Common
      writesSideEffect) where
 
 import qualified Data.Map as M
-import Data.Tuple
 
-import MachineIR
 import Unison
 import qualified Unison.Target.API as API
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
@@ -49,7 +47,8 @@ originalInstr i =
 
 rematVersions :: M.Map X86Instruction RematTriple
 rematVersions = M.fromList
-  [(MOV16ri, RematTriple MOV16ri_source MOV16ri_demat MOV16ri_remat),
+  [(MOV8ri, RematTriple MOV8ri_source MOV8ri_demat MOV8ri_remat),
+   (MOV16ri, RematTriple MOV16ri_source MOV16ri_demat MOV16ri_remat),
    (MOV16ri_alt, RematTriple MOV16ri_alt_source MOV16ri_alt_demat MOV16ri_alt_remat),
    (MOV32r0, RematTriple MOV32r0_source MOV32r0_demat MOV32r0_remat),
    (MOV32r1, RematTriple MOV32r1_source MOV32r1_demat MOV32r1_remat),
@@ -59,7 +58,9 @@ rematVersions = M.fromList
    (MOV32ri_alt, RematTriple MOV32ri_alt_source MOV32ri_alt_demat MOV32ri_alt_remat),
    (MOV64ri, RematTriple MOV64ri_source MOV64ri_demat MOV64ri_remat),
    (MOV64ri32, RematTriple MOV64ri32_source MOV64ri32_demat MOV64ri32_remat),
-   (MOV8ri, RematTriple MOV8ri_source MOV8ri_demat MOV8ri_remat)]
+   (LEA16r, RematTriple LEA16r_source LEA16r_demat LEA16r_remat),
+   (LEA32r, RematTriple LEA32r_source LEA32r_demat LEA32r_remat),
+   (LEA64r, RematTriple LEA64r_source LEA64r_demat LEA64r_remat)]
 
 spillInstrs = [MOV8mr, MOV8mr_NOREX, MOV8rm, MOV8rm_NOREX,
                MOV16mr, MOV16rm, MOV32mr, MOV32rm, MOV64mr, MOV64rm]
