@@ -13,7 +13,6 @@ module Unison.Target.X86 (target) where
 
 import Debug.Trace
 import Data.Maybe
-import Data.List.Split
 import qualified Data.Set as S
 import Control.Arrow
 
@@ -124,14 +123,14 @@ copies _ False _ rs _ us | any isReserved rs =
 -- Add only one store for entry calle-saved temporaries
 -- Add only one load for exit calle-saved temporaries
 -- Do not add copies for intermediate calle-saved temporaries
-copies (f, cst, _, _, _, _) False t [r] _d [_u]
+copies (f, cst, _, _, _, _) False t [_r] _d [_u]
   | S.member t cst =
     (
       if isEntryTemp (fCode f) t
-      then [mkNullInstruction, TargetInstruction (pushInstruction r)]
+      then [mkNullInstruction, TargetInstruction PUSH_cst]
       else [],
       [if isExitTemp (fCode f) t
-       then [mkNullInstruction, TargetInstruction (popInstruction r)]
+       then [mkNullInstruction, TargetInstruction POP_cst]
        else []]
     )
 
@@ -177,10 +176,6 @@ useCopies 2 _ = [mkNullInstruction, TargetInstruction MOVE16, TargetInstruction 
 useCopies 4 _ = [mkNullInstruction, TargetInstruction MOVE32, TargetInstruction LOAD32]
 useCopies 8 _ = [mkNullInstruction, TargetInstruction MOVE64, TargetInstruction LOAD64]
 
-pushInstruction _ = STORE64
-
-popInstruction _ = LOAD64
-
 classOfTemp = classOf (target, [])
 
 widthOfTemp = widthOf (target, [])
@@ -208,6 +203,14 @@ rematInstrs i
 
 -- handle regular copies
 fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
+  | i `elem` [PUSH_cst] =
+    Linear {oIs = [TargetInstruction PUSH64r],
+            oUs = [s],
+            oDs = []}
+  | i `elem` [POP_cst] =
+    Linear {oIs = [TargetInstruction POP64r],
+            oUs = [],
+            oDs = [d]}
   | i `elem` [MOVE8, MOVE16, MOVE32, MOVE64] =
     Linear {oIs = [TargetInstruction (fromCopyInstr i)],
             oUs = [s],
@@ -282,7 +285,7 @@ nop = Linear [TargetInstruction NOOP] [] []
 
 readWriteInfo i
   | i `elem` [SUBRSP_pseudo, ADDRSP_pseudo] =
-      second (++ [OtherSideEffect SP]) $ SpecsGen.readWriteInfo i
+      second (++ [OtherSideEffect RSP]) $ SpecsGen.readWriteInfo i
   | otherwise = SpecsGen.readWriteInfo i
 
 -- | Implementation of frame setup and destroy operations. All functions
@@ -295,23 +298,35 @@ implementFrame = const []
 -- | Adds function prologue, see corresponding logic in X86FrameLowering.cpp
 -- ("emitPrologue")
 
--- We need a stack frame iff there are 1) spills or 2) non-fixed stack objects
--- or SP-relative stores. This takes care of 1), the transformation
--- 'enforceStackFrame' at AugmentPostRW takes care of 2) which is a static
--- condition. Additionally, we need to adjust the SP by 1 if we have an **even**
--- number of callee-saved spills for alignment reasons.
+-- We need a stack frame iff there are spills or stack-allocated data.
+-- Additionally, we need to ensure that SP is modulo 16 aligned at
+-- all recursive calls!  At any rate, the frame size needs to be a multiple of 8.
 
 addPrologue (_, oid, _) (e:code) =
   let subSp = mkLinear oid [TargetInstruction SUBRSP_pseudo] [Bound mkMachineFrameSize] []
-  in [e] ++ [subSp] ++ code
+  in [e] ++ (addPrologue' [subSp] code)
+
+addPrologue' submoves (o:code)
+  | TargetInstruction PUSH_cst `elem` oInstructions o
+  = addPrologue'' [o] submoves code
+  | True
+  = addPrologue' (submoves ++ [o]) code
+
+addPrologue'' pushes submoves (o:code)
+  | TargetInstruction PUSH_cst `elem` oInstructions o
+  = addPrologue'' (pushes ++ [o]) submoves code
+  | True
+  = pushes ++ submoves ++ (o:code)
 
 addEpilogue (_, oid, _) code =
   let addSp = mkLinear oid [TargetInstruction ADDRSP_pseudo] [Bound mkMachineFrameSize] []
-  in case split (keepDelimsL $
-                 whenElt (\o -> isBranch o || isTailCall o))
-          code of
-      f : e -> f ++ [addSp] ++ concat e
-      os    -> error ("unhandled epilogue: " ++ show os)
+  in addEpilogue' [addSp] code
+
+addEpilogue' adds (o:code)
+  | TargetInstruction POP_cst `elem` oInstructions o
+  = adds ++ (o:code)
+  | True
+  = [o] ++ (addEpilogue' adds code)
 
 -- | Direction in which the stack grows
 stackDirection = API.StackGrowsDown
@@ -352,16 +367,22 @@ postProcess to = [expandPseudos to]
 
 expandPseudos to = mapToMachineBlock (expandBlockPseudos (expandPseudo to))
 
+expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc SUBRSP_pseudo, msOperands = [MachineImm 0]})
+  = [[mkMachineSingle (MachineTargetOpc NOOP) [] []]]
+
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SUBRSP_pseudo,
                                    msOperands = [off]}
   = let sp = mkMachineReg RSP
-    in [[mi {msOpcode = mkMachineTargetOpc SUB64ri8,
+    in [[mi {msOpcode = mkMachineTargetOpc SUB64ri32,
              msOperands = [sp, sp, off]}]]
+
+expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc ADDRSP_pseudo, msOperands = [MachineImm 0]})
+  = [[mkMachineSingle (MachineTargetOpc NOOP) [] []]]
 
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADDRSP_pseudo,
                                    msOperands = [off]}
   = let sp = mkMachineReg RSP
-    in [[mi {msOpcode = mkMachineTargetOpc ADD64ri8,
+    in [[mi {msOpcode = mkMachineTargetOpc ADD64ri32,
              msOperands = [sp, sp, off]}]]
 
 expandPseudo _ mi = [[mi]]

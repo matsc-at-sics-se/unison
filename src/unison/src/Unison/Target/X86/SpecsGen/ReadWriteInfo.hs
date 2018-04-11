@@ -466,15 +466,15 @@ readWriteInfo i
     ([OtherSideEffect RCX, OtherSideEffect RDI, OtherSideEffect RSI],
      [OtherSideEffect RCX, OtherSideEffect RDI, OtherSideEffect RSI])
   | i `elem`
-      [CALL64m, CALL64pcrel32, CALL64r, TAILJMPd64, TAILJMPd64_REX,
+      [CALL64m, CALL64pcrel32, CALL64r, LOAD16, LOAD32, LOAD64, LOAD8,
+       STORE16, STORE32, STORE64, STORE8, TAILJMPd64, TAILJMPd64_REX,
        TAILJMPr64, TAILJMPr64_REX, TCRETURNdi64, TCRETURNri64]
     = ([OtherSideEffect RSP], [])
   | i `elem` [PUSH64i32, PUSH64i8, PUSH64r, PUSH64rmr] =
     ([OtherSideEffect RSP], [Memory "mem", OtherSideEffect RSP])
+  | i `elem` [POP_cst, PUSH_cst] =
+    ([OtherSideEffect RSP], [OtherSideEffect RSP])
   | i `elem` [PUSHF64] =
     ([OtherSideEffect RSP, OtherSideEffect EFLAGS],
      [Memory "mem", OtherSideEffect RSP])
-  | i `elem`
-      [LOAD16, LOAD32, LOAD64, LOAD8, STORE16, STORE32, STORE64, STORE8]
-    = ([OtherSideEffect SP], [])
 

@@ -226,8 +226,8 @@ itinerary i
   | i `elem` [MUL8m, MUL8r] = IIC_MUL8
   | i `elem` [NOOP, NOOPL, NOOPW] = IIC_NOP
   | i `elem` [POP16rmm, POP32rmm, POP64rmm] = IIC_POP_MEM
-  | i `elem` [POP16rmr, POP32r, POP32rmr, POP64r, POP64rmr] =
-    IIC_POP_REG
+  | i `elem` [POP16rmr, POP32r, POP32rmr, POP64r, POP64rmr, POP_cst]
+    = IIC_POP_REG
   | i `elem` [POP16r] = IIC_POP_REG16
   | i `elem` [PUSHA16, PUSHA32] = IIC_PUSH_A
   | i `elem` [PUSHCS32] = IIC_PUSH_CS
@@ -237,7 +237,8 @@ itinerary i
     = IIC_PUSH_IMM
   | i `elem` [PUSH16rmm, PUSH32rmm, PUSH64rmm] = IIC_PUSH_MEM
   | i `elem`
-      [PUSH16r, PUSH16rmr, PUSH32r, PUSH32rmr, PUSH64r, PUSH64rmr]
+      [PUSH16r, PUSH16rmr, PUSH32r, PUSH32rmr, PUSH64r, PUSH64rmr,
+       PUSH_cst]
     = IIC_PUSH_REG
   | i `elem`
       [PUSHCS16, PUSHDS16, PUSHDS32, PUSHES16, PUSHES32, PUSHFS16,

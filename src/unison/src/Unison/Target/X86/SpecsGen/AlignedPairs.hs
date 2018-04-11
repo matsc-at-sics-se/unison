@@ -190,7 +190,7 @@ alignedPairs i ([_], [_])
        MOVSX32rr16, MOVSX32rr8, MOVSX64rr16, MOVSX64rr32, MOVSX64rr8,
        MOVUPDrr, MOVUPDrr_REV, MOVUPSrr, MOVUPSrr_REV, MOVZPQILo2PQIrr,
        MOVZX16rr8, MOVZX32_NOREXrr8, MOVZX32rr16, MOVZX32rr8, MOVZX64rr16,
-       MOVZX64rr8, POPCNT16rr, POPCNT32rr, POPCNT64rr]
+       MOVZX64rr8, POPCNT16rr, POPCNT32rr, POPCNT64rr, POP_cst, PUSH_cst]
     = []
 alignedPairs i ([src], [src'])
   | i `elem` [BSWAP32r, BSWAP64r] = [(src, src')]

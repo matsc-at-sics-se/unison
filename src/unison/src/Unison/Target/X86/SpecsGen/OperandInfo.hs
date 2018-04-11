@@ -404,7 +404,7 @@ operandInfo i
     ([TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False,
       TemporaryInfo (RegisterClass GR64) 1 False])
-  | i `elem` [STORE64] =
+  | i `elem` [PUSH_cst, STORE64] =
     ([TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (InfiniteRegisterClass M64) 1 False])
   | i `elem` [LEA64r_demat, MOV64ri32_demat, MOV64ri_demat] =
@@ -621,7 +621,7 @@ operandInfo i
   | i `elem` [LOAD32] =
     ([TemporaryInfo (InfiniteRegisterClass M32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [LOAD64] =
+  | i `elem` [LOAD64, POP_cst] =
     ([TemporaryInfo (InfiniteRegisterClass M64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem` [LOAD8] =
