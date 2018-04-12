@@ -164,10 +164,12 @@ run-specsgen-x86:
 	         --infiniteregclass M16 \
 	         --infiniteregclass M32 \
 	         --infiniteregclass M64 \
+	         --infiniteregclass M128 \
 	         --infiniteregclass RM8 \
 	         --infiniteregclass RM16 \
 	         --infiniteregclass RM32 \
 		 --infiniteregclass RM64 \
+		 --infiniteregclass RM128 \
 		 --promoteeffect AL:GR8 \
 		 --promoteeffect AH:GR8 \
 		 --promoteeffect AX:GR16 \

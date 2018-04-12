@@ -26,6 +26,8 @@ operandInfo i
       [SETAEr, SETAr, SETBEr, SETB_C8r, SETBr, SETEr, SETGEr, SETGr,
        SETLEr, SETLr, SETNEr, SETNOr, SETNPr, SETNSr, SETOr, SETPr, SETSr]
     = ([], [TemporaryInfo (RegisterClass GR8) 1 False])
+  | i `elem` [V_SET0_source, V_SETALLONES_source] =
+    ([], [TemporaryInfo (InfiniteRegisterClass RM128) 0 False])
   | i `elem` [MOV32r0_source, MOV32r1_source, MOV32r_1_source] =
     ([], [TemporaryInfo (InfiniteRegisterClass RM32) 0 False])
   | i `elem` [V_SET0, V_SETALLONES] =
@@ -615,6 +617,9 @@ operandInfo i
      [TemporaryInfo (RegisterClass GR8_NOREX) 1 False])
   | i `elem` [TEST8ri_NOREX] =
     ([TemporaryInfo (RegisterClass GR8_NOREX) 0 False, BoundInfo], [])
+  | i `elem` [LOAD128] =
+    ([TemporaryInfo (InfiniteRegisterClass M128) 0 False],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
   | i `elem` [LOAD16] =
     ([TemporaryInfo (InfiniteRegisterClass M16) 0 False],
      [TemporaryInfo (RegisterClass GR16) 1 False])
@@ -627,6 +632,9 @@ operandInfo i
   | i `elem` [LOAD8] =
     ([TemporaryInfo (InfiniteRegisterClass M8) 0 False],
      [TemporaryInfo (RegisterClass GR8) 1 False])
+  | i `elem` [V_SET0_remat, V_SETALLONES_remat] =
+    ([TemporaryInfo (InfiniteRegisterClass RM128) 0 False],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
   | i `elem` [LEA16r_remat, MOV16ri_alt_remat, MOV16ri_remat] =
     ([TemporaryInfo (InfiniteRegisterClass RM16) 0 False],
      [TemporaryInfo (RegisterClass GR16) 1 False])
@@ -648,12 +656,19 @@ operandInfo i
   | i `elem` [CVTSD2SI64rr, CVTSS2SI64rr, MOVPQIto64rr] =
     ([TemporaryInfo (RegisterClass VR128) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem` [STORE128] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False],
+     [TemporaryInfo (InfiniteRegisterClass M128) 1 False])
+  | i `elem` [V_SET0_demat, V_SETALLONES_demat] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False],
+     [TemporaryInfo (InfiniteRegisterClass RM128) 0 False])
   | i `elem`
       [CVTDQ2PDrr, CVTDQ2PSrr, CVTPD2DQrr, CVTPD2PSrr, CVTPS2DQrr,
        CVTPS2PDrr, CVTTPD2DQrr, CVTTPS2DQrr, MOVAPDrr, MOVAPDrr_REV,
        MOVAPSrr, MOVAPSrr_REV, MOVDDUPrr, MOVDQArr, MOVDQArr_REV,
-       MOVDQUrr, MOVDQUrr_REV, MOVPQI2QIrr, MOVSHDUPrr, MOVSLDUPrr,
-       MOVUPDrr, MOVUPDrr_REV, MOVUPSrr, MOVUPSrr_REV, MOVZPQILo2PQIrr]
+       MOVDQUrr, MOVDQUrr_REV, MOVE128, MOVPQI2QIrr, MOVSHDUPrr,
+       MOVSLDUPrr, MOVUPDrr, MOVUPDrr_REV, MOVUPSrr, MOVUPSrr_REV,
+       MOVZPQILo2PQIrr]
     =
     ([TemporaryInfo (RegisterClass VR128) 0 False],
      [TemporaryInfo (RegisterClass VR128) 1 False])

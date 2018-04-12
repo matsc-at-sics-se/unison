@@ -401,14 +401,15 @@ itinerary i
       [PSLLDrr, PSLLQrr, PSLLWrr, PSRADrr, PSRAWrr, PSRLDrr, PSRLQrr,
        PSRLWrr]
     = IIC_SSE_INTSH_P_RR
-  | i `elem` [MOVAPDmr, MOVAPSmr, MOVDQAmr] = IIC_SSE_MOVA_P_MR
+  | i `elem` [MOVAPDmr, MOVAPSmr, MOVDQAmr, STORE128] =
+    IIC_SSE_MOVA_P_MR
   | i `elem`
-      [FsMOVAPDrm, FsMOVAPSrm, FsVMOVAPDrm, FsVMOVAPSrm, MOVAPDrm,
-       MOVAPSrm, MOVDQArm]
+      [FsMOVAPDrm, FsMOVAPSrm, FsVMOVAPDrm, FsVMOVAPSrm, LOAD128,
+       MOVAPDrm, MOVAPSrm, MOVDQArm]
     = IIC_SSE_MOVA_P_RM
   | i `elem`
       [MOVAPDrr, MOVAPDrr_REV, MOVAPSrr, MOVAPSrr_REV, MOVDQArr,
-       MOVDQArr_REV]
+       MOVDQArr_REV, MOVE128]
     = IIC_SSE_MOVA_P_RR
   | i `elem`
       [MOV64toPQIrm, MOV64toPQIrr, MOV64toSDrm, MOV64toSDrr, MOVDI2PDIrm,
@@ -502,7 +503,9 @@ itinerary i
        SARX64rr, SETB_C16r, SETB_C32r, SETB_C64r, SETB_C8r, SHLX32rm,
        SHLX32rr, SHLX64rm, SHLX64rr, SHRX32rm, SHRX32rr, SHRX64rm,
        SHRX64rr, TCRETURNdi, TCRETURNdi64, TCRETURNmi, TCRETURNmi64,
-       TCRETURNri, TCRETURNri64, UD2B, V_SET0, V_SETALLONES, XORPDrm,
-       XORPDrr, XORPSrm, XORPSrr]
+       TCRETURNri, TCRETURNri64, UD2B, V_SET0, V_SET0_demat, V_SET0_remat,
+       V_SET0_source, V_SETALLONES, V_SETALLONES_demat,
+       V_SETALLONES_remat, V_SETALLONES_source, XORPDrm, XORPDrr, XORPSrm,
+       XORPSrr]
     = NoItinerary
 

@@ -1507,14 +1507,17 @@ data X86Instruction = ADC16i16
                     | STORE16
                     | STORE32
                     | STORE64
+                    | STORE128
                     | LOAD8
                     | LOAD16
                     | LOAD32
                     | LOAD64
+                    | LOAD128
                     | MOVE8
                     | MOVE16
                     | MOVE32
                     | MOVE64
+                    | MOVE128
                     | SUBRSP_pseudo
                     | ADDRSP_pseudo
                     | PUSH_cst
@@ -1561,5 +1564,11 @@ data X86Instruction = ADC16i16
                     | LEA64r_source
                     | LEA64r_demat
                     | LEA64r_remat
+                    | V_SET0_source
+                    | V_SET0_demat
+                    | V_SET0_remat
+                    | V_SETALLONES_source
+                    | V_SETALLONES_demat
+                    | V_SETALLONES_remat
                     deriving (Eq, Ord)
 

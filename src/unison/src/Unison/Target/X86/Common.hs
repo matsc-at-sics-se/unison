@@ -60,7 +60,9 @@ rematVersions = M.fromList
    (MOV64ri32, RematTriple MOV64ri32_source MOV64ri32_demat MOV64ri32_remat),
    (LEA16r, RematTriple LEA16r_source LEA16r_demat LEA16r_remat),
    (LEA32r, RematTriple LEA32r_source LEA32r_demat LEA32r_remat),
-   (LEA64r, RematTriple LEA64r_source LEA64r_demat LEA64r_remat)]
+   (LEA64r, RematTriple LEA64r_source LEA64r_demat LEA64r_remat),
+   (V_SET0, RematTriple V_SET0_source V_SET0_demat V_SET0_remat),
+   (V_SETALLONES, RematTriple V_SETALLONES_source V_SETALLONES_demat V_SETALLONES_remat)]
 
 spillInstrs = [MOV8mr, MOV8mr_NOREX, MOV8rm, MOV8rm_NOREX,
                MOV16mr, MOV16rm, MOV32mr, MOV32rm, MOV64mr, MOV64rm]

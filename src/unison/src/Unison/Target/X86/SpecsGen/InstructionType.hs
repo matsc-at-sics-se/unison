@@ -23,14 +23,15 @@ instructionType i
     = CallInstructionType
   | i `elem`
       [LEA16r_demat, LEA16r_remat, LEA32r_demat, LEA32r_remat,
-       LEA64r_demat, LEA64r_remat, LOAD16, LOAD32, LOAD64, LOAD8,
+       LEA64r_demat, LEA64r_remat, LOAD128, LOAD16, LOAD32, LOAD64, LOAD8,
        MOV16ri_alt_demat, MOV16ri_alt_remat, MOV16ri_demat, MOV16ri_remat,
        MOV32r0_demat, MOV32r0_remat, MOV32r1_demat, MOV32r1_remat,
        MOV32r_1_demat, MOV32r_1_remat, MOV32ri64_demat, MOV32ri64_remat,
        MOV32ri_alt_demat, MOV32ri_alt_remat, MOV32ri_demat, MOV32ri_remat,
        MOV64ri32_demat, MOV64ri32_remat, MOV64ri_demat, MOV64ri_remat,
-       MOV8ri_demat, MOV8ri_remat, MOVE16, MOVE32, MOVE64, MOVE8, POP_cst,
-       PUSH_cst, STORE16, STORE32, STORE64, STORE8]
+       MOV8ri_demat, MOV8ri_remat, MOVE128, MOVE16, MOVE32, MOVE64, MOVE8,
+       POP_cst, PUSH_cst, STORE128, STORE16, STORE32, STORE64, STORE8,
+       V_SET0_demat, V_SET0_remat, V_SETALLONES_demat, V_SETALLONES_remat]
     = CopyInstructionType
   | i `elem`
       [ADC16i16, ADC16mi, ADC16mi8, ADC16mr, ADC16ri, ADC16ri8, ADC16rm,
@@ -253,14 +254,14 @@ instructionType i
        TEST32ri, TEST32rm, TEST32rr, TEST64i32, TEST64mi32, TEST64ri32,
        TEST64rm, TEST64rr, TEST8i8, TEST8mi, TEST8ri, TEST8ri_NOREX,
        TEST8rm, TEST8rr, UCOMISDrm, UCOMISDrr, UCOMISSrm, UCOMISSrr, UD2B,
-       V_SET0, V_SETALLONES, XCHG16ar, XCHG16rm, XCHG16rr, XCHG32ar,
-       XCHG32ar64, XCHG32rm, XCHG32rr, XCHG64ar, XCHG64rm, XCHG64rr,
-       XCHG8rm, XCHG8rr, XOR16i16, XOR16mi, XOR16mi8, XOR16mr, XOR16ri,
-       XOR16ri8, XOR16rm, XOR16rr, XOR16rr_REV, XOR32i32, XOR32mi,
-       XOR32mi8, XOR32mr, XOR32ri, XOR32ri8, XOR32rm, XOR32rr,
-       XOR32rr_REV, XOR64i32, XOR64mi32, XOR64mi8, XOR64mr, XOR64ri32,
-       XOR64ri8, XOR64rm, XOR64rr, XOR64rr_REV, XOR8i8, XOR8mi, XOR8mi8,
-       XOR8mr, XOR8ri, XOR8ri8, XOR8rm, XOR8rr, XOR8rr_REV, XORPDrm,
-       XORPDrr, XORPSrm, XORPSrr]
+       V_SET0, V_SET0_source, V_SETALLONES, V_SETALLONES_source, XCHG16ar,
+       XCHG16rm, XCHG16rr, XCHG32ar, XCHG32ar64, XCHG32rm, XCHG32rr,
+       XCHG64ar, XCHG64rm, XCHG64rr, XCHG8rm, XCHG8rr, XOR16i16, XOR16mi,
+       XOR16mi8, XOR16mr, XOR16ri, XOR16ri8, XOR16rm, XOR16rr,
+       XOR16rr_REV, XOR32i32, XOR32mi, XOR32mi8, XOR32mr, XOR32ri,
+       XOR32ri8, XOR32rm, XOR32rr, XOR32rr_REV, XOR64i32, XOR64mi32,
+       XOR64mi8, XOR64mr, XOR64ri32, XOR64ri8, XOR64rm, XOR64rr,
+       XOR64rr_REV, XOR8i8, XOR8mi, XOR8mi8, XOR8mr, XOR8ri, XOR8ri8,
+       XOR8rm, XOR8rr, XOR8rr_REV, XORPDrm, XORPDrr, XORPSrm, XORPSrr]
     = LinearInstructionType
 

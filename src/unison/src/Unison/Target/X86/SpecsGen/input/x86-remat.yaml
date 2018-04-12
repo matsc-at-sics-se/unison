@@ -58,3 +58,11 @@ instruction-set:
    - id: LEA64r
      home-class: GR64
      infinite-class: RM64
+     
+   - id: V_SET0
+     home-class: VR128
+     infinite-class: RM128
+     
+   - id: V_SETALLONES
+     home-class: VR128
+     infinite-class: RM128

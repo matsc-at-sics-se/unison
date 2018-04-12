@@ -284,5 +284,13 @@ parent i
     Just MOV8ri
   | i `elem` [LOAD8] = Just MOV8rm
   | i `elem` [MOVE8] = Just MOV8rr
+  | i `elem` [STORE128] = Just MOVDQAmr
+  | i `elem` [LOAD128] = Just MOVDQArm
+  | i `elem` [MOVE128] = Just MOVDQArr
   | i `elem` [SUBRSP_pseudo] = Just SUB64ri8
+  | i `elem` [V_SET0_demat, V_SET0_remat, V_SET0_source] =
+    Just V_SET0
+  | i `elem`
+      [V_SETALLONES_demat, V_SETALLONES_remat, V_SETALLONES_source]
+    = Just V_SETALLONES
 

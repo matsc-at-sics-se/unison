@@ -170,11 +170,13 @@ defCopies 1 = [mkNullInstruction, TargetInstruction MOVE8, TargetInstruction STO
 defCopies 2 = [mkNullInstruction, TargetInstruction MOVE16, TargetInstruction STORE16]
 defCopies 4 = [mkNullInstruction, TargetInstruction MOVE32, TargetInstruction STORE32]
 defCopies 8 = [mkNullInstruction, TargetInstruction MOVE64, TargetInstruction STORE64]
+defCopies 16 = [mkNullInstruction, TargetInstruction MOVE128, TargetInstruction STORE128]
 
 useCopies 1 _ = [mkNullInstruction, TargetInstruction MOVE8, TargetInstruction LOAD8]
 useCopies 2 _ = [mkNullInstruction, TargetInstruction MOVE16, TargetInstruction LOAD16]
 useCopies 4 _ = [mkNullInstruction, TargetInstruction MOVE32, TargetInstruction LOAD32]
 useCopies 8 _ = [mkNullInstruction, TargetInstruction MOVE64, TargetInstruction LOAD64]
+useCopies 16 _ = [mkNullInstruction, TargetInstruction MOVE128, TargetInstruction LOAD128]
 
 classOfTemp = classOf (target, [])
 
@@ -211,11 +213,11 @@ fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
     Linear {oIs = [TargetInstruction POP64r],
             oUs = [],
             oDs = [d]}
-  | i `elem` [MOVE8, MOVE16, MOVE32, MOVE64] =
+  | i `elem` [MOVE8, MOVE16, MOVE32, MOVE64, MOVE128] =
     Linear {oIs = [TargetInstruction (fromCopyInstr i)],
             oUs = [s],
             oDs = [d]}
-  | i `elem` [STORE8, STORE16, STORE32, STORE64] =
+  | i `elem` [STORE8, STORE16, STORE32, STORE64, STORE128] =
     Linear {oIs = [TargetInstruction (fromCopyInstr i)],
             oUs = [mkBoundMachineFrameObject i d,
                    mkBound (mkMachineImm 1),
@@ -224,7 +226,7 @@ fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
                    mkBound MachineNullReg,
                    s],
             oDs = []}
-  | i `elem` [LOAD8, LOAD16, LOAD32, LOAD64] =
+  | i `elem` [LOAD8, LOAD16, LOAD32, LOAD64, LOAD128] =
     Linear {oIs = [TargetInstruction (fromCopyInstr i)],
             oUs = [mkBoundMachineFrameObject i s,
                    mkBound (mkMachineImm 1),

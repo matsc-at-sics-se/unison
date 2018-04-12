@@ -15,7 +15,7 @@ alignedPairs i ([], [_])
        MOV32r1_source, MOV32r_1, MOV32r_1_source, SETAEr, SETAr, SETBEr,
        SETB_C16r, SETB_C32r, SETB_C64r, SETB_C8r, SETBr, SETEr, SETGEr,
        SETGr, SETLEr, SETLr, SETNEr, SETNOr, SETNPr, SETNSr, SETOr, SETPr,
-       SETSr, V_SET0, V_SETALLONES]
+       SETSr, V_SET0, V_SET0_source, V_SETALLONES, V_SETALLONES_source]
     = []
 alignedPairs i ([], [_])
   | i `elem` [POP16r, POP16rmr, POP32r, POP32rmr, POP64r, POP64rmr] =
@@ -159,7 +159,8 @@ alignedPairs i ([_], [])
     = []
 alignedPairs i ([_], [_])
   | i `elem`
-      [LOAD16, LOAD32, LOAD64, LOAD8, STORE16, STORE32, STORE64, STORE8]
+      [LOAD128, LOAD16, LOAD32, LOAD64, LOAD8, STORE128, STORE16,
+       STORE32, STORE64, STORE8]
     = []
 alignedPairs i ([_], [_])
   | i `elem`
@@ -184,13 +185,14 @@ alignedPairs i ([_], [_])
        MOV8ri_alt, MOV8ri_demat, MOV8ri_remat, MOV8ri_source, MOV8rr,
        MOV8rr_NOREX, MOV8rr_REV, MOVAPDrr, MOVAPDrr_REV, MOVAPSrr,
        MOVAPSrr_REV, MOVDDUPrr, MOVDI2PDIrr, MOVDI2SSrr, MOVDQArr,
-       MOVDQArr_REV, MOVDQUrr, MOVDQUrr_REV, MOVE16, MOVE32, MOVE64,
-       MOVE8, MOVPDI2DIrr, MOVPQI2QIrr, MOVPQIto64rr, MOVSDto64rr,
+       MOVDQArr_REV, MOVDQUrr, MOVDQUrr_REV, MOVE128, MOVE16, MOVE32,
+       MOVE64, MOVE8, MOVPDI2DIrr, MOVPQI2QIrr, MOVPQIto64rr, MOVSDto64rr,
        MOVSHDUPrr, MOVSLDUPrr, MOVSS2DIrr, MOVSX16rr8, MOVSX32_NOREXrr8,
        MOVSX32rr16, MOVSX32rr8, MOVSX64rr16, MOVSX64rr32, MOVSX64rr8,
        MOVUPDrr, MOVUPDrr_REV, MOVUPSrr, MOVUPSrr_REV, MOVZPQILo2PQIrr,
        MOVZX16rr8, MOVZX32_NOREXrr8, MOVZX32rr16, MOVZX32rr8, MOVZX64rr16,
-       MOVZX64rr8, POPCNT16rr, POPCNT32rr, POPCNT64rr, POP_cst, PUSH_cst]
+       MOVZX64rr8, POPCNT16rr, POPCNT32rr, POPCNT64rr, POP_cst, PUSH_cst,
+       V_SET0_demat, V_SET0_remat, V_SETALLONES_demat, V_SETALLONES_remat]
     = []
 alignedPairs i ([src], [src'])
   | i `elem` [BSWAP32r, BSWAP64r] = [(src, src')]

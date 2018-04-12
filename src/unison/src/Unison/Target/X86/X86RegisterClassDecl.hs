@@ -26,6 +26,7 @@ data X86RegisterClass =
     GR64 |
     GR64_NOSP |
     GR128_AUX |
+    VR2048_AUX |
     Ptr_rc |
     Ptr_rc_nosp |
     Ptr_rc_norex |
@@ -39,8 +40,10 @@ data X86RegisterClass =
     M16 |
     M32 |
     M64 |
+    M128 |
     RM8 |
     RM16 |
     RM32 |
-    RM64
+    RM64 |
+    RM128
     deriving (Eq, Ord, Show, Read)

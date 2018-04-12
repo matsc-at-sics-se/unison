@@ -16,7 +16,7 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
-           - RSP:              register
+           - RSP:             register
 
         - id:                 STORE16
           parent:             MOV16mr
@@ -28,7 +28,7 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
-           - RSP:              register
+           - RSP:             register
 
         - id:                 STORE32
           parent:             MOV32mr
@@ -40,7 +40,7 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
-           - RSP:              register
+           - RSP:             register
 
         - id:                 STORE64
           parent:             MOV64mr
@@ -52,7 +52,19 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
-           - RSP:              register
+           - RSP:             register
+
+        - id:                 STORE128
+          parent:             MOVDQAmr
+          type:               copy
+          operands:
+           - rd:              [register, def, M128]
+           - rt:              [register, use, VR128]
+          uses:               [rt]
+          defines:            [rd]
+          affects:
+          affected-by:
+           - RSP:             register
 
         - id:                 LOAD8
           parent:             MOV8rm
@@ -64,7 +76,7 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
-           - RSP:              register
+           - RSP:             register
 
         - id:                 LOAD16
           parent:             MOV16rm
@@ -76,7 +88,7 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
-           - RSP:              register
+           - RSP:             register
 
         - id:                 LOAD32
           parent:             MOV32rm
@@ -88,7 +100,7 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
-           - RSP:              register
+           - RSP:             register
 
         - id:                 LOAD64
           parent:             MOV64rm
@@ -100,7 +112,19 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
-           - RSP:              register
+           - RSP:             register
+
+        - id:                 LOAD128
+          parent:             MOVDQArm
+          type:               copy
+          operands:
+           - rd:              [register, def, VR128]
+           - rt:              [register, use, M128]
+          uses:               [rt]
+          defines:            [rd]
+          affects:
+          affected-by:
+           - RSP:             register
 
         - id:                 MOVE8
           parent:             MOV8rr
@@ -116,6 +140,10 @@ instruction-set:
 
         - id:                 MOVE64
           parent:             MOV64rr
+          type:               copy
+
+        - id:                 MOVE128
+          parent:             MOVDQArr
           type:               copy
 
         - id:                 SUBRSP_pseudo
