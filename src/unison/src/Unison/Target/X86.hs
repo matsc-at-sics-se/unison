@@ -326,9 +326,17 @@ addEpilogue (_, oid, _) code =
 
 addEpilogue' adds (o:code)
   | TargetInstruction POP_cst `elem` oInstructions o
-  = adds ++ (o:code)
+  = addEpilogue'' (adds ++ [o]) code
   | True
   = [o] ++ (addEpilogue' adds code)
+
+addEpilogue'' addpops (o:code)
+  | TargetInstruction POP_cst `elem` oInstructions o
+  = addEpilogue'' (addpops ++ [o]) code
+  | (isTailCall o || isBranch o)
+  = addpops ++ [o] ++ code
+  | True
+  = addEpilogue'' ([o] ++ addpops) code
 
 -- | Direction in which the stack grows
 stackDirection = API.StackGrowsDown
