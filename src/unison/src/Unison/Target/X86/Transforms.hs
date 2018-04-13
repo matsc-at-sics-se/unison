@@ -12,6 +12,7 @@ This file is part of Unison, see http://unison-code.github.io
 module Unison.Target.X86.Transforms
     (extractReturnRegs,
      handlePromotedOperands,
+     generalizeRegisterOperands,
      myLowerFrameIndices,
      stackIndexReadsSP) where
 
@@ -111,6 +112,12 @@ handlePromotedOperands
       uses' = preAssignOperands uses rs
   in o {oOpr = Natural ni {oDs = defs', oUs = uses'}}
 handlePromotedOperands o = o
+
+generalizeRegisterOperands
+  o @ SingleOperation {
+    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ADD64rr]})} =
+  o {oOpr = Natural ni {oIs = [TargetInstruction ADD64rr, TargetInstruction ADD64ru, TargetInstruction ADD64ur]}}
+generalizeRegisterOperands o = o
 
 preAssignOperands ops regs =
   let regOps = map (\r -> Register (TargetRegister r)) regs

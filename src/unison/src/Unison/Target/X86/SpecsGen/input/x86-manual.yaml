@@ -187,3 +187,23 @@ instruction-set:
           affected-by:
            - RSP:             register
           itinerary:          IIC_POP_REG
+
+        - id:                 ADD64ur
+          parent:             ADD64mr
+          type:               linear
+          operands:
+           - src1:            [register, usedef, M64]
+           - src2:            [register, use, GR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0
+
+        - id:                 ADD64ru
+          parent:             ADD64rm
+          type:               linear
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+          size:               0

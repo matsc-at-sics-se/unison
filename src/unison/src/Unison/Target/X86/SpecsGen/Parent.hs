@@ -241,7 +241,9 @@ parent i
        XOR8ri8, XOR8rm, XOR8rr, XOR8rr_REV, XORPDrm, XORPDrr, XORPSrm,
        XORPSrr]
     = Nothing
+  | i `elem` [ADD64ur] = Just ADD64mr
   | i `elem` [ADDRSP_pseudo] = Just ADD64ri8
+  | i `elem` [ADD64ru] = Just ADD64rm
   | i `elem` [LEA16r_demat, LEA16r_remat, LEA16r_source] =
     Just LEA16r
   | i `elem` [LEA32r_demat, LEA32r_remat, LEA32r_source] =

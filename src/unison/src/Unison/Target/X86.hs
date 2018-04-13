@@ -234,6 +234,25 @@ fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
                    mkBound (mkMachineImm 0),
                    mkBound MachineNullReg],
             oDs = [d]}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [d,s]})
+  | i `elem` [ADD64ru] =
+    Linear {oIs = [TargetInstruction (fromCopyInstr i)],
+            oUs = [d,
+                   mkBoundMachineFrameObject i s,
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg],
+            oDs = [d]}
+  | i `elem` [ADD64ur] =
+    Linear {oIs = [TargetInstruction (fromCopyInstr i)],
+            oUs = [mkBoundMachineFrameObject i d,
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg,
+                   s],
+            oDs = []}
 
 -- handle rematerialization copies
 fromCopy (Just (Linear {oUs = us}))
@@ -263,7 +282,7 @@ stackSize op
   | op `elem` [STORE8, LOAD8] = 1
   | op `elem` [STORE16, LOAD16] = 2
   | op `elem` [STORE32, LOAD32] = 4
-  | op `elem` [STORE64, LOAD64] = 8
+  | op `elem` [STORE64, LOAD64, ADD64ru, ADD64ur] = 8
 
 -- | Declares target architecture resources
 
@@ -392,7 +411,8 @@ expandPseudo _ mi = [[mi]]
 -- | Gives a list of function transformers
 
 transforms ImportPreLift = [peephole extractReturnRegs]
-transforms ImportPostLift = [mapToOperation handlePromotedOperands]
+transforms ImportPostLift = [mapToOperation handlePromotedOperands,
+                             mapToOperation generalizeRegisterOperands]
 transforms ExportPreLow = [myLowerFrameIndices]
 transforms AugmentPostRW = [mapToOperation stackIndexReadsSP]
 transforms _ = []

@@ -24,20 +24,21 @@ itinerary i
     = IIC_BIN_CARRY_NONMEM
   | i `elem`
       [ADD16mi, ADD16mi8, ADD16mr, ADD16rm, ADD32mi, ADD32mi8, ADD32mr,
-       ADD32rm, ADD64mi32, ADD64mi8, ADD64mr, ADD64rm, ADD8mi, ADD8mi8,
-       ADD8mr, ADD8rm, AND16mi, AND16mi8, AND16mr, AND16rm, AND32mi,
-       AND32mi8, AND32mr, AND32rm, AND64mi32, AND64mi8, AND64mr, AND64rm,
-       AND8mi, AND8mi8, AND8mr, AND8rm, ANDN32rm, ANDN64rm, CMP16mi,
-       CMP16mi8, CMP16mr, CMP16rm, CMP32mi, CMP32mi8, CMP32mr, CMP32rm,
-       CMP64mi32, CMP64mi8, CMP64mr, CMP64rm, CMP8mi, CMP8mi8, CMP8mr,
-       CMP8rm, OR16mi, OR16mi8, OR16mr, OR16rm, OR32mi, OR32mi8, OR32mr,
-       OR32rm, OR64mi32, OR64mi8, OR64mr, OR64rm, OR8mi, OR8mi8, OR8mr,
-       OR8rm, SUB16mi, SUB16mi8, SUB16mr, SUB16rm, SUB32mi, SUB32mi8,
-       SUB32mr, SUB32rm, SUB64mi32, SUB64mi8, SUB64mr, SUB64rm, SUB8mi,
-       SUB8mi8, SUB8mr, SUB8rm, TEST16mi, TEST16rm, TEST32mi, TEST32rm,
-       TEST64mi32, TEST64rm, TEST8mi, TEST8rm, XOR16mi, XOR16mi8, XOR16mr,
-       XOR16rm, XOR32mi, XOR32mi8, XOR32mr, XOR32rm, XOR64mi32, XOR64mi8,
-       XOR64mr, XOR64rm, XOR8mi, XOR8mi8, XOR8mr, XOR8rm]
+       ADD32rm, ADD64mi32, ADD64mi8, ADD64mr, ADD64rm, ADD64ru, ADD64ur,
+       ADD8mi, ADD8mi8, ADD8mr, ADD8rm, AND16mi, AND16mi8, AND16mr,
+       AND16rm, AND32mi, AND32mi8, AND32mr, AND32rm, AND64mi32, AND64mi8,
+       AND64mr, AND64rm, AND8mi, AND8mi8, AND8mr, AND8rm, ANDN32rm,
+       ANDN64rm, CMP16mi, CMP16mi8, CMP16mr, CMP16rm, CMP32mi, CMP32mi8,
+       CMP32mr, CMP32rm, CMP64mi32, CMP64mi8, CMP64mr, CMP64rm, CMP8mi,
+       CMP8mi8, CMP8mr, CMP8rm, OR16mi, OR16mi8, OR16mr, OR16rm, OR32mi,
+       OR32mi8, OR32mr, OR32rm, OR64mi32, OR64mi8, OR64mr, OR64rm, OR8mi,
+       OR8mi8, OR8mr, OR8rm, SUB16mi, SUB16mi8, SUB16mr, SUB16rm, SUB32mi,
+       SUB32mi8, SUB32mr, SUB32rm, SUB64mi32, SUB64mi8, SUB64mr, SUB64rm,
+       SUB8mi, SUB8mi8, SUB8mr, SUB8rm, TEST16mi, TEST16rm, TEST32mi,
+       TEST32rm, TEST64mi32, TEST64rm, TEST8mi, TEST8rm, XOR16mi,
+       XOR16mi8, XOR16mr, XOR16rm, XOR32mi, XOR32mi8, XOR32mr, XOR32rm,
+       XOR64mi32, XOR64mi8, XOR64mr, XOR64rm, XOR8mi, XOR8mi8, XOR8mr,
+       XOR8rm]
     = IIC_BIN_MEM
   | i `elem`
       [ADD16i16, ADD16ri, ADD16ri8, ADD16rr, ADD16rr_REV, ADD32i32,

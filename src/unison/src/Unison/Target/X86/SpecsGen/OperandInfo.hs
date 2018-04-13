@@ -476,6 +476,10 @@ operandInfo i
     ([TemporaryInfo (RegisterClass GR64) 0 False,
       TemporaryInfo (RegisterClass GR8) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem` [ADD64ru] =
+    ([TemporaryInfo (RegisterClass GR64) 0 False,
+      TemporaryInfo (InfiniteRegisterClass M64) 0 False],
+     [TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem` [CMP64rm, TEST64rm] =
     ([TemporaryInfo (RegisterClass GR64) 0 False,
       TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
@@ -629,6 +633,10 @@ operandInfo i
   | i `elem` [LOAD64, POP_cst] =
     ([TemporaryInfo (InfiniteRegisterClass M64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem` [ADD64ur] =
+    ([TemporaryInfo (InfiniteRegisterClass M64) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False],
+     [TemporaryInfo (InfiniteRegisterClass M64) 1 False])
   | i `elem` [LOAD8] =
     ([TemporaryInfo (InfiniteRegisterClass M8) 0 False],
      [TemporaryInfo (RegisterClass GR8) 1 False])

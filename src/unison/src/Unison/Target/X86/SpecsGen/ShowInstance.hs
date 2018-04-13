@@ -1523,6 +1523,8 @@ instance Show X86Instruction where
         show ADDRSP_pseudo = "ADDRSP_pseudo"
         show PUSH_cst = "PUSH_cst"
         show POP_cst = "POP_cst"
+        show ADD64ur = "ADD64ur"
+        show ADD64ru = "ADD64ru"
         show MOV8ri_source = "MOV8ri_source"
         show MOV8ri_demat = "MOV8ri_demat"
         show MOV8ri_remat = "MOV8ri_remat"

@@ -1522,6 +1522,8 @@ data X86Instruction = ADC16i16
                     | ADDRSP_pseudo
                     | PUSH_cst
                     | POP_cst
+                    | ADD64ur
+                    | ADD64ru
                     | MOV8ri_source
                     | MOV8ri_demat
                     | MOV8ri_remat
