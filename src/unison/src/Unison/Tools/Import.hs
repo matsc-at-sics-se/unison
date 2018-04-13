@@ -170,13 +170,13 @@ importPragmas =
       "--nocostoverflow=false " ++
       "--nocomponentconflicts=false")]
 
-selectFunction Nothing [mf] = mf
+selectFunction Nothing (mf:_) = mf
 selectFunction (Just name) mfs =
   case find (isMfName name) mfs of
     Just mf -> mf
     Nothing -> error ("could not find specified MIR function " ++ show name)
 
-selected Nothing [_] = True
+selected Nothing (_:_) = True
 selected (Just name) mfs = any (isMfName name) mfs
 
 isMfName name mf = MachineIR.mfName mf == name
