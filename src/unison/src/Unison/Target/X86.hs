@@ -308,6 +308,8 @@ addPrologue (_, oid, _) (e:code) =
   let subSp = mkLinear oid [TargetInstruction SUBRSP_pseudo] [Bound mkMachineFrameSize] []
   in [e] ++ (addPrologue' [subSp] code)
 
+addPrologue' submoves []
+  = submoves
 addPrologue' submoves (o:code)
   | TargetInstruction PUSH_cst `elem` oInstructions o
   = addPrologue'' [o] submoves code
