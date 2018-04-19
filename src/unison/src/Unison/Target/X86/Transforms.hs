@@ -179,13 +179,13 @@ liftFIif _ _ o = o
 stackIndexReadsSP
   o @ SingleOperation {oAs = as @ Attributes {aReads = areads},
                        oOpr = Natural (Linear {oUs = [(Bound (MachineFrameIndex _ _ _)), _, _, _, _]})}
-  = let areads' = [OtherSideEffect SP] ++ areads
+  = let areads' = [OtherSideEffect RSP] ++ areads
     in o {oAs = as {aReads = areads'}}
 
 stackIndexReadsSP
   o @ SingleOperation {oAs = as @ Attributes {aReads = areads},
                        oOpr = Natural (Linear {oUs = [_, (Bound (MachineFrameIndex _ _ _)), _, _, _, _]})}
-  = let areads' = [OtherSideEffect SP] ++ areads
+  = let areads' = [OtherSideEffect RSP] ++ areads
     in o {oAs = as {aReads = areads'}}
 
 stackIndexReadsSP o = o
