@@ -182,7 +182,7 @@ registerAtoms r = error ("unmatched: registerAtoms " ++ show r)
 
 -- | Register classes
 regClasses =
-    map RegisterClass [CCR, GR8, GR8_NOREX, GR16, GR32, GR32_NOREX, GR32_NOAX, GR32_AUX, GR64, GR64_NOSP, GR128_AUX, VR2048_AUX,
+    map RegisterClass [CCR, GR8, GR8_NOREX, GR16, GR32, GR32_NOREX, GR32_NOAX, GR32_AUX, GR64, GR64_NOSP, GR128_AUX, VR2048_AUX, GR32orGR64,
                        Ptr_rc, Ptr_rc_nosp, Ptr_rc_norex, Ptr_rc_norex_nosp, Ptr_rc_tailcall,
                        FR32, FR64, FR128, VR128, VR256,
                        AUX] ++
