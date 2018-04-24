@@ -3,11 +3,15 @@
 module Unison.Target.X86.SpecsGen.X86ItineraryDecl
        (X86Itinerary(..)) where
  
-data X86Itinerary = IIC_BIN_CARRY_NONMEM
+data X86Itinerary = IIC_AAA
+                  | IIC_AAD
+                  | IIC_AAM
+                  | IIC_AAS
+                  | NoItinerary
+                  | IIC_BIN_CARRY_NONMEM
                   | IIC_BIN_CARRY_MEM
                   | IIC_BIN_NONMEM
                   | IIC_BIN_MEM
-                  | NoItinerary
                   | IIC_SSE_ALU_F64P_RM
                   | IIC_SSE_ALU_F64P_RR
                   | IIC_SSE_ALU_F32P_RM
@@ -16,6 +20,14 @@ data X86Itinerary = IIC_BIN_CARRY_NONMEM
                   | IIC_SSE_ALU_F64S_RR
                   | IIC_SSE_ALU_F32S_RM
                   | IIC_SSE_ALU_F32S_RR
+                  | IIC_AES
+                  | IIC_ARPL_MEM
+                  | IIC_ARPL_REG
+                  | IIC_SSE_INTALU_P_RM
+                  | IIC_SSE_INTALU_P_RR
+                  | IIC_ALU_MEM
+                  | IIC_ALU_NONMEM
+                  | IIC_BOUND
                   | IIC_BIT_SCAN_MEM
                   | IIC_BIT_SCAN_REG
                   | IIC_BSWAP
@@ -32,11 +44,15 @@ data X86Itinerary = IIC_BIN_CARRY_NONMEM
                   | IIC_CBW
                   | IIC_CLC
                   | IIC_CLD
+                  | IIC_SSE_PREFETCH
+                  | IIC_CLI
+                  | IIC_CLTS
                   | IIC_CMC
                   | IIC_CMOV16_RM
                   | IIC_CMOV16_RR
                   | IIC_CMOV32_RM
                   | IIC_CMOV32_RR
+                  | IIC_CMPS
                   | IIC_CMPXCHG_16B
                   | IIC_CMPXCHG_MEM
                   | IIC_CMPXCHG_REG
@@ -45,15 +61,23 @@ data X86Itinerary = IIC_BIN_CARRY_NONMEM
                   | IIC_CMPXCHG_REG8
                   | IIC_SSE_COMIS_RM
                   | IIC_SSE_COMIS_RR
+                  | IIC_CPUID
+                  | IIC_CRC32_MEM
+                  | IIC_CRC32_REG
                   | IIC_SSE_CVT_PD_RR
                   | IIC_SSE_CVT_PD_RM
                   | IIC_SSE_CVT_PS_RM
                   | IIC_SSE_CVT_PS_RR
+                  | IIC_SSE_CVT_SD2SI_RM
                   | IIC_SSE_CVT_SD2SI_RR
                   | IIC_SSE_CVT_Scalar_RM
                   | IIC_SSE_CVT_Scalar_RR
+                  | IIC_SSE_CVT_SS2SI64_RM
                   | IIC_SSE_CVT_SS2SI64_RR
+                  | IIC_SSE_CVT_SS2SI32_RM
                   | IIC_SSE_CVT_SS2SI32_RR
+                  | IIC_DAA
+                  | IIC_DAS
                   | IIC_UNARY_MEM
                   | IIC_UNARY_REG
                   | IIC_DIV16
@@ -70,11 +94,40 @@ data X86Itinerary = IIC_BIN_CARRY_NONMEM
                   | IIC_SSE_DPPD_RM
                   | IIC_SSE_DPPD_RR
                   | IIC_SSE_DPPS_RR
+                  | IIC_RET
                   | IIC_ENTER
+                  | IIC_SSE_EXTRACTPS_RM
+                  | IIC_SSE_EXTRACTPS_RR
+                  | IIC_F2XM1
+                  | IIC_CALL_FAR_PTR
+                  | IIC_CALL_FAR_MEM
+                  | IIC_JMP_FAR_PTR
+                  | IIC_JMP_FAR_MEM
+                  | IIC_FCOMPP
+                  | IIC_FPSTP
+                  | IIC_FLDCW
+                  | IIC_FLDL
+                  | IIC_FNOP
                   | IIC_FNSTCW
+                  | IIC_FPATAN
+                  | IIC_FPREM
+                  | IIC_FPREM1
+                  | IIC_FPTAN
+                  | IIC_FRNDINT
+                  | IIC_FSCALE
+                  | IIC_FSINCOS
+                  | IIC_FXAM
+                  | IIC_FXRSTOR
+                  | IIC_FXSAVE
+                  | IIC_FXTRACT
+                  | IIC_FYL2X
+                  | IIC_FYL2XP1
                   | IIC_SSE_BIT_P_RM
                   | IIC_SSE_BIT_P_RR
                   | IIC_SSE_MOVA_P_RM
+                  | IIC_SSE_HADDSUB_RM
+                  | IIC_SSE_HADDSUB_RR
+                  | IIC_HLT
                   | IIC_IDIV16
                   | IIC_IDIV32
                   | IIC_IDIV64
@@ -95,21 +148,57 @@ data X86Itinerary = IIC_BIN_CARRY_NONMEM
                   | IIC_IMUL64_RMI
                   | IIC_IMUL64_RRI
                   | IIC_IMUL8
+                  | IIC_IN_RI
+                  | IIC_IN_RR
+                  | IIC_INS
+                  | IIC_SSE_INSERTPS_RM
+                  | IIC_SSE_INSERTPS_RR
+                  | IIC_INT
+                  | IIC_INT3
+                  | IIC_INVD
+                  | IIC_INVLPG
+                  | IIC_IRET
                   | IIC_Jcc
                   | IIC_JCXZ
                   | IIC_JMP_MEM
                   | IIC_JMP_REG
                   | IIC_JMP_REL
+                  | IIC_AHF
+                  | IIC_LAR_RM
+                  | IIC_LAR_RR
+                  | IIC_CMPX_LOCK
+                  | IIC_CMPX_LOCK_16B
+                  | IIC_CMPX_LOCK_8
+                  | IIC_CMPX_LOCK_8B
+                  | IIC_SSE_LDDQU
+                  | IIC_SSE_LDMXCSR
+                  | IIC_LXS
                   | IIC_LEA_16
                   | IIC_LEA
                   | IIC_LEAVE
+                  | IIC_SSE_LFENCE
+                  | IIC_LGDT
+                  | IIC_LIDT
+                  | IIC_LLDT_MEM
+                  | IIC_LLDT_REG
+                  | IIC_LMSW_REG
+                  | IIC_LMSW_MEM
                   | IIC_LODS
                   | IIC_LOOP
                   | IIC_LOOPE
                   | IIC_LOOPNE
+                  | IIC_LSL_RM
+                  | IIC_LSL_RR
+                  | IIC_LTR
+                  | IIC_XADD_LOCK_MEM
+                  | IIC_XADD_LOCK_MEM8
+                  | IIC_SSE_MASKMOV
+                  | IIC_SSE_MFENCE
+                  | IIC_MMX_CVT_PD_RM
+                  | IIC_MMX_EMMS
+                  | IIC_SSE_MONITOR
                   | IIC_MOV_MEM
                   | IIC_MOV
-                  | IIC_ALU_NONMEM
                   | IIC_SSE_MOVDQ
                   | IIC_SSE_MOVA_P_MR
                   | IIC_SSE_MOVA_P_RR
@@ -118,6 +207,7 @@ data X86Itinerary = IIC_BIN_CARRY_NONMEM
                   | IIC_SSE_MOVU_P_MR
                   | IIC_SSE_MOVU_P_RM
                   | IIC_SSE_MOVU_P_RR
+                  | IIC_SSE_MOVMSK
                   | IIC_SSE_MOVNT
                   | IIC_SSE_MOVD_ToGP
                   | IIC_SSE_MOVQ_RR
@@ -145,21 +235,45 @@ data X86Itinerary = IIC_BIN_CARRY_NONMEM
                   | IIC_SSE_MUL_F64S_RM
                   | IIC_SSE_MUL_F64S_RR
                   | IIC_SSE_MUL_F32S_RR
+                  | IIC_SSE_MWAIT
                   | IIC_NOP
-                  | IIC_ALU_MEM
-                  | IIC_SSE_INTALU_P_RM
-                  | IIC_SSE_INTALU_P_RR
+                  | IIC_OUT_IR
+                  | IIC_OUT_RR
+                  | IIC_OUTS
+                  | IIC_SSE_PABS_RM
+                  | IIC_SSE_PABS_RR
                   | IIC_SSE_INTALUQ_P_RM
                   | IIC_SSE_INTALUQ_P_RR
+                  | IIC_SSE_PALIGNRM
+                  | IIC_SSE_PALIGNRR
+                  | IIC_SSE_PAUSE
+                  | IIC_SSE_PCLMULQDQ_RM
+                  | IIC_SSE_PCLMULQDQ_RR
+                  | IIC_SSE_PEXTRW
+                  | IIC_SSE_PHADDSUBD_RM
+                  | IIC_SSE_PHADDSUBD_RR
+                  | IIC_SSE_PHADDSUBW_RM
+                  | IIC_SSE_PHADDSUBW_RR
+                  | IIC_SSE_PINSRW
+                  | IIC_SSE_PMADD
+                  | IIC_SSE_INTMUL_P_RM
+                  | IIC_SSE_INTMUL_P_RR
                   | IIC_POP_REG16
                   | IIC_POP_MEM
                   | IIC_POP_REG
+                  | IIC_POP_A
                   | IIC_SSE_POPCNT_RM
                   | IIC_SSE_POPCNT_RR
+                  | IIC_POP_SR
+                  | IIC_POP_F
+                  | IIC_POP_FD
+                  | IIC_POP_SR_SS
                   | IIC_SSE_PSHUFB_RM
                   | IIC_SSE_PSHUFB_RR
                   | IIC_SSE_PSHUF_MI
                   | IIC_SSE_PSHUF_RI
+                  | IIC_SSE_PSIGN_RM
+                  | IIC_SSE_PSIGN_RR
                   | IIC_SSE_INTSHDQ_P_RI
                   | IIC_SSE_INTSH_P_RI
                   | IIC_SSE_INTSH_P_RM
@@ -173,14 +287,28 @@ data X86Itinerary = IIC_BIN_CARRY_NONMEM
                   | IIC_PUSH_CS
                   | IIC_PUSH_F
                   | IIC_SR
+                  | IIC_SSE_RCPP_RM
+                  | IIC_SSE_RCPP_RR
+                  | IIC_SSE_RCPS_RM
+                  | IIC_SSE_RCPS_RR
+                  | IIC_RDMSR
+                  | IIC_RDPMC
+                  | IIC_RDTSC
                   | IIC_REP_MOVS
                   | IIC_REP_STOS
                   | IIC_RET_IMM
-                  | IIC_RET
                   | IIC_SSE_ROUNDPS_REG
                   | IIC_SSE_ROUNDPS_MEM
+                  | IIC_RSM
+                  | IIC_SSE_RSQRTPS_RM
+                  | IIC_SSE_RSQRTPS_RR
+                  | IIC_SSE_RSQRTSS_RM
+                  | IIC_SSE_RSQRTSS_RR
+                  | IIC_SCAS
                   | IIC_SET_M
                   | IIC_SET_R
+                  | IIC_SSE_SFENCE
+                  | IIC_SGDT
                   | IIC_SHD16_MEM_CL
                   | IIC_SHD16_MEM_IM
                   | IIC_SHD16_REG_CL
@@ -193,14 +321,36 @@ data X86Itinerary = IIC_BIN_CARRY_NONMEM
                   | IIC_SHD64_MEM_IM
                   | IIC_SHD64_REG_CL
                   | IIC_SHD64_REG_IM
+                  | IIC_SSE_SHUFP
+                  | IIC_SIDT
+                  | IIC_SLDT
+                  | IIC_SMSW
+                  | IIC_SSE_SQRTPD_RM
+                  | IIC_SSE_SQRTPD_RR
+                  | IIC_SSE_SQRTPS_RM
+                  | IIC_SSE_SQRTPS_RR
                   | IIC_SSE_SQRTSD_RM
                   | IIC_SSE_SQRTSD_RR
                   | IIC_SSE_SQRTSS_RM
                   | IIC_SSE_SQRTSS_RR
                   | IIC_STC
                   | IIC_STD
+                  | IIC_STI
+                  | IIC_SSE_STMXCSR
                   | IIC_STOS
+                  | IIC_STR
+                  | IIC_SWAPGS
+                  | IIC_SYSCALL
+                  | IIC_SYS_ENTER_EXIT
+                  | IIC_VERR
+                  | IIC_VERW_REG
+                  | IIC_VERW_MEM
+                  | IIC_WAIT
+                  | IIC_WRMSR
+                  | IIC_XADD_MEM
+                  | IIC_XADD_REG
                   | IIC_XCHG_REG
                   | IIC_XCHG_MEM
+                  | IIC_XLAT
                   deriving (Eq, Read, Show)
 

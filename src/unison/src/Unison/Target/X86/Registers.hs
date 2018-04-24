@@ -125,24 +125,43 @@ registerAtoms R13 = (R150, R157)
 registerAtoms R14 = (R160, R167)
 registerAtoms R15 = (R170, R177)
 
--- | Register atoms of 16-byte floating-point registers
+-- | Register atoms of 16-byte floating-point registers (XMM)
 
 registerAtoms XMM0  = (R200, R217)
-registerAtoms XMM1  = (R220, R237)
-registerAtoms XMM2  = (R240, R257)
-registerAtoms XMM3  = (R260, R277)
-registerAtoms XMM4  = (R300, R317)
-registerAtoms XMM5  = (R320, R337)
-registerAtoms XMM6  = (R340, R357)
-registerAtoms XMM7  = (R360, R377)
-registerAtoms XMM8  = (R400, R417)
-registerAtoms XMM9  = (R420, R437)
-registerAtoms XMM10 = (R440, R457)
-registerAtoms XMM11 = (R460, R477)
-registerAtoms XMM12 = (R500, R517)
-registerAtoms XMM13 = (R520, R537)
-registerAtoms XMM14 = (R540, R557)
-registerAtoms XMM15 = (R560, R577)
+registerAtoms XMM1  = (R240, R257)
+registerAtoms XMM2  = (R300, R317)
+registerAtoms XMM3  = (R340, R357)
+registerAtoms XMM4  = (R400, R417)
+registerAtoms XMM5  = (R440, R457)
+registerAtoms XMM6  = (R500, R517)
+registerAtoms XMM7  = (R540, R557)
+registerAtoms XMM8  = (R600, R617)
+registerAtoms XMM9  = (R640, R657)
+registerAtoms XMM10 = (R700, R717)
+registerAtoms XMM11 = (R740, R757)
+registerAtoms XMM12 = (R1000, R1017)
+registerAtoms XMM13 = (R1040, R1057)
+registerAtoms XMM14 = (R1100, R1117)
+registerAtoms XMM15 = (R1140, R1157)
+
+-- | Register atoms of 32-byte floating-point registers (YMM)
+
+registerAtoms YMM0  = (R200, R237)
+registerAtoms YMM1  = (R240, R277)
+registerAtoms YMM2  = (R300, R337)
+registerAtoms YMM3  = (R340, R377)
+registerAtoms YMM4  = (R400, R437)
+registerAtoms YMM5  = (R440, R477)
+registerAtoms YMM6  = (R500, R537)
+registerAtoms YMM7  = (R540, R577)
+registerAtoms YMM8  = (R600, R637)
+registerAtoms YMM9  = (R640, R677)
+registerAtoms YMM10 = (R700, R737)
+registerAtoms YMM11 = (R740, R777)
+registerAtoms YMM12 = (R1000, R1037)
+registerAtoms YMM13 = (R1040, R1077)
+registerAtoms YMM14 = (R1100, R1137)
+registerAtoms YMM15 = (R1140, R1177)
 
 -- | Register atoms of 16-byte caller-saved "registers"
 
@@ -153,11 +172,11 @@ registerAtoms R10_R11 = (R120, R137)
 
 -- | Giant caller-saved XMM register atom
 
-registerAtoms XMM1_15 = (R220, R577)
+registerAtoms XMM1_15 = (R220, R1177)
 
 -- not really in the register array
-registerAtoms EFLAGS = (R600, R607)
-registerAtoms RIP = (R610, R617)
+registerAtoms EFLAGS = (R1200, R1207)
+registerAtoms RIP = (R1210, R1217)
 
 registerAtoms r = error ("unmatched: registerAtoms " ++ show r)
 
@@ -165,9 +184,9 @@ registerAtoms r = error ("unmatched: registerAtoms " ++ show r)
 regClasses =
     map RegisterClass [CCR, GR8, GR8_NOREX, GR16, GR32, GR32_NOREX, GR32_NOAX, GR32_AUX, GR64, GR64_NOSP, GR128_AUX, VR2048_AUX,
                        Ptr_rc, Ptr_rc_nosp, Ptr_rc_norex, Ptr_rc_norex_nosp, Ptr_rc_tailcall,
-                       FR32, FR64, VR128,
+                       FR32, FR64, FR128, VR128, VR256,
                        AUX] ++
-    map InfiniteRegisterClass [M8, M16, M32, M64, M128, RM8, RM16, RM32, RM64, RM128]
+    map InfiniteRegisterClass [M8, M16, M32, M64, M128, M256, RM8, RM16, RM32, RM64, RM128, RM256]
 
 -- | Individual registers of each register class (octal, internal names)
 
@@ -221,11 +240,43 @@ registers (RegisterClass FPR) =
      R540, R541, R542, R543, R544, R545, R546, R547,
      R550, R551, R552, R553, R554, R555, R556, R557,
      R560, R561, R562, R563, R564, R565, R566, R567,
-     R570, R571, R572, R573, R574, R575, R576, R577]
+     R570, R571, R572, R573, R574, R575, R576, R577,
+     R600, R601, R602, R603, R604, R605, R606, R607,
+     R610, R611, R612, R613, R614, R615, R616, R617,
+     R620, R621, R622, R623, R624, R625, R626, R627,
+     R630, R631, R632, R633, R634, R635, R636, R637,
+     R640, R641, R642, R643, R644, R645, R646, R647,
+     R650, R651, R652, R653, R654, R655, R656, R657,
+     R660, R661, R662, R663, R664, R665, R666, R667,
+     R670, R671, R672, R673, R674, R675, R676, R677,
+     R700, R701, R702, R703, R704, R705, R706, R707,
+     R710, R711, R712, R713, R714, R715, R716, R717,
+     R720, R721, R722, R723, R724, R725, R726, R727,
+     R730, R731, R732, R733, R734, R735, R736, R737,
+     R740, R741, R742, R743, R744, R745, R746, R747,
+     R750, R751, R752, R753, R754, R755, R756, R757,
+     R760, R761, R762, R763, R764, R765, R766, R767,
+     R770, R771, R772, R773, R774, R775, R776, R777,
+     R1000, R1001, R1002, R1003, R1004, R1005, R1006, R1007,
+     R1010, R1011, R1012, R1013, R1014, R1015, R1016, R1017,
+     R1020, R1021, R1022, R1023, R1024, R1025, R1026, R1027,
+     R1030, R1031, R1032, R1033, R1034, R1035, R1036, R1037,
+     R1040, R1041, R1042, R1043, R1044, R1045, R1046, R1047,
+     R1050, R1051, R1052, R1053, R1054, R1055, R1056, R1057,
+     R1060, R1061, R1062, R1063, R1064, R1065, R1066, R1067,
+     R1070, R1071, R1072, R1073, R1074, R1075, R1076, R1077,
+     R1100, R1101, R1102, R1103, R1104, R1105, R1106, R1107,
+     R1110, R1111, R1112, R1113, R1114, R1115, R1116, R1117,
+     R1120, R1121, R1122, R1123, R1124, R1125, R1126, R1127,
+     R1130, R1131, R1132, R1133, R1134, R1135, R1136, R1137,
+     R1140, R1141, R1142, R1143, R1144, R1145, R1146, R1147,
+     R1150, R1151, R1152, R1153, R1154, R1155, R1156, R1157,
+     R1160, R1161, R1162, R1163, R1164, R1165, R1166, R1167,
+     R1170, R1171, R1172, R1173, R1174, R1175, R1176, R1177]
 
 registers (RegisterClass CCR) =
-    [R600, R601, R602, R603, R604, R605, R606, R607,
-     R610, R611, R612, R613, R614, R615, R616, R617]
+    [R1200, R1201, R1202, R1203, R1204, R1205, R1206, R1207,
+     R1210, R1211, R1212, R1213, R1214, R1215, R1216, R1217]
 
 registers (RegisterClass GR8) =
     [AL, AH, CL, CH, DL, DH, BL, BH, SIL, DIL, SPL, BPL, R8B, R9B, R10B, R11B, R12B, R13B, R14B, R15B]
@@ -261,6 +312,9 @@ registers (RegisterClass GR128_AUX) =
 registers (RegisterClass VR2048_AUX) =
     [XMM1_15]
 
+registers (RegisterClass GR32orGR64) =
+    registers (RegisterClass GR64)
+
 registers (RegisterClass Ptr_rc) =
     registers (RegisterClass GR64)
 
@@ -282,8 +336,14 @@ registers (RegisterClass FR32) =
 registers (RegisterClass FR64) =
     registers (RegisterClass FR32)
 
+registers (RegisterClass FR128) =
+    registers (RegisterClass FR32)
+
 registers (RegisterClass VR128) =
     registers (RegisterClass FR32)
+
+registers (RegisterClass VR256) =
+    [YMM0, YMM1, YMM2, YMM3, YMM4, YMM5, YMM6, YMM7, YMM8, YMM9, YMM10, YMM11, YMM12, YMM13, YMM14, YMM15]
 
 registers (RegisterClass AUX) =
     [EFLAGS, RIP]
@@ -300,6 +360,8 @@ subRegIndexType sr
       sr == (NamedSubRegIndex "sub_16bit") ||
       sr == (NamedSubRegIndex "sub_8bit") ||
       sr == (NamedSubRegIndex "sub_8bit_hi") ||
+      sr == (RawSubRegIndex 1) ||
+      sr == (RawSubRegIndex 2) ||
       sr == (RawSubRegIndex 3) ||
       sr == (RawSubRegIndex 4) = LowSubRegIndex
 subRegIndexType subreg = error ("unmatched: subRegIndexType " ++ show subreg)
@@ -312,11 +374,13 @@ infRegClassUsage (InfiniteRegisterClass rc)
   | rc == M32 = 4
   | rc == M64 = 8
   | rc == M128 = 16
+  | rc == M256 = 32
   | rc == RM8 = 1
   | rc == RM16 = 2
   | rc == RM32 = 4
   | rc == RM64 = 8
   | rc == RM128 = 16
+  | rc == RM256 = 32
 
 -- | Map from infinite register class to (possibly) register atom upper bound
 
@@ -750,6 +814,262 @@ regStrings = M.fromList $
    (R615, "r615"),
    (R616, "r616"),
    (R617, "r617"),
+   (R620, "r620"),
+   (R621, "r621"),
+   (R622, "r622"),
+   (R623, "r623"),
+   (R624, "r624"),
+   (R625, "r625"),
+   (R626, "r626"),
+   (R627, "r627"),
+   (R630, "r630"),
+   (R631, "r631"),
+   (R632, "r632"),
+   (R633, "r633"),
+   (R634, "r634"),
+   (R635, "r635"),
+   (R636, "r636"),
+   (R637, "r637"),
+   (R640, "r640"),
+   (R641, "r641"),
+   (R642, "r642"),
+   (R643, "r643"),
+   (R644, "r644"),
+   (R645, "r645"),
+   (R646, "r646"),
+   (R647, "r647"),
+   (R650, "r650"),
+   (R651, "r651"),
+   (R652, "r652"),
+   (R653, "r653"),
+   (R654, "r654"),
+   (R655, "r655"),
+   (R656, "r656"),
+   (R657, "r657"),
+   (R660, "r660"),
+   (R661, "r661"),
+   (R662, "r662"),
+   (R663, "r663"),
+   (R664, "r664"),
+   (R665, "r665"),
+   (R666, "r666"),
+   (R667, "r667"),
+   (R670, "r670"),
+   (R671, "r671"),
+   (R672, "r672"),
+   (R673, "r673"),
+   (R674, "r674"),
+   (R675, "r675"),
+   (R676, "r676"),
+   (R677, "r677"),
+   (R700, "r700"),
+   (R701, "r701"),
+   (R702, "r702"),
+   (R703, "r703"),
+   (R704, "r704"),
+   (R705, "r705"),
+   (R706, "r706"),
+   (R707, "r707"),
+   (R710, "r710"),
+   (R711, "r711"),
+   (R712, "r712"),
+   (R713, "r713"),
+   (R714, "r714"),
+   (R715, "r715"),
+   (R716, "r716"),
+   (R717, "r717"),
+   (R720, "r720"),
+   (R721, "r721"),
+   (R722, "r722"),
+   (R723, "r723"),
+   (R724, "r724"),
+   (R725, "r725"),
+   (R726, "r726"),
+   (R727, "r727"),
+   (R730, "r730"),
+   (R731, "r731"),
+   (R732, "r732"),
+   (R733, "r733"),
+   (R734, "r734"),
+   (R735, "r735"),
+   (R736, "r736"),
+   (R737, "r737"),
+   (R740, "r740"),
+   (R741, "r741"),
+   (R742, "r742"),
+   (R743, "r743"),
+   (R744, "r744"),
+   (R745, "r745"),
+   (R746, "r746"),
+   (R747, "r747"),
+   (R750, "r750"),
+   (R751, "r751"),
+   (R752, "r752"),
+   (R753, "r753"),
+   (R754, "r754"),
+   (R755, "r755"),
+   (R756, "r756"),
+   (R757, "r757"),
+   (R760, "r760"),
+   (R761, "r761"),
+   (R762, "r762"),
+   (R763, "r763"),
+   (R764, "r764"),
+   (R765, "r765"),
+   (R766, "r766"),
+   (R767, "r767"),
+   (R770, "r770"),
+   (R771, "r771"),
+   (R772, "r772"),
+   (R773, "r773"),
+   (R774, "r774"),
+   (R775, "r775"),
+   (R776, "r776"),
+   (R777, "r777"),
+   (R1000, "r1000"),
+   (R1001, "r1001"),
+   (R1002, "r1002"),
+   (R1003, "r1003"),
+   (R1004, "r1004"),
+   (R1005, "r1005"),
+   (R1006, "r1006"),
+   (R1007, "r1007"),
+   (R1010, "r1010"),
+   (R1011, "r1011"),
+   (R1012, "r1012"),
+   (R1013, "r1013"),
+   (R1014, "r1014"),
+   (R1015, "r1015"),
+   (R1016, "r1016"),
+   (R1017, "r1017"),
+   (R1020, "r1020"),
+   (R1021, "r1021"),
+   (R1022, "r1022"),
+   (R1023, "r1023"),
+   (R1024, "r1024"),
+   (R1025, "r1025"),
+   (R1026, "r1026"),
+   (R1027, "r1027"),
+   (R1030, "r1030"),
+   (R1031, "r1031"),
+   (R1032, "r1032"),
+   (R1033, "r1033"),
+   (R1034, "r1034"),
+   (R1035, "r1035"),
+   (R1036, "r1036"),
+   (R1037, "r1037"),
+   (R1040, "r1040"),
+   (R1041, "r1041"),
+   (R1042, "r1042"),
+   (R1043, "r1043"),
+   (R1044, "r1044"),
+   (R1045, "r1045"),
+   (R1046, "r1046"),
+   (R1047, "r1047"),
+   (R1050, "r1050"),
+   (R1051, "r1051"),
+   (R1052, "r1052"),
+   (R1053, "r1053"),
+   (R1054, "r1054"),
+   (R1055, "r1055"),
+   (R1056, "r1056"),
+   (R1057, "r1057"),
+   (R1060, "r1060"),
+   (R1061, "r1061"),
+   (R1062, "r1062"),
+   (R1063, "r1063"),
+   (R1064, "r1064"),
+   (R1065, "r1065"),
+   (R1066, "r1066"),
+   (R1067, "r1067"),
+   (R1070, "r1070"),
+   (R1071, "r1071"),
+   (R1072, "r1072"),
+   (R1073, "r1073"),
+   (R1074, "r1074"),
+   (R1075, "r1075"),
+   (R1076, "r1076"),
+   (R1077, "r1077"),
+   (R1100, "r1100"),
+   (R1101, "r1101"),
+   (R1102, "r1102"),
+   (R1103, "r1103"),
+   (R1104, "r1104"),
+   (R1105, "r1105"),
+   (R1106, "r1106"),
+   (R1107, "r1107"),
+   (R1110, "r1110"),
+   (R1111, "r1111"),
+   (R1112, "r1112"),
+   (R1113, "r1113"),
+   (R1114, "r1114"),
+   (R1115, "r1115"),
+   (R1116, "r1116"),
+   (R1117, "r1117"),
+   (R1120, "r1120"),
+   (R1121, "r1121"),
+   (R1122, "r1122"),
+   (R1123, "r1123"),
+   (R1124, "r1124"),
+   (R1125, "r1125"),
+   (R1126, "r1126"),
+   (R1127, "r1127"),
+   (R1130, "r1130"),
+   (R1131, "r1131"),
+   (R1132, "r1132"),
+   (R1133, "r1133"),
+   (R1134, "r1134"),
+   (R1135, "r1135"),
+   (R1136, "r1136"),
+   (R1137, "r1137"),
+   (R1140, "r1140"),
+   (R1141, "r1141"),
+   (R1142, "r1142"),
+   (R1143, "r1143"),
+   (R1144, "r1144"),
+   (R1145, "r1145"),
+   (R1146, "r1146"),
+   (R1147, "r1147"),
+   (R1150, "r1150"),
+   (R1151, "r1151"),
+   (R1152, "r1152"),
+   (R1153, "r1153"),
+   (R1154, "r1154"),
+   (R1155, "r1155"),
+   (R1156, "r1156"),
+   (R1157, "r1157"),
+   (R1160, "r1160"),
+   (R1161, "r1161"),
+   (R1162, "r1162"),
+   (R1163, "r1163"),
+   (R1164, "r1164"),
+   (R1165, "r1165"),
+   (R1166, "r1166"),
+   (R1167, "r1167"),
+   (R1170, "r1170"),
+   (R1171, "r1171"),
+   (R1172, "r1172"),
+   (R1173, "r1173"),
+   (R1174, "r1174"),
+   (R1175, "r1175"),
+   (R1176, "r1176"),
+   (R1177, "r1177"),
+   (R1200, "r1200"),
+   (R1201, "r1201"),
+   (R1202, "r1202"),
+   (R1203, "r1203"),
+   (R1204, "r1204"),
+   (R1205, "r1205"),
+   (R1206, "r1206"),
+   (R1207, "r1207"),
+   (R1210, "r1210"),
+   (R1211, "r1211"),
+   (R1212, "r1212"),
+   (R1213, "r1213"),
+   (R1214, "r1214"),
+   (R1215, "r1215"),
+   (R1216, "r1216"),
+   (R1217, "r1217"),
    (AL, "al"),
    (CL, "cl"),
    (DL, "dl"),
@@ -850,6 +1170,22 @@ regStrings = M.fromList $
    (XMM13, "xmm13"),
    (XMM14, "xmm14"),
    (XMM15, "xmm15"),
+   (YMM0, "ymm0"),
+   (YMM1, "ymm1"),
+   (YMM2, "ymm2"),
+   (YMM3, "ymm3"),
+   (YMM4, "ymm4"),
+   (YMM5, "ymm5"),
+   (YMM6, "ymm6"),
+   (YMM7, "ymm7"),
+   (YMM8, "ymm8"),
+   (YMM9, "ymm9"),
+   (YMM10, "ymm10"),
+   (YMM11, "ymm11"),
+   (YMM12, "ymm12"),
+   (YMM13, "ymm13"),
+   (YMM14, "ymm14"),
+   (YMM15, "ymm15"),
    (RCX_RDX, "rcx_rdx"),
    (RSI_RDI, "rsi_rdi"),
    (R8_R9, "r8_r9"),

@@ -171,12 +171,14 @@ defCopies 2 = [mkNullInstruction, TargetInstruction MOVE16, TargetInstruction ST
 defCopies 4 = [mkNullInstruction, TargetInstruction MOVE32, TargetInstruction STORE32]
 defCopies 8 = [mkNullInstruction, TargetInstruction MOVE64, TargetInstruction STORE64]
 defCopies 16 = [mkNullInstruction, TargetInstruction MOVE128, TargetInstruction STORE128]
+defCopies 32 = [mkNullInstruction, TargetInstruction MOVE256, TargetInstruction STORE256]
 
 useCopies 1 _ = [mkNullInstruction, TargetInstruction MOVE8, TargetInstruction LOAD8]
 useCopies 2 _ = [mkNullInstruction, TargetInstruction MOVE16, TargetInstruction LOAD16]
 useCopies 4 _ = [mkNullInstruction, TargetInstruction MOVE32, TargetInstruction LOAD32]
 useCopies 8 _ = [mkNullInstruction, TargetInstruction MOVE64, TargetInstruction LOAD64]
 useCopies 16 _ = [mkNullInstruction, TargetInstruction MOVE128, TargetInstruction LOAD128]
+useCopies 32 _ = [mkNullInstruction, TargetInstruction MOVE256, TargetInstruction LOAD256]
 
 classOfTemp = classOf (target, [])
 
@@ -196,7 +198,8 @@ rematInstrs i
   | i `elem` [MOV8rm, MOV16rm, MOV32rm, MOV64rm,
               IMUL64rmi32,
               MOVSX16rm8, MOVSX32rm8, MOVSX32_NOREXrm8, MOVSX32rm16, MOVSX64rm8, MOVSX64rm16, MOVSX64rm32, 
-              MOVZX16rm8, MOVZX32rm8, MOVZX32_NOREXrm8, MOVZX32rm16, MOVZX64rm8, MOVZX64rm16, 
+              MOVZX16rm8, MOVZX32rm8, MOVZX32_NOREXrm8, MOVZX32rm16, MOVZX64rm8, MOVZX64rm16,
+	      VMOVAPSYrm,
               SETAEr, SETAr, SETBEr, SETBr, SETEr, SETGEr, SETGr, SETLEr, SETLr,
               SETNEr, SETNOr, SETNPr, SETNSr, SETOr, SETPr, SETSr,
               SETB_C8r, SETB_C16r, SETB_C32r, SETB_C64r] = Nothing
@@ -214,11 +217,11 @@ fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
     Linear {oIs = [TargetInstruction POP64r],
             oUs = [],
             oDs = [d]}
-  | i `elem` [MOVE8, MOVE16, MOVE32, MOVE64, MOVE128] =
+  | i `elem` [MOVE8, MOVE16, MOVE32, MOVE64, MOVE128, MOVE256] =
     Linear {oIs = [TargetInstruction (fromCopyInstr i)],
             oUs = [s],
             oDs = [d]}
-  | i `elem` [STORE8, STORE16, STORE32, STORE64, STORE128] =
+  | i `elem` [STORE8, STORE16, STORE32, STORE64, STORE128, STORE256] =
     Linear {oIs = [TargetInstruction (fromCopyInstr i)],
             oUs = [mkBoundMachineFrameObject i d,
                    mkBound (mkMachineImm 1),
@@ -227,7 +230,7 @@ fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
                    mkBound MachineNullReg,
                    s],
             oDs = []}
-  | i `elem` [LOAD8, LOAD16, LOAD32, LOAD64, LOAD128] =
+  | i `elem` [LOAD8, LOAD16, LOAD32, LOAD64, LOAD128, LOAD256] =
     Linear {oIs = [TargetInstruction (fromCopyInstr i)],
             oUs = [mkBoundMachineFrameObject i s,
                    mkBound (mkMachineImm 1),
