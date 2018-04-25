@@ -55,21 +55,37 @@ registerAtoms BH = (R031, R031)
 -- | Register atoms of 2-byte registers
 
 registerAtoms AX = (R000, R001)
+registerAtoms AX_HI = (R002, R003)
 registerAtoms CX = (R010, R011)
+registerAtoms CX_HI = (R012, R013)
 registerAtoms DX = (R020, R021)
+registerAtoms DX_HI = (R022, R023)
 registerAtoms BX = (R030, R031)
+registerAtoms BX_HI = (R032, R033)
 registerAtoms SI = (R040, R041)
+registerAtoms SI_HI = (R042, R043)
 registerAtoms DI = (R050, R051)
+registerAtoms DI_HI = (R052, R053)
 registerAtoms SP = (R060, R061)
+registerAtoms SP_HI = (R062, R063)
 registerAtoms BP = (R070, R071)
+registerAtoms BP_HI = (R072, R073)
 registerAtoms R8W = (R100, R101)
+registerAtoms R8W_HI = (R102, R103)
 registerAtoms R9W = (R110, R111)
+registerAtoms R9W_HI = (R112, R113)
 registerAtoms R10W = (R120, R121)
+registerAtoms R10W_HI = (R122, R123)
 registerAtoms R11W = (R130, R131)
+registerAtoms R11W_HI = (R132, R133)
 registerAtoms R12W = (R140, R141)
+registerAtoms R12W_HI = (R142, R143)
 registerAtoms R13W = (R150, R151)
+registerAtoms R13W_HI = (R152, R153)
 registerAtoms R14W = (R160, R161)
+registerAtoms R14W_HI = (R162, R163)
 registerAtoms R15W = (R170, R171)
+registerAtoms R15W_HI = (R172, R173)
 
 -- | Register atoms of 4-byte registers
 
@@ -182,7 +198,8 @@ registerAtoms r = error ("unmatched: registerAtoms " ++ show r)
 
 -- | Register classes
 regClasses =
-    map RegisterClass [CCR, GR8, GR8_NOREX, GR16, GR32, GR32_NOREX, GR32_NOAX, GR32_AUX, GR64, GR64_NOSP, GR128_AUX, VR2048_AUX, GR32orGR64,
+    map RegisterClass [CCR, GR8, GR8_NOREX, GR16, GR16_AUX, GR32, GR32_NOREX, GR32_NOAX, GR32_AUX, GR64, GR64_NOSP, GR32orGR64,
+                       GR128_AUX, VR2048_AUX,
                        Ptr_rc, Ptr_rc_nosp, Ptr_rc_norex, Ptr_rc_norex_nosp, Ptr_rc_tailcall,
                        FR32, FR64, FR128, VR128, VR256,
                        AUX] ++
@@ -287,6 +304,10 @@ registers (RegisterClass GR8_NOREX) =
 registers (RegisterClass GR16) =
     [AX, CX, DX, BX, SI, DI, SP, BP, R8W, R9W, R10W, R11W, R12W, R13W, R14W, R15W]
 
+registers (RegisterClass GR16_AUX) =
+    [AX_HI, CX_HI, DX_HI, BX_HI, SI_HI, DI_HI, SP_HI, BP_HI,
+     R8W_HI, R9W_HI, R10W_HI, R11W_HI, R12W_HI, R13W_HI, R14W_HI, R15W_HI]
+
 registers (RegisterClass GR32) =
     [EAX, ECX, EDX, EBX, ESI, EDI, ESP, EBP, R8D, R9D, R10D, R11D, R12D, R13D, R14D, R15D]
 
@@ -306,14 +327,14 @@ registers (RegisterClass GR64) = {- llvm/lib/Target/X86/X86RegisterInfo includes
 registers (RegisterClass GR64_NOSP) =
     [RAX, RCX, RDX, RBX, RSI, RDI,      RBP, R8, R9, R10, R11, R12, R13, R14, R15     ]
 
+registers (RegisterClass GR32orGR64) =
+    registers (RegisterClass GR64)
+
 registers (RegisterClass GR128_AUX) =
     [RCX_RDX, RSI_RDI, R8_R9, R10_R11]
 
 registers (RegisterClass VR2048_AUX) =
     [XMM1_15]
-
-registers (RegisterClass GR32orGR64) =
-    registers (RegisterClass GR64)
 
 registers (RegisterClass Ptr_rc) =
     registers (RegisterClass GR64)
@@ -1106,6 +1127,22 @@ regStrings = M.fromList $
    (R13W, "r13w"),
    (R14W, "r14w"),
    (R15W, "r15w"),
+   (AX_HI, "ax_hi"),
+   (CX_HI, "cx_hi"),
+   (DX_HI, "dx_hi"),
+   (BX_HI, "bx_hi"),
+   (SI_HI, "si_hi"),
+   (DI_HI, "di_hi"),
+   (SP_HI, "sp_hi"),
+   (BP_HI, "bp_hi"),
+   (R8W_HI, "r8w_hi"),
+   (R9W_HI, "r9w_hi"),
+   (R10W_HI, "r10w_hi"),
+   (R11W_HI, "r11w_hi"),
+   (R12W_HI, "r12w_hi"),
+   (R13W_HI, "r13w_hi"),
+   (R14W_HI, "r14w_hi"),
+   (R15W_HI, "r15w_hi"),
    (EAX, "eax"),
    (ECX, "ecx"),
    (EDX, "edx"),

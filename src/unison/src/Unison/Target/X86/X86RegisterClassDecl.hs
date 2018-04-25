@@ -19,15 +19,16 @@ data X86RegisterClass =
     GR8 |
     GR8_NOREX |
     GR16 |
+    GR16_AUX |
     GR32 |
     GR32_NOREX |
     GR32_NOAX |
     GR32_AUX |
     GR64 |
     GR64_NOSP |
+    GR32orGR64 |
     GR128_AUX |
     VR2048_AUX |
-    GR32orGR64 |
     Ptr_rc |
     Ptr_rc_nosp |
     Ptr_rc_norex |

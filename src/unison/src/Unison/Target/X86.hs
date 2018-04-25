@@ -199,7 +199,7 @@ rematInstrs i
               IMUL64rmi32,
               MOVSX16rm8, MOVSX32rm8, MOVSX32_NOREXrm8, MOVSX32rm16, MOVSX64rm8, MOVSX64rm16, MOVSX64rm32, 
               MOVZX16rm8, MOVZX32rm8, MOVZX32_NOREXrm8, MOVZX32rm16, MOVZX64rm8, MOVZX64rm16,
-	      VMOVAPSYrm,
+              VMOVAPSYrm,
               SETAEr, SETAr, SETBEr, SETBr, SETEr, SETGEr, SETGr, SETLEr, SETLr,
               SETNEr, SETNOr, SETNPr, SETNSr, SETOr, SETPr, SETSr,
               SETB_C8r, SETB_C16r, SETB_C32r, SETB_C64r] = Nothing
@@ -268,6 +268,8 @@ stackSize op
   | op `elem` [STORE16, LOAD16] = 2
   | op `elem` [STORE32, LOAD32] = 4
   | op `elem` [STORE64, LOAD64] = 8
+  | op `elem` [STORE128, LOAD128] = 16
+  | op `elem` [STORE256, LOAD256] = 32
 
 -- | Declares target architecture resources
 

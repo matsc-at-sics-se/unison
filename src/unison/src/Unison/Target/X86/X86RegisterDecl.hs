@@ -706,6 +706,22 @@ data X86Register =
     R13W |
     R14W |
     R15W |
+    AX_HI |
+    CX_HI |
+    DX_HI |
+    BX_HI |
+    SI_HI |
+    DI_HI |
+    SP_HI |
+    BP_HI |
+    R8W_HI |
+    R9W_HI |
+    R10W_HI |
+    R11W_HI |
+    R12W_HI |
+    R13W_HI |
+    R14W_HI |
+    R15W_HI |
     EAX |
     ECX |
     EDX |
