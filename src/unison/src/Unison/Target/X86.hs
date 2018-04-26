@@ -293,7 +293,7 @@ nop = Linear [TargetInstruction NOOP] [] []
 
 readWriteInfo i
   | i `elem` [SUBRSP_pseudo, ADDRSP_pseudo] =
-      second (++ [OtherSideEffect RSP]) $ SpecsGen.readWriteInfo i
+      second (++ [ControlSideEffect,OtherSideEffect RSP]) $ SpecsGen.readWriteInfo i
   | otherwise = SpecsGen.readWriteInfo i
 
 -- | Implementation of frame setup and destroy operations. All functions
