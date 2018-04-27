@@ -67,8 +67,11 @@ operandInfo i
     = ([], [TemporaryInfo (RegisterClass GR8) 1 False])
   | i `elem` [V_SET0_source, V_SETALLONES_source] =
     ([], [TemporaryInfo (InfiniteRegisterClass RM128) 0 False])
-  | i `elem` [MOV32r0_source, MOV32r1_source, MOV32r_1_source] =
-    ([], [TemporaryInfo (InfiniteRegisterClass RM32) 0 False])
+  | i `elem` [AVX2_SETALLONES_source, AVX_SET0_source] =
+    ([], [TemporaryInfo (InfiniteRegisterClass RM256) 0 False])
+  | i `elem`
+      [FsFLD0SS_source, MOV32r0_source, MOV32r1_source, MOV32r_1_source]
+    = ([], [TemporaryInfo (InfiniteRegisterClass RM32) 0 False])
   | i `elem` [V_SET0, V_SETALLONES] =
     ([], [TemporaryInfo (RegisterClass VR128) 1 False])
   | i `elem` [AVX2_SETALLONES, AVX_SET0] =
@@ -101,6 +104,9 @@ operandInfo i
   | i `elem` [CVTTSS2SI64rr, VCVTTSS2SI64rr] =
     ([TemporaryInfo (RegisterClass FR32) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem` [FsFLD0SS_demat] =
+    ([TemporaryInfo (RegisterClass FR32) 0 False],
+     [TemporaryInfo (InfiniteRegisterClass RM32) 0 False])
   | i `elem` [COMISSrr, UCOMISSrr, VCOMISSrr, VUCOMISSrr] =
     ([TemporaryInfo (RegisterClass FR32) 0 False,
       TemporaryInfo (RegisterClass FR32) 0 False],
@@ -932,6 +938,12 @@ operandInfo i
   | i `elem` [LEA16r_remat, MOV16ri_alt_remat, MOV16ri_remat] =
     ([TemporaryInfo (InfiniteRegisterClass RM16) 0 False],
      [TemporaryInfo (RegisterClass GR16) 1 False])
+  | i `elem` [AVX2_SETALLONES_remat, AVX_SET0_remat] =
+    ([TemporaryInfo (InfiniteRegisterClass RM256) 0 False],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem` [FsFLD0SS_remat] =
+    ([TemporaryInfo (InfiniteRegisterClass RM32) 0 False],
+     [TemporaryInfo (RegisterClass FR32) 1 False])
   | i `elem`
       [LEA32r_remat, MOV32r0_remat, MOV32r1_remat, MOV32r_1_remat,
        MOV32ri64_remat, MOV32ri_alt_remat, MOV32ri_remat]
@@ -1468,6 +1480,9 @@ operandInfo i
   | i `elem` [STORE256] =
     ([TemporaryInfo (RegisterClass VR256) 0 False],
      [TemporaryInfo (InfiniteRegisterClass M256) 1 False])
+  | i `elem` [AVX2_SETALLONES_demat, AVX_SET0_demat] =
+    ([TemporaryInfo (RegisterClass VR256) 0 False],
+     [TemporaryInfo (InfiniteRegisterClass RM256) 0 False])
   | i `elem` [VCVTPD2DQYrr, VCVTPD2PSYrr, VCVTTPD2DQYrr] =
     ([TemporaryInfo (RegisterClass VR256) 0 False],
      [TemporaryInfo (RegisterClass VR128) 1 False])

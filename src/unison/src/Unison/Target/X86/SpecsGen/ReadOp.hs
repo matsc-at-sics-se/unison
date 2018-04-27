@@ -4269,5 +4269,14 @@ readOp "V_SET0_remat" = V_SET0_remat
 readOp "V_SETALLONES_source" = V_SETALLONES_source
 readOp "V_SETALLONES_demat" = V_SETALLONES_demat
 readOp "V_SETALLONES_remat" = V_SETALLONES_remat
+readOp "AVX_SET0_source" = AVX_SET0_source
+readOp "AVX_SET0_demat" = AVX_SET0_demat
+readOp "AVX_SET0_remat" = AVX_SET0_remat
+readOp "AVX2_SETALLONES_source" = AVX2_SETALLONES_source
+readOp "AVX2_SETALLONES_demat" = AVX2_SETALLONES_demat
+readOp "AVX2_SETALLONES_remat" = AVX2_SETALLONES_remat
+readOp "FsFLD0SS_source" = FsFLD0SS_source
+readOp "FsFLD0SS_demat" = FsFLD0SS_demat
+readOp "FsFLD0SS_remat" = FsFLD0SS_remat
 readOp a = error ("unmatched: readOp " ++ show a)
 

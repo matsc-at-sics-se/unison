@@ -4270,5 +4270,14 @@ data X86Instruction = AAA
                     | V_SETALLONES_source
                     | V_SETALLONES_demat
                     | V_SETALLONES_remat
+                    | AVX_SET0_source
+                    | AVX_SET0_demat
+                    | AVX_SET0_remat
+                    | AVX2_SETALLONES_source
+                    | AVX2_SETALLONES_demat
+                    | AVX2_SETALLONES_remat
+                    | FsFLD0SS_source
+                    | FsFLD0SS_demat
+                    | FsFLD0SS_remat
                     deriving (Eq, Ord)
 

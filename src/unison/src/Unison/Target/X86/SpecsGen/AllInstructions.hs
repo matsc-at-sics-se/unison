@@ -809,5 +809,8 @@ allInstructions
      LEA16r_remat, LEA32r_source, LEA32r_demat, LEA32r_remat,
      LEA64r_source, LEA64r_demat, LEA64r_remat, V_SET0_source,
      V_SET0_demat, V_SET0_remat, V_SETALLONES_source,
-     V_SETALLONES_demat, V_SETALLONES_remat]
+     V_SETALLONES_demat, V_SETALLONES_remat, AVX_SET0_source,
+     AVX_SET0_demat, AVX_SET0_remat, AVX2_SETALLONES_source,
+     AVX2_SETALLONES_demat, AVX2_SETALLONES_remat, FsFLD0SS_source,
+     FsFLD0SS_demat, FsFLD0SS_remat]
 

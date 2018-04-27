@@ -796,6 +796,14 @@ parent i
        XSTORE, XTEST]
     = Nothing
   | i `elem` [ADDRSP_pseudo] = Just ADD64ri8
+  | i `elem`
+      [AVX2_SETALLONES_demat, AVX2_SETALLONES_remat,
+       AVX2_SETALLONES_source]
+    = Just AVX2_SETALLONES
+  | i `elem` [AVX_SET0_demat, AVX_SET0_remat, AVX_SET0_source] =
+    Just AVX_SET0
+  | i `elem` [FsFLD0SS_demat, FsFLD0SS_remat, FsFLD0SS_source] =
+    Just FsFLD0SS
   | i `elem` [LEA16r_demat, LEA16r_remat, LEA16r_source] =
     Just LEA16r
   | i `elem` [LEA32r_demat, LEA32r_remat, LEA32r_source] =

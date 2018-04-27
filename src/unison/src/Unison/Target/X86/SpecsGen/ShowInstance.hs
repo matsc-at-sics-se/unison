@@ -4271,4 +4271,13 @@ instance Show X86Instruction where
         show V_SETALLONES_source = "V_SETALLONES_source"
         show V_SETALLONES_demat = "V_SETALLONES_demat"
         show V_SETALLONES_remat = "V_SETALLONES_remat"
+        show AVX_SET0_source = "AVX_SET0_source"
+        show AVX_SET0_demat = "AVX_SET0_demat"
+        show AVX_SET0_remat = "AVX_SET0_remat"
+        show AVX2_SETALLONES_source = "AVX2_SETALLONES_source"
+        show AVX2_SETALLONES_demat = "AVX2_SETALLONES_demat"
+        show AVX2_SETALLONES_remat = "AVX2_SETALLONES_remat"
+        show FsFLD0SS_source = "FsFLD0SS_source"
+        show FsFLD0SS_demat = "FsFLD0SS_demat"
+        show FsFLD0SS_remat = "FsFLD0SS_remat"
 
