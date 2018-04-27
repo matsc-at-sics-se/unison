@@ -66,3 +66,15 @@ instruction-set:
    - id: V_SETALLONES
      home-class: VR128
      infinite-class: RM128
+     
+   - id: AVX_SET0
+     home-class: VR256
+     infinite-class: RM256
+     
+   - id: AVX2_SETALLONES
+     home-class: VR256
+     infinite-class: RM256
+     
+   - id: FsFLD0SS
+     home-class: FR32
+     infinite-class: RM32

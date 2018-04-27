@@ -49,6 +49,9 @@ itineraryUsage i _
        SS_PREFIX, SUBREG_TO_REG,
        V_SET0_demat, V_SET0_source,
        V_SETALLONES_demat, V_SETALLONES_source,
+       AVX_SET0_demat, AVX_SET0_source,
+       AVX2_SETALLONES_demat, AVX2_SETALLONES_source,
+       FsFLD0SS_demat, FsFLD0SS_source,
        XRELEASE_PREFIX, XACQUIRE_PREFIX]
   = []
 
