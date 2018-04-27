@@ -771,6 +771,7 @@ data X86Register =
     R14 |
     R15 |
     XMM0 |
+    XMM0_HI |
     XMM1 |
     XMM2 |
     XMM3 |
@@ -806,5 +807,5 @@ data X86Register =
     RSI_RDI |
     R8_R9 |
     R10_R11 |
-    XMM1_15
+    YMM1_15
     deriving (Eq, Ord)

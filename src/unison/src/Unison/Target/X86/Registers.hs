@@ -144,6 +144,7 @@ registerAtoms R15 = (R170, R177)
 -- | Register atoms of 16-byte floating-point registers (XMM)
 
 registerAtoms XMM0  = (R200, R217)
+registerAtoms XMM0_HI  = (R220, R237)
 registerAtoms XMM1  = (R240, R257)
 registerAtoms XMM2  = (R300, R317)
 registerAtoms XMM3  = (R340, R357)
@@ -188,7 +189,7 @@ registerAtoms R10_R11 = (R120, R137)
 
 -- | Giant caller-saved XMM register atom
 
-registerAtoms XMM1_15 = (R220, R1177)
+registerAtoms YMM1_15 = (R240, R1177)
 
 -- not really in the register array
 registerAtoms EFLAGS = (R1200, R1207)
@@ -199,9 +200,11 @@ registerAtoms r = error ("unmatched: registerAtoms " ++ show r)
 -- | Register classes
 regClasses =
     map RegisterClass [CCR, GR8, GR8_NOREX, GR16, GR16_AUX, GR32, GR32_NOREX, GR32_NOAX, GR32_AUX, GR64, GR64_NOSP, GR32orGR64,
-                       GR128_AUX, VR2048_AUX,
+                       GR128_AUX,
                        Ptr_rc, Ptr_rc_nosp, Ptr_rc_norex, Ptr_rc_norex_nosp, Ptr_rc_tailcall,
                        FR32, FR64, FR128, VR128, VR256,
+                       FR32_AUX,
+                       VR2048_AUX,
                        AUX] ++
     map InfiniteRegisterClass [M8, M16, M32, M64, M128, M256, RM8, RM16, RM32, RM64, RM128, RM256]
 
@@ -334,7 +337,7 @@ registers (RegisterClass GR128_AUX) =
     [RCX_RDX, RSI_RDI, R8_R9, R10_R11]
 
 registers (RegisterClass VR2048_AUX) =
-    [XMM1_15]
+    [YMM1_15]
 
 registers (RegisterClass Ptr_rc) =
     registers (RegisterClass GR64)
@@ -353,6 +356,9 @@ registers (RegisterClass Ptr_rc_tailcall) =
 
 registers (RegisterClass FR32) =
     [XMM0, XMM1, XMM2, XMM3, XMM4, XMM5, XMM6, XMM7, XMM8, XMM9, XMM10, XMM11, XMM12, XMM13, XMM14, XMM15]
+
+registers (RegisterClass FR32_AUX) =
+    [XMM0_HI]
 
 registers (RegisterClass FR64) =
     registers (RegisterClass FR32)
@@ -415,7 +421,7 @@ reserved = [RSP, RIP]
 
 -- | Registers that are not preserved across calls
 -- callerSaved = [RAX, RCX, RDX, RDI, RSI, R8, R9, R10, R11] ++ registers (RegisterClass VR128)
-callerSaved = [RAX, RCX, RDX, RDI, RSI, R8, R9, R10, R11, XMM0, XMM1_15]
+callerSaved = [RAX, RCX, RDX, RDI, RSI, R8, R9, R10, R11, YMM0, YMM1_15]
 
 -- | Registers that are preserved across calls
 calleeSaved = [RBX, RBP, R12, R13, R14, R15]
@@ -1192,6 +1198,7 @@ regStrings = M.fromList $
    (R14, "r14"),
    (R15, "r15"),
    (XMM0, "xmm0"),
+   (XMM0_HI, "xmm0_hi"),
    (XMM1, "xmm1"),
    (XMM2, "xmm2"),
    (XMM3, "xmm3"),
@@ -1227,5 +1234,5 @@ regStrings = M.fromList $
    (RSI_RDI, "rsi_rdi"),
    (R8_R9, "r8_r9"),
    (R10_R11, "r10_r11"),
-   (XMM1_15, "xmm1_15")]
+   (YMM1_15, "ymm1_15")]
 

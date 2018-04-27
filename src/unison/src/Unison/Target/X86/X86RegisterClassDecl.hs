@@ -28,17 +28,18 @@ data X86RegisterClass =
     GR64_NOSP |
     GR32orGR64 |
     GR128_AUX |
-    VR2048_AUX |
     Ptr_rc |
     Ptr_rc_nosp |
     Ptr_rc_norex |
     Ptr_rc_norex_nosp |
     Ptr_rc_tailcall |
     FR32 |
+    FR32_AUX |
     FR64 |
     FR128 |
     VR128 |
     VR256 |
+    VR2048_AUX |
     AUX |
     M8 |
     M16 |
