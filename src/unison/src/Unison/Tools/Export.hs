@@ -36,7 +36,8 @@ import Unison.Tools.Export.AssignRegisters
 import Unison.Tools.Export.RemoveRedundancies
 import Unison.Tools.Export.BundleOperations
 import Unison.Tools.Export.SelectInstructions
-import Unison.Tools.Export.LiftFrameObjects
+import Unison.Tools.Export.LiftVarFrameObjects
+import Unison.Tools.Export.LiftFixedFrameObjects
 import Unison.Tools.Export.ComputeFrameOffsets
 import Unison.Tools.Export.LowerFrameSize
 import Unison.Tools.Export.DirectFrame
@@ -103,7 +104,8 @@ uniTransformations (cycles, instructions, registers, temporaries)
      (selectTemporaries temporaries, "selectTemporaries", True),
      (selectInstructions instructions, "selectInstructions", True),
      (runTargetTransforms ExportPreOffs, "runTargetTransforms", True),
-     (liftFrameObjects, "liftFrameObjects", True),
+     (liftVarFrameObjects, "liftVarFrameObjects", True),
+     (liftFixedFrameObjects, "liftfixedFrameObjects", True),
      (computeFrameOffsets, "computeFrameOffsets", True),
      (runTargetTransforms ExportPostOffs, "runTargetTransforms", True),
      (lowerFrameSize, "lowerFrameSize", True),

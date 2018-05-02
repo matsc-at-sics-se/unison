@@ -13,6 +13,7 @@ module Unison.Target.X86.Transforms
     (extractReturnRegs,
      handlePromotedOperands,
      liftReturnAddress,
+     revertFixedFrame,
      myLowerFrameIndices,
      stackIndexReadsSP) where
 
@@ -128,6 +129,13 @@ liftReturnAddress f @ Function {fFixedStackFrame = fobjs} =
   let ra     = mkFrameObject (newFrameIndex fobjs) (-8) (Just 8) 8 Nothing
       fobjs' = fobjs ++ [ra]
   in f {fFixedStackFrame = fobjs'}
+
+-- This reverts the fixed stack frame so that both the fixed and the variable
+-- stack frame grow upwards. This is expected by the 'liftFixedFrameObjects',
+-- 'computeFrameOffsets', and 'lowerFrameSize' passes in 'uni export'.
+
+revertFixedFrame f @ Function {fFixedStackFrame = fobjs} =
+  f {fFixedStackFrame = map revertDirection fobjs}
 
 -- This transform replaces stack frame object indices in the code by actual
 -- RSP + immediates.  It essentially overrules lowerFrameIndices.

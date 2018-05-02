@@ -19,6 +19,7 @@ import Control.Arrow
 import Common.Util
 
 import MachineIR
+import MachineIR.Transformations.AddImplicitRegs
 
 import Unison
 import qualified Unison.Target.API as API
@@ -211,11 +212,11 @@ rematInstrs i
 fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
   | i `elem` [PUSH_cst] =
     Linear {oIs = [TargetInstruction PUSH_fi],
-            oUs = [mkBoundMachineFrameObject i d, s],
+            oUs = [mkBoundMachineFrameObject True i d, s],
             oDs = []}
   | i `elem` [POP_cst] =
     Linear {oIs = [TargetInstruction POP_fi],
-            oUs = [mkBoundMachineFrameObject i s],
+            oUs = [mkBoundMachineFrameObject True i s],
             oDs = [d]}
   | i `elem` [MOVE8, MOVE16, MOVE32, MOVE64, MOVE128, MOVE256] =
     Linear {oIs = [TargetInstruction (fromCopyInstr i)],
@@ -223,7 +224,7 @@ fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
             oDs = [d]}
   | i `elem` [STORE8, STORE16, STORE32, STORE64, STORE128, STORE256] =
     Linear {oIs = [TargetInstruction (fromCopyInstr i)],
-            oUs = [mkBoundMachineFrameObject i d,
+            oUs = [mkBoundMachineFrameObject False i d,
                    mkBound (mkMachineImm 1),
                    mkBound MachineNullReg,
                    mkBound (mkMachineImm 0),
@@ -232,7 +233,7 @@ fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
             oDs = []}
   | i `elem` [LOAD8, LOAD16, LOAD32, LOAD64, LOAD128, LOAD256] =
     Linear {oIs = [TargetInstruction (fromCopyInstr i)],
-            oUs = [mkBoundMachineFrameObject i s,
+            oUs = [mkBoundMachineFrameObject False i s,
                    mkBound (mkMachineImm 1),
                    mkBound MachineNullReg,
                    mkBound (mkMachineImm 0),
@@ -259,9 +260,10 @@ fromCopy _ o = error ("unmatched pattern: fromCopy " ++ show o)
 fromCopyInstr i
   | isJust (SpecsGen.parent i) = fromJust (SpecsGen.parent i)
 
-mkBoundMachineFrameObject i (Register r) =
+mkBoundMachineFrameObject fixedSpill i (Register r) =
     let size = stackSize i
-    in mkBound (mkMachineFrameObject (infRegPlace r) (Just size) size)
+    in mkBound (mkMachineFrameObject (infRegPlace r) (Just size) size
+                fixedSpill)
 
 stackSize op
   | op `elem` [STORE8, LOAD8] = 1
@@ -381,7 +383,7 @@ promoteImplicitRegs i regs mos =
 
 -- | Target dependent post-processing functions
 
-postProcess to = [expandPseudos to]
+postProcess to = [expandPseudos to, flip addImplicitRegs (target, [])]
 
 expandPseudos to = mapToMachineBlock (expandBlockPseudos (expandPseudo to))
 
@@ -416,6 +418,7 @@ expandPseudo _ mi = [[mi]]
 transforms ImportPreLift = [peephole extractReturnRegs]
 transforms ImportPostLift = [mapToOperation handlePromotedOperands]
 transforms ImportPostCC = [liftReturnAddress]
+transforms ExportPreOffs = [revertFixedFrame]
 transforms ExportPreLow = [myLowerFrameIndices]
 transforms AugmentPostRW = [mapToOperation stackIndexReadsSP]
 transforms _ = []
