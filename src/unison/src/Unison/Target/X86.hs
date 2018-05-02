@@ -415,6 +415,7 @@ expandPseudo _ mi = [[mi]]
 
 transforms ImportPreLift = [peephole extractReturnRegs]
 transforms ImportPostLift = [mapToOperation handlePromotedOperands]
+transforms ImportPostCC = [liftReturnAddress]
 transforms ExportPreLow = [myLowerFrameIndices]
 transforms AugmentPostRW = [mapToOperation stackIndexReadsSP]
 transforms _ = []

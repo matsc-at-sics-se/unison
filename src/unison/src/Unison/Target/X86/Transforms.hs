@@ -12,6 +12,7 @@ This file is part of Unison, see http://unison-code.github.io
 module Unison.Target.X86.Transforms
     (extractReturnRegs,
      handlePromotedOperands,
+     liftReturnAddress,
      myLowerFrameIndices,
      stackIndexReadsSP) where
 
@@ -119,6 +120,14 @@ preAssignOperands ops regs =
       (original, promoted) = splitAt (no - nr) ops
       promoted' = map (\(t, r) -> preAssign t r) (zip promoted regOps)
   in original ++ promoted'
+
+-- This transform creates a fixed frame object to represent the return address
+-- which is implicit in LLVM's input.
+
+liftReturnAddress f @ Function {fFixedStackFrame = fobjs} =
+  let ra     = mkFrameObject (newFrameIndex fobjs) (-8) (Just 8) 8 Nothing
+      fobjs' = fobjs ++ [ra]
+  in f {fFixedStackFrame = fobjs'}
 
 -- This transform replaces stack frame object indices in the code by actual
 -- RSP + immediates.  It essentially overrules lowerFrameIndices.
