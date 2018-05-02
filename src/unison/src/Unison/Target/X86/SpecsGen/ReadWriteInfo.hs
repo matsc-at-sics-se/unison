@@ -1245,7 +1245,7 @@ readWriteInfo i
   | i `elem` [SEG_ALLOCA_64] =
     ([OtherSideEffect RSP],
      [OtherSideEffect RAX, OtherSideEffect RSP, OtherSideEffect EFLAGS])
-  | i `elem` [POP_cst, PUSH_cst] =
+  | i `elem` [POP_cst, POP_fi, PUSH_cst, PUSH_fi] =
     ([OtherSideEffect RSP], [OtherSideEffect RSP])
   | i `elem` [PUSHF64] =
     ([OtherSideEffect RSP, OtherSideEffect EFLAGS],

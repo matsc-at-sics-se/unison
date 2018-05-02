@@ -283,6 +283,7 @@ alignedPairs i ([_, _, _, _, _, _, _], [])
     = []
 alignedPairs i ([_, _, _, _, _, _], [])
   | i `elem` [OR32mrLocked] = []
+alignedPairs i ([_, _], []) | i `elem` [PUSH_fi] = []
 alignedPairs i ([_], [])
   | i `elem`
       [CFI_INSTRUCTION, EH_LABEL, GC_LABEL, LIFETIME_END, LIFETIME_START]
@@ -391,9 +392,9 @@ alignedPairs i ([_], [_])
        PABSDrr128, PABSWrr128, PHMINPOSUWrr128, PMOVMSKBrr, PMOVSXBDrr,
        PMOVSXBQrr, PMOVSXBWrr, PMOVSXDQrr, PMOVSXWDrr, PMOVSXWQrr,
        PMOVZXBDrr, PMOVZXBQrr, PMOVZXBWrr, PMOVZXDQrr, PMOVZXWDrr,
-       PMOVZXWQrr, POPCNT16rr, POPCNT32rr, POPCNT64rr, POP_cst, PUSH_cst,
-       RCPPSr, RSQRTPSr, SQRTPDr, SQRTPSr, T1MSKC32rr, T1MSKC64rr,
-       TZCNT16rr, TZCNT32rr, TZCNT64rr, TZMSK32rr, TZMSK64rr,
+       PMOVZXWQrr, POPCNT16rr, POPCNT32rr, POPCNT64rr, POP_cst, POP_fi,
+       PUSH_cst, RCPPSr, RSQRTPSr, SQRTPDr, SQRTPSr, T1MSKC32rr,
+       T1MSKC64rr, TZCNT16rr, TZCNT32rr, TZCNT64rr, TZMSK32rr, TZMSK64rr,
        VBROADCASTSDYrr, VBROADCASTSSYrr, VBROADCASTSSrr, VCVTDQ2PDYrr,
        VCVTDQ2PDrr, VCVTDQ2PSYrr, VCVTDQ2PSrr, VCVTPD2DQYrr, VCVTPD2DQrr,
        VCVTPD2PSYrr, VCVTPD2PSrr, VCVTPH2PSYrr, VCVTPH2PSrr, VCVTPS2DQYrr,

@@ -4221,7 +4221,9 @@ data X86Instruction = AAA
                     | SUBRSP_pseudo
                     | ADDRSP_pseudo
                     | PUSH_cst
+                    | PUSH_fi
                     | POP_cst
+                    | POP_fi
                     | MOV8ri_source
                     | MOV8ri_demat
                     | MOV8ri_remat

@@ -2335,7 +2335,7 @@ operandInfo i
     ([BoundInfo], [TemporaryInfo (RegisterClass GR16) 1 False])
   | i `elem` [IN32ri, MOV32ri, MOV32ri64, MOV32ri_alt, MOVPC32r] =
     ([BoundInfo], [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [MOV64ri, MOV64ri32] =
+  | i `elem` [MOV64ri, MOV64ri32, POP_fi] =
     ([BoundInfo], [TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem` [IN8ri, MOV8ri, MOV8ri_alt] =
     ([BoundInfo], [TemporaryInfo (RegisterClass GR8) 1 False])
@@ -2364,7 +2364,7 @@ operandInfo i
     =
     ([BoundInfo, TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [CMP64i32, TEST64i32] =
+  | i `elem` [CMP64i32, PUSH_fi, TEST64i32] =
     ([BoundInfo, TemporaryInfo (RegisterClass GR64) 0 False], [])
   | i `elem`
       [ADC64i32, ADD64i32, AND64i32, OR64i32, SBB64i32, SUB64i32,

@@ -210,12 +210,12 @@ rematInstrs i
 -- handle regular copies
 fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
   | i `elem` [PUSH_cst] =
-    Linear {oIs = [TargetInstruction PUSH64r],
-            oUs = [s],
+    Linear {oIs = [TargetInstruction PUSH_fi],
+            oUs = [mkBoundMachineFrameObject i d, s],
             oDs = []}
   | i `elem` [POP_cst] =
-    Linear {oIs = [TargetInstruction POP64r],
-            oUs = [],
+    Linear {oIs = [TargetInstruction POP_fi],
+            oUs = [mkBoundMachineFrameObject i s],
             oDs = [d]}
   | i `elem` [MOVE8, MOVE16, MOVE32, MOVE64, MOVE128, MOVE256] =
     Linear {oIs = [TargetInstruction (fromCopyInstr i)],
@@ -267,7 +267,7 @@ stackSize op
   | op `elem` [STORE8, LOAD8] = 1
   | op `elem` [STORE16, LOAD16] = 2
   | op `elem` [STORE32, LOAD32] = 4
-  | op `elem` [STORE64, LOAD64] = 8
+  | op `elem` [STORE64, LOAD64, PUSH_cst, POP_cst] = 8
   | op `elem` [STORE128, LOAD128] = 16
   | op `elem` [STORE256, LOAD256] = 32
 
@@ -402,6 +402,12 @@ expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADDRSP_pseudo,
   = let sp = mkMachineReg RSP
     in [[mi {msOpcode = mkMachineTargetOpc ADD64ri32,
              msOperands = [sp, sp, off]}]]
+
+expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc PUSH_fi, msOperands = [_, s]})
+  = [[mkMachineSingle (MachineTargetOpc PUSH64r) [] [s]]]
+
+expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc POP_fi, msOperands = [d, _]})
+  = [[mkMachineSingle (MachineTargetOpc POP64r) [] [d]]]
 
 expandPseudo _ mi = [[mi]]
 

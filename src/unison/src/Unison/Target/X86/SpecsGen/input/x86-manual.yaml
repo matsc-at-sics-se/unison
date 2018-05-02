@@ -190,10 +190,38 @@ instruction-set:
            - RSP:             register
           itinerary:          IIC_PUSH_REG
 
+        - id:                 PUSH_fi
+          type:               linear
+          operands:
+           - fi:              bound
+           - src:             [register, use, GR64]
+          uses:               [fi, src]
+          defines:            []
+          size:               0
+          affects:
+           - RSP:             register
+          affected-by:
+           - RSP:             register
+          itinerary:          IIC_PUSH_REG
+
         - id:                 POP_cst
           type:               copy
           operands:
            - src:             [register, def, M64]
+           - dst:             [register, use, GR64]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+           - RSP:             register
+          affected-by:
+           - RSP:             register
+          itinerary:          IIC_POP_REG
+
+        - id:                 POP_fi
+          type:               copy
+          operands:
+           - src:             bound
            - dst:             [register, use, GR64]
           uses:               [src]
           defines:            [dst]
