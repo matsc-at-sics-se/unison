@@ -18,7 +18,6 @@ module Unison.Target.X86.Transforms
      stackIndexReadsSP) where
 
 import qualified Data.Map as M
-import qualified Data.Set as S
 import MachineIR
 import Unison
 import Unison.Analysis.FrameOffsets
@@ -142,21 +141,27 @@ revertFixedFrame f @ Function {fFixedStackFrame = fobjs} =
 
 myLowerFrameIndices f @ Function {fCode = code, fFixedStackFrame = fobjs,
                                   fStackFrame = objs} =
-  let occ = slotSet (fobjs ++ objs)
-      fsize    = if S.null occ then 0 else - S.findMin occ
-      code'    = replaceFIsByImms fsize True fobjs code
-      code''   = replaceFIsByImms fsize False objs code'
+  let done     = negate $ minimum $ map foOffset fobjs
+      need     = negate $ minimum $ map foOffset (fobjs ++ objs)
+      need'    = ((((need+1) `div` 16) + 1) * 16)
+      code'    = replaceFIsByImms need' done True fobjs code
+      code''   = replaceFIsByImms need' done False objs code'
   in f {fCode = code''}
 
-replaceFIsByImms fsize fixed objs code =
-  let idxToOff = M.fromList [(foIndex fo, (foOffset fo) + fsize) | fo <- objs]
+replaceFIsByImms need done fixed objs code =
+  let idxToOff = M.fromList [(foIndex fo, (foOffset fo) + need) | fo <- objs]
   in mapToOperationInBlocks
-     (liftFIif fixed idxToOff) code
+     (liftFIif fixed (need - done) idxToOff) code
 
-liftFIif fixed idxToOff (Bundle os) =
-  mkBundle $ map (liftFIif fixed idxToOff) os
+liftFIif fixed decr idxToOff (Bundle os) =
+  mkBundle $ map (liftFIif fixed decr idxToOff) os
 
-liftFIif fixed idxToOff
+liftFIif True decr _
+  o @ SingleOperation {oOpr = Natural ni @ (Linear {oIs = [TargetInstruction i]})}
+  | i `elem` [SUBRSP_pseudo, ADDRSP_pseudo]
+  = let use1' = mkBound (mkMachineImm decr)
+    in o {oOpr = Natural ni {oUs = [use1']}}
+liftFIif fixed _ idxToOff
   o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [(Bound (MachineFrameIndex idx fixed' off1)),
                                                            use2,
                                                            use3,
@@ -165,9 +170,8 @@ liftFIif fixed idxToOff
   | fixed == fixed'
   = let use1' = mkRegister (mkTargetRegister RSP)
         use4' = mkBound (mkMachineImm $ (idxToOff M.! idx) + off1 + off2)
-    in
-    o {oOpr = Natural ni {oUs = [use1',use2,use3,use4',use5]}}
-liftFIif fixed idxToOff
+    in o {oOpr = Natural ni {oUs = [use1',use2,use3,use4',use5]}}
+liftFIif fixed _ idxToOff
   o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [(Bound (MachineFrameIndex idx fixed' off1)),
                                                            use2,
                                                            use3,
@@ -177,9 +181,8 @@ liftFIif fixed idxToOff
   | fixed == fixed'
   = let use1' = mkRegister (mkTargetRegister RSP)
         use4' = mkBound (mkMachineImm $ (idxToOff M.! idx) + off1 + off2)
-    in
-    o {oOpr = Natural ni {oUs = [use1',use2,use3,use4',use5,use6]}}
-liftFIif fixed idxToOff
+    in o {oOpr = Natural ni {oUs = [use1',use2,use3,use4',use5,use6]}}
+liftFIif fixed _ idxToOff
   o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [use1,
                                                            (Bound (MachineFrameIndex idx fixed' off1)),
                                                            use3,
@@ -189,9 +192,8 @@ liftFIif fixed idxToOff
   | fixed == fixed'
   = let use2' = mkRegister (mkTargetRegister RSP)
         use5' = mkBound (mkMachineImm $ (idxToOff M.! idx) + off1 + off2)
-    in
-    o {oOpr = Natural ni {oUs = [use1,use2',use3,use4,use5',use6]}}
-liftFIif _ _ o = o
+    in o {oOpr = Natural ni {oUs = [use1,use2',use3,use4,use5',use6]}}
+liftFIif _ _ _ o = o
 
 stackIndexReadsSP
   o @ SingleOperation {oAs = as @ Attributes {aReads = areads},
