@@ -143,7 +143,8 @@ myLowerFrameIndices f @ Function {fCode = code, fFixedStackFrame = fobjs,
                                   fStackFrame = objs} =
   let done     = negate $ minimum $ map foOffset fobjs
       need     = negate $ minimum $ map foOffset (fobjs ++ objs)
-      need'    = ((((need+1) `div` 16) + 1) * 16)
+      align    = if any isCall (flatten code) then 16 else 8
+      need'    = ((((need-1) `div` align) + 1) * align)
       code'    = replaceFIsByImms need' done True fobjs code
       code''   = replaceFIsByImms need' done False objs code'
   in f {fCode = code''}
