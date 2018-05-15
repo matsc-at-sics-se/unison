@@ -420,7 +420,7 @@ transforms ImportPostLift = [mapToOperation handlePromotedOperands]
 transforms ImportPostCC = [liftReturnAddress]
 transforms ExportPreOffs = [revertFixedFrame]
 transforms ExportPreLow = [myLowerFrameIndices]
-transforms AugmentPostRW = [mapToOperation stackIndexReadsSP]
+transforms AugmentPostRW = [fixPrologueEpilogue, mapToOperation stackIndexReadsSP]
 transforms _ = []
 
 -- | Latency of read-write dependencies
