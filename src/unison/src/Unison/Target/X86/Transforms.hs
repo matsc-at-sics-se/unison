@@ -211,9 +211,8 @@ myLowerFrameIndices' need done align f @ Function {fCode = code, fFixedStackFram
 myLowerFrameIndices' need done align f @ Function {fCode = code, fFixedStackFrame = fobjs,
                                                    fStackFrame = objs} =
   let need'    = ((((need-1) `div` align) + 1) * align)
-      done'    = ((((done-1) `div` align) + 1) * align)
       code'    = replaceFIsByImms done  done  (mkTargetRegister RBP) True fobjs code
-      code''   = replaceFIsByImms need' done' (mkTargetRegister RSP) False objs code'
+      code''   = replaceFIsByImms need'    0  (mkTargetRegister RSP) False objs code'
   in trace ("myLowerFrameIndices, alignment 32: Relying On fixPrologEpilogue")
      f {fCode = code''}
 
