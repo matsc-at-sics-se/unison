@@ -411,12 +411,16 @@ expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc PUSH_fi, msOperands =
 expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc POP_fi, msOperands = [d, _]})
   = [[mkMachineSingle (MachineTargetOpc POP64r) [] [d]]]
 
+expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc ADD32ri_LEA, msOperands = [r, i]})
+  = [[mkMachineSingle (MachineTargetOpc LEA64_32r) [] [r, i]]]
+
 expandPseudo _ mi = [[mi]]
 
 -- | Gives a list of function transformers
 
 transforms ImportPreLift = [peephole extractReturnRegs]
 transforms ImportPostLift = [mapToOperation handlePromotedOperands]
+                             mapToOperation alternativeLEA]
 transforms ImportPostCC = [liftReturnAddress]
 transforms ExportPreOffs = [revertFixedFrame]
 transforms ExportPreLow = [myLowerFrameIndices]

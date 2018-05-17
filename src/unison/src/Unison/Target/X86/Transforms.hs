@@ -12,6 +12,7 @@ This file is part of Unison, see http://unison-code.github.io
 module Unison.Target.X86.Transforms
     (extractReturnRegs,
      handlePromotedOperands,
+     alternativeLEA,
      liftReturnAddress,
      revertFixedFrame,
      fixPrologueEpilogue,
@@ -123,6 +124,21 @@ preAssignOperands ops regs =
       (original, promoted) = splitAt (no - nr) ops
       promoted' = map (\(t, r) -> preAssign t r) (zip promoted regOps)
   in original ++ promoted'
+
+-- This transform adds LEA variants of various ADD and MUL instructions.
+-- Beware! Currently unsound, because it assumes that the ADD or MUL defines dead EFLAGS.
+
+alternativeLEA
+  o @ SingleOperation {
+    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
+  | ti `elem` [ADD32ri, ADD32ri8, ADD32ri8_DB, ADD32ri_DB]
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD32ri_LEA]}}
+
+alternativeLEA
+  o @ SingleOperation {
+    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
+  | ti `elem` [ADD32rr, ADD32rr_DB, ADD32rr_REV]
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD32rr_LEA]}}
 
 -- This transform creates a fixed frame object to represent the return address
 -- which is implicit in LLVM's input.

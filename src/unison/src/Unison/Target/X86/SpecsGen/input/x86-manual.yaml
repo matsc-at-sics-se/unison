@@ -231,3 +231,15 @@ instruction-set:
           affected-by:
            - RSP:             register
           itinerary:          IIC_POP_REG
+
+        - id:                 ADD32ri_LEA
+          parent:             ADD32ri
+          affects:
+          affected-by:
+          itinerary:          IIC_LEA
+
+        - id:                 ADD32rr_LEA
+          parent:             ADD32rr
+          affects:
+          affected-by:
+          itinerary:          IIC_LEA
