@@ -254,11 +254,102 @@ fromCopy (Just (Linear {oUs = us}))
 fromCopy _ (Natural o @ Linear {oIs = [TargetInstruction i]})
   | isSourceInstr i = o {oIs = [mkNullInstruction]}
 
+-- handle reselected instructions
+fromCopy _ (Natural Linear {oIs = [TargetInstruction ADD32ri_LEA], oUs = [r,i], oDs = [d]})
+  = Linear {oIs = [TargetInstruction LEA64_32r],
+            oUs = [mkBound (toMachineOperand (reg32ToReg64 r)),
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (toMachineOperand i),
+                   mkBound MachineNullReg],
+            oDs = [d]}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction ADD32rr_LEA], oUs = [r,r'], oDs = [d]})
+  = Linear {oIs = [TargetInstruction LEA64_32r],
+            oUs = [mkBound (toMachineOperand (reg32ToReg64 r)),
+                   mkBound (mkMachineImm 1),
+                   mkBound (toMachineOperand (reg32ToReg64 r')),
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg],
+            oDs = [d]}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction ADD64ri_LEA], oUs = [r,i], oDs = [d]})
+  = Linear {oIs = [TargetInstruction LEA64r],
+            oUs = [mkBound (toMachineOperand r),
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (toMachineOperand i),
+                   mkBound MachineNullReg],
+            oDs = [d]}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction ADD64rr_LEA], oUs = [r,r'], oDs = [d]})
+  = Linear {oIs = [TargetInstruction LEA64r],
+            oUs = [mkBound (toMachineOperand r),
+                   mkBound (mkMachineImm 1),
+                   mkBound (toMachineOperand r'),
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg],
+            oDs = [d]}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL32r1_LEA], oUs = [r], oDs = [d]})
+  = Linear {oIs = [TargetInstruction LEA64_32r],
+            oUs = [mkBound MachineNullReg,
+                   mkBound (mkMachineImm 2),
+                   mkBound (toMachineOperand (reg32ToReg64 r)),
+                   mkBound (toMachineOperand 0),
+                   mkBound MachineNullReg],
+            oDs = [d]}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL32ri_LEA], oUs = [r,i], oDs = [d]})
+  = Linear {oIs = [TargetInstruction LEA64_32r],
+            oUs = [mkBound MachineNullReg,
+                   mkBound (mkMachineImm (logToMul i)),
+                   mkBound (toMachineOperand (reg32ToReg64 r)),
+                   mkBound (toMachineOperand 0),
+                   mkBound MachineNullReg],
+            oDs = [d]}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL64r1_LEA], oUs = [r], oDs = [d]})
+  = Linear {oIs = [TargetInstruction LEA64r],
+            oUs = [mkBound MachineNullReg,
+                   mkBound (mkMachineImm 2),
+                   mkBound (toMachineOperand r),
+                   mkBound (toMachineOperand 0),
+                   mkBound MachineNullReg],
+            oDs = [d]}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL64ri_LEA], oUs = [r,i], oDs = [d]})
+  = Linear {oIs = [TargetInstruction LEA64r],
+            oUs = [mkBound MachineNullReg,
+                   mkBound (mkMachineImm (logToMul i)),
+                   mkBound (toMachineOperand r),
+                   mkBound (toMachineOperand 0),
+                   mkBound MachineNullReg],
+            oDs = [d]}
+
 fromCopy _ (Natural o) = o
 fromCopy _ o = error ("unmatched pattern: fromCopy " ++ show o)
 
 fromCopyInstr i
   | isJust (SpecsGen.parent i) = fromJust (SpecsGen.parent i)
+
+logToMul (Bound (MachineImm 1)) = 2
+logToMul (Bound (MachineImm 2)) = 4
+logToMul (Bound (MachineImm 3)) = 8
+
+reg32ToReg64 (Register (TargetRegister r)) =
+  let r' = reg32ToReg64' r
+  in (Register (TargetRegister r'))
+
+reg32ToReg64' EAX = RAX
+reg32ToReg64' ECX = RCX
+reg32ToReg64' EDX = RDX
+reg32ToReg64' EBX = RBX
+reg32ToReg64' ESI = RSI
+reg32ToReg64' EDI = RDI
+reg32ToReg64' ESP = RSP
+reg32ToReg64' EBP = RBP
+reg32ToReg64' R8D = R8
+reg32ToReg64' R9D = R9
+reg32ToReg64' R10D = R10
+reg32ToReg64' R11D = R11
+reg32ToReg64' R12D = R12
+reg32ToReg64' R13D = R13
+reg32ToReg64' R14D = R14
+reg32ToReg64' R15D = R15
 
 mkBoundMachineFrameObject fixedSpill i (Register r) =
     let size = stackSize i
@@ -411,15 +502,12 @@ expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc PUSH_fi, msOperands =
 expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc POP_fi, msOperands = [d, _]})
   = [[mkMachineSingle (MachineTargetOpc POP64r) [] [d]]]
 
-expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc ADD32ri_LEA, msOperands = [r, i]})
-  = [[mkMachineSingle (MachineTargetOpc LEA64_32r) [] [r, i]]]
-
 expandPseudo _ mi = [[mi]]
 
 -- | Gives a list of function transformers
 
 transforms ImportPreLift = [peephole extractReturnRegs]
-transforms ImportPostLift = [mapToOperation handlePromotedOperands]
+transforms ImportPostLift = [mapToOperation handlePromotedOperands,
                              mapToOperation alternativeLEA]
 transforms ImportPostCC = [liftReturnAddress]
 transforms ExportPreOffs = [revertFixedFrame]

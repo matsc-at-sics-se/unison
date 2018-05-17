@@ -140,6 +140,44 @@ alternativeLEA
   | ti `elem` [ADD32rr, ADD32rr_DB, ADD32rr_REV]
   = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD32rr_LEA]}}
 
+alternativeLEA
+  o @ SingleOperation {
+    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
+  | ti `elem` [ADD64ri8, ADD64ri8_DB, ADD64ri32, ADD64ri32_DB]
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD64ri_LEA]}}
+
+alternativeLEA
+  o @ SingleOperation {
+    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
+  | ti `elem` [ADD64rr, ADD64rr_DB, ADD64rr_REV]
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD64rr_LEA]}}
+
+alternativeLEA
+  o @ SingleOperation {
+    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
+  | ti `elem` [SHL32r1]
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL32r1_LEA]}}
+
+alternativeLEA
+  o @ SingleOperation {
+    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti], oUs = [_,Bound (MachineImm sh)]})}
+  | ti `elem` [SHL32ri] && 1 <= sh && sh <= 3
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL32ri_LEA]}}
+
+alternativeLEA
+  o @ SingleOperation {
+    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
+  | ti `elem` [SHL64r1]
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL64r1_LEA]}}
+
+alternativeLEA
+  o @ SingleOperation {
+    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti], oUs = [_,Bound (MachineImm sh)]})}
+  | ti `elem` [SHL64ri] && 1 <= sh && sh <= 3
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL64ri_LEA]}}
+
+alternativeLEA o = o
+
 -- This transform creates a fixed frame object to represent the return address
 -- which is implicit in LLVM's input.
 

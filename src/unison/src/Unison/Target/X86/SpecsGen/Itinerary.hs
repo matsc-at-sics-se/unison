@@ -273,7 +273,10 @@ itinerary i
     = IIC_Jcc
   | i `elem` [LAR16rm, LAR32rm, LAR64rm] = IIC_LAR_RM
   | i `elem` [LAR16rr, LAR32rr, LAR64rr] = IIC_LAR_RR
-  | i `elem` [LEA32r, LEA32r_remat, LEA64_32r, LEA64r, LEA64r_remat]
+  | i `elem`
+      [ADD32ri_LEA, ADD32rr_LEA, ADD64ri_LEA, ADD64rr_LEA, LEA32r,
+       LEA32r_remat, LEA64_32r, LEA64r, LEA64r_remat, SHL32r1_LEA,
+       SHL32ri_LEA, SHL64r1_LEA, SHL64ri_LEA]
     = IIC_LEA
   | i `elem` [LEAVE, LEAVE64] = IIC_LEAVE
   | i `elem` [LEA16r, LEA16r_remat] = IIC_LEA_16

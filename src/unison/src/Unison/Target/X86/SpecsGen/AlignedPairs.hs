@@ -487,7 +487,8 @@ alignedPairs i ([src0, _, _, _, _, _], [src0'])
   | i `elem` [ADCX32rm, ADCX64rm] = [(src0, src0')]
 alignedPairs i ([_], [_])
   | i `elem`
-      [AESIMCrr, RCPSSr, RSQRTSSr, SQRTSDr, SQRTSSr, VAESIMCrr]
+      [AESIMCrr, RCPSSr, RSQRTSSr, SHL32r1_LEA, SHL64r1_LEA, SQRTSDr,
+       SQRTSSr, VAESIMCrr]
     = []
 alignedPairs i ([src1], [src1'])
   | i `elem`
@@ -551,21 +552,23 @@ alignedPairs i ([_, _], [_])
 alignedPairs i ([_, _], [_]) | i `elem` [MOV64ao32, MOV64ao64] = []
 alignedPairs i ([_, _], [_])
   | i `elem`
-      [AESKEYGENASSIST128rr, ANDN32rr, ANDN64rr, BEXTR32rr, BEXTR64rr,
+      [ADD32ri_LEA, ADD32rr_LEA, ADD64ri_LEA, ADD64rr_LEA,
+       AESKEYGENASSIST128rr, ANDN32rr, ANDN64rr, BEXTR32rr, BEXTR64rr,
        BZHI32rr, BZHI64rr, EXTRACTPSrr, IMUL16rri, IMUL16rri8, IMUL32rri,
        IMUL32rri8, IMUL64rri32, IMUL64rri8, Int_VCVTSD2SSrr,
        Int_VCVTSI2SD64rr, Int_VCVTSI2SDrr, Int_VCVTSI2SS64rr,
        Int_VCVTSI2SSrr, Int_VCVTSS2SDrr, PDEP32rr, PDEP64rr, PEXT32rr,
        PEXT64rr, PEXTRBrr, PEXTRDrr, PEXTRQrr, PEXTRWri, PEXTRWrr_REV,
        PSHUFDri, PSHUFHWri, PSHUFLWri, RORX32ri, RORX64ri, ROUNDPDr,
-       ROUNDPSr, SARX32rr, SARX64rr, SHLX32rr, SHLX64rr, SHRX32rr,
-       SHRX64rr, VADDPDYrr, VADDPDrr, VADDPSYrr, VADDPSrr, VADDSDrr,
-       VADDSDrr_Int, VADDSSrr, VADDSSrr_Int, VADDSUBPDYrr, VADDSUBPDrr,
-       VADDSUBPSYrr, VADDSUBPSrr, VAESDECLASTrr, VAESDECrr, VAESENCLASTrr,
-       VAESENCrr, VAESKEYGENASSIST128rr, VANDNPDYrr, VANDNPDrr,
-       VANDNPSYrr, VANDNPSrr, VANDPDYrr, VANDPDrr, VANDPSYrr, VANDPSrr,
-       VCVTPS2PHYrr, VCVTPS2PHrr, VCVTSD2SSrr, VCVTSS2SDrr, VDIVPDYrr,
-       VDIVPDrr, VDIVPSYrr, VDIVPSrr, VDIVSDrr, VDIVSDrr_Int, VDIVSSrr,
+       ROUNDPSr, SARX32rr, SARX64rr, SHL32ri_LEA, SHL64ri_LEA, SHLX32rr,
+       SHLX64rr, SHRX32rr, SHRX64rr, VADDPDYrr, VADDPDrr, VADDPSYrr,
+       VADDPSrr, VADDSDrr, VADDSDrr_Int, VADDSSrr, VADDSSrr_Int,
+       VADDSUBPDYrr, VADDSUBPDrr, VADDSUBPSYrr, VADDSUBPSrr,
+       VAESDECLASTrr, VAESDECrr, VAESENCLASTrr, VAESENCrr,
+       VAESKEYGENASSIST128rr, VANDNPDYrr, VANDNPDrr, VANDNPSYrr,
+       VANDNPSrr, VANDPDYrr, VANDPDrr, VANDPSYrr, VANDPSrr, VCVTPS2PHYrr,
+       VCVTPS2PHrr, VCVTSD2SSrr, VCVTSS2SDrr, VDIVPDYrr, VDIVPDrr,
+       VDIVPSYrr, VDIVPSrr, VDIVSDrr, VDIVSDrr_Int, VDIVSSrr,
        VDIVSSrr_Int, VEXTRACTF128rr, VEXTRACTI128rr, VEXTRACTPSrr,
        VFsANDNPDrr, VFsANDNPSrr, VFsANDPDrr, VFsANDPSrr, VFsORPDrr,
        VFsORPSrr, VFsXORPDrr, VFsXORPSrr, VFvANDNPDYrr, VFvANDNPDrr,

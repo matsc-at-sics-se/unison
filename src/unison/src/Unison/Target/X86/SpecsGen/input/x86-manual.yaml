@@ -234,12 +234,94 @@ instruction-set:
 
         - id:                 ADD32ri_LEA
           parent:             ADD32ri
+          operands:
+           - src1:            [register, use, GR32]
+           - src2:            bound
+           - dst:             [register, def, GR32]
+          uses:               [src1, src2]
+          defines:            [dst]
           affects:
           affected-by:
           itinerary:          IIC_LEA
 
         - id:                 ADD32rr_LEA
           parent:             ADD32rr
+          operands:
+           - src1:            [register, use, GR32]
+           - src2:            [register, use, GR32]
+           - dst:             [register, def, GR32]
+          uses:               [src1, src2]
+          defines:            [dst]
+          affects:
+          affected-by:
+          itinerary:          IIC_LEA
+
+        - id:                 ADD64ri_LEA
+          parent:             ADD64ri32
+          operands:
+           - src1:            [register, use, GR64]
+           - src2:            bound
+           - dst:             [register, def, GR64]
+          uses:               [src1, src2]
+          defines:            [dst]
+          affects:
+          affected-by:
+          itinerary:          IIC_LEA
+
+        - id:                 ADD64rr_LEA
+          parent:             ADD64rr
+          operands:
+           - src1:            [register, use, GR64]
+           - src2:            [register, use, GR64]
+           - dst:             [register, def, GR64]
+          uses:               [src1, src2]
+          defines:            [dst]
+          affects:
+          affected-by:
+          itinerary:          IIC_LEA
+
+        - id:                 SHL32r1_LEA
+          parent:             SHL32r1
+          operands:
+           - src1:            [register, use, GR32]
+           - dst:             [register, def, GR32]
+          uses:               [src1]
+          defines:            [dst]
+          affects:
+          affected-by:
+          itinerary:          IIC_LEA
+
+        - id:                 SHL32ri_LEA
+          parent:             SHL32ri
+          operands:
+           - src1:            [register, use, GR32]
+           - src2:            bound
+           - dst:             [register, def, GR32]
+          uses:               [src1, src2]
+          defines:            [dst]
+          affects:
+          affected-by:
+          itinerary:          IIC_LEA
+
+        - id:                 SHL64r1_LEA
+          parent:             SHL64r1
+          operands:
+           - src1:            [register, use, GR64]
+           - dst:             [register, def, GR64]
+          uses:               [src1]
+          defines:            [dst]
+          affects:
+          affected-by:
+          itinerary:          IIC_LEA
+
+        - id:                 SHL64ri_LEA
+          parent:             SHL64ri
+          operands:
+           - src1:            [register, use, GR64]
+           - src2:            bound
+           - dst:             [register, def, GR64]
+          uses:               [src1, src2]
+          defines:            [dst]
           affects:
           affected-by:
           itinerary:          IIC_LEA
