@@ -68,28 +68,23 @@ UNISON_SOLVER_CONFIG ?= graphics
 SOLVERPROJECT := $(SOLVERDIR)/solver.pro
 
 GENMAKEFILE = $(SOLVERDIR)/generated.mk
-GENMAKEFILESTATIC = $(SOLVERDIR)/generated-static.mk
 
 OSX_SOLVERBIN = $(SOLVERDIR)/gecode-solver.app/Contents/MacOS/gecode-solver
 
-$(SOLVERBIN): $(GENMAKEFILE)
+# FIXME: the presolver dependency is added to prevent linking shared object
+# files that are not yet ready. The right solution is to structure the Qt
+# project files appropriately, possibly using TEMPLATE and SUBDIRS.
+$(SOLVERBIN): $(GENMAKEFILE)  $(PRESOLVERBIN)
 	$(MAKE) -C $(SOLVERDIR) -f $(notdir $<)
 	if [ -e $(OSX_SOLVERBIN) ]; then \
 	    cp $(OSX_SOLVERBIN) $(SOLVERBIN); \
 	fi; \
 
 $(GENMAKEFILE): $(SOLVERPROJECT) $(SOLVERSRC)
-	qmake-qt4 TARGET="gecode-solver" CONFIG+="$(UNISON_SOLVER_CONFIG)" -o $@ $<
-
-$(SOLVERSTATICBIN): $(GENMAKEFILESTATIC)
-	$(MAKE) -C $(SOLVERDIR) -f $(notdir $<)
-	strip --strip-debug $(SOLVERSTATICBIN)
-
-$(GENMAKEFILESTATIC): $(SOLVERPROJECT) $(SOLVERSRC)
-	qmake-qt4 TARGET="gecode-solver-static" CONFIG+="static" -o $@ $<
+	qmake TARGET="gecode-solver" CONFIG+="$(UNISON_SOLVER_CONFIG)" -o $@ $<
 
 clean-solver:
-	rm -f $(SOLVERDIR)/*.o $(SOLVERDIR)/*~ $(GENMAKEFILE) $(GENMAKEFILESTATIC) $(SOLVERDIR)/moc_*.cpp
+	rm -f $(SOLVERDIR)/*.o $(SOLVERDIR)/*~ $(GENMAKEFILE) $(SOLVERDIR)/moc_*.cpp
 
 veryclean-solver: clean-solver
 	rm -f $(SOLVERBIN)
