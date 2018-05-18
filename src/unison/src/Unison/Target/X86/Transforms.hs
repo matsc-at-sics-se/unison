@@ -14,11 +14,13 @@ module Unison.Target.X86.Transforms
      handlePromotedOperands,
      liftReturnAddress,
      revertFixedFrame,
-     fixPrologueEpilogue,
+     addPrologueEpilogue,
      myLowerFrameIndices,
      stackIndexReadsSP) where
 
 import qualified Data.Map as M
+import Data.List.Split
+
 import MachineIR
 import Unison
 import Unison.Analysis.FrameOffsets
@@ -27,7 +29,6 @@ import Unison.Target.X86.X86RegisterDecl
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
 import Unison.Target.X86.X86RegisterClassDecl
 import Unison.Target.X86.SpecsGen.OperandInfo
-import Debug.Trace
 
 {-
     o12: [eax] <- (copy) [t4]
@@ -139,54 +140,61 @@ liftReturnAddress f @ Function {fFixedStackFrame = fobjs} =
 revertFixedFrame f @ Function {fFixedStackFrame = fobjs} =
   f {fFixedStackFrame = map revertDirection fobjs}
 
--- This transform replaces the default Prologue/Epilogue by a more complex one,
+-- This transform inserts Prologue/Epilogue, either simple or complex,
 -- if alignment by more than 16 is required.
 
-fixPrologueEpilogue f @ Function {fCode = code, fStackFrame = objs} =
-  let flatcode = (flatten code)
+-- We need a stack frame iff there are spills or stack-allocated data.
+-- Additionally, we need to ensure that SP is modulo 16 aligned at
+-- all recursive calls!  At any rate, the frame size needs to be a multiple of 8.
+
+addPrologueEpilogue f @ Function {fCode = code, fStackFrame = objs} =
+  let flatcode = flatten code
       definfos = concatMap (definedRCs operandInfo) flatcode
       rcs      = map oiRegClass definfos
       align    = if any isDirtyYMM rcs then 32 else 8
       align'   = maximum $ [align] ++ map foAlignment (objs)
-  in if align' > 16 then
-    trace ("fixPrologueEpilogue, alignment 32: Not Yet Implemented") {- (peephole peepPrologueEpilogue) -} f
-  else f
+      (addPrf, addEpf) = if align' > 16
+                         then (addComplexPr, addComplexEp)
+                         else (addSimplePr, addSimpleEp)
+      ids      = newIndexes flatcode
+      tid      = case ids of
+                  (tid', _, _) -> tid'
+      code'    = mapToEntryBlock (addPrf tid ids) code
+      outBs    = returnBlockIds code'
+      code''   = foldl (addEpilogueInBlock (addEpf tid)) code' outBs
+  in f {fCode = code''}
 
--- Here, I would like to perform two transforms:
--- replace:
---     SUBRSP_pseudo
--- by:
--- [*] %rbp = MOV64rr %rsp
---     %rsp = AND64ri %rsp, -32
---     SUBRSP_pseudo
+addEpilogueInBlock aef code l =
+    let ids   = newIndexes $ flatten code
+        code' = mapToBlock (aef ids) l code
+    in code'
 
--- replace:
---     ADDRSP_pseudo
--- by:
---     %rsp = MOV64rr %rbp
+mkSubSp oid =
+  mkLinear oid [TargetInstruction SUBRSP_pseudo] [Bound mkMachineFrameSize] []
 
--- N.B.: %rbp is callee-saved! So even if [*] is encoded by some pseudo-op, the fact that it clobbers %rbp
--- must be explicit.
+splitEpilogue code =
+  split (keepDelimsL $ whenElt (\o -> isBranch o || isTailCall o)) code
 
--- peepPrologueEpilogue _ (
---   p @ SingleOperation {oOpr = Natural (Linear {oIs = [TargetInstruction SUBRSP_pseudo]})}
---   :
---   rest) _ =
---    (
---     rest,
---     [mkLinear _ [TargetInstruction Prologue1_pseudo] [] [],
---      mkLinear _ [TargetInstruction Prologue2_pseudo] [] [],
---      p]
---    )
--- peepPrologueEpilogue _ (
---   e @ SingleOperation {oOpr = Natural (Linear {oIs = [TargetInstruction ADDRSP_pseudo]})}
---   :
---   rest) _ =
---    (
---     rest,
---     [e {oOpr = Natural (Linear {oIs = [TargetInstruction Epilogue1_pseudo]})}]
---    )
--- peepPrologueEpilogue _ (o : rest) _ = (rest, [o])
+mkReg = mkRegister . mkTargetRegister
+
+addSimplePr _ (_, oid, _) (e:code) = [e, mkSubSp oid] ++ code
+
+addSimpleEp _ (_, oid, _) code =
+  let addSp = mkLinear oid [TargetInstruction ADDRSP_pseudo]
+              [Bound mkMachineFrameSize] []
+      [code', e] = splitEpilogue code
+  in code' ++ [addSp] ++ e
+
+addComplexPr tid (_, oid, _) (e:code) =
+  let mov64 = mkLinear oid       [TargetInstruction MOV_FROM_SP] [] [mkPreAssignedTemp tid (mkReg RBP)]
+      and64 = mkLinear (oid + 1) [TargetInstruction ALIGN_SP_32] [] []
+      subSp = mkSubSp  (oid + 2)
+  in [e, mov64, and64, subSp] ++ code
+
+addComplexEp tid (_, oid, _) code =
+  let mov64 = mkLinear oid [TargetInstruction MOV_TO_SP] [mkPreAssignedTemp tid (mkReg RBP)] []
+      [code', e] = splitEpilogue code
+  in code' ++ [mov64] ++ e
 
 -- This transform replaces stack frame object indices in the code by actual
 -- RSP + immediates.  It essentially overrules lowerFrameIndices.
@@ -213,8 +221,7 @@ myLowerFrameIndices' need done align f @ Function {fCode = code, fFixedStackFram
   let need'    = ((((need-1) `div` align) + 1) * align)
       code'    = replaceFIsByImms done  done  (mkTargetRegister RBP) True fobjs code
       code''   = replaceFIsByImms need'    0  (mkTargetRegister RSP) False objs code'
-  in trace ("myLowerFrameIndices, alignment 32: Relying On fixPrologEpilogue")
-     f {fCode = code''}
+  in f {fCode = code''}
 
 definedRCs oif o
   = concatMap (snd . oif . oTargetInstr) (filter isTargetInstruction (oInstructions o))

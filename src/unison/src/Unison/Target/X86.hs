@@ -308,45 +308,8 @@ implementFrame = const []
 -- | Adds function prologue, see corresponding logic in X86FrameLowering.cpp
 -- ("emitPrologue")
 
--- We need a stack frame iff there are spills or stack-allocated data.
--- Additionally, we need to ensure that SP is modulo 16 aligned at
--- all recursive calls!  At any rate, the frame size needs to be a multiple of 8.
-
-addPrologue (_, oid, _) (e:code) =
-  let subSp = mkLinear oid [TargetInstruction SUBRSP_pseudo] [Bound mkMachineFrameSize] []
-  in [e] ++ (addPrologue' [subSp] code)
-
-addPrologue' submoves []
-  = submoves
-addPrologue' submoves (o:code)
-  | TargetInstruction PUSH_cst `elem` oInstructions o
-  = addPrologue'' [o] submoves code
-  | True
-  = addPrologue' (submoves ++ [o]) code
-
-addPrologue'' pushes submoves (o:code)
-  | TargetInstruction PUSH_cst `elem` oInstructions o
-  = addPrologue'' (pushes ++ [o]) submoves code
-  | True
-  = pushes ++ submoves ++ (o:code)
-
-addEpilogue (_, oid, _) code =
-  let addSp = mkLinear oid [TargetInstruction ADDRSP_pseudo] [Bound mkMachineFrameSize] []
-  in addEpilogue' [addSp] code
-
-addEpilogue' adds (o:code)
-  | TargetInstruction POP_cst `elem` oInstructions o
-  = addEpilogue'' (adds ++ [o]) code
-  | True
-  = [o] ++ (addEpilogue' adds code)
-
-addEpilogue'' addpops (o:code)
-  | TargetInstruction POP_cst `elem` oInstructions o
-  = addEpilogue'' (addpops ++ [o]) code
-  | (isTailCall o || isBranch o)
-  = addpops ++ [o] ++ code
-  | True
-  = addEpilogue'' ([o] ++ addpops) code
+addPrologue _ code = code
+addEpilogue _ code = code
 
 -- | Direction in which the stack grows
 stackDirection = API.StackGrowsDown
@@ -411,16 +374,34 @@ expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc PUSH_fi, msOperands =
 expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc POP_fi, msOperands = [d, _]})
   = [[mkMachineSingle (MachineTargetOpc POP64r) [] [d]]]
 
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV_FROM_SP,
+                                   msOperands = [dst]}
+  = let sp = mkMachineReg RSP
+    in [[mi {msOpcode = mkMachineTargetOpc MOV64rr,
+             msOperands = [dst, sp]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV_TO_SP,
+                                   msOperands = [src]}
+  = let sp = mkMachineReg RSP
+    in [[mi {msOpcode = mkMachineTargetOpc MOV64rr,
+             msOperands = [sp, src]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ALIGN_SP_32}
+  = let sp = mkMachineReg RSP
+        im32 = mkMachineImm (-32)
+    in [[mi {msOpcode = mkMachineTargetOpc AND64ri8,
+             msOperands = [sp, sp, im32]}]]
+
 expandPseudo _ mi = [[mi]]
 
 -- | Gives a list of function transformers
 
-transforms ImportPreLift = [peephole extractReturnRegs]
+transforms ImportPreLift = [peephole extractReturnRegs, addPrologueEpilogue]
 transforms ImportPostLift = [mapToOperation handlePromotedOperands]
 transforms ImportPostCC = [liftReturnAddress]
 transforms ExportPreOffs = [revertFixedFrame]
 transforms ExportPreLow = [myLowerFrameIndices]
-transforms AugmentPostRW = [fixPrologueEpilogue, mapToOperation stackIndexReadsSP]
+transforms AugmentPostRW = [mapToOperation stackIndexReadsSP]
 transforms _ = []
 
 -- | Latency of read-write dependencies

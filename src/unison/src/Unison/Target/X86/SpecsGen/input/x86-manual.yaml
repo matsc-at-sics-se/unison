@@ -16,6 +16,7 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
+           - RSP:             register
 
         - id:                 STORE16
           parent:             MOV16mr
@@ -27,6 +28,7 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
+           - RSP:             register
 
         - id:                 STORE32
           parent:             MOV32mr
@@ -38,6 +40,7 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
+           - RSP:             register
 
         - id:                 STORE64
           parent:             MOV64mr
@@ -49,6 +52,7 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
+           - RSP:             register
 
         - id:                 STORE128
           parent:             MOVDQAmr
@@ -60,6 +64,7 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
+           - RSP:             register
 
         - id:                 STORE256
           parent:             VMOVDQAYmr
@@ -71,6 +76,7 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
+           - RSP:             register
 
         - id:                 LOAD8
           parent:             MOV8rm
@@ -82,6 +88,7 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
+           - RSP:             register
 
         - id:                 LOAD16
           parent:             MOV16rm
@@ -93,6 +100,7 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
+           - RSP:             register
 
         - id:                 LOAD32
           parent:             MOV32rm
@@ -104,6 +112,7 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
+           - RSP:             register
 
         - id:                 LOAD64
           parent:             MOV64rm
@@ -115,6 +124,7 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
+           - RSP:             register
 
         - id:                 LOAD128
           parent:             MOVDQArm
@@ -126,6 +136,7 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
+           - RSP:             register
 
         - id:                 LOAD256
           parent:             VMOVDQAYrm
@@ -137,6 +148,7 @@ instruction-set:
           defines:            [rd]
           affects:
           affected-by:
+           - RSP:             register
 
         - id:                 MOVE8
           parent:             MOV8rr
@@ -231,3 +243,34 @@ instruction-set:
           affected-by:
            - RSP:             register
           itinerary:          IIC_POP_REG
+
+        - id:                 MOV_FROM_SP
+          parent:             MOV64rr
+          operands:
+           - dst:             [register, def, GR64]
+          uses:               []
+          defines:            [dst]
+          affected-by:
+           - RSP:             register
+
+        - id:                 MOV_TO_SP
+          parent:             MOV64rr
+          operands:
+           - src:             [register, use, GR64]
+          uses:               [src]
+          defines:            []
+          affects:
+           - RSP:             register
+
+        - id:                 ALIGN_SP_32
+          parent:             AND64ri8
+          type:               linear
+          operands:
+          uses:               []
+          defines:            []
+          size:               0
+          affects:
+           - RSP:             register
+           - EFLAGS:          register
+          affected-by:
+           - RSP:             register

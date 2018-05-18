@@ -4224,6 +4224,9 @@ data X86Instruction = AAA
                     | PUSH_fi
                     | POP_cst
                     | POP_fi
+                    | MOV_FROM_SP
+                    | MOV_TO_SP
+                    | ALIGN_SP_32
                     | MOV8ri_source
                     | MOV8ri_demat
                     | MOV8ri_remat
