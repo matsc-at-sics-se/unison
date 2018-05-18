@@ -16,15 +16,22 @@ module Unison.Target.X86.Transforms
      revertFixedFrame,
      addPrologueEpilogue,
      myLowerFrameIndices,
-     stackIndexReadsSP) where
+     stackIndexReadsSP,
+     addVzeroupper) where
 
 import qualified Data.Map as M
 import Data.List.Split
+import qualified Data.Graph.Inductive as G
+import Data.Maybe
 
 import MachineIR
 import Unison
 import Unison.Analysis.FrameOffsets
+import qualified Unison.Graphs.ICFG as ICFG
+import qualified Unison.Graphs.BCFG as BCFG
+
 import Unison.Target.X86.Common
+import Unison.Target.X86.BranchInfo
 import Unison.Target.X86.X86RegisterDecl
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
 import Unison.Target.X86.X86RegisterClassDecl
@@ -289,3 +296,30 @@ stackIndexReadsSP
     in o {oAs = as {aReads = areads'}}
 
 stackIndexReadsSP o = o
+
+addVzeroupper f @ Function {fCode = code} =
+  let icfg   = ICFG.fromBCFG $ BCFG.fromFunction branchInfo' f
+      cnodes = [id | (id, (_, o)) <- G.labNodes icfg, isCall o]
+      rnodes = [id | (id, (_, o)) <- G.labNodes icfg,
+                (TargetInstruction RETQ) `elem` oInstructions o || isTailCall o]
+      cedges = concat [[(id, s) | s <- G.suc icfg id] | id <- cnodes]
+      icfg'  = G.delEdges cedges icfg
+      icfgr  = G.grev icfg'
+      creach = [(id, G.reachable id icfgr) | id <- cnodes ++ rnodes]
+      ymmreach = [snd (fromJust (G.lab icfg id)) | (id, reachers) <- creach,
+                  any (isYMMDirtying icfg) reachers]
+      code'  = foldl insertVzeroupper code ymmreach
+  in f {fCode = code'}
+
+-- TODO: implement!
+isYMMDirtying _icfg _id = True
+
+branchInfo' bo @ SingleOperation {oOpr = Natural i}
+  | isBranch bo = Just (branchInfo i)
+  | otherwise = Nothing
+
+insertVzeroupper code o =
+  let (_, oid, _) = newIndexes $ flatten code
+      vzu = mkLinear oid [TargetInstruction VZEROUPPER] [] []
+      code' = map (insertOperationInBlock before (isIdOf o) vzu) code
+   in code'
