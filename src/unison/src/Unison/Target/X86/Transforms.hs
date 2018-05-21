@@ -17,7 +17,8 @@ module Unison.Target.X86.Transforms
      addPrologueEpilogue,
      myLowerFrameIndices,
      stackIndexReadsSP,
-     addVzeroupper) where
+     addVzeroupper,
+     spillAfterAlign) where
 
 import qualified Data.Map as M
 import Data.List.Split
@@ -106,6 +107,14 @@ extractReturnRegs _ (
    )
 
 extractReturnRegs _ (o : rest) _ = (rest, [o])
+
+spillAfterAlign _ (o :
+                   p @ SingleOperation {oOpr = Natural (Linear {oIs = [TargetInstruction ALIGN_SP_32]})} :
+                   q @ SingleOperation {oOpr = Natural (Linear {oIs = [TargetInstruction SUBRSP_pseudo]})} :
+                   rest) _
+  | isCopy o
+  = (rest, [p,q,o])
+spillAfterAlign _ (o : rest) _ = (rest, [o])
 
 {-
     o10: [t14,t15] <- IMUL64m [%stack.0,1,_,8,_,t13] (mem: 1)
@@ -199,7 +208,7 @@ addComplexPr tid (_, oid, _) (e:code) =
   in [e, mov64, and64, subSp] ++ code
 
 addComplexEp tid (_, oid, _) code =
-  let mov64 = mkLinear oid [TargetInstruction MOV_TO_SP] [mkPreAssignedTemp tid (mkReg RBP)] []
+  let mov64 = mkLinear oid [TargetInstruction MOV_TO_SP] [mkTemp tid] []
       [code', e] = splitEpilogue code
   in code' ++ [mov64] ++ e
 

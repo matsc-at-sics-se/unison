@@ -131,16 +131,17 @@ copies (Function {fCode = code}, _, _, _, _, _) False t _ d [u]
     not (mayCrossMemDep readWriteInfo d u code) &&
     compatibleClassesForTemp t [d, u] = ([], [[]])
 
--- copies (f, _, cg, ra, bcfg, sg) _ t _rs d us =
---   let is     = d:us
---       w      = widthOfTemp ra cg f t is
---       dors   = transitivePreAssignments bcfg sg Reaching f t
---       uors   = transitivePreAssignments bcfg sg Reachable f t
---       size   = any ((==) Size) $ fGoal f
---   in (
---       (defCopies size w dors),
---       map (const (useCopies size w uors)) us
---       )
+-- If function has >6 arguments, then they will be accessed off RBP. Therefore,
+-- do not spill def and use stemming from
+--  o12: [t24:rbp] <- MOV_FROM_SP []
+--  o35: [] <- MOV_TO_SP [t24]
+copies (Function {fFixedStackFrame = fobjs}, _, _cg, _ra, _, _) _
+       (Temporary {tReg = (Just (Register (TargetRegister RBP)))}) _ _d us
+  | (TargetInstruction MOV_TO_SP) `elem` (concatMap oInstructions us) &&
+    (maximum $ map foOffset fobjs) >= 0
+  = ([], [[]])
+
+-- Default: extend def and uses
 copies (f, _, cg, ra, _, _) _ t _ d us =
   let w = widthOfTemp ra cg f t (d:us)
   in
@@ -178,7 +179,7 @@ isReserved r = r `elem` reserved
 rematInstrs i
   | isRematerializable i =
       Just (sourceInstr i, dematInstr i, rematInstr i)
-  | i `elem` [MOV8rm, MOV16rm, MOV32rm, MOV64rm,
+  | i `elem` [MOV8rm, MOV16rm, MOV32rm, MOV64rm, MOV_FROM_SP,
               IMUL64rmi32,
               MOVSX16rm8, MOVSX32rm8, MOVSX32_NOREXrm8, MOVSX32rm16, MOVSX64rm8, MOVSX64rm16, MOVSX64rm32, 
               MOVZX16rm8, MOVZX32rm8, MOVZX32_NOREXrm8, MOVZX32rm16, MOVZX64rm8, MOVZX64rm16,
@@ -378,12 +379,15 @@ expandPseudo _ mi = [[mi]]
 
 -- | Gives a list of function transformers
 
-transforms ImportPreLift = [peephole extractReturnRegs, addPrologueEpilogue, addVzeroupper]
+transforms ImportPreLift = [peephole extractReturnRegs,
+                            addPrologueEpilogue,
+                            addVzeroupper]
 transforms ImportPostLift = [mapToOperation handlePromotedOperands]
 transforms ImportPostCC = [liftReturnAddress]
 transforms ExportPreOffs = [revertFixedFrame]
 transforms ExportPreLow = [myLowerFrameIndices]
-transforms AugmentPostRW = [mapToOperation stackIndexReadsSP]
+transforms AugmentPostRW = [mapToOperation stackIndexReadsSP,
+                            peephole spillAfterAlign]
 transforms _ = []
 
 -- | Latency of read-write dependencies
