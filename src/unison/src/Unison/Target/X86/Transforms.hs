@@ -35,8 +35,6 @@ import Unison.Target.X86.Common
 import Unison.Target.X86.BranchInfo
 import Unison.Target.X86.X86RegisterDecl
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
-import Unison.Target.X86.X86RegisterClassDecl
-import Unison.Target.X86.SpecsGen.OperandInfo
 
 {-
     o12: [eax] <- (copy) [t4]
@@ -165,9 +163,7 @@ revertFixedFrame f @ Function {fFixedStackFrame = fobjs} =
 
 addPrologueEpilogue f @ Function {fCode = code, fStackFrame = objs} =
   let flatcode = flatten code
-      definfos = concatMap (definedRCs operandInfo) flatcode
-      rcs      = map oiRegClass definfos
-      align    = if any isDirtyYMM rcs then 32 else 8
+      align    = if any isDirtyYMMOp flatcode then 32 else 8
       align'   = maximum $ [align] ++ map foAlignment (objs)
       (addPrf, addEpf) = if align' > 16
                          then (addComplexPr, addComplexEp)
@@ -220,9 +216,7 @@ myLowerFrameIndices f @ Function {fCode = code, fFixedStackFrame = fobjs,
   let done     = negate $ minimum $ map foOffset fobjs
       need     = negate $ minimum $ map foOffset (fobjs ++ objs)
       flatcode = (flatten code)
-      definfos = concatMap (definedRCs operandInfo) flatcode
-      rcs      = map oiRegClass definfos
-      align    = if any isDirtyYMM rcs then 32 else if any isCall flatcode then 16 else 8
+      align    = if any isDirtyYMMOp flatcode then 32 else if any isCall flatcode then 16 else 8
       align'   = maximum $ [align] ++ map foAlignment (objs)
   in myLowerFrameIndices' need done align' f
 
@@ -238,12 +232,6 @@ myLowerFrameIndices' need done align f @ Function {fCode = code, fFixedStackFram
       code'    = replaceFIsByImms done  done  (mkTargetRegister RBP) True fobjs code
       code''   = replaceFIsByImms need'    0  (mkTargetRegister RSP) False objs code'
   in f {fCode = code''}
-
-definedRCs oif o
-  = concatMap (snd . oif . oTargetInstr) (filter isTargetInstruction (oInstructions o))
-
-isDirtyYMM (RegisterClass VR256) = True
-isDirtyYMM _ = False
 
 replaceFIsByImms need done basereg fixed objs code =
   let idxToOff = M.fromList [(foIndex fo, (foOffset fo) + need) | fo <- objs]
@@ -320,8 +308,8 @@ addVzeroupper f @ Function {fCode = code} =
       code'  = foldl insertVzeroupper code ymmreach
   in f {fCode = code'}
 
--- TODO: implement!
-isYMMDirtying _icfg _id = True
+isYMMDirtying icfg id =
+  isDirtyYMMOp $ snd (fromJust (G.lab icfg id))
 
 branchInfo' bo @ SingleOperation {oOpr = Natural i}
   | isBranch bo = Just (branchInfo i)

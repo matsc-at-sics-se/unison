@@ -276,9 +276,22 @@ resources =
 
 nop = Linear [TargetInstruction NOOP] [] []
 
+-- avoid this practice
+-- readWriteInfo i
+--   | i `elem` [SUBRSP_pseudo, ADDRSP_pseudo] =
+--       second (++ [ControlSideEffect,OtherSideEffect RSP]) $ SpecsGen.readWriteInfo i
+--   | otherwise = SpecsGen.readWriteInfo i
+
+-- readWriteInfo i
+--   | i `elem` [VZEROUPPER] =
+--       first (++ [ProgramCounterSideEffect]) $ SpecsGen.readWriteInfo i
+--   | otherwise = SpecsGen.readWriteInfo i
+
+-- ensure precedence between YMM dirtying insn and VZEROUPPER
+-- by letting the former "read" YMM0, which is "written" by the latter
 readWriteInfo i
-  | i `elem` [SUBRSP_pseudo, ADDRSP_pseudo] =
-      second (++ [ControlSideEffect,OtherSideEffect RSP]) $ SpecsGen.readWriteInfo i
+  | isDirtyYMMInsn i =
+      first (++ [OtherSideEffect YMM0]) $ SpecsGen.readWriteInfo i
   | otherwise = SpecsGen.readWriteInfo i
 
 -- | Implementation of frame setup and destroy operations. All functions

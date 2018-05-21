@@ -14,7 +14,7 @@ module Unison.Target.X86.Common
      isRematerializable, isSourceInstr,
      isDematInstr, isRematInstr, sourceInstr, dematInstr, rematInstr,
      originalInstr, spillInstrs, condMoveInstrs, promotedRegs, readsSideEffect,
-     writesSideEffect) where
+     writesSideEffect, isDirtyYMMInsn, isDirtyYMMOp) where
 
 import qualified Data.Map as M
 
@@ -22,6 +22,7 @@ import Unison
 import qualified Unison.Target.API as API
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
+import Unison.Target.X86.X86RegisterClassDecl
 import Unison.Target.X86.X86RegisterDecl
 
 unitLatency to = API.isBoolOption "unit-latency" to
@@ -98,3 +99,12 @@ readsSideEffect i eff =
   (OtherSideEffect eff) `elem` (fst $ SpecsGen.readWriteInfo i)
 writesSideEffect i eff =
   (OtherSideEffect eff) `elem` (snd $ SpecsGen.readWriteInfo i)
+
+isDirtyYMMOp o
+  = any isDirtyYMMInsn [(oTargetInstr oi) | oi <- (oInstructions o), isTargetInstruction oi]
+
+isDirtyYMMInsn i
+  = any temporaryInfoYMM (snd $ SpecsGen.operandInfo i)
+
+temporaryInfoYMM TemporaryInfo {oiRegClass = (RegisterClass VR256)} = True
+temporaryInfoYMM _ = False

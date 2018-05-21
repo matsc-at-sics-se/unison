@@ -180,6 +180,10 @@ instruction-set:
            - imm:             bound
           uses:               [imm]
           defines:            []
+          affects:
+           - RSP:             register
+          affected-by:
+           - RSP:             register
 
         - id:                 ADDRSP_pseudo
           parent:             ADD64ri8
@@ -187,6 +191,10 @@ instruction-set:
            - imm:             bound
           uses:               [imm]
           defines:            []
+          affects:
+           - RSP:             register
+          affected-by:
+           - RSP:             register
 
         - id:                 PUSH_cst
           type:               copy
