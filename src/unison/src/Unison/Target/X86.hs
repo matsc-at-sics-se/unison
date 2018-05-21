@@ -375,6 +375,121 @@ expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ALIGN_SP_32}
     in [[mi {msOpcode = mkMachineTargetOpc AND64ri8,
              msOperands = [sp, sp, im32]}]]
 
+-- expand pseudos that stem from llvm
+
+-- could do it with XOR, which clobbers EFLAGS
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r0,
+                                   msOperands = [dst]}
+  = let imm = mkMachineImm 0
+  in [[mi {msOpcode = mkMachineTargetOpc MOV32ri,
+           msOperands = [dst, imm]}]]
+
+-- could do it with XOR + INC, which clobbers EFLAGS
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r1,
+                                   msOperands = [dst]}
+  = let imm = mkMachineImm 1
+  in [[mi {msOpcode = mkMachineTargetOpc MOV32ri,
+           msOperands = [dst, imm]}]]
+
+-- could do it with XOR + DEC, which clobbers EFLAGS
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r_1,
+                                   msOperands = [dst]}
+  = let imm = mkMachineImm (-1)
+  in [[mi {msOpcode = mkMachineTargetOpc MOV32ri,
+           msOperands = [dst, imm]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32ri64}
+  = [[mi {msOpcode = mkMachineTargetOpc MOV32ri}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD16ri8_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD16ri8}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD16ri_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD16ri}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD16rr_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD16rr}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD32ri8_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD32ri8}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD32ri_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD32ri}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD32rr_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD32rr}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64ri8_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD64ri8}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64ri32_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD64ri32}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64rr_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD64rr}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc AVX2_SETALLONES,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc VPCMPEQDrr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc AVX_SET0,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc VXORPSYrr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FsFLD0SD,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc FsXORPDrr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FsFLD0SS,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc FsXORPSrr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C8r,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc SBB8rr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C16r,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc SBB16rr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C32r,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc SBB32rr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C64r,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc SBB64rr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc TEST8ri_NOREX}
+  = [[mi {msOpcode = mkMachineTargetOpc TEST8ri}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc V_SET0,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc VXORPSrr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc V_SETALLONES,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc PCMPEQDrr,
+          msOperands = [dst, dst, dst]}]]
+
 expandPseudo _ mi = [[mi]]
 
 -- | Gives a list of function transformers
