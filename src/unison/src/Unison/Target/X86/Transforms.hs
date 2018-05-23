@@ -15,6 +15,7 @@ module Unison.Target.X86.Transforms
      liftReturnAddress,
      revertFixedFrame,
      addPrologueEpilogue,
+     movePrologueEpilogue,
      myLowerFrameIndices,
      stackIndexReadsSP,
      addVzeroupper,
@@ -207,6 +208,40 @@ addComplexEp tid (_, oid, _) code =
   let mov64 = mkLinear oid [TargetInstruction MOV_TO_SP] [mkTemp tid] []
       [code', e] = splitEpilogue code
   in code' ++ [mov64] ++ e
+
+-- This transform prevents any STORE* from occurring before the prologue and any LOAD* from occurring after the epilogue.
+
+movePrologueEpilogue f @ Function {fCode = code} =
+  let outBs    = returnBlockIds code
+      code'    = mapToEntryBlock (movePrf []) code
+      code''   = foldl (moveEpilogueInBlock moveEpf) code' outBs
+  in f {fCode = code''}
+
+moveEpilogueInBlock aef code l =
+    mapToBlock aef l code
+
+movePrf buf (o:code)
+  | isCopy o && (oWriteObjects o) == []
+  = movePrf (buf ++ [o]) code
+movePrf buf (o @ SingleOperation {oOpr = Natural (Linear {oIs = [TargetInstruction SUBRSP_pseudo]})}
+             : code)
+  = [o] ++ buf ++ code
+movePrf buf (o:code)
+  = [o] ++ movePrf buf code
+
+moveEpf code =
+  let [code', (epi : code'')] = split (keepDelimsL $ whenElt (\o -> isEpi o)) code
+  in code' ++ moveEpf' [] epi code''
+
+moveEpf' buf epi (o:code)
+  | isCopy o && (oWriteObjects o) == []
+  = moveEpf' (buf ++ [o]) epi code
+moveEpf' buf epi code
+  = buf ++ [epi] ++ code
+
+isEpi SingleOperation {oOpr = Natural (Linear {oIs = [TargetInstruction ti]})} =
+  ti `elem` [ADDRSP_pseudo, MOV_TO_SP]
+isEpi _ = False
 
 -- This transform replaces stack frame object indices in the code by actual
 -- RSP + immediates.  It essentially overrules lowerFrameIndices.

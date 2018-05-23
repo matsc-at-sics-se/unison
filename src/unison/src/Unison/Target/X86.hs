@@ -388,7 +388,7 @@ expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ALIGN_SP_32}
     in [[mi {msOpcode = mkMachineTargetOpc AND64ri8,
              msOperands = [sp, sp, im32]}]]
 
--- expand pseudos that stem from llvm
+-- expand pseudos that stem from llvm; see X86ExpandPseudo.cpp
 
 -- could do it with XOR, which clobbers EFLAGS
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r0,
@@ -503,7 +503,31 @@ expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc V_SETALLONES,
   = [[mi {msOpcode = mkMachineTargetOpc PCMPEQDrr,
           msOperands = [dst, dst, dst]}]]
 
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc mto,
+                                   msOperands = [lab,MachineImm off]}
+  | mto `elem` [TCRETURNdi, TCRETURNri, TCRETURNmi, TCRETURNdi64, TCRETURNri64, TCRETURNmi64]
+  = maybeAdjustSP off ++
+    [[mi {msOpcode = mkMachineTargetOpc (expandedTailJump mto),
+          msOperands = [lab]}]]
+
 expandPseudo _ mi = [[mi]]
+
+expandedTailJump TCRETURNdi = TAILJMPd
+expandedTailJump TCRETURNri = TAILJMPr
+expandedTailJump TCRETURNmi = TAILJMPm
+expandedTailJump TCRETURNdi64 = TAILJMPd64
+expandedTailJump TCRETURNri64 = TAILJMPr64
+expandedTailJump TCRETURNmi64 = TAILJMPm64
+
+maybeAdjustSP 0 = []
+maybeAdjustSP off
+  | off > 0
+  = let sp = mkMachineReg RSP
+    in [[mkMachineSingle (mkMachineTargetOpc ADD64ri32) [] [sp, sp, mkMachineImm off]]]
+maybeAdjustSP off
+  | off < 0
+  = let sp = mkMachineReg RSP
+    in [[mkMachineSingle (mkMachineTargetOpc SUB64ri32) [] [sp, sp, mkMachineImm (-off)]]]
 
 -- | Gives a list of function transformers
 
@@ -514,7 +538,8 @@ transforms ImportPostLift = [mapToOperation handlePromotedOperands]
 transforms ImportPostCC = [liftReturnAddress]
 transforms ExportPreOffs = [revertFixedFrame]
 transforms ExportPreLow = [myLowerFrameIndices]
-transforms AugmentPostRW = [mapToOperation stackIndexReadsSP,
+transforms AugmentPostRW = [movePrologueEpilogue,
+                            mapToOperation stackIndexReadsSP,
                             peephole spillAfterAlign]
 transforms _ = []
 
