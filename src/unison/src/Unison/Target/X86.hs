@@ -539,7 +539,8 @@ transforms ImportPostCC = [liftReturnAddress]
 transforms ExportPreOffs = [revertFixedFrame]
 transforms ExportPreLow = [myLowerFrameIndices]
 transforms AugmentPostRW = [movePrologueEpilogue,
-                            mapToOperation stackIndexReadsSP,
+                            mapToOperation addStackIndexReadsSP,
+                            mapToOperation addYMMWrites,
                             peephole spillAfterAlign]
 transforms _ = []
 

@@ -17,7 +17,8 @@ module Unison.Target.X86.Transforms
      addPrologueEpilogue,
      movePrologueEpilogue,
      myLowerFrameIndices,
-     stackIndexReadsSP,
+     addStackIndexReadsSP,
+     addYMMWrites,
      addVzeroupper,
      spillAfterAlign) where
 
@@ -315,19 +316,24 @@ liftFIif basereg fixed _ idxToOff
     in o {oOpr = Natural ni {oUs = [use1,use2',use3,use4,use5',use6]}}
 liftFIif _ _ _ _ o = o
 
-stackIndexReadsSP
+addStackIndexReadsSP
   o @ SingleOperation {oAs = as @ Attributes {aReads = areads},
                        oOpr = Natural (Linear {oUs = [(Bound (MachineFrameIndex _ _ _)), _, _, _, _]})}
   = let areads' = [OtherSideEffect RSP] ++ areads
     in o {oAs = as {aReads = areads'}}
 
-stackIndexReadsSP
+addStackIndexReadsSP
   o @ SingleOperation {oAs = as @ Attributes {aReads = areads},
                        oOpr = Natural (Linear {oUs = [_, (Bound (MachineFrameIndex _ _ _)), _, _, _, _]})}
   = let areads' = [OtherSideEffect RSP] ++ areads
     in o {oAs = as {aReads = areads'}}
 
-stackIndexReadsSP o = o
+addStackIndexReadsSP o = o
+
+addYMMWrites o
+  | isFun o
+  = mapToWrites (++ [OtherSideEffect YMM0]) o
+addYMMWrites o = o
 
 addVzeroupper f @ Function {fCode = code} =
   let icfg   = ICFG.fromBCFG $ BCFG.fromFunction branchInfo' f
