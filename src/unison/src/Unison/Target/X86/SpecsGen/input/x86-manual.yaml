@@ -181,6 +181,7 @@ instruction-set:
           uses:               [imm]
           defines:            []
           affects:
+           - EFLAGS:          register
            - RSP:             register
           affected-by:
            - RSP:             register
@@ -192,6 +193,7 @@ instruction-set:
           uses:               [imm]
           defines:            []
           affects:
+           - EFLAGS:          register
            - RSP:             register
           affected-by:
            - RSP:             register

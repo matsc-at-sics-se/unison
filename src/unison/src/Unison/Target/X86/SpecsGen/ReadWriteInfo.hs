@@ -1244,12 +1244,14 @@ readWriteInfo i
     = ([OtherSideEffect RSP], [])
   | i `elem` [PUSH64i32, PUSH64i8, PUSH64r, PUSH64rmr] =
     ([OtherSideEffect RSP], [Memory "mem", OtherSideEffect RSP])
+  | i `elem` [ADDRSP_pseudo, SUBRSP_pseudo] =
+    ([OtherSideEffect RSP],
+     [OtherSideEffect EFLAGS, OtherSideEffect RSP])
   | i `elem` [SEG_ALLOCA_64] =
     ([OtherSideEffect RSP],
      [OtherSideEffect RAX, OtherSideEffect RSP, OtherSideEffect EFLAGS])
-  | i `elem`
-      [ADDRSP_pseudo, POP_cst, POP_fi, PUSH_cst, PUSH_fi, SUBRSP_pseudo]
-    = ([OtherSideEffect RSP], [OtherSideEffect RSP])
+  | i `elem` [POP_cst, POP_fi, PUSH_cst, PUSH_fi] =
+    ([OtherSideEffect RSP], [OtherSideEffect RSP])
   | i `elem` [ALIGN_SP_32] =
     ([OtherSideEffect RSP],
      [OtherSideEffect RSP, OtherSideEffect EFLAGS])
