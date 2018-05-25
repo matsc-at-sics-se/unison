@@ -12,7 +12,7 @@ This file is part of Unison, see http://unison-code.github.io
 module Unison.Target.X86.Transforms
     (extractReturnRegs,
      handlePromotedOperands,
-     alternativeLEA,
+     transAlternativeLEA,
      liftReturnAddress,
      revertFixedFrame,
      liftStackArgSize,
@@ -20,7 +20,7 @@ module Unison.Target.X86.Transforms
      movePrologueEpilogue,
      myLowerFrameIndices,
      addStackIndexReadsSP,
-     addYMMWrites,
+     addFunWrites,
      addVzeroupper,
      spillAfterAlign) where
 
@@ -149,55 +149,89 @@ preAssignOperands ops regs =
 -- This transform adds LEA variants of various ADD and MUL instructions.
 -- Beware! Currently unsound, because it assumes that the ADD or MUL defines dead EFLAGS.
 
-alternativeLEA
+transAlternativeLEA f @ Function {fCode = code} =
+  let icfg   = ICFG.fromBCFG $ BCFG.fromFunction branchInfo' f
+      writers = [id | (id, (_, o)) <- G.labNodes icfg, isEflagsWriter o]
+      cedges = concat [[(p,id) | p <- G.pre icfg id] | id <- writers]
+      icfg'  = G.delEdges cedges icfg
+      creach = [(id, G.reachable id icfg') | id <- writers]
+      lwriters = [oId $ snd (fromJust (G.lab icfg' id)) | (id, reachers) <- creach,
+                                                          any (nodeIsEflagsReader icfg') reachers]
+      code' = mapToOperationInBlocks (alternativeLEA lwriters) code
+  in f {fCode = code'}
+
+nodeIsEflagsReader icfg id =
+  isEflagsReader $ snd (fromJust (G.lab icfg id))
+
+isEflagsWriter o =
+  any insnWritesEflags (oInstructions o)
+
+insnWritesEflags TargetInstruction {oTargetInstr = i} =
+  let (_, ws) = SpecsGen.readWriteInfo i
+  in (OtherSideEffect EFLAGS) `elem` ws
+insnWritesEflags _ = False
+
+isEflagsReader o =
+  any insnReadsEflags (oInstructions o)
+
+insnReadsEflags TargetInstruction {oTargetInstr = i} =
+  let (rs, _) = SpecsGen.readWriteInfo i
+  in (OtherSideEffect EFLAGS) `elem` rs
+insnReadsEflags _ = False
+
+alternativeLEA precious o
+  | (oId o) `elem` precious
+  = o
+
+alternativeLEA _
   o @ SingleOperation {
     oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
   | ti `elem` [ADD32ri, ADD32ri8, ADD32ri8_DB, ADD32ri_DB]
   = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD32ri_LEA]}}
 
-alternativeLEA
+alternativeLEA _
   o @ SingleOperation {
     oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
   | ti `elem` [ADD32rr, ADD32rr_DB, ADD32rr_REV]
   = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD32rr_LEA]}}
 
-alternativeLEA
+alternativeLEA _
   o @ SingleOperation {
     oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
   | ti `elem` [ADD64ri8, ADD64ri8_DB, ADD64ri32, ADD64ri32_DB]
   = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD64ri_LEA]}}
 
-alternativeLEA
+alternativeLEA _
   o @ SingleOperation {
     oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
   | ti `elem` [ADD64rr, ADD64rr_DB, ADD64rr_REV]
   = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD64rr_LEA]}}
 
-alternativeLEA
+alternativeLEA _
   o @ SingleOperation {
     oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
   | ti `elem` [SHL32r1]
   = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL32r1_LEA]}}
 
-alternativeLEA
+alternativeLEA _
   o @ SingleOperation {
     oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti], oUs = [_,Bound (MachineImm sh)]})}
   | ti `elem` [SHL32ri] && 1 <= sh && sh <= 3
   = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL32ri_LEA]}}
 
-alternativeLEA
+alternativeLEA _
   o @ SingleOperation {
     oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
   | ti `elem` [SHL64r1]
   = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL64r1_LEA]}}
 
-alternativeLEA
+alternativeLEA _
   o @ SingleOperation {
     oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti], oUs = [_,Bound (MachineImm sh)]})}
   | ti `elem` [SHL64ri] && 1 <= sh && sh <= 3
   = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL64ri_LEA]}}
 
-alternativeLEA o = o
+alternativeLEA _ o = o
 
 -- This transform creates a fixed frame object to represent the return address
 -- which is implicit in LLVM's input.
@@ -424,10 +458,10 @@ addStackIndexReadsSP
 
 addStackIndexReadsSP o = o
 
-addYMMWrites o
+addFunWrites o
   | isFun o
   = mapToWrites (++ [OtherSideEffect YMM0]) o
-addYMMWrites o = o
+addFunWrites o = o
 
 addVzeroupper f @ Function {fCode = code} =
   let icfg   = ICFG.fromBCFG $ BCFG.fromFunction branchInfo' f
