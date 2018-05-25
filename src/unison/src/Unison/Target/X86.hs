@@ -532,6 +532,7 @@ maybeAdjustSP off
 -- | Gives a list of function transformers
 
 transforms ImportPreLift = [peephole extractReturnRegs,
+                            liftStackArgSize,
                             addPrologueEpilogue,
                             addVzeroupper]
 transforms ImportPostLift = [mapToOperation handlePromotedOperands]

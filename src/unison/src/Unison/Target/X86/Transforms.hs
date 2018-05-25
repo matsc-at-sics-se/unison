@@ -14,6 +14,7 @@ module Unison.Target.X86.Transforms
      handlePromotedOperands,
      liftReturnAddress,
      revertFixedFrame,
+     liftStackArgSize,
      addPrologueEpilogue,
      movePrologueEpilogue,
      myLowerFrameIndices,
@@ -36,6 +37,9 @@ import qualified Unison.Graphs.BCFG as BCFG
 import Unison.Target.X86.Common
 import Unison.Target.X86.BranchInfo
 import Unison.Target.X86.X86RegisterDecl
+import Unison.Target.X86.X86RegisterClassDecl
+import Unison.Target.X86.Registers()
+import qualified Unison.Target.X86.SpecsGen as SpecsGen
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
 
 {-
@@ -156,6 +160,39 @@ liftReturnAddress f @ Function {fFixedStackFrame = fobjs} =
 revertFixedFrame f @ Function {fFixedStackFrame = fobjs} =
   f {fFixedStackFrame = map revertDirection fobjs}
 
+-- Detect stack space needed for passing arguments in calls.
+
+liftStackArgSize f @ Function {fCode = code} =
+  let flatcode = (flatten code)
+      rcs = concatMap rspCopy flatcode
+      mn = maximum $ map (liftStackArgSize' rcs) flatcode
+  in f {fStackArgSize = mn}
+
+rspCopy SingleOperation {oOpr = Virtual (VirtualCopy {oVirtualCopyD = d,
+                                                      oVirtualCopyS = (Register (TargetRegister RSP))})}
+  = [d]
+rspCopy _ = []
+
+liftStackArgSize' rcs o
+ | (length $ oUses o) == 6 && (head $ oUses o) `elem` rcs
+ = let (ri, _) = SpecsGen.operandInfo (oTargetInstr $ head $ oInstructions o)
+       (_, [ui]) = splitAt 5 ri
+       w = temporaryInfoWidth ui
+       [_,_,_,offp,_,_] = oUses o
+       (Bound (MachineImm off)) = offp
+   in off + w
+liftStackArgSize' _ _ = 0
+
+temporaryInfoWidth TemporaryInfo {oiRegClass = RegisterClass rc}
+  | rc == GR32 = 4
+  | rc == GR64 = 8
+  | rc == FR32 = 4
+  | rc == FR64 = 8
+  | rc == FR128 = 16
+  | rc == VR128 = 16
+  | rc == VR256 = 32
+  | True = error ("unmatched: temporaryInfoWidth " ++ show rc)
+
 -- This transform inserts Prologue/Epilogue, either simple or complex,
 -- if alignment by more than 16 is required.
 
@@ -247,14 +284,17 @@ isEpi _ = False
 -- This transform replaces stack frame object indices in the code by actual
 -- RSP + immediates.  It essentially overrules lowerFrameIndices.
 
-myLowerFrameIndices f @ Function {fCode = code, fFixedStackFrame = fobjs,
-                                  fStackFrame = objs} =
+myLowerFrameIndices f @ Function {fCode = code,
+                                  fFixedStackFrame = fobjs,
+                                  fStackFrame = objs,
+                                  fStackArgSize = sasize} =
   let done     = negate $ minimum $ map foOffset fobjs
       need     = negate $ minimum $ map foOffset (fobjs ++ objs)
+      need'    = need + sasize
       flatcode = (flatten code)
       align    = if any isDirtyYMMOp flatcode then 32 else if any isCall flatcode then 16 else 8
       align'   = maximum $ [align] ++ map foAlignment (objs)
-  in myLowerFrameIndices' need done align' f
+  in myLowerFrameIndices' need' done align' f
 
 myLowerFrameIndices' need done align f @ Function {fCode = code, fFixedStackFrame = fobjs,
                                                    fStackFrame = objs} | align < 32 =
