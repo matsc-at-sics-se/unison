@@ -13,6 +13,7 @@ module Unison.Tools.Export.DirectFrame (directFrame) where
 
 import Unison
 import Unison.Target.API
+import Unison.Analysis.FrameOffsets
 
 -- This pass directs the frame (whether the stack grows up or down) as specified
 -- by the target.
@@ -24,7 +25,3 @@ directFrame f @ Function {fFixedStackFrame = fobjs, fStackFrame = objs} target =
           objs'  = map revertDirection objs
       in f {fFixedStackFrame = fobjs', fStackFrame = objs'}
     StackGrowsUp -> f
-
-revertDirection fo @ FrameObject {foOffset = off} =
-  let off' = - (off + foMaybeSize fo)
-  in fo {foOffset = off'}

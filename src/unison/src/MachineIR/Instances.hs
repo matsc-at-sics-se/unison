@@ -201,7 +201,7 @@ showMachineOperand v (MachineReg name states) =
 showMachineOperand _ (MachineImm value) = show value
 showMachineOperand _ (MachineBlockRef id) = "%bb." ++ show id
 showMachineOperand _ (MachineGlobalAddress address offset) =
-  "@" ++ maybeEscape address ++ maybeShowOffset offset
+  "@" ++ maybeEscape address ++ maybeShowOffset True offset
 showMachineOperand _ (MachineSymbol name) = "<mcsymbol " ++ name ++ ">"
 showMachineOperand _ (MachineJumpTableIndex index) =
   jumpTablePrefix ++ show index
@@ -241,7 +241,7 @@ showMachineOperand _ (MachineCFIAdjustCfaOffset off) =
 showMachineOperand _ (MachineRegMask name) = "csr_" ++ name
 showMachineOperand _ (MachineConstantPoolIndex idx) = "%const." ++ idx
 showMachineOperand _ (MachineFPImm i f e) =
-  "float " ++ show i ++ "." ++ show f ++ "e" ++ showOffset e
+  "float " ++ show i ++ "." ++ show f ++ "e" ++ showOffset False e
 showMachineOperand _ (MachineRawFPImm imm) = "float " ++ "0x" ++ showHex imm ""
 showMachineOperand _ mo = show mo
 
@@ -260,12 +260,15 @@ maybeEscape ga @ (d:_)
   | isDigit d = doubleQuoted id ("\\" ++ ga)
 maybeEscape ga = ga
 
-maybeShowOffset 0 = ""
-maybeShowOffset n = showOffset n
+maybeShowOffset _ 0 = ""
+maybeShowOffset e n = showOffset e n
 
-showOffset n
-  | n < 0  = "-" ++ show n
-  | n >= 0 = "+" ++ show n
+showOffset e n =
+  maybeSpace e ++ (if n < 0 then "-" else "+") ++ maybeSpace e ++ show (abs n)
+
+maybeSpace e
+  | e = " "
+  | otherwise = ""
 
 instance Show r => Show (MachineOperand r) where
   show (MachineTemp id _ _) = inBraces ["temp", show id]
@@ -279,8 +282,8 @@ instance Show r => Show (MachineOperand r) where
   show (MachineBlockRef id) = inBraces ["mbb", show id]
   show (MachineFrameIndex index fixed offset) =
     inBraces ["fi", show index, show fixed, show offset]
-  show (MachineFrameObject off size align) =
-    inBraces ["mfo", show off, show size, show align]
+  show (MachineFrameObject off size align fixedSpill) =
+    inBraces ["mfo", show off, show size, show align, show fixedSpill]
   show MachineFrameSize = inBraces ["mfs"]
   show (MachineExternal name) = inBraces ["ext", name]
   show (MachineGlobalAddress address offset) =

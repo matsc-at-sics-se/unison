@@ -19,6 +19,7 @@ import Control.Arrow
 import Common.Util
 
 import MachineIR
+import MachineIR.Transformations.AddImplicitRegs
 
 import Unison
 import qualified Unison.Target.API as API
@@ -30,6 +31,7 @@ import Unison.Target.X86.Registers
 import Unison.Target.X86.OperandInfo
 import Unison.Target.X86.Transforms
 import Unison.Target.X86.Usages
+import Unison.Target.X86.BranchInfo
 import Unison.Target.X86.X86RegisterDecl
 import Unison.Target.X86.X86ResourceDecl
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
@@ -88,25 +90,6 @@ instructionType i
                 ] = TailCallInstructionType
     | otherwise = SpecsGen.instructionType i
 
--- | Gives the target of a jump instruction and the type of jump
-
-branchInfo (Branch {oBranchIs = is, oBranchUs = (BlockRef l:_)})
-  | targetInst is `elem` [JAE_1, JAE_2, JAE_4, JA_1, JA_2, JA_4, JBE_1, JBE_2, JBE_4,
-     JB_1, JB_2, JB_4, JCXZ, JECXZ, JE_1, JE_2, JE_4, JGE_1, JGE_2,
-     JGE_4, JG_1, JG_2, JG_4, JLE_1, JLE_2, JLE_4, JL_1, JL_2, JL_4,
-     JNE_1, JNE_2, JNE_4, JNO_1, JNO_2, JNO_4, JNP_1, JNP_2,
-     JNP_4, JNS_1, JNS_2, JNS_4, JO_1, JO_2, JO_4, JP_1, JP_2, JP_4,
-     JRCXZ, JS_1, JS_2, JS_4, LOOP, LOOPE, LOOPNE] =
-    BranchInfo Conditional (Just l)
-  | targetInst is `elem` [JMP_1, JMP_2, JMP_4] =
-    BranchInfo Unconditional (Just l)
-branchInfo (Branch {oBranchIs = is})
-  | targetInst is `elem` [JMP16m, JMP16r, JMP32m, JMP32r, JMP64m, JMP64r,
-                          RETIL, RETIQ, RETIW, RETL, RETQ, RETW, LEAVE, LEAVE64] =
-    BranchInfo Unconditional Nothing
-
-branchInfo o = error ("unmatched pattern: branchInfo " ++ show (mkSingleOperation (-1) (Natural o)))
-
 -- | Gives a set of def copies and a list of sets of use copies to extend the
 -- given temporary
 
@@ -148,16 +131,17 @@ copies (Function {fCode = code}, _, _, _, _, _) False t _ d [u]
     not (mayCrossMemDep readWriteInfo d u code) &&
     compatibleClassesForTemp t [d, u] = ([], [[]])
 
--- copies (f, _, cg, ra, bcfg, sg) _ t _rs d us =
---   let is     = d:us
---       w      = widthOfTemp ra cg f t is
---       dors   = transitivePreAssignments bcfg sg Reaching f t
---       uors   = transitivePreAssignments bcfg sg Reachable f t
---       size   = any ((==) Size) $ fGoal f
---   in (
---       (defCopies size w dors),
---       map (const (useCopies size w uors)) us
---       )
+-- If function has >6 arguments, then they will be accessed off RBP. Therefore,
+-- do not spill def and use stemming from
+--  o12: [t24:rbp] <- MOV_FROM_SP []
+--  o35: [] <- MOV_TO_SP [t24]
+copies (Function {fFixedStackFrame = fobjs}, _, _cg, _ra, _, _) _
+       (Temporary {tReg = (Just (Register (TargetRegister RBP)))}) _ _d us
+  | (TargetInstruction MOV_TO_SP) `elem` (concatMap oInstructions us) &&
+    (maximum $ map foOffset fobjs) >= 0
+  = ([], [[]])
+
+-- Default: extend def and uses
 copies (f, _, cg, ra, _, _) _ t _ d us =
   let w = widthOfTemp ra cg f t (d:us)
   in
@@ -171,12 +155,14 @@ defCopies 2 = [mkNullInstruction, TargetInstruction MOVE16, TargetInstruction ST
 defCopies 4 = [mkNullInstruction, TargetInstruction MOVE32, TargetInstruction STORE32]
 defCopies 8 = [mkNullInstruction, TargetInstruction MOVE64, TargetInstruction STORE64]
 defCopies 16 = [mkNullInstruction, TargetInstruction MOVE128, TargetInstruction STORE128]
+defCopies 32 = [mkNullInstruction, TargetInstruction MOVE256, TargetInstruction STORE256]
 
 useCopies 1 _ = [mkNullInstruction, TargetInstruction MOVE8, TargetInstruction LOAD8]
 useCopies 2 _ = [mkNullInstruction, TargetInstruction MOVE16, TargetInstruction LOAD16]
 useCopies 4 _ = [mkNullInstruction, TargetInstruction MOVE32, TargetInstruction LOAD32]
 useCopies 8 _ = [mkNullInstruction, TargetInstruction MOVE64, TargetInstruction LOAD64]
 useCopies 16 _ = [mkNullInstruction, TargetInstruction MOVE128, TargetInstruction LOAD128]
+useCopies 32 _ = [mkNullInstruction, TargetInstruction MOVE256, TargetInstruction LOAD256]
 
 classOfTemp = classOf (target, [])
 
@@ -193,9 +179,11 @@ isReserved r = r `elem` reserved
 rematInstrs i
   | isRematerializable i =
       Just (sourceInstr i, dematInstr i, rematInstr i)
-  | i `elem` [MOV8rm, MOV16rm, MOV32rm, MOV64rm,
+  | i `elem` [MOV8rm, MOV16rm, MOV32rm, MOV64rm, MOV_FROM_SP,
               IMUL64rmi32,
               MOVSX16rm8, MOVSX32rm8, MOVSX32_NOREXrm8, MOVSX32rm16, MOVSX64rm8, MOVSX64rm16, MOVSX64rm32, 
+              MOVZX16rm8, MOVZX32rm8, MOVZX32_NOREXrm8, MOVZX32rm16, MOVZX64rm8, MOVZX64rm16,
+              VMOVAPSYrm,
               SETAEr, SETAr, SETBEr, SETBr, SETEr, SETGEr, SETGr, SETLEr, SETLr,
               SETNEr, SETNOr, SETNPr, SETNSr, SETOr, SETPr, SETSr,
               SETB_C8r, SETB_C16r, SETB_C32r, SETB_C64r] = Nothing
@@ -206,29 +194,29 @@ rematInstrs i
 -- handle regular copies
 fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
   | i `elem` [PUSH_cst] =
-    Linear {oIs = [TargetInstruction PUSH64r],
-            oUs = [s],
+    Linear {oIs = [TargetInstruction PUSH_fi],
+            oUs = [mkBoundMachineFrameObject True i d, s],
             oDs = []}
   | i `elem` [POP_cst] =
-    Linear {oIs = [TargetInstruction POP64r],
-            oUs = [],
+    Linear {oIs = [TargetInstruction POP_fi],
+            oUs = [mkBoundMachineFrameObject True i s],
             oDs = [d]}
-  | i `elem` [MOVE8, MOVE16, MOVE32, MOVE64, MOVE128] =
+  | i `elem` [MOVE8, MOVE16, MOVE32, MOVE64, MOVE128, MOVE256] =
     Linear {oIs = [TargetInstruction (fromCopyInstr i)],
             oUs = [s],
             oDs = [d]}
-  | i `elem` [STORE8, STORE16, STORE32, STORE64, STORE128] =
+  | i `elem` [STORE8, STORE16, STORE32, STORE64, STORE128, STORE256] =
     Linear {oIs = [TargetInstruction (fromCopyInstr i)],
-            oUs = [mkBoundMachineFrameObject i d,
+            oUs = [mkBoundMachineFrameObject False i d,
                    mkBound (mkMachineImm 1),
                    mkBound MachineNullReg,
                    mkBound (mkMachineImm 0),
                    mkBound MachineNullReg,
                    s],
             oDs = []}
-  | i `elem` [LOAD8, LOAD16, LOAD32, LOAD64, LOAD128] =
+  | i `elem` [LOAD8, LOAD16, LOAD32, LOAD64, LOAD128, LOAD256] =
     Linear {oIs = [TargetInstruction (fromCopyInstr i)],
-            oUs = [mkBoundMachineFrameObject i s,
+            oUs = [mkBoundMachineFrameObject False i s,
                    mkBound (mkMachineImm 1),
                    mkBound MachineNullReg,
                    mkBound (mkMachineImm 0),
@@ -238,7 +226,7 @@ fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [d,s]})
   | i `elem` [ADD64ru] =
     Linear {oIs = [TargetInstruction (fromCopyInstr i)],
             oUs = [d,
-                   mkBoundMachineFrameObject i s,
+                   mkBoundMachineFrameObject False i s,
                    mkBound (mkMachineImm 1),
                    mkBound MachineNullReg,
                    mkBound (mkMachineImm 0),
@@ -246,7 +234,7 @@ fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [d,s]})
             oDs = [d]}
   | i `elem` [ADD64ur] =
     Linear {oIs = [TargetInstruction (fromCopyInstr i)],
-            oUs = [mkBoundMachineFrameObject i d,
+            oUs = [mkBoundMachineFrameObject False i d,
                    mkBound (mkMachineImm 1),
                    mkBound MachineNullReg,
                    mkBound (mkMachineImm 0),
@@ -268,21 +256,115 @@ fromCopy (Just (Linear {oUs = us}))
 fromCopy _ (Natural o @ Linear {oIs = [TargetInstruction i]})
   | isSourceInstr i = o {oIs = [mkNullInstruction]}
 
+-- handle reselected instructions
+fromCopy _ (Natural Linear {oIs = [TargetInstruction ADD32ri_LEA], oUs = [r,i], oDs = [d]})
+  = Linear {oIs = [TargetInstruction LEA64_32r],
+            oUs = [mkBound (toMachineOperand (reg32ToReg64 r)),
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (toMachineOperand i),
+                   mkBound MachineNullReg],
+            oDs = [d]}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction ADD32rr_LEA], oUs = [r,r'], oDs = [d]})
+  = Linear {oIs = [TargetInstruction LEA64_32r],
+            oUs = [mkBound (toMachineOperand (reg32ToReg64 r)),
+                   mkBound (mkMachineImm 1),
+                   mkBound (toMachineOperand (reg32ToReg64 r')),
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg],
+            oDs = [d]}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction ADD64ri_LEA], oUs = [r,i], oDs = [d]})
+  = Linear {oIs = [TargetInstruction LEA64r],
+            oUs = [mkBound (toMachineOperand r),
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (toMachineOperand i),
+                   mkBound MachineNullReg],
+            oDs = [d]}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction ADD64rr_LEA], oUs = [r,r'], oDs = [d]})
+  = Linear {oIs = [TargetInstruction LEA64r],
+            oUs = [mkBound (toMachineOperand r),
+                   mkBound (mkMachineImm 1),
+                   mkBound (toMachineOperand r'),
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg],
+            oDs = [d]}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL32r1_LEA], oUs = [r], oDs = [d]})
+  = Linear {oIs = [TargetInstruction LEA64_32r],
+            oUs = [mkBound MachineNullReg,
+                   mkBound (mkMachineImm 2),
+                   mkBound (toMachineOperand (reg32ToReg64 r)),
+                   mkBound (toMachineOperand 0),
+                   mkBound MachineNullReg],
+            oDs = [d]}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL32ri_LEA], oUs = [r,i], oDs = [d]})
+  = Linear {oIs = [TargetInstruction LEA64_32r],
+            oUs = [mkBound MachineNullReg,
+                   mkBound (mkMachineImm (logToMul i)),
+                   mkBound (toMachineOperand (reg32ToReg64 r)),
+                   mkBound (toMachineOperand 0),
+                   mkBound MachineNullReg],
+            oDs = [d]}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL64r1_LEA], oUs = [r], oDs = [d]})
+  = Linear {oIs = [TargetInstruction LEA64r],
+            oUs = [mkBound MachineNullReg,
+                   mkBound (mkMachineImm 2),
+                   mkBound (toMachineOperand r),
+                   mkBound (toMachineOperand 0),
+                   mkBound MachineNullReg],
+            oDs = [d]}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL64ri_LEA], oUs = [r,i], oDs = [d]})
+  = Linear {oIs = [TargetInstruction LEA64r],
+            oUs = [mkBound MachineNullReg,
+                   mkBound (mkMachineImm (logToMul i)),
+                   mkBound (toMachineOperand r),
+                   mkBound (toMachineOperand 0),
+                   mkBound MachineNullReg],
+            oDs = [d]}
+
 fromCopy _ (Natural o) = o
 fromCopy _ o = error ("unmatched pattern: fromCopy " ++ show o)
 
 fromCopyInstr i
   | isJust (SpecsGen.parent i) = fromJust (SpecsGen.parent i)
 
-mkBoundMachineFrameObject i (Register r) =
+logToMul (Bound (MachineImm 1)) = 2
+logToMul (Bound (MachineImm 2)) = 4
+logToMul (Bound (MachineImm 3)) = 8
+
+reg32ToReg64 (Register (TargetRegister r)) =
+  let r' = reg32ToReg64' r
+  in (Register (TargetRegister r'))
+
+reg32ToReg64' EAX = RAX
+reg32ToReg64' ECX = RCX
+reg32ToReg64' EDX = RDX
+reg32ToReg64' EBX = RBX
+reg32ToReg64' ESI = RSI
+reg32ToReg64' EDI = RDI
+reg32ToReg64' ESP = RSP
+reg32ToReg64' EBP = RBP
+reg32ToReg64' R8D = R8
+reg32ToReg64' R9D = R9
+reg32ToReg64' R10D = R10
+reg32ToReg64' R11D = R11
+reg32ToReg64' R12D = R12
+reg32ToReg64' R13D = R13
+reg32ToReg64' R14D = R14
+reg32ToReg64' R15D = R15
+
+mkBoundMachineFrameObject fixedSpill i (Register r) =
     let size = stackSize i
-    in mkBound (mkMachineFrameObject (infRegPlace r) (Just size) size)
+    in mkBound (mkMachineFrameObject (infRegPlace r) (Just size) size
+                fixedSpill)
 
 stackSize op
   | op `elem` [STORE8, LOAD8] = 1
   | op `elem` [STORE16, LOAD16] = 2
   | op `elem` [STORE32, LOAD32] = 4
-  | op `elem` [STORE64, LOAD64, ADD64ru, ADD64ur] = 8
+  | op `elem` [STORE64, LOAD64, PUSH_cst, POP_cst, ADD64ru, ADD64ur] = 8
+  | op `elem` [STORE128, LOAD128] = 16
+  | op `elem` [STORE256, LOAD256] = 32
 
 -- | Declares target architecture resources
 
@@ -304,9 +386,22 @@ resources =
 
 nop = Linear [TargetInstruction NOOP] [] []
 
+-- avoid this practice
+-- readWriteInfo i
+--   | i `elem` [SUBRSP_pseudo, ADDRSP_pseudo] =
+--       second (++ [ControlSideEffect,OtherSideEffect RSP]) $ SpecsGen.readWriteInfo i
+--   | otherwise = SpecsGen.readWriteInfo i
+
+-- readWriteInfo i
+--   | i `elem` [VZEROUPPER] =
+--       first (++ [ProgramCounterSideEffect]) $ SpecsGen.readWriteInfo i
+--   | otherwise = SpecsGen.readWriteInfo i
+
+-- ensure precedence between YMM dirtying insn and VZEROUPPER
+-- by letting the former "read" YMM0, which is "written" by the latter
 readWriteInfo i
-  | i `elem` [SUBRSP_pseudo, ADDRSP_pseudo] =
-      second (++ [OtherSideEffect RSP]) $ SpecsGen.readWriteInfo i
+  | isDirtyYMMInsn i =
+      first (++ [OtherSideEffect YMM0]) $ SpecsGen.readWriteInfo i
   | otherwise = SpecsGen.readWriteInfo i
 
 -- | Implementation of frame setup and destroy operations. All functions
@@ -319,35 +414,8 @@ implementFrame = const []
 -- | Adds function prologue, see corresponding logic in X86FrameLowering.cpp
 -- ("emitPrologue")
 
--- We need a stack frame iff there are spills or stack-allocated data.
--- Additionally, we need to ensure that SP is modulo 16 aligned at
--- all recursive calls!  At any rate, the frame size needs to be a multiple of 8.
-
-addPrologue (_, oid, _) (e:code) =
-  let subSp = mkLinear oid [TargetInstruction SUBRSP_pseudo] [Bound mkMachineFrameSize] []
-  in [e] ++ (addPrologue' [subSp] code)
-
-addPrologue' submoves (o:code)
-  | TargetInstruction PUSH_cst `elem` oInstructions o
-  = addPrologue'' [o] submoves code
-  | True
-  = addPrologue' (submoves ++ [o]) code
-
-addPrologue'' pushes submoves (o:code)
-  | TargetInstruction PUSH_cst `elem` oInstructions o
-  = addPrologue'' (pushes ++ [o]) submoves code
-  | True
-  = pushes ++ submoves ++ (o:code)
-
-addEpilogue (_, oid, _) code =
-  let addSp = mkLinear oid [TargetInstruction ADDRSP_pseudo] [Bound mkMachineFrameSize] []
-  in addEpilogue' [addSp] code
-
-addEpilogue' adds (o:code)
-  | TargetInstruction POP_cst `elem` oInstructions o
-  = adds ++ (o:code)
-  | True
-  = [o] ++ (addEpilogue' adds code)
+addPrologue _ code = code
+addEpilogue _ code = code
 
 -- | Direction in which the stack grows
 stackDirection = API.StackGrowsDown
@@ -384,7 +452,7 @@ promoteImplicitRegs i regs mos =
 
 -- | Target dependent post-processing functions
 
-postProcess to = [expandPseudos to]
+postProcess to = [expandPseudos to, flip addImplicitRegs (target, [])]
 
 expandPseudos to = mapToMachineBlock (expandBlockPseudos (expandPseudo to))
 
@@ -406,15 +474,187 @@ expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADDRSP_pseudo,
     in [[mi {msOpcode = mkMachineTargetOpc ADD64ri32,
              msOperands = [sp, sp, off]}]]
 
+expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc PUSH_fi, msOperands = [_, s]})
+  = [[mkMachineSingle (MachineTargetOpc PUSH64r) [] [s]]]
+
+expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc POP_fi, msOperands = [d, _]})
+  = [[mkMachineSingle (MachineTargetOpc POP64r) [] [d]]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV_FROM_SP,
+                                   msOperands = [dst]}
+  = let sp = mkMachineReg RSP
+    in [[mi {msOpcode = mkMachineTargetOpc MOV64rr,
+             msOperands = [dst, sp]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV_TO_SP,
+                                   msOperands = [src]}
+  = let sp = mkMachineReg RSP
+    in [[mi {msOpcode = mkMachineTargetOpc MOV64rr,
+             msOperands = [sp, src]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ALIGN_SP_32}
+  = let sp = mkMachineReg RSP
+        im32 = mkMachineImm (-32)
+    in [[mi {msOpcode = mkMachineTargetOpc AND64ri8,
+             msOperands = [sp, sp, im32]}]]
+
+-- expand pseudos that stem from llvm; see X86ExpandPseudo.cpp
+
+-- could do it with XOR, which clobbers EFLAGS
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r0,
+                                   msOperands = [dst]}
+  = let imm = mkMachineImm 0
+  in [[mi {msOpcode = mkMachineTargetOpc MOV32ri,
+           msOperands = [dst, imm]}]]
+
+-- could do it with XOR + INC, which clobbers EFLAGS
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r1,
+                                   msOperands = [dst]}
+  = let imm = mkMachineImm 1
+  in [[mi {msOpcode = mkMachineTargetOpc MOV32ri,
+           msOperands = [dst, imm]}]]
+
+-- could do it with XOR + DEC, which clobbers EFLAGS
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r_1,
+                                   msOperands = [dst]}
+  = let imm = mkMachineImm (-1)
+  in [[mi {msOpcode = mkMachineTargetOpc MOV32ri,
+           msOperands = [dst, imm]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32ri64}
+  = [[mi {msOpcode = mkMachineTargetOpc MOV32ri}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD16ri8_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD16ri8}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD16ri_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD16ri}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD16rr_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD16rr}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD32ri8_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD32ri8}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD32ri_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD32ri}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD32rr_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD32rr}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64ri8_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD64ri8}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64ri32_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD64ri32}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64rr_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD64rr}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc AVX2_SETALLONES,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc VPCMPEQDrr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc AVX_SET0,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc VXORPSYrr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FsFLD0SD,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc FsXORPDrr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FsFLD0SS,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc FsXORPSrr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C8r,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc SBB8rr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C16r,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc SBB16rr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C32r,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc SBB32rr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C64r,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc SBB64rr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc TEST8ri_NOREX}
+  = [[mi {msOpcode = mkMachineTargetOpc TEST8ri}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc V_SET0,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc VXORPSrr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc V_SETALLONES,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc PCMPEQDrr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc mto,
+                                   msOperands = [lab,MachineImm off]}
+  | mto `elem` [TCRETURNdi, TCRETURNri, TCRETURNmi, TCRETURNdi64, TCRETURNri64, TCRETURNmi64]
+  = maybeAdjustSP off ++
+    [[mi {msOpcode = mkMachineTargetOpc (expandedTailJump mto),
+          msOperands = [lab]}]]
+
 expandPseudo _ mi = [[mi]]
+
+expandedTailJump TCRETURNdi = TAILJMPd
+expandedTailJump TCRETURNri = TAILJMPr
+expandedTailJump TCRETURNmi = TAILJMPm
+expandedTailJump TCRETURNdi64 = TAILJMPd64
+expandedTailJump TCRETURNri64 = TAILJMPr64
+expandedTailJump TCRETURNmi64 = TAILJMPm64
+
+maybeAdjustSP 0 = []
+maybeAdjustSP off
+  | off > 0
+  = let sp = mkMachineReg RSP
+    in [[mkMachineSingle (mkMachineTargetOpc ADD64ri32) [] [sp, sp, mkMachineImm off]]]
+maybeAdjustSP off
+  | off < 0
+  = let sp = mkMachineReg RSP
+    in [[mkMachineSingle (mkMachineTargetOpc SUB64ri32) [] [sp, sp, mkMachineImm (-off)]]]
 
 -- | Gives a list of function transformers
 
-transforms ImportPreLift = [peephole extractReturnRegs]
+transforms ImportPreLift = [peephole extractReturnRegs,
+                            liftStackArgSize,
+                            addPrologueEpilogue,
+                            addVzeroupper]
 transforms ImportPostLift = [mapToOperation handlePromotedOperands,
-                             mapToOperation generalizeRegisterOperands]
+                             mapToOperation generalizeRegisterOperands,
+                             transAlternativeLEA]
+transforms ImportPostCC = [liftReturnAddress]
+transforms ExportPreOffs = [revertFixedFrame]
 transforms ExportPreLow = [myLowerFrameIndices]
-transforms AugmentPostRW = [mapToOperation stackIndexReadsSP]
+transforms AugmentPostRW = [movePrologueEpilogue,
+                            mapToOperation addStackIndexReadsSP,
+                            mapToOperation addFunWrites,
+                            peephole spillAfterAlign]
 transforms _ = []
 
 -- | Latency of read-write dependencies

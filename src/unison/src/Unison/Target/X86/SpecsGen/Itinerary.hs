@@ -4,8 +4,53 @@ module Unison.Target.X86.SpecsGen.Itinerary (itinerary) where
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
 import Unison.Target.X86.SpecsGen.X86ItineraryDecl
 itinerary i
-  | i `elem` [OR32mrLocked] = IIC_ALU_MEM
-  | i `elem` [MOV32r0, MOV32r0_remat] = IIC_ALU_NONMEM
+  | i `elem` [AAA] = IIC_AAA
+  | i `elem` [AAD8i8] = IIC_AAD
+  | i `elem` [AAM8i8] = IIC_AAM
+  | i `elem` [AAS] = IIC_AAS
+  | i `elem`
+      [AESDECLASTrm, AESDECLASTrr, AESDECrm, AESDECrr, AESENCLASTrm,
+       AESENCLASTrr, AESENCrm, AESENCrr, AESIMCrm, AESIMCrr,
+       VAESDECLASTrm, VAESDECLASTrr, VAESDECrm, VAESDECrr, VAESENCLASTrm,
+       VAESENCLASTrr, VAESENCrm, VAESENCrr, VAESIMCrm, VAESIMCrr]
+    = IIC_AES
+  | i `elem` [LAHF, SAHF] = IIC_AHF
+  | i `elem`
+      [BLENDVPDrm0, BLENDVPSrm0, LOCK_ADD16mi, LOCK_ADD16mi8,
+       LOCK_ADD32mi, LOCK_ADD32mi8, LOCK_ADD64mi32, LOCK_ADD64mi8,
+       LOCK_ADD8mi, LOCK_AND16mi, LOCK_AND16mi8, LOCK_AND32mi,
+       LOCK_AND32mi8, LOCK_AND64mi32, LOCK_AND64mi8, LOCK_AND8mi,
+       LOCK_OR16mi, LOCK_OR16mi8, LOCK_OR32mi, LOCK_OR32mi8,
+       LOCK_OR64mi32, LOCK_OR64mi8, LOCK_OR8mi, LOCK_SUB16mi,
+       LOCK_SUB16mi8, LOCK_SUB32mi, LOCK_SUB32mi8, LOCK_SUB64mi32,
+       LOCK_SUB64mi8, LOCK_SUB8mi, LOCK_XOR16mi, LOCK_XOR16mi8,
+       LOCK_XOR32mi, LOCK_XOR32mi8, LOCK_XOR64mi32, LOCK_XOR64mi8,
+       LOCK_XOR8mi, OR32mrLocked, PBLENDVBrm0, VBLENDPDYrmi, VBLENDPDrmi,
+       VBLENDPSYrmi, VBLENDPSrmi, VEXTRACTPSmr, VINSERTPSrm, VMPSADBWYrmi,
+       VMPSADBWrmi, VPBLENDWYrmi, VPBLENDWrmi, VPMOVSXBDYrm, VPMOVSXBDrm,
+       VPMOVSXBQYrm, VPMOVSXBQrm, VPMOVSXBWYrm, VPMOVSXBWrm, VPMOVSXDQYrm,
+       VPMOVSXDQrm, VPMOVSXWDYrm, VPMOVSXWDrm, VPMOVSXWQYrm, VPMOVSXWQrm,
+       VPMOVZXBDYrm, VPMOVZXBDrm, VPMOVZXBQYrm, VPMOVZXBQrm, VPMOVZXBWYrm,
+       VPMOVZXBWrm, VPMOVZXDQYrm, VPMOVZXDQrm, VPMOVZXWDYrm, VPMOVZXWDrm,
+       VPMOVZXWQYrm, VPMOVZXWQrm]
+    = IIC_ALU_MEM
+  | i `elem`
+      [BLENDVPDrr0, BLENDVPSrr0, LOCK_ADD16mr, LOCK_ADD32mr,
+       LOCK_ADD64mr, LOCK_ADD8mr, LOCK_AND16mr, LOCK_AND32mr,
+       LOCK_AND64mr, LOCK_AND8mr, LOCK_OR16mr, LOCK_OR32mr, LOCK_OR64mr,
+       LOCK_OR8mr, LOCK_SUB16mr, LOCK_SUB32mr, LOCK_SUB64mr, LOCK_SUB8mr,
+       LOCK_XOR16mr, LOCK_XOR32mr, LOCK_XOR64mr, LOCK_XOR8mr, MOV32r0,
+       MOV32r0_remat, PBLENDVBrr0, VBLENDPDYrri, VBLENDPDrri,
+       VBLENDPSYrri, VBLENDPSrri, VEXTRACTPSrr, VINSERTPSrr, VMPSADBWYrri,
+       VMPSADBWrri, VPBLENDWYrri, VPBLENDWrri, VPMOVSXBDYrr, VPMOVSXBDrr,
+       VPMOVSXBQYrr, VPMOVSXBQrr, VPMOVSXBWYrr, VPMOVSXBWrr, VPMOVSXDQYrr,
+       VPMOVSXDQrr, VPMOVSXWDYrr, VPMOVSXWDrr, VPMOVSXWQYrr, VPMOVSXWQrr,
+       VPMOVZXBDYrr, VPMOVZXBDrr, VPMOVZXBQYrr, VPMOVZXBQrr, VPMOVZXBWYrr,
+       VPMOVZXBWrr, VPMOVZXDQYrr, VPMOVZXDQrr, VPMOVZXWDYrr, VPMOVZXWDrr,
+       VPMOVZXWQYrr, VPMOVZXWQrr]
+    = IIC_ALU_NONMEM
+  | i `elem` [ARPL16mr] = IIC_ARPL_MEM
+  | i `elem` [ARPL16rr] = IIC_ARPL_REG
   | i `elem`
       [ADC16mi, ADC16mi8, ADC16mr, ADC16rm, ADC32mi, ADC32mi8, ADC32mr,
        ADC32rm, ADC64mi32, ADC64mi8, ADC64mr, ADC64rm, ADC8mi, ADC8mi8,
@@ -25,49 +70,51 @@ itinerary i
   | i `elem`
       [ADD16mi, ADD16mi8, ADD16mr, ADD16rm, ADD32mi, ADD32mi8, ADD32mr,
        ADD32rm, ADD64mi32, ADD64mi8, ADD64mr, ADD64rm, ADD64ru, ADD64ur,
-       ADD8mi, ADD8mi8, ADD8mr, ADD8rm, AND16mi, AND16mi8, AND16mr,
-       AND16rm, AND32mi, AND32mi8, AND32mr, AND32rm, AND64mi32, AND64mi8,
-       AND64mr, AND64rm, AND8mi, AND8mi8, AND8mr, AND8rm, ANDN32rm,
-       ANDN64rm, CMP16mi, CMP16mi8, CMP16mr, CMP16rm, CMP32mi, CMP32mi8,
-       CMP32mr, CMP32rm, CMP64mi32, CMP64mi8, CMP64mr, CMP64rm, CMP8mi,
-       CMP8mi8, CMP8mr, CMP8rm, OR16mi, OR16mi8, OR16mr, OR16rm, OR32mi,
-       OR32mi8, OR32mr, OR32rm, OR64mi32, OR64mi8, OR64mr, OR64rm, OR8mi,
-       OR8mi8, OR8mr, OR8rm, SUB16mi, SUB16mi8, SUB16mr, SUB16rm, SUB32mi,
-       SUB32mi8, SUB32mr, SUB32rm, SUB64mi32, SUB64mi8, SUB64mr, SUB64rm,
-       SUB8mi, SUB8mi8, SUB8mr, SUB8rm, TEST16mi, TEST16rm, TEST32mi,
-       TEST32rm, TEST64mi32, TEST64rm, TEST8mi, TEST8rm, XOR16mi,
-       XOR16mi8, XOR16mr, XOR16rm, XOR32mi, XOR32mi8, XOR32mr, XOR32rm,
-       XOR64mi32, XOR64mi8, XOR64mr, XOR64rm, XOR8mi, XOR8mi8, XOR8mr,
-       XOR8rm]
+       ADD8mi, ADD8mi8, ADD8mr, ADD8rm, ADOX32rm, ADOX64rm, AND16mi,
+       AND16mi8, AND16mr, AND16rm, AND32mi, AND32mi8, AND32mr, AND32rm,
+       AND64mi32, AND64mi8, AND64mr, AND64rm, AND8mi, AND8mi8, AND8mr,
+       AND8rm, ANDN32rm, ANDN64rm, CMP16mi, CMP16mi8, CMP16mr, CMP16rm,
+       CMP32mi, CMP32mi8, CMP32mr, CMP32rm, CMP64mi32, CMP64mi8, CMP64mr,
+       CMP64rm, CMP8mi, CMP8mi8, CMP8mr, CMP8rm, OR16mi, OR16mi8, OR16mr,
+       OR16rm, OR32mi, OR32mi8, OR32mr, OR32rm, OR64mi32, OR64mi8, OR64mr,
+       OR64rm, OR8mi, OR8mi8, OR8mr, OR8rm, SUB16mi, SUB16mi8, SUB16mr,
+       SUB16rm, SUB32mi, SUB32mi8, SUB32mr, SUB32rm, SUB64mi32, SUB64mi8,
+       SUB64mr, SUB64rm, SUB8mi, SUB8mi8, SUB8mr, SUB8rm, TEST16mi,
+       TEST16rm, TEST32mi, TEST32rm, TEST64mi32, TEST64rm, TEST8mi,
+       TEST8rm, XOR16mi, XOR16mi8, XOR16mr, XOR16rm, XOR32mi, XOR32mi8,
+       XOR32mr, XOR32rm, XOR64mi32, XOR64mi8, XOR64mr, XOR64rm, XOR8mi,
+       XOR8mi8, XOR8mr, XOR8rm]
     = IIC_BIN_MEM
   | i `elem`
       [ADD16i16, ADD16ri, ADD16ri8, ADD16rr, ADD16rr_REV, ADD32i32,
        ADD32ri, ADD32ri8, ADD32rr, ADD32rr_REV, ADD64i32, ADD64ri32,
        ADD64ri8, ADD64rr, ADD64rr_REV, ADD8i8, ADD8ri, ADD8ri8, ADD8rr,
-       ADD8rr_REV, ADDRSP_pseudo, AND16i16, AND16ri, AND16ri8, AND16rr,
-       AND16rr_REV, AND32i32, AND32ri, AND32ri8, AND32rr, AND32rr_REV,
-       AND64i32, AND64ri32, AND64ri8, AND64rr, AND64rr_REV, AND8i8,
-       AND8ri, AND8ri8, AND8rr, AND8rr_REV, ANDN32rr, ANDN64rr, CMP16i16,
-       CMP16ri, CMP16ri8, CMP16rr, CMP16rr_REV, CMP32i32, CMP32ri,
-       CMP32ri8, CMP32rr, CMP32rr_REV, CMP64i32, CMP64ri32, CMP64ri8,
-       CMP64rr, CMP64rr_REV, CMP8i8, CMP8ri, CMP8ri8, CMP8rr, CMP8rr_REV,
-       OR16i16, OR16ri, OR16ri8, OR16rr, OR16rr_REV, OR32i32, OR32ri,
-       OR32ri8, OR32rr, OR32rr_REV, OR64i32, OR64ri32, OR64ri8, OR64rr,
-       OR64rr_REV, OR8i8, OR8ri, OR8ri8, OR8rr, OR8rr_REV, SUB16i16,
-       SUB16ri, SUB16ri8, SUB16rr, SUB16rr_REV, SUB32i32, SUB32ri,
-       SUB32ri8, SUB32rr, SUB32rr_REV, SUB64i32, SUB64ri32, SUB64ri8,
-       SUB64rr, SUB64rr_REV, SUB8i8, SUB8ri, SUB8ri8, SUB8rr, SUB8rr_REV,
-       SUBRSP_pseudo, TEST16i16, TEST16ri, TEST16rr, TEST32i32, TEST32ri,
-       TEST32rr, TEST64i32, TEST64ri32, TEST64rr, TEST8i8, TEST8ri,
-       TEST8ri_NOREX, TEST8rr, XOR16i16, XOR16ri, XOR16ri8, XOR16rr,
-       XOR16rr_REV, XOR32i32, XOR32ri, XOR32ri8, XOR32rr, XOR32rr_REV,
-       XOR64i32, XOR64ri32, XOR64ri8, XOR64rr, XOR64rr_REV, XOR8i8,
-       XOR8ri, XOR8ri8, XOR8rr, XOR8rr_REV]
+       ADD8rr_REV, ADDRSP_pseudo, ADOX32rr, ADOX64rr, ALIGN_SP_32,
+       AND16i16, AND16ri, AND16ri8, AND16rr, AND16rr_REV, AND32i32,
+       AND32ri, AND32ri8, AND32rr, AND32rr_REV, AND64i32, AND64ri32,
+       AND64ri8, AND64rr, AND64rr_REV, AND8i8, AND8ri, AND8ri8, AND8rr,
+       AND8rr_REV, ANDN32rr, ANDN64rr, CMP16i16, CMP16ri, CMP16ri8,
+       CMP16rr, CMP16rr_REV, CMP32i32, CMP32ri, CMP32ri8, CMP32rr,
+       CMP32rr_REV, CMP64i32, CMP64ri32, CMP64ri8, CMP64rr, CMP64rr_REV,
+       CMP8i8, CMP8ri, CMP8ri8, CMP8rr, CMP8rr_REV, OR16i16, OR16ri,
+       OR16ri8, OR16rr, OR16rr_REV, OR32i32, OR32ri, OR32ri8, OR32rr,
+       OR32rr_REV, OR64i32, OR64ri32, OR64ri8, OR64rr, OR64rr_REV, OR8i8,
+       OR8ri, OR8ri8, OR8rr, OR8rr_REV, SUB16i16, SUB16ri, SUB16ri8,
+       SUB16rr, SUB16rr_REV, SUB32i32, SUB32ri, SUB32ri8, SUB32rr,
+       SUB32rr_REV, SUB64i32, SUB64ri32, SUB64ri8, SUB64rr, SUB64rr_REV,
+       SUB8i8, SUB8ri, SUB8ri8, SUB8rr, SUB8rr_REV, SUBRSP_pseudo,
+       TEST16i16, TEST16ri, TEST16rr, TEST32i32, TEST32ri, TEST32rr,
+       TEST64i32, TEST64ri32, TEST64rr, TEST8i8, TEST8ri, TEST8ri_NOREX,
+       TEST8rr, XOR16i16, XOR16ri, XOR16ri8, XOR16rr, XOR16rr_REV,
+       XOR32i32, XOR32ri, XOR32ri8, XOR32rr, XOR32rr_REV, XOR64i32,
+       XOR64ri32, XOR64ri8, XOR64rr, XOR64rr_REV, XOR8i8, XOR8ri, XOR8ri8,
+       XOR8rr, XOR8rr_REV]
     = IIC_BIN_NONMEM
   | i `elem` [BSF16rm, BSF32rm, BSF64rm, BSR16rm, BSR32rm, BSR64rm] =
     IIC_BIT_SCAN_MEM
   | i `elem` [BSF16rr, BSF32rr, BSF64rr, BSR16rr, BSR32rr, BSR64rr] =
     IIC_BIT_SCAN_REG
+  | i `elem` [BOUNDS16rm, BOUNDS32rm] = IIC_BOUND
   | i `elem` [BSWAP32r, BSWAP64r] = IIC_BSWAP
   | i `elem`
       [BTC16mi8, BTC32mi8, BTC64mi8, BTR16mi8, BTR32mi8, BTR64mi8,
@@ -89,6 +136,8 @@ itinerary i
   | i `elem` [BT16mr, BT32mr, BT64mr] = IIC_BT_MR
   | i `elem` [BT16ri8, BT32ri8, BT64ri8] = IIC_BT_RI
   | i `elem` [BT16rr, BT32rr, BT64rr] = IIC_BT_RR
+  | i `elem` [FARCALL16m, FARCALL32m, FARCALL64] = IIC_CALL_FAR_MEM
+  | i `elem` [FARCALL16i, FARCALL32i] = IIC_CALL_FAR_PTR
   | i `elem` [CALL16m, CALL32m, CALL64m] = IIC_CALL_MEM
   | i `elem`
       [CALL16r, CALL32r, CALL64pcrel32, CALL64r, CALLpcrel16,
@@ -97,6 +146,8 @@ itinerary i
   | i `elem` [CBW, CDQ, CDQE, CQO, CWD, CWDE] = IIC_CBW
   | i `elem` [CLC] = IIC_CLC
   | i `elem` [CLD] = IIC_CLD
+  | i `elem` [CLI] = IIC_CLI
+  | i `elem` [CLTS] = IIC_CLTS
   | i `elem` [CMC] = IIC_CMC
   | i `elem`
       [CMOVA16rm, CMOVAE16rm, CMOVB16rm, CMOVBE16rm, CMOVE16rm,
@@ -126,6 +177,7 @@ itinerary i
        CMOVNO64rr, CMOVNP32rr, CMOVNP64rr, CMOVNS32rr, CMOVNS64rr,
        CMOVO32rr, CMOVO64rr, CMOVP32rr, CMOVP64rr, CMOVS32rr, CMOVS64rr]
     = IIC_CMOV32_RR
+  | i `elem` [CMPSB, CMPSL, CMPSQ, CMPSW] = IIC_CMPS
   | i `elem` [CMPXCHG16B] = IIC_CMPXCHG_16B
   | i `elem` [CMPXCHG8B] = IIC_CMPXCHG_8B
   | i `elem` [CMPXCHG16rm, CMPXCHG32rm, CMPXCHG64rm] =
@@ -134,13 +186,46 @@ itinerary i
   | i `elem` [CMPXCHG16rr, CMPXCHG32rr, CMPXCHG64rr] =
     IIC_CMPXCHG_REG
   | i `elem` [CMPXCHG8rr] = IIC_CMPXCHG_REG8
+  | i `elem` [LCMPXCHG16, LCMPXCHG32, LCMPXCHG64] = IIC_CMPX_LOCK
+  | i `elem` [LCMPXCHG16B, LCMPXCHG16B_SAVE_RBX] = IIC_CMPX_LOCK_16B
+  | i `elem` [LCMPXCHG8] = IIC_CMPX_LOCK_8
+  | i `elem` [LCMPXCHG8B, LCMPXCHG8B_SAVE_EBX] = IIC_CMPX_LOCK_8B
+  | i `elem` [CPUID] = IIC_CPUID
+  | i `elem`
+      [CRC32r32m16, CRC32r32m32, CRC32r32m8, CRC32r64m64, CRC32r64m8]
+    = IIC_CRC32_MEM
+  | i `elem`
+      [CRC32r32r16, CRC32r32r32, CRC32r32r8, CRC32r64r64, CRC32r64r8]
+    = IIC_CRC32_REG
+  | i `elem` [DAA] = IIC_DAA
+  | i `elem` [DAS] = IIC_DAS
   | i `elem` [DIV16m, DIV16r] = IIC_DIV16
   | i `elem` [DIV32m, DIV32r] = IIC_DIV32
   | i `elem` [DIV64m, DIV64r] = IIC_DIV64
   | i `elem` [DIV8m] = IIC_DIV8_MEM
   | i `elem` [DIV8r] = IIC_DIV8_REG
   | i `elem` [ENTER] = IIC_ENTER
+  | i `elem` [F2XM1] = IIC_F2XM1
+  | i `elem` [FCOMPP] = IIC_FCOMPP
+  | i `elem` [FLDCW16m] = IIC_FLDCW
+  | i `elem` [FLDL2E, FLDL2T, FLDLG2, FLDLN2, FLDPI] = IIC_FLDL
+  | i `elem` [FNOP] = IIC_FNOP
   | i `elem` [FNSTCW16m] = IIC_FNSTCW
+  | i `elem` [FPATAN] = IIC_FPATAN
+  | i `elem` [FPREM] = IIC_FPREM
+  | i `elem` [FPREM1] = IIC_FPREM1
+  | i `elem` [FDECSTP, FINCSTP] = IIC_FPSTP
+  | i `elem` [FPTAN] = IIC_FPTAN
+  | i `elem` [FRNDINT] = IIC_FRNDINT
+  | i `elem` [FSCALE] = IIC_FSCALE
+  | i `elem` [FSINCOS] = IIC_FSINCOS
+  | i `elem` [FXAM] = IIC_FXAM
+  | i `elem` [FXRSTOR, FXRSTOR64] = IIC_FXRSTOR
+  | i `elem` [FXSAVE, FXSAVE64] = IIC_FXSAVE
+  | i `elem` [FXTRACT] = IIC_FXTRACT
+  | i `elem` [FYL2X] = IIC_FYL2X
+  | i `elem` [FYL2XP1] = IIC_FYL2XP1
+  | i `elem` [HLT] = IIC_HLT
   | i `elem` [IDIV16m, IDIV16r] = IIC_IDIV16
   | i `elem` [IDIV32m, IDIV32r] = IIC_IDIV32
   | i `elem` [IDIV64m, IDIV64r] = IIC_IDIV64
@@ -161,7 +246,17 @@ itinerary i
   | i `elem` [IMUL64r, IMUL64rr] = IIC_IMUL64_RR
   | i `elem` [IMUL64rri32, IMUL64rri8] = IIC_IMUL64_RRI
   | i `elem` [IMUL8m, IMUL8r] = IIC_IMUL8
+  | i `elem` [INSB, INSL, INSW] = IIC_INS
+  | i `elem` [INT] = IIC_INT
+  | i `elem` [INT3] = IIC_INT3
+  | i `elem` [INVD, WBINVD] = IIC_INVD
+  | i `elem` [INVLPG] = IIC_INVLPG
+  | i `elem` [IN16ri, IN32ri, IN8ri] = IIC_IN_RI
+  | i `elem` [IN16rr, IN32rr, IN8rr] = IIC_IN_RR
+  | i `elem` [IRET16, IRET32, IRET64] = IIC_IRET
   | i `elem` [JCXZ, JECXZ, JRCXZ] = IIC_JCXZ
+  | i `elem` [FARJMP16m, FARJMP32m, FARJMP64] = IIC_JMP_FAR_MEM
+  | i `elem` [FARJMP16i, FARJMP32i] = IIC_JMP_FAR_PTR
   | i `elem`
       [JMP16m, JMP32m, JMP64m, TAILJMPm, TAILJMPm64, TAILJMPm64_REX,
        TAILJMPr64, TAILJMPr64_REX]
@@ -177,21 +272,41 @@ itinerary i
        JNO_1, JNO_2, JNO_4, JNP_1, JNP_2, JNP_4, JNS_1, JNS_2, JNS_4,
        JO_1, JO_2, JO_4, JP_1, JP_2, JP_4, JS_1, JS_2, JS_4]
     = IIC_Jcc
-  | i `elem` [LEA32r, LEA32r_remat, LEA64_32r, LEA64r, LEA64r_remat]
+  | i `elem` [LAR16rm, LAR32rm, LAR64rm] = IIC_LAR_RM
+  | i `elem` [LAR16rr, LAR32rr, LAR64rr] = IIC_LAR_RR
+  | i `elem`
+      [ADD32ri_LEA, ADD32rr_LEA, ADD64ri_LEA, ADD64rr_LEA, LEA32r,
+       LEA32r_remat, LEA64_32r, LEA64r, LEA64r_remat, SHL32r1_LEA,
+       SHL32ri_LEA, SHL64r1_LEA, SHL64ri_LEA]
     = IIC_LEA
   | i `elem` [LEAVE, LEAVE64] = IIC_LEAVE
   | i `elem` [LEA16r, LEA16r_remat] = IIC_LEA_16
+  | i `elem` [LGDT16m, LGDT32m, LGDT64m] = IIC_LGDT
+  | i `elem` [LIDT16m, LIDT32m, LIDT64m] = IIC_LIDT
+  | i `elem` [LLDT16m] = IIC_LLDT_MEM
+  | i `elem` [LLDT16r] = IIC_LLDT_REG
+  | i `elem` [LMSW16r] = IIC_LMSW_MEM
+  | i `elem` [LMSW16m] = IIC_LMSW_REG
   | i `elem` [LODSB, LODSL, LODSQ, LODSW] = IIC_LODS
   | i `elem` [LOOP] = IIC_LOOP
   | i `elem` [LOOPE] = IIC_LOOPE
   | i `elem` [LOOPNE] = IIC_LOOPNE
+  | i `elem` [LSL16rm, LSL32rm, LSL64rm] = IIC_LSL_RM
+  | i `elem` [LSL16rr, LSL32rr, LSL64rr] = IIC_LSL_RR
+  | i `elem` [LTRm, LTRr] = IIC_LTR
+  | i `elem`
+      [LDS16rm, LDS32rm, LES16rm, LES32rm, LFS16rm, LFS32rm, LFS64rm,
+       LGS16rm, LGS32rm, LGS64rm, LSS16rm, LSS32rm, LSS64rm]
+    = IIC_LXS
+  | i `elem` [MMX_CVTPI2PDirm] = IIC_MMX_CVT_PD_RM
+  | i `elem` [MMX_EMMS] = IIC_MMX_EMMS
   | i `elem`
       [MOV16ri, MOV16ri_alt, MOV16ri_alt_remat, MOV16ri_remat, MOV16rr,
        MOV16rr_REV, MOV32ri, MOV32ri_alt, MOV32ri_alt_remat,
        MOV32ri_remat, MOV32rr, MOV32rr_REV, MOV64ri, MOV64ri32,
        MOV64ri32_remat, MOV64ri_remat, MOV64rr, MOV64rr_REV, MOV8ri,
        MOV8ri_alt, MOV8ri_remat, MOV8rr, MOV8rr_NOREX, MOV8rr_REV, MOVE16,
-       MOVE32, MOVE64, MOVE8]
+       MOVE32, MOVE64, MOVE8, MOV_FROM_SP, MOV_TO_SP]
     = IIC_MOV
   | i `elem`
       [MOVBE16mr, MOVBE16rm, MOVBE32mr, MOVBE32rm, MOVBE64mr, MOVBE64rm]
@@ -224,12 +339,25 @@ itinerary i
   | i `elem` [MUL32m] = IIC_MUL32_MEM
   | i `elem` [MUL32r] = IIC_MUL32_REG
   | i `elem` [MUL64m, MUL64r] = IIC_MUL64
-  | i `elem` [MUL8m, MUL8r] = IIC_MUL8
+  | i `elem` [MUL8m, MUL8r, MULX32rm, MULX32rr, MULX64rm, MULX64rr] =
+    IIC_MUL8
   | i `elem` [NOOP, NOOPL, NOOPW] = IIC_NOP
+  | i `elem` [OUTSB, OUTSL, OUTSW] = IIC_OUTS
+  | i `elem` [OUT16ir, OUT32ir, OUT8ir] = IIC_OUT_IR
+  | i `elem` [OUT16rr, OUT32rr, OUT8rr] = IIC_OUT_RR
+  | i `elem` [POPA16, POPA32] = IIC_POP_A
+  | i `elem` [POPF16] = IIC_POP_F
+  | i `elem` [POPF32, POPF64] = IIC_POP_FD
   | i `elem` [POP16rmm, POP32rmm, POP64rmm] = IIC_POP_MEM
-  | i `elem` [POP16rmr, POP32r, POP32rmr, POP64r, POP64rmr, POP_cst]
+  | i `elem`
+      [POP16rmr, POP32r, POP32rmr, POP64r, POP64rmr, POP_cst, POP_fi]
     = IIC_POP_REG
   | i `elem` [POP16r] = IIC_POP_REG16
+  | i `elem`
+      [POPDS16, POPDS32, POPES16, POPES32, POPFS16, POPFS32, POPFS64,
+       POPGS16, POPGS32, POPGS64]
+    = IIC_POP_SR
+  | i `elem` [POPSS16, POPSS32] = IIC_POP_SR_SS
   | i `elem` [PUSHA16, PUSHA32] = IIC_PUSH_A
   | i `elem` [PUSHCS32] = IIC_PUSH_CS
   | i `elem` [PUSHF16, PUSHF32, PUSHF64] = IIC_PUSH_F
@@ -239,13 +367,16 @@ itinerary i
   | i `elem` [PUSH16rmm, PUSH32rmm, PUSH64rmm] = IIC_PUSH_MEM
   | i `elem`
       [PUSH16r, PUSH16rmr, PUSH32r, PUSH32rmr, PUSH64r, PUSH64rmr,
-       PUSH_cst]
+       PUSH_cst, PUSH_fi]
     = IIC_PUSH_REG
   | i `elem`
       [PUSHCS16, PUSHDS16, PUSHDS32, PUSHES16, PUSHES32, PUSHFS16,
        PUSHFS32, PUSHFS64, PUSHGS16, PUSHGS32, PUSHGS64, PUSHSS16,
        PUSHSS32]
     = IIC_PUSH_SR
+  | i `elem` [RDMSR] = IIC_RDMSR
+  | i `elem` [RDPMC] = IIC_RDPMC
+  | i `elem` [RDTSC] = IIC_RDTSC
   | i `elem`
       [REP_MOVSB_32, REP_MOVSB_64, REP_MOVSD_32, REP_MOVSD_64,
        REP_MOVSQ_64, REP_MOVSW_32, REP_MOVSW_64]
@@ -254,8 +385,13 @@ itinerary i
       [REP_STOSB_32, REP_STOSB_64, REP_STOSD_32, REP_STOSD_64,
        REP_STOSQ_64, REP_STOSW_32, REP_STOSW_64]
     = IIC_REP_STOS
-  | i `elem` [RETL, RETQ, RETW] = IIC_RET
+  | i `elem`
+      [EH_RETURN, EH_RETURN64, LRETIL, LRETIQ, LRETIW, LRETL, LRETQ,
+       LRETW, RETL, RETQ, RETW]
+    = IIC_RET
   | i `elem` [RETIL, RETIQ, RETIW] = IIC_RET_IMM
+  | i `elem` [RSM] = IIC_RSM
+  | i `elem` [SCASB, SCASL, SCASQ, SCASW] = IIC_SCAS
   | i `elem`
       [SETAEm, SETAm, SETBEm, SETBm, SETEm, SETGEm, SETGm, SETLEm, SETLm,
        SETNEm, SETNOm, SETNPm, SETNSm, SETOm, SETPm, SETSm]
@@ -264,6 +400,7 @@ itinerary i
       [SETAEr, SETAr, SETBEr, SETBr, SETEr, SETGEr, SETGr, SETLEr, SETLr,
        SETNEr, SETNOr, SETNPr, SETNSr, SETOr, SETPr, SETSr]
     = IIC_SET_R
+  | i `elem` [SGDT16m, SGDT32m, SGDT64m] = IIC_SGDT
   | i `elem` [SHLD16mrCL, SHRD16mrCL] = IIC_SHD16_MEM_CL
   | i `elem` [SHLD16mri8, SHRD16mri8] = IIC_SHD16_MEM_IM
   | i `elem` [SHLD16rrCL, SHRD16rrCL] = IIC_SHD16_REG_CL
@@ -276,6 +413,9 @@ itinerary i
   | i `elem` [SHLD64mri8, SHRD64mri8] = IIC_SHD64_MEM_IM
   | i `elem` [SHLD64rrCL, SHRD64rrCL] = IIC_SHD64_REG_CL
   | i `elem` [SHLD64rri8, SHRD64rri8] = IIC_SHD64_REG_IM
+  | i `elem` [SIDT16m] = IIC_SIDT
+  | i `elem` [SLDT16m, SLDT16r, SLDT32r, SLDT64m, SLDT64r] = IIC_SLDT
+  | i `elem` [SMSW16m, SMSW16r, SMSW32r, SMSW64r] = IIC_SMSW
   | i `elem`
       [RCL16m1, RCL16mCL, RCL16mi, RCL16r1, RCL16rCL, RCL16ri, RCL32m1,
        RCL32mCL, RCL32mi, RCL32r1, RCL32rCL, RCL32ri, RCL64m1, RCL64mCL,
@@ -304,209 +444,817 @@ itinerary i
     = IIC_SR
   | i `elem`
       [ADDPSrm, CMPPSrmi, CMPPSrmi_alt, MAXCPSrm, MAXPSrm, MINCPSrm,
-       MINPSrm, SUBPSrm]
+       MINPSrm, SUBPSrm, VADDPSYrm, VADDPSrm, VCMPPDYrmi, VCMPPDYrmi_alt,
+       VCMPPDrmi, VCMPPDrmi_alt, VCMPPSYrmi, VCMPPSYrmi_alt, VCMPPSrmi,
+       VCMPPSrmi_alt, VMAXCPSYrm, VMAXCPSrm, VMAXPSYrm, VMAXPSrm,
+       VMINCPSYrm, VMINCPSrm, VMINPSYrm, VMINPSrm, VSUBPSYrm, VSUBPSrm]
     = IIC_SSE_ALU_F32P_RM
   | i `elem`
       [ADDPSrr, ADDSUBPSrm, ADDSUBPSrr, CMPPSrri, CMPPSrri_alt, MAXCPSrr,
-       MAXPSrr, MINCPSrr, MINPSrr, SUBPSrr]
+       MAXPSrr, MINCPSrr, MINPSrr, SUBPSrr, VADDPSYrr, VADDPSrr,
+       VADDSUBPSYrm, VADDSUBPSYrr, VADDSUBPSrm, VADDSUBPSrr, VCMPPDYrri,
+       VCMPPDYrri_alt, VCMPPDrri, VCMPPDrri_alt, VCMPPSYrri,
+       VCMPPSYrri_alt, VCMPPSrri, VCMPPSrri_alt, VMAXCPSYrr, VMAXCPSrr,
+       VMAXPSYrr, VMAXPSrr, VMINCPSYrr, VMINCPSrr, VMINPSYrr, VMINPSrr,
+       VSUBPSYrr, VSUBPSrr]
     = IIC_SSE_ALU_F32P_RR
   | i `elem`
-      [ADDSSrm, CMPSDrm_alt, CMPSSrm, CMPSSrm_alt, MAXCSSrm, MAXSSrm,
-       MINCSSrm, MINSSrm, SUBSSrm]
+      [ADDSSrm, ADDSSrm_Int, CMPSDrm_alt, CMPSSrm, CMPSSrm_alt,
+       Int_VCMPSDrm, Int_VCMPSSrm, MAXCSSrm, MAXSSrm, MAXSSrm_Int,
+       MINCSSrm, MINSSrm, MINSSrm_Int, SUBSSrm, SUBSSrm_Int, VADDSSrm,
+       VADDSSrm_Int, VCMPSDrm, VCMPSDrm_alt, VCMPSSrm, VCMPSSrm_alt,
+       VMAXCSSrm, VMAXSSrm, VMAXSSrm_Int, VMINCSSrm, VMINSSrm,
+       VMINSSrm_Int, VSUBSSrm, VSUBSSrm_Int]
     = IIC_SSE_ALU_F32S_RM
   | i `elem`
-      [ADDSSrr, CMPSDrr_alt, CMPSSrr, CMPSSrr_alt, MAXCSSrr, MAXSSrr,
-       MINCSSrr, MINSSrr, SUBSSrr]
+      [ADDSSrr, ADDSSrr_Int, CMPSDrr_alt, CMPSSrr, CMPSSrr_alt,
+       Int_CMPSSrr, Int_VCMPSDrr, Int_VCMPSSrr, MAXCSSrr, MAXSSrr,
+       MAXSSrr_Int, MINCSSrr, MINSSrr, MINSSrr_Int, SUBSSrr, SUBSSrr_Int,
+       VADDSSrr, VADDSSrr_Int, VCMPSDrr, VCMPSDrr_alt, VCMPSSrr,
+       VCMPSSrr_alt, VMAXCSSrr, VMAXSSrr, VMAXSSrr_Int, VMINCSSrr,
+       VMINSSrr, VMINSSrr_Int, VSUBSSrr, VSUBSSrr_Int]
     = IIC_SSE_ALU_F32S_RR
   | i `elem`
       [ADDPDrm, CMPPDrmi, CMPPDrmi_alt, MAXCPDrm, MAXPDrm, MINCPDrm,
-       MINPDrm, SUBPDrm]
+       MINPDrm, SUBPDrm, VADDPDYrm, VADDPDrm, VMAXCPDYrm, VMAXCPDrm,
+       VMAXPDYrm, VMAXPDrm, VMINCPDYrm, VMINCPDrm, VMINPDYrm, VMINPDrm,
+       VSUBPDYrm, VSUBPDrm]
     = IIC_SSE_ALU_F64P_RM
   | i `elem`
       [ADDPDrr, ADDSUBPDrm, ADDSUBPDrr, CMPPDrri, CMPPDrri_alt, MAXCPDrr,
-       MAXPDrr, MINCPDrr, MINPDrr, SUBPDrr]
+       MAXPDrr, MINCPDrr, MINPDrr, SUBPDrr, VADDPDYrr, VADDPDrr,
+       VADDSUBPDYrm, VADDSUBPDYrr, VADDSUBPDrm, VADDSUBPDrr, VMAXCPDYrr,
+       VMAXCPDrr, VMAXPDYrr, VMAXPDrr, VMINCPDYrr, VMINCPDrr, VMINPDYrr,
+       VMINPDrr, VSUBPDYrr, VSUBPDrr]
     = IIC_SSE_ALU_F64P_RR
   | i `elem`
-      [ADDSDrm, CMPSDrm, MAXCSDrm, MAXSDrm, MINCSDrm, MINSDrm, SUBSDrm]
+      [ADDSDrm, ADDSDrm_Int, CMPSDrm, MAXCSDrm, MAXSDrm, MAXSDrm_Int,
+       MINCSDrm, MINSDrm, MINSDrm_Int, SUBSDrm, SUBSDrm_Int, VADDSDrm,
+       VADDSDrm_Int, VMAXCSDrm, VMAXSDrm, VMAXSDrm_Int, VMINCSDrm,
+       VMINSDrm, VMINSDrm_Int, VSUBSDrm, VSUBSDrm_Int]
     = IIC_SSE_ALU_F64S_RM
   | i `elem`
-      [ADDSDrr, CMPSDrr, MAXCSDrr, MAXSDrr, MINCSDrr, MINSDrr, SUBSDrr]
+      [ADDSDrr, ADDSDrr_Int, CMPSDrr, Int_CMPSDrr, MAXCSDrr, MAXSDrr,
+       MAXSDrr_Int, MINCSDrr, MINSDrr, MINSDrr_Int, SUBSDrr, SUBSDrr_Int,
+       VADDSDrr, VADDSDrr_Int, VMAXCSDrr, VMAXSDrr, VMAXSDrr_Int,
+       VMINCSDrr, VMINSDrr, VMINSDrr_Int, VSUBSDrr, VSUBSDrr_Int]
     = IIC_SSE_ALU_F64S_RR
   | i `elem`
       [FsANDNPDrm, FsANDNPSrm, FsANDPDrm, FsANDPSrm, FsORPDrm, FsORPSrm,
        FsXORPDrm, FsXORPSrm, FvANDNPDrm, FvANDNPSrm, FvANDPDrm, FvANDPSrm,
        FvORPDrm, FvORPSrm, FvXORPDrm, FvXORPSrm, PANDNrm, PANDrm, PORrm,
-       PXORrm]
+       PXORrm, VFsANDNPDrm, VFsANDNPSrm, VFsANDPDrm, VFsANDPSrm,
+       VFsORPDrm, VFsORPSrm, VFsXORPDrm, VFsXORPSrm, VFvANDNPDYrm,
+       VFvANDNPDrm, VFvANDNPSYrm, VFvANDNPSrm, VFvANDPDYrm, VFvANDPDrm,
+       VFvANDPSYrm, VFvANDPSrm, VFvORPDYrm, VFvORPDrm, VFvORPSYrm,
+       VFvORPSrm, VFvXORPDYrm, VFvXORPDrm, VFvXORPSYrm, VFvXORPSrm,
+       VPANDNYrm, VPANDNrm, VPANDYrm, VPANDrm, VPORYrm, VPORrm, VPXORYrm,
+       VPXORrm]
     = IIC_SSE_BIT_P_RM
   | i `elem`
       [FsANDNPDrr, FsANDNPSrr, FsANDPDrr, FsANDPSrr, FsORPDrr, FsORPSrr,
        FsXORPDrr, FsXORPSrr, FvANDNPDrr, FvANDNPSrr, FvANDPDrr, FvANDPSrr,
        FvORPDrr, FvORPSrr, FvXORPDrr, FvXORPSrr, PANDNrr, PANDrr, PORrr,
-       PXORrr]
+       PXORrr, VFsANDNPDrr, VFsANDNPSrr, VFsANDPDrr, VFsANDPSrr,
+       VFsORPDrr, VFsORPSrr, VFsXORPDrr, VFsXORPSrr, VFvANDNPDYrr,
+       VFvANDNPDrr, VFvANDNPSYrr, VFvANDNPSrr, VFvANDPDYrr, VFvANDPDrr,
+       VFvANDPSYrr, VFvANDPSrr, VFvORPDYrr, VFvORPDrr, VFvORPSYrr,
+       VFvORPSrr, VFvXORPDYrr, VFvXORPDrr, VFvXORPSYrr, VFvXORPSrr,
+       VPANDNYrr, VPANDNrr, VPANDYrr, VPANDrr, VPORYrr, VPORrr, VPXORYrr,
+       VPXORrr]
     = IIC_SSE_BIT_P_RR
-  | i `elem` [COMISDrm, COMISSrm, UCOMISDrm, UCOMISSrm] =
-    IIC_SSE_COMIS_RM
-  | i `elem` [COMISDrr, COMISSrr, UCOMISDrr, UCOMISSrr] =
-    IIC_SSE_COMIS_RR
   | i `elem`
-      [CVTDQ2PDrr, CVTPD2DQrm, CVTPD2PSrm, CVTPS2PDrm, CVTTPD2DQrm]
+      [COMISDrm, COMISSrm, Int_COMISDrm, Int_COMISSrm, Int_UCOMISDrm,
+       Int_UCOMISSrm, Int_VCOMISDrm, Int_VCOMISSrm, Int_VUCOMISDrm,
+       Int_VUCOMISSrm, UCOMISDrm, UCOMISSrm, VCOMISDrm, VCOMISSrm,
+       VUCOMISDrm, VUCOMISSrm]
+    = IIC_SSE_COMIS_RM
+  | i `elem`
+      [COMISDrr, COMISSrr, Int_COMISDrr, Int_COMISSrr, Int_UCOMISDrr,
+       Int_UCOMISSrr, Int_VCOMISDrr, Int_VCOMISSrr, Int_VUCOMISDrr,
+       Int_VUCOMISSrr, UCOMISDrr, UCOMISSrr, VCOMISDrr, VCOMISSrr,
+       VUCOMISDrr, VUCOMISSrr]
+    = IIC_SSE_COMIS_RR
+  | i `elem`
+      [CVTDQ2PDrr, CVTPD2DQrm, CVTPD2PSrm, CVTPS2PDrm, CVTTPD2DQrm,
+       VCVTPD2PSXrm, VCVTPD2PSYrm, VCVTPS2PDYrm, VCVTPS2PDrm,
+       VCVTTPD2DQXrm, VCVTTPD2DQYrm]
     = IIC_SSE_CVT_PD_RM
   | i `elem`
-      [CVTDQ2PDrm, CVTPD2DQrr, CVTPD2PSrr, CVTPS2PDrr, CVTTPD2DQrr]
+      [CVTDQ2PDrm, CVTPD2DQrr, CVTPD2PSrr, CVTPS2PDrr, CVTTPD2DQrr,
+       VCVTPD2PSYrr, VCVTPD2PSrr, VCVTPS2PDYrr, VCVTPS2PDrr,
+       VCVTTPD2DQYrr, VCVTTPD2DQrr]
     = IIC_SSE_CVT_PD_RR
-  | i `elem` [CVTDQ2PSrm, CVTPS2DQrm, CVTTPS2DQrm] =
-    IIC_SSE_CVT_PS_RM
-  | i `elem` [CVTDQ2PSrr, CVTPS2DQrr, CVTTPS2DQrr] =
-    IIC_SSE_CVT_PS_RR
-  | i `elem` [CVTSD2SI64rr, CVTSD2SIrr, CVTTSD2SI64rr, CVTTSD2SIrr] =
-    IIC_SSE_CVT_SD2SI_RR
-  | i `elem` [CVTSS2SIrr, CVTTSS2SIrr] = IIC_SSE_CVT_SS2SI32_RR
-  | i `elem` [CVTSS2SI64rr, CVTTSS2SI64rr] = IIC_SSE_CVT_SS2SI64_RR
+  | i `elem`
+      [CVTDQ2PSrm, CVTPS2DQrm, CVTTPS2DQrm, VCVTDQ2PSYrm, VCVTDQ2PSrm,
+       VCVTPS2DQYrm, VCVTPS2DQrm, VCVTTPS2DQYrm, VCVTTPS2DQrm]
+    = IIC_SSE_CVT_PS_RM
+  | i `elem`
+      [CVTDQ2PSrr, CVTPS2DQrr, CVTTPS2DQrr, VCVTDQ2PSYrr, VCVTDQ2PSrr,
+       VCVTPS2DQYrr, VCVTPS2DQrr, VCVTTPS2DQYrr, VCVTTPS2DQrr]
+    = IIC_SSE_CVT_PS_RR
+  | i `elem`
+      [CVTSD2SI64rm, CVTSD2SIrm, CVTTSD2SI64rm, CVTTSD2SIrm,
+       Int_CVTTSD2SI64rm, Int_CVTTSD2SIrm, Int_VCVTTSD2SI64rm,
+       Int_VCVTTSD2SIrm, VCVTSD2SI64rm, VCVTSD2SIrm, VCVTTSD2SI64rm,
+       VCVTTSD2SIrm]
+    = IIC_SSE_CVT_SD2SI_RM
+  | i `elem`
+      [CVTSD2SI64rr, CVTSD2SIrr, CVTTSD2SI64rr, CVTTSD2SIrr,
+       Int_CVTTSD2SI64rr, Int_CVTTSD2SIrr, Int_VCVTTSD2SI64rr,
+       Int_VCVTTSD2SIrr, VCVTSD2SI64rr, VCVTSD2SIrr, VCVTTSD2SI64rr,
+       VCVTTSD2SIrr]
+    = IIC_SSE_CVT_SD2SI_RR
+  | i `elem`
+      [CVTSS2SIrm, CVTTSS2SIrm, Int_CVTTSS2SIrm, Int_VCVTTSS2SIrm,
+       VCVTSS2SIrm, VCVTTSS2SIrm]
+    = IIC_SSE_CVT_SS2SI32_RM
+  | i `elem`
+      [CVTSS2SIrr, CVTTSS2SIrr, Int_CVTTSS2SIrr, Int_VCVTTSS2SIrr,
+       VCVTSS2SIrr, VCVTTSS2SIrr]
+    = IIC_SSE_CVT_SS2SI32_RR
+  | i `elem`
+      [CVTSS2SI64rm, CVTTSS2SI64rm, Int_CVTTSS2SI64rm,
+       Int_VCVTTSS2SI64rm, VCVTSS2SI64rm, VCVTTSS2SI64rm]
+    = IIC_SSE_CVT_SS2SI64_RM
+  | i `elem`
+      [CVTSS2SI64rr, CVTTSS2SI64rr, Int_CVTTSS2SI64rr,
+       Int_VCVTTSS2SI64rr, VCVTSS2SI64rr, VCVTTSS2SI64rr]
+    = IIC_SSE_CVT_SS2SI64_RR
   | i `elem`
       [CVTSD2SSrm, CVTSI2SD64rm, CVTSI2SDrm, CVTSI2SS64rm, CVTSI2SSrm,
-       CVTSS2SDrm]
+       CVTSS2SDrm, Int_CVTSD2SSrm, Int_CVTSI2SD64rm, Int_CVTSI2SDrm,
+       Int_CVTSI2SS64rm, Int_CVTSI2SSrm, Int_CVTSS2SDrm, Int_VCVTSD2SSrm,
+       Int_VCVTSI2SD64rm, Int_VCVTSI2SDrm, Int_VCVTSI2SS64rm,
+       Int_VCVTSI2SSrm, Int_VCVTSS2SDrm, VCVTSD2SSrm, VCVTSS2SDrm]
     = IIC_SSE_CVT_Scalar_RM
   | i `elem`
       [CVTSD2SSrr, CVTSI2SD64rr, CVTSI2SDrr, CVTSI2SS64rr, CVTSI2SSrr,
-       CVTSS2SDrr]
+       CVTSS2SDrr, Int_CVTSD2SSrr, Int_CVTSI2SD64rr, Int_CVTSI2SDrr,
+       Int_CVTSI2SS64rr, Int_CVTSI2SSrr, Int_CVTSS2SDrr, Int_VCVTSD2SSrr,
+       Int_VCVTSI2SD64rr, Int_VCVTSI2SDrr, Int_VCVTSI2SS64rr,
+       Int_VCVTSI2SSrr, Int_VCVTSS2SDrr, VCVTSD2SSrr, VCVTSS2SDrr]
     = IIC_SSE_CVT_Scalar_RR
-  | i `elem` [DIVPSrr] = IIC_SSE_DIV_F32P_RR
-  | i `elem` [DIVSSrr] = IIC_SSE_DIV_F32S_RR
-  | i `elem` [DIVPDrm, DIVPSrm] = IIC_SSE_DIV_F64P_RM
-  | i `elem` [DIVPDrr] = IIC_SSE_DIV_F64P_RR
-  | i `elem` [DIVSDrm, DIVSSrm] = IIC_SSE_DIV_F64S_RM
-  | i `elem` [DIVSDrr] = IIC_SSE_DIV_F64S_RR
-  | i `elem` [DPPDrmi, DPPSrmi] = IIC_SSE_DPPD_RM
-  | i `elem` [DPPDrri] = IIC_SSE_DPPD_RR
-  | i `elem` [DPPSrri] = IIC_SSE_DPPS_RR
-  | i `elem` [PADDQrm, PSUBQrm] = IIC_SSE_INTALUQ_P_RM
-  | i `elem` [PADDQrr, PSUBQrr] = IIC_SSE_INTALUQ_P_RR
+  | i `elem` [DIVPSrr, VDIVPSYrr, VDIVPSrr] = IIC_SSE_DIV_F32P_RR
+  | i `elem` [DIVSSrr, DIVSSrr_Int, VDIVSSrr, VDIVSSrr_Int] =
+    IIC_SSE_DIV_F32S_RR
   | i `elem`
-      [PADDBrm, PADDDrm, PADDWrm, PCMPEQBrm, PCMPEQDrm, PCMPEQWrm,
-       PCMPGTBrm, PCMPGTDrm, PCMPGTWrm, PSUBBrm, PSUBDrm, PSUBWrm]
+      [DIVPDrm, DIVPSrm, VDIVPDYrm, VDIVPDrm, VDIVPSYrm, VDIVPSrm]
+    = IIC_SSE_DIV_F64P_RM
+  | i `elem` [DIVPDrr, VDIVPDYrr, VDIVPDrr] = IIC_SSE_DIV_F64P_RR
+  | i `elem`
+      [DIVSDrm, DIVSDrm_Int, DIVSSrm, DIVSSrm_Int, VDIVSDrm,
+       VDIVSDrm_Int, VDIVSSrm, VDIVSSrm_Int]
+    = IIC_SSE_DIV_F64S_RM
+  | i `elem` [DIVSDrr, DIVSDrr_Int, VDIVSDrr, VDIVSDrr_Int] =
+    IIC_SSE_DIV_F64S_RR
+  | i `elem` [DPPDrmi, DPPSrmi, VDPPDrmi, VDPPSYrmi, VDPPSrmi] =
+    IIC_SSE_DPPD_RM
+  | i `elem` [DPPDrri] = IIC_SSE_DPPD_RR
+  | i `elem` [DPPSrri, VDPPDrri, VDPPSYrri, VDPPSrri] =
+    IIC_SSE_DPPS_RR
+  | i `elem` [EXTRACTPSmr] = IIC_SSE_EXTRACTPS_RM
+  | i `elem` [EXTRACTPSrr] = IIC_SSE_EXTRACTPS_RR
+  | i `elem`
+      [HADDPDrm, HADDPSrm, HSUBPDrm, HSUBPSrm, VHADDPDYrm, VHADDPDrm,
+       VHADDPSYrm, VHADDPSrm, VHSUBPDYrm, VHSUBPDrm, VHSUBPSYrm,
+       VHSUBPSrm]
+    = IIC_SSE_HADDSUB_RM
+  | i `elem`
+      [HADDPDrr, HADDPSrr, HSUBPDrr, HSUBPSrr, VHADDPDYrr, VHADDPDrr,
+       VHADDPSYrr, VHADDPSrr, VHSUBPDYrr, VHSUBPDrr, VHSUBPSYrr,
+       VHSUBPSrr]
+    = IIC_SSE_HADDSUB_RR
+  | i `elem` [INSERTPSrm] = IIC_SSE_INSERTPS_RM
+  | i `elem` [INSERTPSrr] = IIC_SSE_INSERTPS_RR
+  | i `elem`
+      [PADDQrm, PSUBQrm, VPADDQYrm, VPADDQrm, VPSUBQYrm, VPSUBQrm]
+    = IIC_SSE_INTALUQ_P_RM
+  | i `elem`
+      [PADDQrr, PSUBQrr, VPADDQYrr, VPADDQrr, VPSUBQYrr, VPSUBQrr]
+    = IIC_SSE_INTALUQ_P_RR
+  | i `elem`
+      [BLENDPDrmi, BLENDPSrmi, PADDBrm, PADDDrm, PADDSBrm, PADDSWrm,
+       PADDUSBrm, PADDUSWrm, PADDWrm, PAVGBrm, PAVGWrm, PBLENDWrmi,
+       PCMPEQBrm, PCMPEQDrm, PCMPEQWrm, PCMPGTBrm, PCMPGTDrm, PCMPGTWrm,
+       PMAXSWrm, PMAXUBrm, PMINSWrm, PMINUBrm, PMOVSXBDrm, PMOVSXBQrm,
+       PMOVSXBWrm, PMOVSXDQrm, PMOVSXWDrm, PMOVSXWQrm, PMOVZXBDrm,
+       PMOVZXBQrm, PMOVZXBWrm, PMOVZXDQrm, PMOVZXWDrm, PMOVZXWQrm,
+       PSUBBrm, PSUBDrm, PSUBSBrm, PSUBSWrm, PSUBUSBrm, PSUBUSWrm,
+       PSUBWrm, VPADDBYrm, VPADDBrm, VPADDDYrm, VPADDDrm, VPADDSBYrm,
+       VPADDSBrm, VPADDSWYrm, VPADDSWrm, VPADDUSBYrm, VPADDUSBrm,
+       VPADDUSWYrm, VPADDUSWrm, VPADDWYrm, VPADDWrm, VPAVGBYrm, VPAVGBrm,
+       VPAVGWYrm, VPAVGWrm, VPCMPEQBYrm, VPCMPEQBrm, VPCMPEQDYrm,
+       VPCMPEQDrm, VPCMPEQWYrm, VPCMPEQWrm, VPCMPGTBYrm, VPCMPGTBrm,
+       VPCMPGTDYrm, VPCMPGTDrm, VPCMPGTWYrm, VPCMPGTWrm, VPMAXSWYrm,
+       VPMAXSWrm, VPMAXUBYrm, VPMAXUBrm, VPMINSWYrm, VPMINSWrm,
+       VPMINUBYrm, VPMINUBrm, VPSUBBYrm, VPSUBBrm, VPSUBDYrm, VPSUBDrm,
+       VPSUBSBYrm, VPSUBSBrm, VPSUBSWYrm, VPSUBSWrm, VPSUBUSBYrm,
+       VPSUBUSBrm, VPSUBUSWYrm, VPSUBUSWrm, VPSUBWYrm, VPSUBWrm]
     = IIC_SSE_INTALU_P_RM
   | i `elem`
-      [PADDBrr, PADDDrr, PADDWrr, PCMPEQBrr, PCMPEQDrr, PCMPEQWrr,
-       PCMPGTBrr, PCMPGTDrr, PCMPGTWrr, PSUBBrr, PSUBDrr, PSUBWrr]
+      [BLENDPDrri, BLENDPSrri, PADDBrr, PADDDrr, PADDSBrr, PADDSWrr,
+       PADDUSBrr, PADDUSWrr, PADDWrr, PAVGBrr, PAVGWrr, PBLENDWrri,
+       PCMPEQBrr, PCMPEQDrr, PCMPEQWrr, PCMPGTBrr, PCMPGTDrr, PCMPGTWrr,
+       PMAXSWrr, PMAXUBrr, PMINSWrr, PMINUBrr, PMOVSXBDrr, PMOVSXBQrr,
+       PMOVSXBWrr, PMOVSXDQrr, PMOVSXWDrr, PMOVSXWQrr, PMOVZXBDrr,
+       PMOVZXBQrr, PMOVZXBWrr, PMOVZXDQrr, PMOVZXWDrr, PMOVZXWQrr,
+       PSUBBrr, PSUBDrr, PSUBSBrr, PSUBSWrr, PSUBUSBrr, PSUBUSWrr,
+       PSUBWrr, VPADDBYrr, VPADDBrr, VPADDDYrr, VPADDDrr, VPADDSBYrr,
+       VPADDSBrr, VPADDSWYrr, VPADDSWrr, VPADDUSBYrr, VPADDUSBrr,
+       VPADDUSWYrr, VPADDUSWrr, VPADDWYrr, VPADDWrr, VPAVGBYrr, VPAVGBrr,
+       VPAVGWYrr, VPAVGWrr, VPCMPEQBYrr, VPCMPEQBrr, VPCMPEQDYrr,
+       VPCMPEQDrr, VPCMPEQWYrr, VPCMPEQWrr, VPCMPGTBYrr, VPCMPGTBrr,
+       VPCMPGTDYrr, VPCMPGTDrr, VPCMPGTWYrr, VPCMPGTWrr, VPMAXSWYrr,
+       VPMAXSWrr, VPMAXUBYrr, VPMAXUBrr, VPMINSWYrr, VPMINSWrr,
+       VPMINUBYrr, VPMINUBrr, VPSUBBYrr, VPSUBBrr, VPSUBDYrr, VPSUBDrr,
+       VPSUBSBYrr, VPSUBSBrr, VPSUBSWYrr, VPSUBSWrr, VPSUBUSBYrr,
+       VPSUBUSBrr, VPSUBUSWYrr, VPSUBUSWrr, VPSUBWYrr, VPSUBWrr]
     = IIC_SSE_INTALU_P_RR
+  | i `elem`
+      [PMULHUWrm, PMULHWrm, PMULLWrm, VPMULHUWYrm, VPMULHUWrm,
+       VPMULHWYrm, VPMULHWrm, VPMULLWYrm, VPMULLWrm]
+    = IIC_SSE_INTMUL_P_RM
+  | i `elem`
+      [PMULHUWrr, PMULHWrr, PMULLWrr, VPMULHUWYrr, VPMULHUWrr,
+       VPMULHWYrr, VPMULHWrr, VPMULLWYrr, VPMULLWrr]
+    = IIC_SSE_INTMUL_P_RR
   | i `elem` [PSLLDQri, PSRLDQri] = IIC_SSE_INTSHDQ_P_RI
   | i `elem`
       [PSLLDri, PSLLQri, PSLLWri, PSRADri, PSRAWri, PSRLDri, PSRLQri,
-       PSRLWri]
+       PSRLWri, VPSLLDYri, VPSLLDri, VPSLLQYri, VPSLLQri, VPSLLWYri,
+       VPSLLWri, VPSRADYri, VPSRADri, VPSRAWYri, VPSRAWri, VPSRLDYri,
+       VPSRLDri, VPSRLQYri, VPSRLQri, VPSRLWYri, VPSRLWri]
     = IIC_SSE_INTSH_P_RI
   | i `elem`
       [PSLLDrm, PSLLQrm, PSLLWrm, PSRADrm, PSRAWrm, PSRLDrm, PSRLQrm,
-       PSRLWrm]
+       PSRLWrm, VPSLLDYrm, VPSLLDrm, VPSLLQYrm, VPSLLQrm, VPSLLWYrm,
+       VPSLLWrm, VPSRADYrm, VPSRADrm, VPSRAWYrm, VPSRAWrm, VPSRLDYrm,
+       VPSRLDrm, VPSRLQYrm, VPSRLQrm, VPSRLWYrm, VPSRLWrm]
     = IIC_SSE_INTSH_P_RM
   | i `elem`
       [PSLLDrr, PSLLQrr, PSLLWrr, PSRADrr, PSRAWrr, PSRLDrr, PSRLQrr,
-       PSRLWrr]
+       PSRLWrr, VPSLLDYrr, VPSLLDrr, VPSLLQYrr, VPSLLQrr, VPSLLWYrr,
+       VPSLLWrr, VPSRADYrr, VPSRADrr, VPSRAWYrr, VPSRAWrr, VPSRLDYrr,
+       VPSRLDrr, VPSRLQYrr, VPSRLQrr, VPSRLWYrr, VPSRLWrr]
     = IIC_SSE_INTSH_P_RR
-  | i `elem` [MOVAPDmr, MOVAPSmr, MOVDQAmr, STORE128] =
-    IIC_SSE_MOVA_P_MR
+  | i `elem` [LDDQUrm] = IIC_SSE_LDDQU
+  | i `elem` [LDMXCSR, VLDMXCSR] = IIC_SSE_LDMXCSR
+  | i `elem` [LFENCE] = IIC_SSE_LFENCE
+  | i `elem` [MASKMOVDQU, MASKMOVDQU64, VMASKMOVDQU, VMASKMOVDQU64] =
+    IIC_SSE_MASKMOV
+  | i `elem` [MFENCE] = IIC_SSE_MFENCE
+  | i `elem` [MONITORXrrr, MONITORrrr] = IIC_SSE_MONITOR
+  | i `elem`
+      [MOVAPDmr, MOVAPSmr, MOVDQAmr, STORE128, STORE256, VMOVAPDYmr,
+       VMOVAPDmr, VMOVAPSYmr, VMOVAPSmr, VMOVDQAYmr, VMOVDQAmr]
+    = IIC_SSE_MOVA_P_MR
   | i `elem`
       [FsMOVAPDrm, FsMOVAPSrm, FsVMOVAPDrm, FsVMOVAPSrm, LOAD128,
-       MOVAPDrm, MOVAPSrm, MOVDQArm]
+       LOAD256, MOVAPDrm, MOVAPSrm, MOVDQArm, VMOVAPDYrm, VMOVAPDrm,
+       VMOVAPSYrm, VMOVAPSrm, VMOVDQAYrm, VMOVDQArm]
     = IIC_SSE_MOVA_P_RM
   | i `elem`
       [MOVAPDrr, MOVAPDrr_REV, MOVAPSrr, MOVAPSrr_REV, MOVDQArr,
-       MOVDQArr_REV, MOVE128]
+       MOVDQArr_REV, MOVE128, MOVE256, VMOVAPDYrr, VMOVAPDYrr_REV,
+       VMOVAPDrr, VMOVAPDrr_REV, VMOVAPSYrr, VMOVAPSYrr_REV, VMOVAPSrr,
+       VMOVAPSrr_REV, VMOVDQAYrr, VMOVDQAYrr_REV, VMOVDQArr,
+       VMOVDQArr_REV]
     = IIC_SSE_MOVA_P_RR
   | i `elem`
       [MOV64toPQIrm, MOV64toPQIrr, MOV64toSDrm, MOV64toSDrr, MOVDI2PDIrm,
        MOVDI2PDIrr, MOVDI2SSrm, MOVDI2SSrr, MOVPDI2DImr, MOVPQI2QImr,
        MOVPQIto64rm, MOVQI2PQIrm, MOVSDto64mr, MOVSS2DImr,
-       MOVZPQILo2PQIrm, MOVZQI2PQIrm]
+       MOVZPQILo2PQIrm, MOVZQI2PQIrm, VMOV64toPQIrm, VMOV64toPQIrr,
+       VMOV64toSDrr, VMOVDI2PDIrm, VMOVDI2PDIrr, VMOVDI2SSrm, VMOVDI2SSrr,
+       VMOVPDI2DImr, VMOVPQI2QImr, VMOVPQIto64rm, VMOVSDto64mr,
+       VMOVSDto64rr, VMOVSS2DImr, VMOVZPQILo2PQIrm, VMOVZQI2PQIrm]
     = IIC_SSE_MOVDQ
-  | i `elem` [MOVPDI2DIrr, MOVPQIto64rr, MOVSDto64rr, MOVSS2DIrr] =
-    IIC_SSE_MOVD_ToGP
-  | i `elem` [MOVNTDQmr, MOVNTPDmr, MOVNTPSmr] = IIC_SSE_MOVNT
-  | i `elem` [MOVPQI2QIrr, MOVZPQILo2PQIrr] = IIC_SSE_MOVQ_RR
-  | i `elem` [MOVDQUmr, MOVUPDmr, MOVUPSmr] = IIC_SSE_MOVU_P_MR
-  | i `elem` [MOVDQUrm, MOVUPDrm, MOVUPSrm] = IIC_SSE_MOVU_P_RM
+  | i `elem`
+      [MOVPDI2DIrr, MOVPQIto64rr, MOVSDto64rr, MOVSS2DIrr, VMOVPDI2DIrr,
+       VMOVPQIto64rr, VMOVSS2DIrr]
+    = IIC_SSE_MOVD_ToGP
+  | i `elem`
+      [MOVMSKPDrr, MOVMSKPSrr, PMOVMSKBrr, VMOVMSKPDYrr, VMOVMSKPDrr,
+       VMOVMSKPSYrr, VMOVMSKPSrr, VPMOVMSKBrr]
+    = IIC_SSE_MOVMSK
+  | i `elem`
+      [MOVNTDQmr, MOVNTI_64mr, MOVNTImr, MOVNTPDmr, MOVNTPSmr,
+       VMOVNTDQYmr, VMOVNTDQmr, VMOVNTPDYmr, VMOVNTPDmr, VMOVNTPSYmr,
+       VMOVNTPSmr]
+    = IIC_SSE_MOVNT
+  | i `elem`
+      [MOVPQI2QIrr, MOVZPQILo2PQIrr, VMOVPQI2QIrr, VMOVZPQILo2PQIrr]
+    = IIC_SSE_MOVQ_RR
+  | i `elem`
+      [MOVDQUmr, MOVUPDmr, MOVUPSmr, VMOVDQUYmr, VMOVDQUmr, VMOVUPDYmr,
+       VMOVUPDmr, VMOVUPSYmr, VMOVUPSmr]
+    = IIC_SSE_MOVU_P_MR
+  | i `elem`
+      [MOVDQUrm, MOVUPDrm, MOVUPSrm, VMOVDQUYrm, VMOVDQUrm, VMOVUPDYrm,
+       VMOVUPDrm, VMOVUPSYrm, VMOVUPSrm]
+    = IIC_SSE_MOVU_P_RM
   | i `elem`
       [MOVDQUrr, MOVDQUrr_REV, MOVUPDrr, MOVUPDrr_REV, MOVUPSrr,
-       MOVUPSrr_REV]
+       MOVUPSrr_REV, VMOVDQUYrr, VMOVDQUYrr_REV, VMOVDQUrr, VMOVDQUrr_REV,
+       VMOVUPDYrr, VMOVUPDYrr_REV, VMOVUPDrr, VMOVUPDrr_REV, VMOVUPSYrr,
+       VMOVUPSYrr_REV, VMOVUPSrr, VMOVUPSrr_REV]
     = IIC_SSE_MOVU_P_RR
   | i `elem`
       [MOVDDUPrm, MOVDDUPrr, MOVHLPSrr, MOVHPDmr, MOVHPDrm, MOVHPSmr,
        MOVHPSrm, MOVLHPSrr, MOVLPDmr, MOVLPDrm, MOVLPSmr, MOVLPSrm,
-       MOVSHDUPrm, MOVSHDUPrr, MOVSLDUPrm, MOVSLDUPrr]
+       MOVSHDUPrm, MOVSHDUPrr, MOVSLDUPrm, MOVSLDUPrr, VMOVDDUPrm,
+       VMOVDDUPrr, VMOVHLPSrr, VMOVHPDmr, VMOVHPDrm, VMOVHPSmr, VMOVHPSrm,
+       VMOVLHPSrr, VMOVLPDmr, VMOVLPDrm, VMOVLPSmr, VMOVLPSrm,
+       VMOVSHDUPYrm, VMOVSHDUPYrr, VMOVSHDUPrm, VMOVSHDUPrr, VMOVSLDUPYrm,
+       VMOVSLDUPYrr, VMOVSLDUPrm, VMOVSLDUPrr]
     = IIC_SSE_MOV_LH
-  | i `elem` [MOVSDmr, MOVSSmr] = IIC_SSE_MOV_S_MR
-  | i `elem` [MOVSDrm, MOVSSrm] = IIC_SSE_MOV_S_RM
-  | i `elem` [MOVSDrr, MOVSDrr_REV, MOVSSrr, MOVSSrr_REV] =
-    IIC_SSE_MOV_S_RR
+  | i `elem` [MOVSDmr, MOVSSmr, VMOVSDmr, VMOVSSmr] =
+    IIC_SSE_MOV_S_MR
+  | i `elem` [MOVSDrm, MOVSSrm, VMOVSDrm, VMOVSSrm] =
+    IIC_SSE_MOV_S_RM
+  | i `elem`
+      [MOVSDrr, MOVSDrr_REV, MOVSSrr, MOVSSrr_REV, VMOVSDrr,
+       VMOVSDrr_REV, VMOVSSrr, VMOVSSrr_REV]
+    = IIC_SSE_MOV_S_RR
   | i `elem` [MPSADBWrmi] = IIC_SSE_MPSADBW_RM
   | i `elem` [MPSADBWrri] = IIC_SSE_MPSADBW_RR
-  | i `elem` [MULPSrr] = IIC_SSE_MUL_F32P_RR
-  | i `elem` [MULSSrr] = IIC_SSE_MUL_F32S_RR
-  | i `elem` [MULPDrm, MULPSrm] = IIC_SSE_MUL_F64P_RM
-  | i `elem` [MULPDrr] = IIC_SSE_MUL_F64P_RR
-  | i `elem` [MULSDrm, MULSSrm] = IIC_SSE_MUL_F64S_RM
-  | i `elem` [MULSDrr] = IIC_SSE_MUL_F64S_RR
+  | i `elem` [MULPSrr, VMULPSYrr, VMULPSrr] = IIC_SSE_MUL_F32P_RR
+  | i `elem` [MULSSrr, MULSSrr_Int, VMULSSrr, VMULSSrr_Int] =
+    IIC_SSE_MUL_F32S_RR
+  | i `elem`
+      [MULPDrm, MULPSrm, VMULPDYrm, VMULPDrm, VMULPSYrm, VMULPSrm]
+    = IIC_SSE_MUL_F64P_RM
+  | i `elem` [MULPDrr, VMULPDYrr, VMULPDrr] = IIC_SSE_MUL_F64P_RR
+  | i `elem`
+      [MULSDrm, MULSDrm_Int, MULSSrm, MULSSrm_Int, VMULSDrm,
+       VMULSDrm_Int, VMULSSrm, VMULSSrm_Int]
+    = IIC_SSE_MUL_F64S_RM
+  | i `elem` [MULSDrr, MULSDrr_Int, VMULSDrr, VMULSDrr_Int] =
+    IIC_SSE_MUL_F64S_RR
+  | i `elem` [MWAITXrr, MWAITrr] = IIC_SSE_MWAIT
+  | i `elem`
+      [PABSBrm128, PABSDrm128, PABSWrm128, VPABSBrm128, VPABSDrm128,
+       VPABSWrm128]
+    = IIC_SSE_PABS_RM
+  | i `elem`
+      [PABSBrr128, PABSDrr128, PABSWrr128, VPABSBrr128, VPABSDrr128,
+       VPABSWrr128]
+    = IIC_SSE_PABS_RR
+  | i `elem` [PALIGNR128rm, VPALIGNR128rm] = IIC_SSE_PALIGNRM
+  | i `elem` [PALIGNR128rr, VPALIGNR128rr] = IIC_SSE_PALIGNRR
+  | i `elem` [PAUSE] = IIC_SSE_PAUSE
+  | i `elem` [PCLMULQDQrm] = IIC_SSE_PCLMULQDQ_RM
+  | i `elem` [PCLMULQDQrr] = IIC_SSE_PCLMULQDQ_RR
+  | i `elem` [PEXTRWri] = IIC_SSE_PEXTRW
+  | i `elem` [PHADDDrm, PHSUBDrm, VPHADDDrm, VPHSUBDrm] =
+    IIC_SSE_PHADDSUBD_RM
+  | i `elem` [PHADDDrr, PHSUBDrr, VPHADDDrr, VPHSUBDrr] =
+    IIC_SSE_PHADDSUBD_RR
+  | i `elem`
+      [PHADDWrm, PHSUBWrm, VPHADDDYrm, VPHADDWYrm, VPHADDWrm, VPHSUBDYrm,
+       VPHSUBWYrm, VPHSUBWrm, VPSIGNBYrm, VPSIGNDYrm, VPSIGNWYrm]
+    = IIC_SSE_PHADDSUBW_RM
+  | i `elem`
+      [PHADDWrr, PHSUBWrr, VPHADDDYrr, VPHADDWYrr, VPHADDWrr, VPHSUBDYrr,
+       VPHSUBWYrr, VPHSUBWrr, VPSIGNBYrr, VPSIGNDYrr, VPSIGNWYrr]
+    = IIC_SSE_PHADDSUBW_RR
+  | i `elem` [PINSRWrmi, PINSRWrri, VPINSRWrmi, VPINSRWrri] =
+    IIC_SSE_PINSRW
+  | i `elem`
+      [PMADDWDrm, PMADDWDrr, VPMADDWDYrm, VPMADDWDYrr, VPMADDWDrm,
+       VPMADDWDrr]
+    = IIC_SSE_PMADD
   | i `elem` [POPCNT16rm, POPCNT32rm, POPCNT64rm] = IIC_SSE_POPCNT_RM
   | i `elem` [POPCNT16rr, POPCNT32rr, POPCNT64rr] = IIC_SSE_POPCNT_RR
-  | i `elem` [PSHUFBrm] = IIC_SSE_PSHUFB_RM
-  | i `elem` [PSHUFBrr] = IIC_SSE_PSHUFB_RR
-  | i `elem` [PSHUFDmi, PSHUFHWmi, PSHUFLWmi] = IIC_SSE_PSHUF_MI
-  | i `elem` [PSHUFDri, PSHUFHWri, PSHUFLWri] = IIC_SSE_PSHUF_RI
-  | i `elem` [ROUNDPSm] = IIC_SSE_ROUNDPS_MEM
-  | i `elem` [ROUNDPDm, ROUNDPDr, ROUNDPSr] = IIC_SSE_ROUNDPS_REG
-  | i `elem` [SQRTSDm] = IIC_SSE_SQRTSD_RM
-  | i `elem` [SQRTSDr] = IIC_SSE_SQRTSD_RR
-  | i `elem` [SQRTSSm] = IIC_SSE_SQRTSS_RM
-  | i `elem` [SQRTSSr] = IIC_SSE_SQRTSS_RR
+  | i `elem`
+      [CLFLUSH, PREFETCHNTA, PREFETCHT0, PREFETCHT1, PREFETCHT2]
+    = IIC_SSE_PREFETCH
+  | i `elem` [PSHUFBrm, VPSHUFBYrm, VPSHUFBrm] = IIC_SSE_PSHUFB_RM
+  | i `elem` [PSHUFBrr, VPSHUFBYrr, VPSHUFBrr] = IIC_SSE_PSHUFB_RR
+  | i `elem`
+      [PSHUFDmi, PSHUFHWmi, PSHUFLWmi, VPSHUFDYmi, VPSHUFDmi,
+       VPSHUFHWYmi, VPSHUFHWmi, VPSHUFLWYmi, VPSHUFLWmi]
+    = IIC_SSE_PSHUF_MI
+  | i `elem`
+      [PSHUFDri, PSHUFHWri, PSHUFLWri, VPSHUFDYri, VPSHUFDri,
+       VPSHUFHWYri, VPSHUFHWri, VPSHUFLWYri, VPSHUFLWri]
+    = IIC_SSE_PSHUF_RI
+  | i `elem`
+      [PSIGNBrm, PSIGNDrm, PSIGNWrm, VPSIGNBrm, VPSIGNDrm, VPSIGNWrm]
+    = IIC_SSE_PSIGN_RM
+  | i `elem`
+      [PSIGNBrr, PSIGNDrr, PSIGNWrr, VPSIGNBrr, VPSIGNDrr, VPSIGNWrr]
+    = IIC_SSE_PSIGN_RR
+  | i `elem` [RCPPSm, VRCPPSYm, VRCPPSm] = IIC_SSE_RCPP_RM
+  | i `elem` [RCPPSr, VRCPPSYr, VRCPPSr] = IIC_SSE_RCPP_RR
+  | i `elem` [RCPSSm, VRCPSSm] = IIC_SSE_RCPS_RM
+  | i `elem` [RCPSSr, VRCPSSr] = IIC_SSE_RCPS_RR
+  | i `elem` [ROUNDPSm, VROUNDPSm, VROUNDYPSm] = IIC_SSE_ROUNDPS_MEM
+  | i `elem`
+      [ROUNDPDm, ROUNDPDr, ROUNDPSr, VROUNDPDm, VROUNDPDr, VROUNDPSr,
+       VROUNDYPDm, VROUNDYPDr, VROUNDYPSr]
+    = IIC_SSE_ROUNDPS_REG
+  | i `elem` [RSQRTPSm, VRSQRTPSYm, VRSQRTPSm] = IIC_SSE_RSQRTPS_RM
+  | i `elem` [RSQRTPSr, VRSQRTPSYr, VRSQRTPSr] = IIC_SSE_RSQRTPS_RR
+  | i `elem` [RSQRTSSm, VRSQRTSSm] = IIC_SSE_RSQRTSS_RM
+  | i `elem` [RSQRTSSr, VRSQRTSSr] = IIC_SSE_RSQRTSS_RR
+  | i `elem` [SFENCE] = IIC_SSE_SFENCE
+  | i `elem`
+      [SHUFPDrmi, SHUFPDrri, SHUFPSrmi, SHUFPSrri, VSHUFPDYrmi,
+       VSHUFPDYrri, VSHUFPDrmi, VSHUFPDrri, VSHUFPSYrmi, VSHUFPSYrri,
+       VSHUFPSrmi, VSHUFPSrri]
+    = IIC_SSE_SHUFP
+  | i `elem` [SQRTPDm, VSQRTPDYm, VSQRTPDm] = IIC_SSE_SQRTPD_RM
+  | i `elem` [SQRTPDr, VSQRTPDYr, VSQRTPDr] = IIC_SSE_SQRTPD_RR
+  | i `elem` [SQRTPSm, VSQRTPSYm, VSQRTPSm] = IIC_SSE_SQRTPS_RM
+  | i `elem` [SQRTPSr, VSQRTPSYr, VSQRTPSr] = IIC_SSE_SQRTPS_RR
+  | i `elem` [SQRTSDm, VSQRTSDm] = IIC_SSE_SQRTSD_RM
+  | i `elem` [SQRTSDr, VSQRTSDr] = IIC_SSE_SQRTSD_RR
+  | i `elem` [SQRTSSm, VSQRTSSm] = IIC_SSE_SQRTSS_RM
+  | i `elem` [SQRTSSr, VSQRTSSr] = IIC_SSE_SQRTSS_RR
+  | i `elem` [STMXCSR, VSTMXCSR] = IIC_SSE_STMXCSR
   | i `elem`
       [PUNPCKHBWrm, PUNPCKHBWrr, PUNPCKHDQrm, PUNPCKHDQrr, PUNPCKHQDQrm,
        PUNPCKHQDQrr, PUNPCKHWDrm, PUNPCKHWDrr, PUNPCKLBWrm, PUNPCKLBWrr,
        PUNPCKLDQrm, PUNPCKLDQrr, PUNPCKLQDQrm, PUNPCKLQDQrr, PUNPCKLWDrm,
-       PUNPCKLWDrr]
+       PUNPCKLWDrr, UNPCKHPDrm, UNPCKHPDrr, UNPCKHPSrm, UNPCKHPSrr,
+       UNPCKLPDrm, UNPCKLPDrr, UNPCKLPSrm, UNPCKLPSrr, VPUNPCKHBWrm,
+       VPUNPCKHBWrr, VPUNPCKHDQrm, VPUNPCKHDQrr, VPUNPCKHQDQrm,
+       VPUNPCKHQDQrr, VPUNPCKHWDrm, VPUNPCKHWDrr, VPUNPCKLBWrm,
+       VPUNPCKLBWrr, VPUNPCKLDQrm, VPUNPCKLDQrr, VPUNPCKLQDQrm,
+       VPUNPCKLQDQrr, VPUNPCKLWDrm, VPUNPCKLWDrr, VUNPCKHPDYrm,
+       VUNPCKHPDYrr, VUNPCKHPDrm, VUNPCKHPDrr, VUNPCKHPSYrm, VUNPCKHPSYrr,
+       VUNPCKHPSrm, VUNPCKHPSrr, VUNPCKLPDYrm, VUNPCKLPDYrr, VUNPCKLPDrm,
+       VUNPCKLPDrr, VUNPCKLPSYrm, VUNPCKLPSYrr, VUNPCKLPSrm, VUNPCKLPSrr]
     = IIC_SSE_UNPCK
   | i `elem` [STC] = IIC_STC
   | i `elem` [STD] = IIC_STD
+  | i `elem` [STI] = IIC_STI
   | i `elem` [STOSB, STOSL, STOSQ, STOSW] = IIC_STOS
+  | i `elem` [STR16r, STR32r, STR64r, STRm] = IIC_STR
+  | i `elem` [SWAPGS] = IIC_SWAPGS
+  | i `elem` [SYSCALL, SYSRET, SYSRET64] = IIC_SYSCALL
+  | i `elem` [SYSENTER, SYSEXIT, SYSEXIT64] = IIC_SYS_ENTER_EXIT
   | i `elem`
       [DEC16m, DEC32m, DEC64m, DEC8m, INC16m, INC32m, INC64m, INC8m,
-       NEG16m, NEG32m, NEG64m, NEG8m, NOT16m, NOT32m, NOT64m, NOT8m]
+       LOCK_DEC16m, LOCK_DEC32m, LOCK_DEC64m, LOCK_DEC8m, LOCK_INC16m,
+       LOCK_INC32m, LOCK_INC64m, LOCK_INC8m, NEG16m, NEG32m, NEG64m,
+       NEG8m, NOT16m, NOT32m, NOT64m, NOT8m]
     = IIC_UNARY_MEM
   | i `elem`
       [DEC16r, DEC16r_alt, DEC32r, DEC32r_alt, DEC64r, DEC8r, INC16r,
        INC16r_alt, INC32r, INC32r_alt, INC64r, INC8r, NEG16r, NEG32r,
        NEG64r, NEG8r, NOT16r, NOT32r, NOT64r, NOT8r]
     = IIC_UNARY_REG
+  | i `elem` [VERRm, VERRr] = IIC_VERR
+  | i `elem` [VERWr] = IIC_VERW_MEM
+  | i `elem` [VERWm] = IIC_VERW_REG
+  | i `elem` [WAIT] = IIC_WAIT
+  | i `elem` [WRMSR] = IIC_WRMSR
+  | i `elem` [LXADD16, LXADD32, LXADD64] = IIC_XADD_LOCK_MEM
+  | i `elem` [LXADD8] = IIC_XADD_LOCK_MEM8
+  | i `elem` [XADD16rm, XADD32rm, XADD64rm, XADD8rm] = IIC_XADD_MEM
+  | i `elem` [XADD16rr, XADD32rr, XADD64rr, XADD8rr] = IIC_XADD_REG
   | i `elem` [XCHG16rm, XCHG32rm, XCHG64rm, XCHG8rm] = IIC_XCHG_MEM
   | i `elem`
       [XCHG16ar, XCHG16rr, XCHG32ar, XCHG32ar64, XCHG32rr, XCHG64ar,
        XCHG64rr, XCHG8rr]
     = IIC_XCHG_REG
+  | i `elem` [XLAT] = IIC_XLAT
   | i `elem`
-      [ADD16ri8_DB, ADD16ri_DB, ADD16rr_DB, ADD32ri8_DB, ADD32ri_DB,
-       ADD32rr_DB, ADD64ri32_DB, ADD64ri8_DB, ADD64rr_DB, ANDNPDrm,
-       ANDNPDrr, ANDNPSrm, ANDNPSrr, ANDPDrm, ANDPDrr, ANDPSrm, ANDPSrr,
-       BTR64rr, FsFLD0SD, FsFLD0SS, LEA16r_demat, LEA16r_source,
+      [ACQUIRE_MOV16rm, ACQUIRE_MOV32rm, ACQUIRE_MOV64rm, ACQUIRE_MOV8rm,
+       ADD16ri8_DB, ADD16ri_DB, ADD16rr_DB, ADD32ri8_DB, ADD32ri_DB,
+       ADD32rr_DB, ADD64ri32_DB, ADD64ri8_DB, ADD64rr_DB,
+       AESKEYGENASSIST128rm, AESKEYGENASSIST128rr, ANDNPDrm, ANDNPDrr,
+       ANDNPSrm, ANDNPSrr, ANDPDrm, ANDPDrr, ANDPSrm, ANDPSrr,
+       AVX2_SETALLONES, AVX2_SETALLONES_demat, AVX2_SETALLONES_remat,
+       AVX2_SETALLONES_source, AVX_SET0, AVX_SET0_demat, AVX_SET0_remat,
+       AVX_SET0_source, BEXTR32rm, BEXTR32rr, BEXTR64rm, BEXTR64rr,
+       BEXTRI32mi, BEXTRI32ri, BEXTRI64mi, BEXTRI64ri, BLCFILL32rm,
+       BLCFILL32rr, BLCFILL64rm, BLCFILL64rr, BLCI32rm, BLCI32rr,
+       BLCI64rm, BLCI64rr, BLCIC32rm, BLCIC32rr, BLCIC64rm, BLCIC64rr,
+       BLCMSK32rm, BLCMSK32rr, BLCMSK64rm, BLCMSK64rr, BLCS32rm, BLCS32rr,
+       BLCS64rm, BLCS64rr, BLSFILL32rm, BLSFILL32rr, BLSFILL64rm,
+       BLSFILL64rr, BLSI32rm, BLSI32rr, BLSI64rm, BLSI64rr, BLSIC32rm,
+       BLSIC32rr, BLSIC64rm, BLSIC64rr, BLSMSK32rm, BLSMSK32rr,
+       BLSMSK64rm, BLSMSK64rr, BLSR32rm, BLSR32rr, BLSR64rm, BLSR64rr,
+       BTR64rr, BUNDLE, BZHI32rm, BZHI32rr, BZHI64rm, BZHI64rr, CATCHPAD,
+       CATCHRET, CFI_INSTRUCTION, CLAC, CLEANUPRET, CLFLUSHOPT, CLGI,
+       CLWB, CLZEROr, CMOV_FR128, CMOV_FR32, CMOV_FR64, CMOV_GR16,
+       CMOV_GR32, CMOV_GR8, CMOV_V2F64, CMOV_V2I64, CMOV_V4F32,
+       CMOV_V4F64, CMOV_V4I64, CMOV_V8F32, COPY, COPY_TO_REGCLASS,
+       CS_PREFIX, DATA16_PREFIX, DBG_VALUE, DS_PREFIX, EH_LABEL,
+       EH_RESTORE, EH_SjLj_LongJmp32, EH_SjLj_LongJmp64, EH_SjLj_SetJmp32,
+       EH_SjLj_SetJmp64, EH_SjLj_Setup, ENCLS, ENCLU, ES_PREFIX,
+       EXTRACT_SUBREG, EXTRQ, EXTRQI, FAULTING_LOAD_OP, FBLDm, FBSTPm,
+       FCOM32m, FCOM64m, FCOMP32m, FCOMP64m, FEMMS, FICOM16m, FICOM32m,
+       FICOMP16m, FICOMP32m, FLDENVm, FNSTSWm, FRSTORm, FSAVEm, FSTENVm,
+       FS_PREFIX, FsFLD0SD, FsFLD0SS, FsFLD0SS_demat, FsFLD0SS_remat,
+       FsFLD0SS_source, GC_LABEL, GETSEC, GS_PREFIX, IMPLICIT_DEF,
+       INLINEASM, INSERTQ, INSERTQI, INSERT_SUBREG, INTO, INVEPT32,
+       INVEPT64, INVLPGA32, INVLPGA64, INVPCID32, INVPCID64, INVVPID32,
+       INVVPID64, IRET, Int_MemBarrier, KILL, LEA16r_demat, LEA16r_source,
        LEA32r_demat, LEA32r_source, LEA64r_demat, LEA64r_source,
-       MOV16ao64, MOV16o64a, MOV16ri_alt_demat, MOV16ri_alt_source,
-       MOV16ri_demat, MOV16ri_source, MOV32ao64, MOV32o64a, MOV32r0_demat,
-       MOV32r0_source, MOV32r1, MOV32r1_demat, MOV32r1_remat,
-       MOV32r1_source, MOV32r_1, MOV32r_1_demat, MOV32r_1_remat,
-       MOV32r_1_source, MOV32ri64, MOV32ri64_demat, MOV32ri64_remat,
-       MOV32ri64_source, MOV32ri_alt_demat, MOV32ri_alt_source,
-       MOV32ri_demat, MOV32ri_source, MOV64ao64, MOV64o64a,
-       MOV64ri32_demat, MOV64ri32_source, MOV64ri_demat, MOV64ri_source,
-       MOV8ao64, MOV8o64a, MOV8ri_demat, MOV8ri_source, MOVNTDQArm,
-       MOVNTSD, MOVNTSS, ORPDrm, ORPDrr, ORPSrm, ORPSrr, PACKSSDWrm,
-       PACKSSDWrr, PACKSSWBrm, PACKSSWBrr, PACKUSDWrm, PACKUSDWrr,
-       PACKUSWBrm, PACKUSWBrr, PCMPEQQrm, PCMPEQQrr, PCMPGTQrm, PCMPGTQrr,
-       PMULDQrm, PMULDQrr, PMULUDQrm, PMULUDQrr, REPNE_PREFIX, REP_PREFIX,
-       REX64_PREFIX, RORX32mi, RORX32ri, RORX64mi, RORX64ri, ROUNDSDm,
-       ROUNDSDr, ROUNDSSm, ROUNDSSr, SARX32rm, SARX32rr, SARX64rm,
-       SARX64rr, SETB_C16r, SETB_C32r, SETB_C64r, SETB_C8r, SHLX32rm,
-       SHLX32rr, SHLX64rm, SHLX64rr, SHRX32rm, SHRX32rr, SHRX64rm,
-       SHRX64rr, TCRETURNdi, TCRETURNdi64, TCRETURNmi, TCRETURNmi64,
-       TCRETURNri, TCRETURNri64, UD2B, V_SET0, V_SET0_demat, V_SET0_remat,
+       LIFETIME_END, LIFETIME_START, LOAD_STACK_GUARD, LOCAL_ESCAPE,
+       LOCK_PREFIX, LZCNT16rm, LZCNT16rr, LZCNT32rm, LZCNT32rr, LZCNT64rm,
+       LZCNT64rr, MMX_CVTPI2PSirm, MONITOR, MONTMUL, MORESTACK_RET,
+       MORESTACK_RET_RESTORE_R10, MOV16ao64, MOV16o64a, MOV16ri_alt_demat,
+       MOV16ri_alt_source, MOV16ri_demat, MOV16ri_source, MOV32ao64,
+       MOV32o64a, MOV32r0_demat, MOV32r0_source, MOV32r1, MOV32r1_demat,
+       MOV32r1_remat, MOV32r1_source, MOV32r_1, MOV32r_1_demat,
+       MOV32r_1_remat, MOV32r_1_source, MOV32ri64, MOV32ri64_demat,
+       MOV32ri64_remat, MOV32ri64_source, MOV32ri_alt_demat,
+       MOV32ri_alt_source, MOV32ri_demat, MOV32ri_source, MOV64ao64,
+       MOV64o64a, MOV64ri32_demat, MOV64ri32_source, MOV64ri_demat,
+       MOV64ri_source, MOV8ao64, MOV8o64a, MOV8ri_demat, MOV8ri_source,
+       MOVNTDQArm, MOVNTSD, MOVNTSS, MOVPC32r, ORPDrm, ORPDrr, ORPSrm,
+       ORPSrr, PACKSSDWrm, PACKSSDWrr, PACKSSWBrm, PACKSSWBrr, PACKUSDWrm,
+       PACKUSDWrr, PACKUSWBrm, PACKUSWBrr, PATCHPOINT, PCMPEQQrm,
+       PCMPEQQrr, PCMPESTRIMEM, PCMPESTRIREG, PCMPESTRIrm, PCMPESTRIrr,
+       PCMPESTRM128MEM, PCMPESTRM128REG, PCMPESTRM128rm, PCMPESTRM128rr,
+       PCMPGTQrm, PCMPGTQrr, PCMPISTRIMEM, PCMPISTRIREG, PCMPISTRIrm,
+       PCMPISTRIrr, PCMPISTRM128MEM, PCMPISTRM128REG, PCMPISTRM128rm,
+       PCMPISTRM128rr, PCOMMIT, PDEP32rm, PDEP32rr, PDEP64rm, PDEP64rr,
+       PEXT32rm, PEXT32rr, PEXT64rm, PEXT64rr, PEXTRBmr, PEXTRBrr,
+       PEXTRDmr, PEXTRDrr, PEXTRQmr, PEXTRQrr, PEXTRWmr, PEXTRWrr_REV,
+       PHADDSWrm128, PHADDSWrr128, PHI, PHMINPOSUWrm128, PHMINPOSUWrr128,
+       PHSUBSWrm128, PHSUBSWrr128, PINSRBrm, PINSRBrr, PINSRDrm, PINSRDrr,
+       PINSRQrm, PINSRQrr, PMADDUBSWrm128, PMADDUBSWrr128, PMAXSBrm,
+       PMAXSBrr, PMAXSDrm, PMAXSDrr, PMAXUDrm, PMAXUDrr, PMAXUWrm,
+       PMAXUWrr, PMINSBrm, PMINSBrr, PMINSDrm, PMINSDrr, PMINUDrm,
+       PMINUDrr, PMINUWrm, PMINUWrr, PMULDQrm, PMULDQrr, PMULHRSWrm128,
+       PMULHRSWrr128, PMULLDrm, PMULLDrr, PMULUDQrm, PMULUDQrr, PREFETCH,
+       PREFETCHW, PSADBWrm, PSADBWrr, PTESTrm, PTESTrr, RCPSSm_Int,
+       RCPSSr_Int, RDFLAGS32, RDFLAGS64, RDFSBASE, RDFSBASE64, RDGSBASE,
+       RDGSBASE64, RDPKRU, RDPKRUr, RDRAND16r, RDRAND32r, RDRAND64r,
+       RDSEED16r, RDSEED32r, RDSEED64r, RDTSCP, REG_SEQUENCE,
+       RELEASE_ADD32mi, RELEASE_ADD32mr, RELEASE_ADD64mi32,
+       RELEASE_ADD64mr, RELEASE_ADD8mi, RELEASE_ADD8mr, RELEASE_AND32mi,
+       RELEASE_AND32mr, RELEASE_AND64mi32, RELEASE_AND64mr,
+       RELEASE_AND8mi, RELEASE_AND8mr, RELEASE_DEC16m, RELEASE_DEC32m,
+       RELEASE_DEC64m, RELEASE_DEC8m, RELEASE_FADD32mr, RELEASE_FADD64mr,
+       RELEASE_INC16m, RELEASE_INC32m, RELEASE_INC64m, RELEASE_INC8m,
+       RELEASE_MOV16mi, RELEASE_MOV16mr, RELEASE_MOV32mi, RELEASE_MOV32mr,
+       RELEASE_MOV64mi32, RELEASE_MOV64mr, RELEASE_MOV8mi, RELEASE_MOV8mr,
+       RELEASE_OR32mi, RELEASE_OR32mr, RELEASE_OR64mi32, RELEASE_OR64mr,
+       RELEASE_OR8mi, RELEASE_OR8mr, RELEASE_XOR32mi, RELEASE_XOR32mr,
+       RELEASE_XOR64mi32, RELEASE_XOR64mr, RELEASE_XOR8mi, RELEASE_XOR8mr,
+       REPNE_PREFIX, REP_PREFIX, REX64_PREFIX, RORX32mi, RORX32ri,
+       RORX64mi, RORX64ri, ROUNDSDm, ROUNDSDr, ROUNDSDr_Int, ROUNDSSm,
+       ROUNDSSr, ROUNDSSr_Int, RSQRTSSm_Int, RSQRTSSr_Int, SARX32rm,
+       SARX32rr, SARX64rm, SARX64rr, SEG_ALLOCA_32, SEG_ALLOCA_64,
+       SEH_EndPrologue, SEH_Epilogue, SEH_PushFrame, SEH_PushReg,
+       SEH_SaveReg, SEH_SaveXMM, SEH_SetFrame, SEH_StackAlloc, SETB_C16r,
+       SETB_C32r, SETB_C64r, SETB_C8r, SHA1MSG1rm, SHA1MSG1rr, SHA1MSG2rm,
+       SHA1MSG2rr, SHA1NEXTErm, SHA1NEXTErr, SHA1RNDS4rmi, SHA1RNDS4rri,
+       SHA256MSG1rm, SHA256MSG1rr, SHA256MSG2rm, SHA256MSG2rr,
+       SHA256RNDS2rm, SHA256RNDS2rr, SHLX32rm, SHLX32rr, SHLX64rm,
+       SHLX64rr, SHRX32rm, SHRX32rr, SHRX64rm, SHRX64rr, SIDT32m, SIDT64m,
+       SKINIT, SQRTSDm_Int, SQRTSDr_Int, SQRTSSm_Int, SQRTSSr_Int,
+       SS_PREFIX, STAC, STACKMAP, STATEPOINT, STGI, SUBREG_TO_REG,
+       T1MSKC32rm, T1MSKC32rr, T1MSKC64rm, T1MSKC64rr, TCRETURNdi,
+       TCRETURNdi64, TCRETURNmi, TCRETURNmi64, TCRETURNri, TCRETURNri64,
+       TLSCall_32, TLSCall_64, TRAP, TZCNT16rm, TZCNT16rr, TZCNT32rm,
+       TZCNT32rr, TZCNT64rm, TZCNT64rr, TZMSK32rm, TZMSK32rr, TZMSK64rm,
+       TZMSK64rr, UD2B, VAARG_64, VAESKEYGENASSIST128rm,
+       VAESKEYGENASSIST128rr, VANDNPDYrm, VANDNPDYrr, VANDNPDrm,
+       VANDNPDrr, VANDNPSYrm, VANDNPSYrr, VANDNPSrm, VANDNPSrr, VANDPDYrm,
+       VANDPDYrr, VANDPDrm, VANDPDrr, VANDPSYrm, VANDPSYrr, VANDPSrm,
+       VANDPSrr, VASTART_SAVE_XMM_REGS, VBLENDVPDYrm, VBLENDVPDYrr,
+       VBLENDVPDrm, VBLENDVPDrr, VBLENDVPSYrm, VBLENDVPSYrr, VBLENDVPSrm,
+       VBLENDVPSrr, VBROADCASTF128, VBROADCASTI128, VBROADCASTSDYrm,
+       VBROADCASTSDYrr, VBROADCASTSSYrm, VBROADCASTSSYrr, VBROADCASTSSrm,
+       VBROADCASTSSrr, VCVTDQ2PDYrm, VCVTDQ2PDYrr, VCVTDQ2PDrm,
+       VCVTDQ2PDrr, VCVTPD2DQXrm, VCVTPD2DQYrm, VCVTPD2DQYrr, VCVTPD2DQrr,
+       VCVTPH2PSYrm, VCVTPH2PSYrr, VCVTPH2PSrm, VCVTPH2PSrr, VCVTPS2PHYmr,
+       VCVTPS2PHYrr, VCVTPS2PHmr, VCVTPS2PHrr, VCVTSD2SI64Zrm,
+       VCVTSD2SIZrm, VCVTSD2USI64Zrm, VCVTSD2USIZrm, VCVTSI2SD64rm,
+       VCVTSI2SD64rr, VCVTSI2SDrm, VCVTSI2SDrr, VCVTSI2SS64rm,
+       VCVTSI2SS64rr, VCVTSI2SSrm, VCVTSI2SSrr, VCVTSS2SI64Zrm,
+       VCVTSS2SIZrm, VCVTSS2USI64Zrm, VCVTSS2USIZrm, VCVTTSD2SI64Zrm,
+       VCVTTSD2SI64Zrm_Int, VCVTTSD2SIZrm, VCVTTSD2SIZrm_Int,
+       VCVTTSD2USI64Zrm, VCVTTSD2USI64Zrm_Int, VCVTTSD2USIZrm,
+       VCVTTSD2USIZrm_Int, VCVTTSS2SI64Zrm, VCVTTSS2SI64Zrm_Int,
+       VCVTTSS2SIZrm, VCVTTSS2SIZrm_Int, VCVTTSS2USI64Zrm,
+       VCVTTSS2USI64Zrm_Int, VCVTTSS2USIZrm, VCVTTSS2USIZrm_Int,
+       VEXTRACTF128mr, VEXTRACTF128rr, VEXTRACTI128mr, VEXTRACTI128rr,
+       VFMADDPD4mr, VFMADDPD4mrY, VFMADDPD4rm, VFMADDPD4rmY, VFMADDPD4rr,
+       VFMADDPD4rrY, VFMADDPD4rrY_REV, VFMADDPD4rr_REV, VFMADDPDr132m,
+       VFMADDPDr132mY, VFMADDPDr132r, VFMADDPDr132rY, VFMADDPDr213m,
+       VFMADDPDr213mY, VFMADDPDr213r, VFMADDPDr213rY, VFMADDPDr231m,
+       VFMADDPDr231mY, VFMADDPDr231r, VFMADDPDr231rY, VFMADDPS4mr,
+       VFMADDPS4mrY, VFMADDPS4rm, VFMADDPS4rmY, VFMADDPS4rr, VFMADDPS4rrY,
+       VFMADDPS4rrY_REV, VFMADDPS4rr_REV, VFMADDPSr132m, VFMADDPSr132mY,
+       VFMADDPSr132r, VFMADDPSr132rY, VFMADDPSr213m, VFMADDPSr213mY,
+       VFMADDPSr213r, VFMADDPSr213rY, VFMADDPSr231m, VFMADDPSr231mY,
+       VFMADDPSr231r, VFMADDPSr231rY, VFMADDSD4mr, VFMADDSD4mr_Int,
+       VFMADDSD4rm, VFMADDSD4rm_Int, VFMADDSD4rr, VFMADDSD4rr_Int,
+       VFMADDSD4rr_REV, VFMADDSDr132m, VFMADDSDr132m_Int, VFMADDSDr132r,
+       VFMADDSDr132r_Int, VFMADDSDr213m, VFMADDSDr213m_Int, VFMADDSDr213r,
+       VFMADDSDr213r_Int, VFMADDSDr231m, VFMADDSDr231m_Int, VFMADDSDr231r,
+       VFMADDSDr231r_Int, VFMADDSS4mr, VFMADDSS4mr_Int, VFMADDSS4rm,
+       VFMADDSS4rm_Int, VFMADDSS4rr, VFMADDSS4rr_Int, VFMADDSS4rr_REV,
+       VFMADDSSr132m, VFMADDSSr132m_Int, VFMADDSSr132r, VFMADDSSr132r_Int,
+       VFMADDSSr213m, VFMADDSSr213m_Int, VFMADDSSr213r, VFMADDSSr213r_Int,
+       VFMADDSSr231m, VFMADDSSr231m_Int, VFMADDSSr231r, VFMADDSSr231r_Int,
+       VFMADDSUBPD4mr, VFMADDSUBPD4mrY, VFMADDSUBPD4rm, VFMADDSUBPD4rmY,
+       VFMADDSUBPD4rr, VFMADDSUBPD4rrY, VFMADDSUBPD4rrY_REV,
+       VFMADDSUBPD4rr_REV, VFMADDSUBPDr132m, VFMADDSUBPDr132mY,
+       VFMADDSUBPDr132r, VFMADDSUBPDr132rY, VFMADDSUBPDr213m,
+       VFMADDSUBPDr213mY, VFMADDSUBPDr213r, VFMADDSUBPDr213rY,
+       VFMADDSUBPDr231m, VFMADDSUBPDr231mY, VFMADDSUBPDr231r,
+       VFMADDSUBPDr231rY, VFMADDSUBPS4mr, VFMADDSUBPS4mrY, VFMADDSUBPS4rm,
+       VFMADDSUBPS4rmY, VFMADDSUBPS4rr, VFMADDSUBPS4rrY,
+       VFMADDSUBPS4rrY_REV, VFMADDSUBPS4rr_REV, VFMADDSUBPSr132m,
+       VFMADDSUBPSr132mY, VFMADDSUBPSr132r, VFMADDSUBPSr132rY,
+       VFMADDSUBPSr213m, VFMADDSUBPSr213mY, VFMADDSUBPSr213r,
+       VFMADDSUBPSr213rY, VFMADDSUBPSr231m, VFMADDSUBPSr231mY,
+       VFMADDSUBPSr231r, VFMADDSUBPSr231rY, VFMSUBADDPD4mr,
+       VFMSUBADDPD4mrY, VFMSUBADDPD4rm, VFMSUBADDPD4rmY, VFMSUBADDPD4rr,
+       VFMSUBADDPD4rrY, VFMSUBADDPD4rrY_REV, VFMSUBADDPD4rr_REV,
+       VFMSUBADDPDr132m, VFMSUBADDPDr132mY, VFMSUBADDPDr132r,
+       VFMSUBADDPDr132rY, VFMSUBADDPDr213m, VFMSUBADDPDr213mY,
+       VFMSUBADDPDr213r, VFMSUBADDPDr213rY, VFMSUBADDPDr231m,
+       VFMSUBADDPDr231mY, VFMSUBADDPDr231r, VFMSUBADDPDr231rY,
+       VFMSUBADDPS4mr, VFMSUBADDPS4mrY, VFMSUBADDPS4rm, VFMSUBADDPS4rmY,
+       VFMSUBADDPS4rr, VFMSUBADDPS4rrY, VFMSUBADDPS4rrY_REV,
+       VFMSUBADDPS4rr_REV, VFMSUBADDPSr132m, VFMSUBADDPSr132mY,
+       VFMSUBADDPSr132r, VFMSUBADDPSr132rY, VFMSUBADDPSr213m,
+       VFMSUBADDPSr213mY, VFMSUBADDPSr213r, VFMSUBADDPSr213rY,
+       VFMSUBADDPSr231m, VFMSUBADDPSr231mY, VFMSUBADDPSr231r,
+       VFMSUBADDPSr231rY, VFMSUBPD4mr, VFMSUBPD4mrY, VFMSUBPD4rm,
+       VFMSUBPD4rmY, VFMSUBPD4rr, VFMSUBPD4rrY, VFMSUBPD4rrY_REV,
+       VFMSUBPD4rr_REV, VFMSUBPDr132m, VFMSUBPDr132mY, VFMSUBPDr132r,
+       VFMSUBPDr132rY, VFMSUBPDr213m, VFMSUBPDr213mY, VFMSUBPDr213r,
+       VFMSUBPDr213rY, VFMSUBPDr231m, VFMSUBPDr231mY, VFMSUBPDr231r,
+       VFMSUBPDr231rY, VFMSUBPS4mr, VFMSUBPS4mrY, VFMSUBPS4rm,
+       VFMSUBPS4rmY, VFMSUBPS4rr, VFMSUBPS4rrY, VFMSUBPS4rrY_REV,
+       VFMSUBPS4rr_REV, VFMSUBPSr132m, VFMSUBPSr132mY, VFMSUBPSr132r,
+       VFMSUBPSr132rY, VFMSUBPSr213m, VFMSUBPSr213mY, VFMSUBPSr213r,
+       VFMSUBPSr213rY, VFMSUBPSr231m, VFMSUBPSr231mY, VFMSUBPSr231r,
+       VFMSUBPSr231rY, VFMSUBSD4mr, VFMSUBSD4mr_Int, VFMSUBSD4rm,
+       VFMSUBSD4rm_Int, VFMSUBSD4rr, VFMSUBSD4rr_Int, VFMSUBSD4rr_REV,
+       VFMSUBSDr132m, VFMSUBSDr132m_Int, VFMSUBSDr132r, VFMSUBSDr132r_Int,
+       VFMSUBSDr213m, VFMSUBSDr213m_Int, VFMSUBSDr213r, VFMSUBSDr213r_Int,
+       VFMSUBSDr231m, VFMSUBSDr231m_Int, VFMSUBSDr231r, VFMSUBSDr231r_Int,
+       VFMSUBSS4mr, VFMSUBSS4mr_Int, VFMSUBSS4rm, VFMSUBSS4rm_Int,
+       VFMSUBSS4rr, VFMSUBSS4rr_Int, VFMSUBSS4rr_REV, VFMSUBSSr132m,
+       VFMSUBSSr132m_Int, VFMSUBSSr132r, VFMSUBSSr132r_Int, VFMSUBSSr213m,
+       VFMSUBSSr213m_Int, VFMSUBSSr213r, VFMSUBSSr213r_Int, VFMSUBSSr231m,
+       VFMSUBSSr231m_Int, VFMSUBSSr231r, VFMSUBSSr231r_Int, VFNMADDPD4mr,
+       VFNMADDPD4mrY, VFNMADDPD4rm, VFNMADDPD4rmY, VFNMADDPD4rr,
+       VFNMADDPD4rrY, VFNMADDPD4rrY_REV, VFNMADDPD4rr_REV, VFNMADDPDr132m,
+       VFNMADDPDr132mY, VFNMADDPDr132r, VFNMADDPDr132rY, VFNMADDPDr213m,
+       VFNMADDPDr213mY, VFNMADDPDr213r, VFNMADDPDr213rY, VFNMADDPDr231m,
+       VFNMADDPDr231mY, VFNMADDPDr231r, VFNMADDPDr231rY, VFNMADDPS4mr,
+       VFNMADDPS4mrY, VFNMADDPS4rm, VFNMADDPS4rmY, VFNMADDPS4rr,
+       VFNMADDPS4rrY, VFNMADDPS4rrY_REV, VFNMADDPS4rr_REV, VFNMADDPSr132m,
+       VFNMADDPSr132mY, VFNMADDPSr132r, VFNMADDPSr132rY, VFNMADDPSr213m,
+       VFNMADDPSr213mY, VFNMADDPSr213r, VFNMADDPSr213rY, VFNMADDPSr231m,
+       VFNMADDPSr231mY, VFNMADDPSr231r, VFNMADDPSr231rY, VFNMADDSD4mr,
+       VFNMADDSD4mr_Int, VFNMADDSD4rm, VFNMADDSD4rm_Int, VFNMADDSD4rr,
+       VFNMADDSD4rr_Int, VFNMADDSD4rr_REV, VFNMADDSDr132m,
+       VFNMADDSDr132m_Int, VFNMADDSDr132r, VFNMADDSDr132r_Int,
+       VFNMADDSDr213m, VFNMADDSDr213m_Int, VFNMADDSDr213r,
+       VFNMADDSDr213r_Int, VFNMADDSDr231m, VFNMADDSDr231m_Int,
+       VFNMADDSDr231r, VFNMADDSDr231r_Int, VFNMADDSS4mr, VFNMADDSS4mr_Int,
+       VFNMADDSS4rm, VFNMADDSS4rm_Int, VFNMADDSS4rr, VFNMADDSS4rr_Int,
+       VFNMADDSS4rr_REV, VFNMADDSSr132m, VFNMADDSSr132m_Int,
+       VFNMADDSSr132r, VFNMADDSSr132r_Int, VFNMADDSSr213m,
+       VFNMADDSSr213m_Int, VFNMADDSSr213r, VFNMADDSSr213r_Int,
+       VFNMADDSSr231m, VFNMADDSSr231m_Int, VFNMADDSSr231r,
+       VFNMADDSSr231r_Int, VFNMSUBPD4mr, VFNMSUBPD4mrY, VFNMSUBPD4rm,
+       VFNMSUBPD4rmY, VFNMSUBPD4rr, VFNMSUBPD4rrY, VFNMSUBPD4rrY_REV,
+       VFNMSUBPD4rr_REV, VFNMSUBPDr132m, VFNMSUBPDr132mY, VFNMSUBPDr132r,
+       VFNMSUBPDr132rY, VFNMSUBPDr213m, VFNMSUBPDr213mY, VFNMSUBPDr213r,
+       VFNMSUBPDr213rY, VFNMSUBPDr231m, VFNMSUBPDr231mY, VFNMSUBPDr231r,
+       VFNMSUBPDr231rY, VFNMSUBPS4mr, VFNMSUBPS4mrY, VFNMSUBPS4rm,
+       VFNMSUBPS4rmY, VFNMSUBPS4rr, VFNMSUBPS4rrY, VFNMSUBPS4rrY_REV,
+       VFNMSUBPS4rr_REV, VFNMSUBPSr132m, VFNMSUBPSr132mY, VFNMSUBPSr132r,
+       VFNMSUBPSr132rY, VFNMSUBPSr213m, VFNMSUBPSr213mY, VFNMSUBPSr213r,
+       VFNMSUBPSr213rY, VFNMSUBPSr231m, VFNMSUBPSr231mY, VFNMSUBPSr231r,
+       VFNMSUBPSr231rY, VFNMSUBSD4mr, VFNMSUBSD4mr_Int, VFNMSUBSD4rm,
+       VFNMSUBSD4rm_Int, VFNMSUBSD4rr, VFNMSUBSD4rr_Int, VFNMSUBSD4rr_REV,
+       VFNMSUBSDr132m, VFNMSUBSDr132m_Int, VFNMSUBSDr132r,
+       VFNMSUBSDr132r_Int, VFNMSUBSDr213m, VFNMSUBSDr213m_Int,
+       VFNMSUBSDr213r, VFNMSUBSDr213r_Int, VFNMSUBSDr231m,
+       VFNMSUBSDr231m_Int, VFNMSUBSDr231r, VFNMSUBSDr231r_Int,
+       VFNMSUBSS4mr, VFNMSUBSS4mr_Int, VFNMSUBSS4rm, VFNMSUBSS4rm_Int,
+       VFNMSUBSS4rr, VFNMSUBSS4rr_Int, VFNMSUBSS4rr_REV, VFNMSUBSSr132m,
+       VFNMSUBSSr132m_Int, VFNMSUBSSr132r, VFNMSUBSSr132r_Int,
+       VFNMSUBSSr213m, VFNMSUBSSr213m_Int, VFNMSUBSSr213r,
+       VFNMSUBSSr213r_Int, VFNMSUBSSr231m, VFNMSUBSSr231m_Int,
+       VFNMSUBSSr231r, VFNMSUBSSr231r_Int, VFRCZPDrm, VFRCZPDrmY,
+       VFRCZPDrr, VFRCZPDrrY, VFRCZPSrm, VFRCZPSrmY, VFRCZPSrr,
+       VFRCZPSrrY, VFRCZSDrm, VFRCZSDrr, VFRCZSSrm, VFRCZSSrr,
+       VGATHERDPDYrm, VGATHERDPDrm, VGATHERDPSYrm, VGATHERDPSrm,
+       VGATHERQPDYrm, VGATHERQPDrm, VGATHERQPSYrm, VGATHERQPSrm,
+       VINSERTF128rm, VINSERTF128rr, VINSERTI128rm, VINSERTI128rr,
+       VLDDQUYrm, VLDDQUrm, VMASKMOVPDYmr, VMASKMOVPDYrm, VMASKMOVPDmr,
+       VMASKMOVPDrm, VMASKMOVPSYmr, VMASKMOVPSYrm, VMASKMOVPSmr,
+       VMASKMOVPSrm, VMCALL, VMCLEARm, VMFUNC, VMLAUNCH, VMLOAD32,
+       VMLOAD64, VMMCALL, VMOV64toSDrm, VMOVDDUPYrm, VMOVDDUPYrr,
+       VMOVNTDQAYrm, VMOVNTDQArm, VMOVQI2PQIrm, VMPTRLDm, VMPTRSTm,
+       VMREAD32rm, VMREAD32rr, VMREAD64rm, VMREAD64rr, VMRESUME, VMRUN32,
+       VMRUN64, VMSAVE32, VMSAVE64, VMWRITE32rm, VMWRITE32rr, VMWRITE64rm,
+       VMWRITE64rr, VMXOFF, VMXON, VORPDYrm, VORPDYrr, VORPDrm, VORPDrr,
+       VORPSYrm, VORPSYrr, VORPSrm, VORPSrr, VPABSBrm256, VPABSBrr256,
+       VPABSDrm256, VPABSDrr256, VPABSWrm256, VPABSWrr256, VPACKSSDWYrm,
+       VPACKSSDWYrr, VPACKSSDWrm, VPACKSSDWrr, VPACKSSWBYrm, VPACKSSWBYrr,
+       VPACKSSWBrm, VPACKSSWBrr, VPACKUSDWYrm, VPACKUSDWYrr, VPACKUSDWrm,
+       VPACKUSDWrr, VPACKUSWBYrm, VPACKUSWBYrr, VPACKUSWBrm, VPACKUSWBrr,
+       VPALIGNR256rm, VPALIGNR256rr, VPBLENDDYrmi, VPBLENDDYrri,
+       VPBLENDDrmi, VPBLENDDrri, VPBLENDVBYrm, VPBLENDVBYrr, VPBLENDVBrm,
+       VPBLENDVBrr, VPBROADCASTBYrm, VPBROADCASTBYrr, VPBROADCASTBrm,
+       VPBROADCASTBrr, VPBROADCASTDYrm, VPBROADCASTDYrr, VPBROADCASTDrm,
+       VPBROADCASTDrr, VPBROADCASTQYrm, VPBROADCASTQYrr, VPBROADCASTQrm,
+       VPBROADCASTQrr, VPBROADCASTWYrm, VPBROADCASTWYrr, VPBROADCASTWrm,
+       VPBROADCASTWrr, VPCLMULQDQrm, VPCLMULQDQrr, VPCMOVmr, VPCMOVmrY,
+       VPCMOVrm, VPCMOVrmY, VPCMOVrr, VPCMOVrrY, VPCMPEQQYrm, VPCMPEQQYrr,
+       VPCMPEQQrm, VPCMPEQQrr, VPCMPESTRIMEM, VPCMPESTRIREG, VPCMPESTRIrm,
+       VPCMPESTRIrr, VPCMPESTRM128MEM, VPCMPESTRM128REG, VPCMPESTRM128rm,
+       VPCMPESTRM128rr, VPCMPGTQYrm, VPCMPGTQYrr, VPCMPGTQrm, VPCMPGTQrr,
+       VPCMPISTRIMEM, VPCMPISTRIREG, VPCMPISTRIrm, VPCMPISTRIrr,
+       VPCMPISTRM128MEM, VPCMPISTRM128REG, VPCMPISTRM128rm,
+       VPCMPISTRM128rr, VPCOMBmi, VPCOMBmi_alt, VPCOMBri, VPCOMBri_alt,
+       VPCOMDmi, VPCOMDmi_alt, VPCOMDri, VPCOMDri_alt, VPCOMQmi,
+       VPCOMQmi_alt, VPCOMQri, VPCOMQri_alt, VPCOMUBmi, VPCOMUBmi_alt,
+       VPCOMUBri, VPCOMUBri_alt, VPCOMUDmi, VPCOMUDmi_alt, VPCOMUDri,
+       VPCOMUDri_alt, VPCOMUQmi, VPCOMUQmi_alt, VPCOMUQri, VPCOMUQri_alt,
+       VPCOMUWmi, VPCOMUWmi_alt, VPCOMUWri, VPCOMUWri_alt, VPCOMWmi,
+       VPCOMWmi_alt, VPCOMWri, VPCOMWri_alt, VPERM2F128rm, VPERM2F128rr,
+       VPERM2I128rm, VPERM2I128rr, VPERMDYrm, VPERMDYrr, VPERMIL2PDmr,
+       VPERMIL2PDmrY, VPERMIL2PDrm, VPERMIL2PDrmY, VPERMIL2PDrr,
+       VPERMIL2PDrrY, VPERMIL2PSmr, VPERMIL2PSmrY, VPERMIL2PSrm,
+       VPERMIL2PSrmY, VPERMIL2PSrr, VPERMIL2PSrrY, VPERMILPDYmi,
+       VPERMILPDYri, VPERMILPDYrm, VPERMILPDYrr, VPERMILPDmi, VPERMILPDri,
+       VPERMILPDrm, VPERMILPDrr, VPERMILPSYmi, VPERMILPSYri, VPERMILPSYrm,
+       VPERMILPSYrr, VPERMILPSmi, VPERMILPSri, VPERMILPSrm, VPERMILPSrr,
+       VPERMPDYmi, VPERMPDYri, VPERMPSYrm, VPERMPSYrr, VPERMQYmi,
+       VPERMQYri, VPEXTRBmr, VPEXTRBrr, VPEXTRDmr, VPEXTRDrr, VPEXTRQmr,
+       VPEXTRQrr, VPEXTRWmr, VPEXTRWri, VPEXTRWrr_REV, VPGATHERDDYrm,
+       VPGATHERDDrm, VPGATHERDQYrm, VPGATHERDQrm, VPGATHERQDYrm,
+       VPGATHERQDrm, VPGATHERQQYrm, VPGATHERQQrm, VPHADDBDrm, VPHADDBDrr,
+       VPHADDBQrm, VPHADDBQrr, VPHADDBWrm, VPHADDBWrr, VPHADDDQrm,
+       VPHADDDQrr, VPHADDSWrm128, VPHADDSWrm256, VPHADDSWrr128,
+       VPHADDSWrr256, VPHADDUBDrm, VPHADDUBDrr, VPHADDUBQrm, VPHADDUBQrr,
+       VPHADDUBWrm, VPHADDUBWrr, VPHADDUDQrm, VPHADDUDQrr, VPHADDUWDrm,
+       VPHADDUWDrr, VPHADDUWQrm, VPHADDUWQrr, VPHADDWDrm, VPHADDWDrr,
+       VPHADDWQrm, VPHADDWQrr, VPHMINPOSUWrm128, VPHMINPOSUWrr128,
+       VPHSUBBWrm, VPHSUBBWrr, VPHSUBDQrm, VPHSUBDQrr, VPHSUBSWrm128,
+       VPHSUBSWrm256, VPHSUBSWrr128, VPHSUBSWrr256, VPHSUBWDrm,
+       VPHSUBWDrr, VPINSRBrm, VPINSRBrr, VPINSRDrm, VPINSRDrr, VPINSRQrm,
+       VPINSRQrr, VPMACSDDrm, VPMACSDDrr, VPMACSDQHrm, VPMACSDQHrr,
+       VPMACSDQLrm, VPMACSDQLrr, VPMACSSDDrm, VPMACSSDDrr, VPMACSSDQHrm,
+       VPMACSSDQHrr, VPMACSSDQLrm, VPMACSSDQLrr, VPMACSSWDrm, VPMACSSWDrr,
+       VPMACSSWWrm, VPMACSSWWrr, VPMACSWDrm, VPMACSWDrr, VPMACSWWrm,
+       VPMACSWWrr, VPMADCSSWDrm, VPMADCSSWDrr, VPMADCSWDrm, VPMADCSWDrr,
+       VPMADDUBSWrm128, VPMADDUBSWrm256, VPMADDUBSWrr128, VPMADDUBSWrr256,
+       VPMASKMOVDYmr, VPMASKMOVDYrm, VPMASKMOVDmr, VPMASKMOVDrm,
+       VPMASKMOVQYmr, VPMASKMOVQYrm, VPMASKMOVQmr, VPMASKMOVQrm,
+       VPMAXSBYrm, VPMAXSBYrr, VPMAXSBrm, VPMAXSBrr, VPMAXSDYrm,
+       VPMAXSDYrr, VPMAXSDrm, VPMAXSDrr, VPMAXUDYrm, VPMAXUDYrr,
+       VPMAXUDrm, VPMAXUDrr, VPMAXUWYrm, VPMAXUWYrr, VPMAXUWrm, VPMAXUWrr,
+       VPMINSBYrm, VPMINSBYrr, VPMINSBrm, VPMINSBrr, VPMINSDYrm,
+       VPMINSDYrr, VPMINSDrm, VPMINSDrr, VPMINUDYrm, VPMINUDYrr,
+       VPMINUDrm, VPMINUDrr, VPMINUWYrm, VPMINUWYrr, VPMINUWrm, VPMINUWrr,
+       VPMOVMSKBYrr, VPMULDQYrm, VPMULDQYrr, VPMULDQrm, VPMULDQrr,
+       VPMULHRSWrm128, VPMULHRSWrm256, VPMULHRSWrr128, VPMULHRSWrr256,
+       VPMULLDYrm, VPMULLDYrr, VPMULLDrm, VPMULLDrr, VPMULUDQYrm,
+       VPMULUDQYrr, VPMULUDQrm, VPMULUDQrr, VPPERMmr, VPPERMrm, VPPERMrr,
+       VPROTBmi, VPROTBmr, VPROTBri, VPROTBrm, VPROTBrr, VPROTDmi,
+       VPROTDmr, VPROTDri, VPROTDrm, VPROTDrr, VPROTQmi, VPROTQmr,
+       VPROTQri, VPROTQrm, VPROTQrr, VPROTWmi, VPROTWmr, VPROTWri,
+       VPROTWrm, VPROTWrr, VPSADBWYrm, VPSADBWYrr, VPSADBWrm, VPSADBWrr,
+       VPSHABmr, VPSHABrm, VPSHABrr, VPSHADmr, VPSHADrm, VPSHADrr,
+       VPSHAQmr, VPSHAQrm, VPSHAQrr, VPSHAWmr, VPSHAWrm, VPSHAWrr,
+       VPSHLBmr, VPSHLBrm, VPSHLBrr, VPSHLDmr, VPSHLDrm, VPSHLDrr,
+       VPSHLQmr, VPSHLQrm, VPSHLQrr, VPSHLWmr, VPSHLWrm, VPSHLWrr,
+       VPSLLDQYri, VPSLLDQri, VPSLLVDYrm, VPSLLVDYrr, VPSLLVDrm,
+       VPSLLVDrr, VPSLLVQYrm, VPSLLVQYrr, VPSLLVQrm, VPSLLVQrr,
+       VPSRAVDYrm, VPSRAVDYrr, VPSRAVDrm, VPSRAVDrr, VPSRLDQYri,
+       VPSRLDQri, VPSRLVDYrm, VPSRLVDYrr, VPSRLVDrm, VPSRLVDrr,
+       VPSRLVQYrm, VPSRLVQYrr, VPSRLVQrm, VPSRLVQrr, VPTESTYrm, VPTESTYrr,
+       VPTESTrm, VPTESTrr, VPUNPCKHBWYrm, VPUNPCKHBWYrr, VPUNPCKHDQYrm,
+       VPUNPCKHDQYrr, VPUNPCKHQDQYrm, VPUNPCKHQDQYrr, VPUNPCKHWDYrm,
+       VPUNPCKHWDYrr, VPUNPCKLBWYrm, VPUNPCKLBWYrr, VPUNPCKLDQYrm,
+       VPUNPCKLDQYrr, VPUNPCKLQDQYrm, VPUNPCKLQDQYrr, VPUNPCKLWDYrm,
+       VPUNPCKLWDYrr, VRCPSSm_Int, VRCPSSr_Int, VROUNDSDm, VROUNDSDr,
+       VROUNDSDr_Int, VROUNDSSm, VROUNDSSr, VROUNDSSr_Int, VRSQRTSSm_Int,
+       VRSQRTSSr_Int, VSQRTSDm_Int, VSQRTSDr_Int, VSQRTSSm_Int,
+       VSQRTSSr_Int, VTESTPDYrm, VTESTPDYrr, VTESTPDrm, VTESTPDrr,
+       VTESTPSYrm, VTESTPSYrr, VTESTPSrm, VTESTPSrr, VXORPDYrm, VXORPDYrr,
+       VXORPDrm, VXORPDrr, VXORPSYrm, VXORPSYrr, VXORPSrm, VXORPSrr,
+       VZEROALL, VZEROUPPER, V_SET0, V_SET0_demat, V_SET0_remat,
        V_SET0_source, V_SETALLONES, V_SETALLONES_demat,
-       V_SETALLONES_remat, V_SETALLONES_source, XORPDrm, XORPDrr, XORPSrm,
-       XORPSrr]
+       V_SETALLONES_remat, V_SETALLONES_source, WIN_ALLOCA, WRFLAGS32,
+       WRFLAGS64, WRFSBASE, WRFSBASE64, WRGSBASE, WRGSBASE64, WRPKRU,
+       WRPKRUr, XABORT, XACQUIRE_PREFIX, XBEGIN, XBEGIN_2, XBEGIN_4,
+       XCRYPTCBC, XCRYPTCFB, XCRYPTCTR, XCRYPTECB, XCRYPTOFB, XEND,
+       XGETBV, XORPDrm, XORPDrr, XORPSrm, XORPSrr, XRELEASE_PREFIX,
+       XRSTOR, XRSTOR64, XRSTORS, XRSTORS64, XSAVE, XSAVE64, XSAVEC,
+       XSAVEC64, XSAVEOPT, XSAVEOPT64, XSAVES, XSAVES64, XSETBV, XSHA1,
+       XSHA256, XSTORE, XTEST]
     = NoItinerary
 

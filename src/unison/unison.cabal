@@ -183,7 +183,8 @@ Library
                   Unison.Tools.Export.RemoveRedundancies
                   Unison.Tools.Export.BundleOperations
                   Unison.Tools.Export.SelectInstructions
-                  Unison.Tools.Export.LiftFrameObjects
+                  Unison.Tools.Export.LiftVarFrameObjects
+                  Unison.Tools.Export.LiftFixedFrameObjects
                   Unison.Tools.Export.ComputeFrameOffsets
                   Unison.Tools.Export.LowerFrameSize
                   Unison.Tools.Export.DirectFrame
@@ -241,6 +242,7 @@ Library
                   Unison.Target.X86.OperandInfo
                   Unison.Target.X86.Transforms
                   Unison.Target.X86.Usages
+                  Unison.Target.X86.BranchInfo
                   Unison.Target.X86.X86RegisterDecl
                   Unison.Target.X86.X86RegisterClassDecl
                   Unison.Target.X86.X86ResourceDecl

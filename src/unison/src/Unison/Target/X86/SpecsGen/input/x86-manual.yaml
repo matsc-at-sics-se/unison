@@ -66,6 +66,18 @@ instruction-set:
           affected-by:
            - RSP:             register
 
+        - id:                 STORE256
+          parent:             VMOVDQAYmr
+          type:               copy
+          operands:
+           - rd:              [register, def, M256]
+           - rt:              [register, use, VR256]
+          uses:               [rt]
+          defines:            [rd]
+          affects:
+          affected-by:
+           - RSP:             register
+
         - id:                 LOAD8
           parent:             MOV8rm
           type:               copy
@@ -126,6 +138,18 @@ instruction-set:
           affected-by:
            - RSP:             register
 
+        - id:                 LOAD256
+          parent:             VMOVDQAYrm
+          type:               copy
+          operands:
+           - rd:              [register, def, VR256]
+           - rt:              [register, use, M256]
+          uses:               [rt]
+          defines:            [rd]
+          affects:
+          affected-by:
+           - RSP:             register
+
         - id:                 MOVE8
           parent:             MOV8rr
           type:               copy
@@ -146,12 +170,21 @@ instruction-set:
           parent:             MOVDQArr
           type:               copy
 
+        - id:                 MOVE256
+          parent:             VMOVDQAYrr
+          type:               copy
+
         - id:                 SUBRSP_pseudo
           parent:             SUB64ri8
           operands:
            - imm:             bound
           uses:               [imm]
           defines:            []
+          affects:
+           - EFLAGS:          register
+           - RSP:             register
+          affected-by:
+           - RSP:             register
 
         - id:                 ADDRSP_pseudo
           parent:             ADD64ri8
@@ -159,6 +192,11 @@ instruction-set:
            - imm:             bound
           uses:               [imm]
           defines:            []
+          affects:
+           - EFLAGS:          register
+           - RSP:             register
+          affected-by:
+           - RSP:             register
 
         - id:                 PUSH_cst
           type:               copy
@@ -167,6 +205,20 @@ instruction-set:
            - dst:             [register, def, M64]
           uses:               [src]
           defines:            [dst]
+          size:               0
+          affects:
+           - RSP:             register
+          affected-by:
+           - RSP:             register
+          itinerary:          IIC_PUSH_REG
+
+        - id:                 PUSH_fi
+          type:               linear
+          operands:
+           - fi:              bound
+           - src:             [register, use, GR64]
+          uses:               [fi, src]
+          defines:            []
           size:               0
           affects:
            - RSP:             register
@@ -207,3 +259,142 @@ instruction-set:
           uses:               [src1, src2]
           defines:            [src1]
           size:               0
+
+        - id:                 POP_fi
+          type:               copy
+          operands:
+           - src:             bound
+           - dst:             [register, use, GR64]
+          uses:               [src]
+          defines:            [dst]
+          size:               0
+          affects:
+           - RSP:             register
+          affected-by:
+           - RSP:             register
+          itinerary:          IIC_POP_REG
+
+        - id:                 MOV_FROM_SP
+          parent:             MOV64rr
+          operands:
+           - dst:             [register, def, GR64]
+          uses:               []
+          defines:            [dst]
+          affected-by:
+           - RSP:             register
+
+        - id:                 MOV_TO_SP
+          parent:             MOV64rr
+          operands:
+           - src:             [register, use, GR64]
+          uses:               [src]
+          defines:            []
+          affects:
+           - RSP:             register
+
+        - id:                 ALIGN_SP_32
+          parent:             AND64ri8
+          type:               linear
+          operands:
+          uses:               []
+          defines:            []
+          size:               0
+          affects:
+           - RSP:             register
+           - EFLAGS:          register
+          affected-by:
+           - RSP:             register
+
+        - id:                 ADD32ri_LEA
+          parent:             ADD32ri
+          operands:
+           - src1:            [register, use, GR32]
+           - src2:            bound
+           - dst:             [register, def, GR32]
+          uses:               [src1, src2]
+          defines:            [dst]
+          affects:
+          affected-by:
+          itinerary:          IIC_LEA
+
+        - id:                 ADD32rr_LEA
+          parent:             ADD32rr
+          operands:
+           - src1:            [register, use, GR32]
+           - src2:            [register, use, GR32]
+           - dst:             [register, def, GR32]
+          uses:               [src1, src2]
+          defines:            [dst]
+          affects:
+          affected-by:
+          itinerary:          IIC_LEA
+
+        - id:                 ADD64ri_LEA
+          parent:             ADD64ri32
+          operands:
+           - src1:            [register, use, GR64]
+           - src2:            bound
+           - dst:             [register, def, GR64]
+          uses:               [src1, src2]
+          defines:            [dst]
+          affects:
+          affected-by:
+          itinerary:          IIC_LEA
+
+        - id:                 ADD64rr_LEA
+          parent:             ADD64rr
+          operands:
+           - src1:            [register, use, GR64]
+           - src2:            [register, use, GR64]
+           - dst:             [register, def, GR64]
+          uses:               [src1, src2]
+          defines:            [dst]
+          affects:
+          affected-by:
+          itinerary:          IIC_LEA
+
+        - id:                 SHL32r1_LEA
+          parent:             SHL32r1
+          operands:
+           - src1:            [register, use, GR32]
+           - dst:             [register, def, GR32]
+          uses:               [src1]
+          defines:            [dst]
+          affects:
+          affected-by:
+          itinerary:          IIC_LEA
+
+        - id:                 SHL32ri_LEA
+          parent:             SHL32ri
+          operands:
+           - src1:            [register, use, GR32]
+           - src2:            bound
+           - dst:             [register, def, GR32]
+          uses:               [src1, src2]
+          defines:            [dst]
+          affects:
+          affected-by:
+          itinerary:          IIC_LEA
+
+        - id:                 SHL64r1_LEA
+          parent:             SHL64r1
+          operands:
+           - src1:            [register, use, GR64]
+           - dst:             [register, def, GR64]
+          uses:               [src1]
+          defines:            [dst]
+          affects:
+          affected-by:
+          itinerary:          IIC_LEA
+
+        - id:                 SHL64ri_LEA
+          parent:             SHL64ri
+          operands:
+           - src1:            [register, use, GR64]
+           - src2:            bound
+           - dst:             [register, def, GR64]
+          uses:               [src1, src2]
+          defines:            [dst]
+          affects:
+          affected-by:
+          itinerary:          IIC_LEA

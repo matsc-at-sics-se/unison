@@ -13,7 +13,7 @@ Main authors:
 This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Analysis.FrameOffsets
-       (allocateObject, slotSet, frameSize, reoffset) where
+       (allocateObject, slotSet, frameSize, revertDirection, reoffset) where
 
 import Data.List
 import Data.Maybe
@@ -39,5 +39,9 @@ foSlots obj = slots (foOffset obj) (foMaybeSize obj)
 frameSize objs =
   let occ = slotSet objs
   in if S.null occ then 0 else S.findMax occ + 1
+
+revertDirection fo @ FrameObject {foOffset = off} =
+  let off' = - (off + foMaybeSize fo)
+  in fo {foOffset = off'}
 
 reoffset delta fo @ FrameObject {foOffset = off} = fo {foOffset = off + delta}

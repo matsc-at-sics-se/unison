@@ -9,7 +9,7 @@ Main authors:
 
 This file is part of Unison, see http://unison-code.github.io
 -}
-module Unison.Tools.Export.LiftFrameObjects (liftFrameObjects) where
+module Unison.Tools.Export.LiftVarFrameObjects (liftVarFrameObjects) where
 
 import Data.List
 import Data.Ord
@@ -18,14 +18,13 @@ import qualified Data.Map as M
 import qualified Data.Set as S
 
 import Unison
-import Unison.Analysis.FrameOffsets
 import MachineIR
 
--- This pass lifts frame objects created by spilling to the list of fixed
--- stack frame objects.
+-- This pass lifts non-fixed (variable) frame objects created by spilling to the
+-- list of stack frame objects.
 
-liftFrameObjects f @ Function {fCode = code, fFixedStackFrame = fobjs} _target =
-  let mobjs  = nub $ concatMap machineFrameObjects $ flatten code
+liftVarFrameObjects f @ Function {fCode = code, fStackFrame = fobjs} _target =
+  let mobjs  = nub $ concatMap varMachineFrameObjects $ flatten code
       gobjs  = groupBy overlap $ sortBy (comparing mfoAtoms) mobjs
       fstIdx = newFrameIndex fobjs
       o2i    = M.fromList $
@@ -34,12 +33,12 @@ liftFrameObjects f @ Function {fCode = code, fFixedStackFrame = fobjs} _target =
                       | (idx, mfos) <- zip [fstIdx..] gobjs]
       code'  = mapToOperationInBlocks (toFrameIndexOperand o2i) code
       fobjs' = map (toFrameObject o2i . largest) gobjs
-      (_, fobjs'') = mapAccumL allocateObject (slotSet fobjs) fobjs'
-  in f {fCode = code', fFixedStackFrame = fobjs ++ fobjs''}
+  in f {fCode = code', fStackFrame = fobjs ++ fobjs'}
 
-machineFrameObjects o = [mo | (Bound mo) <- oAllOps o, isMachineFrameObject mo]
+varMachineFrameObjects o = [mo | (Bound mo) <- oAllOps o,
+                            isMachineFrameObject mo, not (mfoFixedSpill mo)]
 
-mfoAtoms (MachineFrameObject o (Just s) _) = [o..o+s-1]
+mfoAtoms (MachineFrameObject o (Just s) _ _) = [o..o+s-1]
 
 mfoAtomUnion mfos = S.toList $ S.fromList $ concatMap mfoAtoms mfos
 
@@ -51,16 +50,18 @@ largest mfos = last $ sortBy (comparing (\mfo -> length (mfoAtoms mfo))) mfos
 
 toFrameIndexOperand = mapToOperandIf always . toFrameIndex
 
-toFrameIndex o2i (Bound mfo) | isMachineFrameObject mfo =
+-- Assigns offsets relative to the object
+toFrameIndex o2i (Bound mfo)
+  | isMachineFrameObject mfo && not (mfoFixedSpill mfo) =
   let o       = mfoOffset mfo
       (i, as) = o2i M.! o
       idx     = toInteger $ fromJust $ elemIndex o as
       -- assume the highest part of a fr. obj. is stored in the lowest position
       off     = toInteger (length as) - (fromJust $ mfoSize mfo) - idx
-      fi      = mkBound (mkMachineFrameIndex i True off)
+      fi      = mkBound (mkMachineFrameIndex i False off)
   in fi
 toFrameIndex _ op = op
 
-toFrameObject o2i (MachineFrameObject o (Just size) align) =
+toFrameObject o2i (MachineFrameObject o (Just size) align _) =
   let idx = fst $ o2i M.! o
   in mkFrameObject idx 0 (Just size) align Nothing

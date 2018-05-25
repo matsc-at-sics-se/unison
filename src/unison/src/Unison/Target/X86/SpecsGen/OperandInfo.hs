@@ -6,60 +6,170 @@ import Unison.Target.X86.SpecsGen.X86InstructionDecl
 import Unison.Target.X86.X86RegisterClassDecl
 operandInfo i
   | i `elem`
-      [CLC, CLD, CMC, NOOP, PUSHCS16, PUSHCS32, PUSHDS16, PUSHDS32,
-       PUSHES16, PUSHES32, PUSHF16, PUSHF32, PUSHF64, PUSHFS16, PUSHFS32,
-       PUSHFS64, PUSHGS16, PUSHGS32, PUSHGS64, PUSHSS16, PUSHSS32, RETW,
-       REX64_PREFIX, STC, STD, UD2B]
+      [ALIGN_SP_32, CATCHPAD, CLAC, CLC, CLD, CLEANUPRET, CLGI, CLI,
+       CLTS, CMC, CS_PREFIX, DATA16_PREFIX, DS_PREFIX, EH_RESTORE, ENCLS,
+       ENCLU, ES_PREFIX, F2XM1, FCOMPP, FDECSTP, FEMMS, FINCSTP, FLDL2E,
+       FLDL2T, FLDLG2, FLDLN2, FLDPI, FNOP, FPATAN, FPREM, FPREM1, FPTAN,
+       FRNDINT, FSCALE, FSINCOS, FS_PREFIX, FXAM, FXTRACT, FYL2X, FYL2XP1,
+       GS_PREFIX, HLT, INT3, INTO, INVD, IRET16, IRET32, IRET64,
+       Int_MemBarrier, LFENCE, LOCK_PREFIX, LRETL, LRETQ, LRETW, MFENCE,
+       MMX_EMMS, MORESTACK_RET, MORESTACK_RET_RESTORE_R10, NOOP, PAUSE,
+       PCOMMIT, POPDS16, POPDS32, POPES16, POPES32, POPF16, POPF32,
+       POPF64, POPFS16, POPFS32, POPFS64, POPGS16, POPGS32, POPGS64,
+       POPSS16, POPSS32, PUSHCS16, PUSHCS32, PUSHDS16, PUSHDS32, PUSHES16,
+       PUSHES32, PUSHF16, PUSHF32, PUSHF64, PUSHFS16, PUSHFS32, PUSHFS64,
+       PUSHGS16, PUSHGS32, PUSHGS64, PUSHSS16, PUSHSS32, RETW,
+       REX64_PREFIX, RSM, SEH_EndPrologue, SEH_Epilogue, SFENCE,
+       SS_PREFIX, STAC, STC, STD, STGI, STI, SWAPGS, SYSCALL, SYSENTER,
+       SYSEXIT, SYSEXIT64, SYSRET, SYSRET64, TRAP, UD2B, VMCALL, VMFUNC,
+       VMLAUNCH, VMMCALL, VMRESUME, VMXOFF, VZEROALL, VZEROUPPER, WAIT,
+       WBINVD, XACQUIRE_PREFIX, XEND, XRELEASE_PREFIX, XTEST]
     = ([], [])
   | i `elem` [FsFLD0SS] =
     ([], [TemporaryInfo (RegisterClass FR32) 1 False])
   | i `elem` [FsFLD0SD] =
     ([], [TemporaryInfo (RegisterClass FR64) 1 False])
-  | i `elem` [POP16r, POP16rmr, SETB_C16r] =
-    ([], [TemporaryInfo (RegisterClass GR16) 1 False])
   | i `elem`
-      [MOV32r0, MOV32r1, MOV32r_1, POP32r, POP32rmr, SETB_C32r]
+      [POP16r, POP16rmr, RDRAND16r, RDSEED16r, SETB_C16r, SLDT16r,
+       SMSW16r, STR16r]
+    = ([], [TemporaryInfo (RegisterClass GR16) 1 False])
+  | i `elem`
+      [MOV32r0, MOV32r1, MOV32r_1, POP32r, POP32rmr, RDFLAGS32, RDFSBASE,
+       RDGSBASE, RDPKRU, RDRAND32r, RDSEED32r, SETB_C32r, SLDT32r,
+       SMSW32r, STR32r, WIN_ALLOCA, XBEGIN]
     = ([], [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [POP64r, POP64rmr, SETB_C64r] =
-    ([], [TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem` [POPA16, POPA32] =
+    ([],
+     [TemporaryInfo (RegisterClass GR32) 1 False,
+      TemporaryInfo (RegisterClass GR32) 1 False,
+      TemporaryInfo (RegisterClass GR32) 1 False,
+      TemporaryInfo (RegisterClass GR32) 1 False,
+      TemporaryInfo (RegisterClass GR32) 1 False,
+      TemporaryInfo (RegisterClass GR32) 1 False,
+      TemporaryInfo (RegisterClass GR32) 1 False])
   | i `elem`
-      [SETAEr, SETAr, SETBEr, SETB_C8r, SETBr, SETEr, SETGEr, SETGr,
-       SETLEr, SETLr, SETNEr, SETNOr, SETNPr, SETNSr, SETOr, SETPr, SETSr]
+      [MOV_FROM_SP, POP64r, POP64rmr, RDFLAGS64, RDFSBASE64, RDGSBASE64,
+       RDRAND64r, RDSEED64r, SETB_C64r, SLDT64r, SMSW64r, STR64r]
+    = ([], [TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem` [RDTSC] =
+    ([],
+     [TemporaryInfo (RegisterClass GR64) 1 False,
+      TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem` [RDTSCP] =
+    ([],
+     [TemporaryInfo (RegisterClass GR64) 1 False,
+      TemporaryInfo (RegisterClass GR64) 1 False,
+      TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem`
+      [LAHF, SETAEr, SETAr, SETBEr, SETB_C8r, SETBr, SETEr, SETGEr,
+       SETGr, SETLEr, SETLr, SETNEr, SETNOr, SETNPr, SETNSr, SETOr, SETPr,
+       SETSr]
     = ([], [TemporaryInfo (RegisterClass GR8) 1 False])
   | i `elem` [V_SET0_source, V_SETALLONES_source] =
     ([], [TemporaryInfo (InfiniteRegisterClass RM128) 0 False])
-  | i `elem` [MOV32r0_source, MOV32r1_source, MOV32r_1_source] =
-    ([], [TemporaryInfo (InfiniteRegisterClass RM32) 0 False])
+  | i `elem` [AVX2_SETALLONES_source, AVX_SET0_source] =
+    ([], [TemporaryInfo (InfiniteRegisterClass RM256) 0 False])
+  | i `elem`
+      [FsFLD0SS_source, MOV32r0_source, MOV32r1_source, MOV32r_1_source]
+    = ([], [TemporaryInfo (InfiniteRegisterClass RM32) 0 False])
   | i `elem` [V_SET0, V_SETALLONES] =
     ([], [TemporaryInfo (RegisterClass VR128) 1 False])
-  | i `elem` [SQRTSSr] =
+  | i `elem` [AVX2_SETALLONES, AVX_SET0] =
+    ([], [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem` [LOAD_STACK_GUARD] =
+    ([], [TemporaryInfo (RegisterClass Ptr_rc) 1 False])
+  | i `elem`
+      [FBSTPm, FNSTSWm, FRSTORm, FSAVEm, FSTENVm, SGDT16m, SGDT32m,
+       SGDT64m, SIDT16m, SIDT32m, SIDT64m, SLDT16m, SLDT64m, SMSW16m,
+       STRm, VMPTRSTm]
+    =
+    ([],
+     [TemporaryInfo (RegisterClass Ptr_rc) 1 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 1 False, BoundInfo,
+      BoundInfo])
+  | i `elem` [IMPLICIT_DEF] = ([], [BoundInfo])
+  | i `elem` [CMOV_FR128] =
+    ([TemporaryInfo (RegisterClass FR128) 0 False,
+      TemporaryInfo (RegisterClass FR128) 0 False, BoundInfo],
+     [TemporaryInfo (RegisterClass FR128) 1 False])
+  | i `elem` [RCPSSr, RSQRTSSr, SQRTSSr] =
     ([TemporaryInfo (RegisterClass FR32) 0 False],
      [TemporaryInfo (RegisterClass FR32) 1 False])
   | i `elem` [CVTSS2SDrr] =
     ([TemporaryInfo (RegisterClass FR32) 0 False],
      [TemporaryInfo (RegisterClass FR64) 1 False])
-  | i `elem` [CVTTSS2SIrr, MOVSS2DIrr] =
+  | i `elem` [CVTTSS2SIrr, MOVSS2DIrr, VCVTTSS2SIrr, VMOVSS2DIrr] =
     ([TemporaryInfo (RegisterClass FR32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [CVTTSS2SI64rr] =
+  | i `elem` [CVTTSS2SI64rr, VCVTTSS2SI64rr] =
     ([TemporaryInfo (RegisterClass FR32) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
-  | i `elem` [COMISSrr, UCOMISSrr] =
+  | i `elem` [FsFLD0SS_demat] =
+    ([TemporaryInfo (RegisterClass FR32) 0 False],
+     [TemporaryInfo (InfiniteRegisterClass RM32) 0 False])
+  | i `elem` [COMISSrr, UCOMISSrr, VCOMISSrr, VUCOMISSrr] =
     ([TemporaryInfo (RegisterClass FR32) 0 False,
       TemporaryInfo (RegisterClass FR32) 0 False],
      [])
   | i `elem`
       [ADDSSrr, DIVSSrr, FsANDNPSrr, FsANDPSrr, FsORPSrr, FsXORPSrr,
-       MAXCSSrr, MAXSSrr, MINCSSrr, MINSSrr, MULSSrr, SUBSSrr]
+       MAXCSSrr, MAXSSrr, MINCSSrr, MINSSrr, MULSSrr, SUBSSrr, VADDSSrr,
+       VDIVSSrr, VFsANDNPSrr, VFsANDPSrr, VFsORPSrr, VFsXORPSrr,
+       VMAXCSSrr, VMAXSSrr, VMINCSSrr, VMINSSrr, VMULSSrr, VRCPSSr,
+       VRSQRTSSr, VSQRTSSr, VSUBSSrr]
     =
     ([TemporaryInfo (RegisterClass FR32) 0 False,
       TemporaryInfo (RegisterClass FR32) 0 False],
      [TemporaryInfo (RegisterClass FR32) 1 False])
-  | i `elem` [CMPSSrr, CMPSSrr_alt, ROUNDSSr] =
+  | i `elem` [VCVTSS2SDrr] =
+    ([TemporaryInfo (RegisterClass FR32) 0 False,
+      TemporaryInfo (RegisterClass FR32) 0 False],
+     [TemporaryInfo (RegisterClass FR64) 1 False])
+  | i `elem`
+      [VFMADDSS4rr, VFMADDSS4rr_REV, VFMADDSSr132r, VFMADDSSr213r,
+       VFMADDSSr231r, VFMSUBSS4rr, VFMSUBSS4rr_REV, VFMSUBSSr132r,
+       VFMSUBSSr213r, VFMSUBSSr231r, VFNMADDSS4rr, VFNMADDSS4rr_REV,
+       VFNMADDSSr132r, VFNMADDSSr213r, VFNMADDSSr231r, VFNMSUBSS4rr,
+       VFNMSUBSS4rr_REV, VFNMSUBSSr132r, VFNMSUBSSr213r, VFNMSUBSSr231r]
+    =
+    ([TemporaryInfo (RegisterClass FR32) 0 False,
+      TemporaryInfo (RegisterClass FR32) 0 False,
+      TemporaryInfo (RegisterClass FR32) 0 False],
+     [TemporaryInfo (RegisterClass FR32) 1 False])
+  | i `elem`
+      [VFMADDSS4rm, VFMADDSSr132m, VFMADDSSr213m, VFMADDSSr231m,
+       VFMSUBSS4rm, VFMSUBSSr132m, VFMSUBSSr213m, VFMSUBSSr231m,
+       VFNMADDSS4rm, VFNMADDSSr132m, VFNMADDSSr213m, VFNMADDSSr231m,
+       VFNMSUBSS4rm, VFNMSUBSSr132m, VFNMSUBSSr213m, VFNMSUBSSr231m]
+    =
+    ([TemporaryInfo (RegisterClass FR32) 0 False,
+      TemporaryInfo (RegisterClass FR32) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo],
+     [TemporaryInfo (RegisterClass FR32) 1 False])
+  | i `elem`
+      [CMOV_FR32, CMPSSrr, CMPSSrr_alt, ROUNDSSr, VCMPSSrr, VCMPSSrr_alt,
+       VROUNDSSr]
+    =
     ([TemporaryInfo (RegisterClass FR32) 0 False,
       TemporaryInfo (RegisterClass FR32) 0 False, BoundInfo],
      [TemporaryInfo (RegisterClass FR32) 1 False])
-  | i `elem` [COMISSrm, UCOMISSrm] =
+  | i `elem` [VCVTSI2SS64rm, VCVTSI2SSrm] =
+    ([TemporaryInfo (RegisterClass FR32) 0 False,
+      TemporaryInfo (RegisterClass FR32) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo],
+     [TemporaryInfo (RegisterClass FR32) 1 False])
+  | i `elem` [VCVTSI2SSrr] =
+    ([TemporaryInfo (RegisterClass FR32) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass FR32) 1 False])
+  | i `elem` [VCVTSI2SS64rr] =
+    ([TemporaryInfo (RegisterClass FR32) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False],
+     [TemporaryInfo (RegisterClass FR32) 1 False])
+  | i `elem` [COMISSrm, UCOMISSrm, VCOMISSrm, VUCOMISSrm] =
     ([TemporaryInfo (RegisterClass FR32) 0 False,
       TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
@@ -67,14 +177,29 @@ operandInfo i
      [])
   | i `elem`
       [ADDSSrm, DIVSSrm, FsANDNPSrm, FsANDPSrm, FsORPSrm, FsXORPSrm,
-       MAXCSSrm, MAXSSrm, MINCSSrm, MINSSrm, MULSSrm, SUBSSrm]
+       MAXCSSrm, MAXSSrm, MINCSSrm, MINSSrm, MULSSrm, SUBSSrm, VADDSSrm,
+       VDIVSSrm, VFsANDNPSrm, VFsANDPSrm, VFsORPSrm, VFsXORPSrm,
+       VMAXCSSrm, VMAXSSrm, VMINCSSrm, VMINSSrm, VMULSSrm, VRCPSSm,
+       VRSQRTSSm, VSQRTSSm, VSUBSSrm]
     =
     ([TemporaryInfo (RegisterClass FR32) 0 False,
       TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo],
      [TemporaryInfo (RegisterClass FR32) 1 False])
-  | i `elem` [CMPSSrm, CMPSSrm_alt] =
+  | i `elem` [VCVTSS2SDrm] =
+    ([TemporaryInfo (RegisterClass FR32) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo],
+     [TemporaryInfo (RegisterClass FR64) 1 False])
+  | i `elem` [VFMADDSS4mr, VFMSUBSS4mr, VFNMADDSS4mr, VFNMSUBSS4mr] =
+    ([TemporaryInfo (RegisterClass FR32) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass FR32) 0 False],
+     [TemporaryInfo (RegisterClass FR32) 1 False])
+  | i `elem` [CMPSSrm, CMPSSrm_alt, VCMPSSrm, VCMPSSrm_alt] =
     ([TemporaryInfo (RegisterClass FR32) 0 False,
       TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
@@ -86,55 +211,121 @@ operandInfo i
   | i `elem` [SQRTSDr] =
     ([TemporaryInfo (RegisterClass FR64) 0 False],
      [TemporaryInfo (RegisterClass FR64) 1 False])
-  | i `elem` [CVTTSD2SIrr] =
+  | i `elem` [CVTTSD2SIrr, VCVTTSD2SIrr] =
     ([TemporaryInfo (RegisterClass FR64) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [CVTTSD2SI64rr, MOVSDto64rr] =
+  | i `elem`
+      [CVTTSD2SI64rr, MOVSDto64rr, VCVTTSD2SI64rr, VMOVSDto64rr]
+    =
     ([TemporaryInfo (RegisterClass FR64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
-  | i `elem` [COMISDrr, UCOMISDrr] =
+  | i `elem` [COMISDrr, UCOMISDrr, VCOMISDrr, VUCOMISDrr] =
     ([TemporaryInfo (RegisterClass FR64) 0 False,
       TemporaryInfo (RegisterClass FR64) 0 False],
      [])
+  | i `elem` [VCVTSD2SSrr] =
+    ([TemporaryInfo (RegisterClass FR64) 0 False,
+      TemporaryInfo (RegisterClass FR64) 0 False],
+     [TemporaryInfo (RegisterClass FR32) 1 False])
   | i `elem`
       [ADDSDrr, DIVSDrr, FsANDNPDrr, FsANDPDrr, FsORPDrr, FsXORPDrr,
-       MAXCSDrr, MAXSDrr, MINCSDrr, MINSDrr, MULSDrr, SUBSDrr]
+       MAXCSDrr, MAXSDrr, MINCSDrr, MINSDrr, MULSDrr, SUBSDrr, VADDSDrr,
+       VDIVSDrr, VFsANDNPDrr, VFsANDPDrr, VFsORPDrr, VFsXORPDrr,
+       VMAXCSDrr, VMAXSDrr, VMINCSDrr, VMINSDrr, VMULSDrr, VSQRTSDr,
+       VSUBSDrr]
     =
     ([TemporaryInfo (RegisterClass FR64) 0 False,
       TemporaryInfo (RegisterClass FR64) 0 False],
      [TemporaryInfo (RegisterClass FR64) 1 False])
-  | i `elem` [CMPSDrr, CMPSDrr_alt, ROUNDSDr] =
+  | i `elem`
+      [VFMADDSD4rr, VFMADDSD4rr_REV, VFMADDSDr132r, VFMADDSDr213r,
+       VFMADDSDr231r, VFMSUBSD4rr, VFMSUBSD4rr_REV, VFMSUBSDr132r,
+       VFMSUBSDr213r, VFMSUBSDr231r, VFNMADDSD4rr, VFNMADDSD4rr_REV,
+       VFNMADDSDr132r, VFNMADDSDr213r, VFNMADDSDr231r, VFNMSUBSD4rr,
+       VFNMSUBSD4rr_REV, VFNMSUBSDr132r, VFNMSUBSDr213r, VFNMSUBSDr231r]
+    =
+    ([TemporaryInfo (RegisterClass FR64) 0 False,
+      TemporaryInfo (RegisterClass FR64) 0 False,
+      TemporaryInfo (RegisterClass FR64) 0 False],
+     [TemporaryInfo (RegisterClass FR64) 1 False])
+  | i `elem`
+      [VFMADDSD4rm, VFMADDSDr132m, VFMADDSDr213m, VFMADDSDr231m,
+       VFMSUBSD4rm, VFMSUBSDr132m, VFMSUBSDr213m, VFMSUBSDr231m,
+       VFNMADDSD4rm, VFNMADDSDr132m, VFNMADDSDr213m, VFNMADDSDr231m,
+       VFNMSUBSD4rm, VFNMSUBSDr132m, VFNMSUBSDr213m, VFNMSUBSDr231m]
+    =
+    ([TemporaryInfo (RegisterClass FR64) 0 False,
+      TemporaryInfo (RegisterClass FR64) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo],
+     [TemporaryInfo (RegisterClass FR64) 1 False])
+  | i `elem`
+      [CMOV_FR64, CMPSDrr, CMPSDrr_alt, ROUNDSDr, VCMPSDrr, VCMPSDrr_alt,
+       VROUNDSDr]
+    =
     ([TemporaryInfo (RegisterClass FR64) 0 False,
       TemporaryInfo (RegisterClass FR64) 0 False, BoundInfo],
      [TemporaryInfo (RegisterClass FR64) 1 False])
-  | i `elem` [COMISDrm, UCOMISDrm] =
+  | i `elem` [VCVTSI2SD64rm, VCVTSI2SDrm] =
+    ([TemporaryInfo (RegisterClass FR64) 0 False,
+      TemporaryInfo (RegisterClass FR64) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo],
+     [TemporaryInfo (RegisterClass FR64) 1 False])
+  | i `elem` [VCVTSI2SDrr] =
+    ([TemporaryInfo (RegisterClass FR64) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass FR64) 1 False])
+  | i `elem` [VCVTSI2SD64rr] =
+    ([TemporaryInfo (RegisterClass FR64) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False],
+     [TemporaryInfo (RegisterClass FR64) 1 False])
+  | i `elem` [COMISDrm, UCOMISDrm, VCOMISDrm, VUCOMISDrm] =
     ([TemporaryInfo (RegisterClass FR64) 0 False,
       TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo],
      [])
+  | i `elem` [VCVTSD2SSrm] =
+    ([TemporaryInfo (RegisterClass FR64) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo],
+     [TemporaryInfo (RegisterClass FR32) 1 False])
   | i `elem`
       [ADDSDrm, DIVSDrm, FsANDNPDrm, FsANDPDrm, FsORPDrm, FsXORPDrm,
-       MAXCSDrm, MAXSDrm, MINCSDrm, MINSDrm, MULSDrm, SUBSDrm]
+       MAXCSDrm, MAXSDrm, MINCSDrm, MINSDrm, MULSDrm, SUBSDrm, VADDSDrm,
+       VDIVSDrm, VFsANDNPDrm, VFsANDPDrm, VFsORPDrm, VFsXORPDrm,
+       VMAXCSDrm, VMAXSDrm, VMINCSDrm, VMINSDrm, VMULSDrm, VSQRTSDm,
+       VSUBSDrm]
     =
     ([TemporaryInfo (RegisterClass FR64) 0 False,
       TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo],
      [TemporaryInfo (RegisterClass FR64) 1 False])
-  | i `elem` [CMPSDrm, CMPSDrm_alt] =
+  | i `elem` [VFMADDSD4mr, VFMSUBSD4mr, VFNMADDSD4mr, VFNMSUBSD4mr] =
+    ([TemporaryInfo (RegisterClass FR64) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass FR64) 0 False],
+     [TemporaryInfo (RegisterClass FR64) 1 False])
+  | i `elem` [CMPSDrm, CMPSDrm_alt, VCMPSDrm, VCMPSDrm_alt] =
     ([TemporaryInfo (RegisterClass FR64) 0 False,
       TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo, BoundInfo],
      [TemporaryInfo (RegisterClass FR64) 1 False])
-  | i `elem` [CALL16r, JMP16r, PUSH16r, PUSH16rmr] =
-    ([TemporaryInfo (RegisterClass GR16) 0 False], [])
   | i `elem`
-      [BSF16rr, BSR16rr, CMPXCHG16rr, DEC16r, DEC16r_alt, INC16r,
-       INC16r_alt, MOV16rr, MOV16rr_REV, MOVE16, NEG16r, NOT16r,
-       POPCNT16rr, RCL16r1, RCR16r1, ROL16r1, ROR16r1, SAR16r1, SHL16r1,
-       SHR16r1]
+      [CALL16r, JMP16r, LLDT16r, LMSW16r, LTRr, PUSH16r, PUSH16rmr,
+       VERRr, VERWr]
+    = ([TemporaryInfo (RegisterClass GR16) 0 False], [])
+  | i `elem`
+      [ARPL16rr, BSF16rr, BSR16rr, CMPXCHG16rr, DEC16r, DEC16r_alt,
+       IN16rr, INC16r, INC16r_alt, LAR16rr, LSL16rr, LZCNT16rr, MOV16rr,
+       MOV16rr_REV, MOVE16, NEG16r, NOT16r, POPCNT16rr, RCL16r1, RCR16r1,
+       ROL16r1, ROR16r1, SAR16r1, SHL16r1, SHR16r1, TZCNT16rr, XADD16rr]
     =
     ([TemporaryInfo (RegisterClass GR16) 0 False],
      [TemporaryInfo (RegisterClass GR16) 1 False])
@@ -142,12 +333,15 @@ operandInfo i
     ([TemporaryInfo (RegisterClass GR16) 0 False],
      [TemporaryInfo (RegisterClass GR16) 1 False,
       TemporaryInfo (RegisterClass GR16) 1 False])
-  | i `elem` [CWDE, MOVSX32rr16, MOVZX32rr16] =
+  | i `elem` [CWDE, IN32rr, MOVSX32rr16, MOVZX32rr16] =
     ([TemporaryInfo (RegisterClass GR16) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
   | i `elem` [MOVSX64rr16, MOVZX64rr16] =
     ([TemporaryInfo (RegisterClass GR16) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem` [IN8rr] =
+    ([TemporaryInfo (RegisterClass GR16) 0 False],
+     [TemporaryInfo (RegisterClass GR8) 1 False])
   | i `elem` [STORE16] =
     ([TemporaryInfo (RegisterClass GR16) 0 False],
      [TemporaryInfo (InfiniteRegisterClass M16) 1 False])
@@ -158,7 +352,8 @@ operandInfo i
     ([TemporaryInfo (RegisterClass GR16) 0 False],
      [BoundInfo, BoundInfo])
   | i `elem`
-      [BT16rr, BTC16rr, BTR16rr, BTS16rr, CMP16rr, CMP16rr_REV, TEST16rr]
+      [BT16rr, BTC16rr, BTR16rr, BTS16rr, CMP16rr, CMP16rr_REV, OUT16rr,
+       TEST16rr]
     =
     ([TemporaryInfo (RegisterClass GR16) 0 False,
       TemporaryInfo (RegisterClass GR16) 0 False],
@@ -191,11 +386,11 @@ operandInfo i
       TemporaryInfo (RegisterClass GR16) 0 False,
       TemporaryInfo (RegisterClass GR8) 0 False],
      [TemporaryInfo (RegisterClass GR16) 1 False])
-  | i `elem` [SHLD16rri8, SHRD16rri8] =
+  | i `elem` [CMOV_GR16, SHLD16rri8, SHRD16rri8] =
     ([TemporaryInfo (RegisterClass GR16) 0 False,
       TemporaryInfo (RegisterClass GR16) 0 False, BoundInfo],
      [TemporaryInfo (RegisterClass GR16) 1 False])
-  | i `elem` [STOSW] =
+  | i `elem` [INSB, INSL, INSW, STOSW] =
     ([TemporaryInfo (RegisterClass GR16) 0 False,
       TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass Ptr_rc) 1 False,
@@ -229,8 +424,8 @@ operandInfo i
       [ADC16rm, ADD16rm, AND16rm, CMOVA16rm, CMOVAE16rm, CMOVB16rm,
        CMOVBE16rm, CMOVE16rm, CMOVG16rm, CMOVGE16rm, CMOVL16rm,
        CMOVLE16rm, CMOVNE16rm, CMOVNO16rm, CMOVNP16rm, CMOVNS16rm,
-       CMOVO16rm, CMOVP16rm, CMOVS16rm, IMUL16rm, OR16rm, SBB16rm,
-       SUB16rm, XCHG16rm, XOR16rm]
+       CMOVO16rm, CMOVP16rm, CMOVS16rm, IMUL16rm, LXADD16, OR16rm,
+       SBB16rm, SUB16rm, XCHG16rm, XOR16rm]
     =
     ([TemporaryInfo (RegisterClass GR16) 0 False,
       TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
@@ -249,29 +444,39 @@ operandInfo i
     =
     ([TemporaryInfo (RegisterClass GR16) 0 False, BoundInfo],
      [TemporaryInfo (RegisterClass GR16) 1 False])
-  | i `elem` [CALL32r, JMP32r, PUSH32r, PUSH32rmr] =
-    ([TemporaryInfo (RegisterClass GR32) 0 False], [])
-  | i `elem` [CVTSI2SSrr, MOVDI2SSrr] =
+  | i `elem`
+      [CALL32r, CLZEROr, EH_RETURN, JMP32r, PUSH32r, PUSH32rmr, SKINIT,
+       VMLOAD32, VMRUN32, VMSAVE32, WRFLAGS32, WRFSBASE, WRGSBASE, WRPKRU]
+    = ([TemporaryInfo (RegisterClass GR32) 0 False], [])
+  | i `elem` [CVTSI2SSrr, MOVDI2SSrr, VMOVDI2SSrr] =
     ([TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass FR32) 1 False])
   | i `elem` [CVTSI2SDrr] =
     ([TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass FR64) 1 False])
   | i `elem`
-      [BSF32rr, BSR32rr, BSWAP32r, CMPXCHG32rr, DEC32r, DEC32r_alt,
-       INC32r, INC32r_alt, LEAVE, MOV32rr, MOV32rr_REV, MOVE32, NEG32r,
-       NOT32r, POPCNT32rr, RCL32r1, RCR32r1, REPNE_PREFIX, REP_PREFIX,
-       ROL32r1, ROR32r1, SAR32r1, SHL32r1, SHR32r1]
+      [ADOX32rr, BLCFILL32rr, BLCI32rr, BLCIC32rr, BLCMSK32rr, BLCS32rr,
+       BLSFILL32rr, BLSI32rr, BLSIC32rr, BLSMSK32rr, BLSR32rr, BSF32rr,
+       BSR32rr, BSWAP32r, CMPXCHG32rr, DEC32r, DEC32r_alt, INC32r,
+       INC32r_alt, LAR32rr, LEAVE, LSL32rr, LZCNT32rr, MOV32rr,
+       MOV32rr_REV, MOVE32, NEG32r, NOT32r, POPCNT32rr, RCL32r1, RCR32r1,
+       REPNE_PREFIX, REP_PREFIX, ROL32r1, ROR32r1, SAR32r1, SHL32r1,
+       SHL32r1_LEA, SHR32r1, T1MSKC32rr, TZCNT32rr, TZMSK32rr, VMREAD32rr,
+       VMWRITE32rr, XADD32rr]
     =
     ([TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [CDQ] =
+  | i `elem` [CDQ, RDMSR, RDPKRUr, SEG_ALLOCA_32, XGETBV] =
     ([TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False,
       TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [CDQE, MOVSX64rr32] =
+  | i `elem` [CDQE, LAR64rr, MOVSX64rr32] =
     ([TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem` [RDPMC] =
+    ([TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass GR64) 1 False,
+      TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem` [STORE32] =
     ([TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (InfiniteRegisterClass M32) 1 False])
@@ -281,40 +486,69 @@ operandInfo i
     =
     ([TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (InfiniteRegisterClass RM32) 0 False])
-  | i `elem` [MOVDI2PDIrr] =
+  | i `elem` [MOVDI2PDIrr, VMOVDI2PDIrr] =
     ([TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [VMREAD32rm] =
+    ([TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass Ptr_rc) 1 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 1 False, BoundInfo,
+      BoundInfo])
   | i `elem` [MOV32o16a, MOV32o32a, MOV32o64a] =
     ([TemporaryInfo (RegisterClass GR32) 0 False],
      [BoundInfo, BoundInfo])
+  | i `elem` [OUT32rr] =
+    ([TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR16) 0 False],
+     [])
+  | i `elem` [CRC32r32r16] =
+    ([TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR16) 0 False],
+     [TemporaryInfo (RegisterClass GR32) 1 False])
   | i `elem`
-      [BT32rr, BTC32rr, BTR32rr, BTS32rr, CMP32rr, CMP32rr_REV, TEST32rr]
+      [BT32rr, BTC32rr, BTR32rr, BTS32rr, CMP32rr, CMP32rr_REV,
+       INVLPGA32, MWAITrr, TEST32rr]
     =
     ([TemporaryInfo (RegisterClass GR32) 0 False,
       TemporaryInfo (RegisterClass GR32) 0 False],
      [])
   | i `elem`
-      [ADC32rr, ADC32rr_REV, ADCX32rr, ADD32rr, ADD32rr_DB, ADD32rr_REV,
-       AND32rr, AND32rr_REV, ANDN32rr, CMOVA32rr, CMOVAE32rr, CMOVB32rr,
-       CMOVBE32rr, CMOVE32rr, CMOVG32rr, CMOVGE32rr, CMOVL32rr,
-       CMOVLE32rr, CMOVNE32rr, CMOVNO32rr, CMOVNP32rr, CMOVNS32rr,
-       CMOVO32rr, CMOVP32rr, CMOVS32rr, IMUL32rr, OR32rr, OR32rr_REV,
+      [ADC32rr, ADC32rr_REV, ADCX32rr, ADD32rr, ADD32rr_DB, ADD32rr_LEA,
+       ADD32rr_REV, AND32rr, AND32rr_REV, ANDN32rr, BEXTR32rr, BZHI32rr,
+       CMOVA32rr, CMOVAE32rr, CMOVB32rr, CMOVBE32rr, CMOVE32rr, CMOVG32rr,
+       CMOVGE32rr, CMOVL32rr, CMOVLE32rr, CMOVNE32rr, CMOVNO32rr,
+       CMOVNP32rr, CMOVNS32rr, CMOVO32rr, CMOVP32rr, CMOVS32rr,
+       CRC32r32r32, IMUL32rr, OR32rr, OR32rr_REV, PDEP32rr, PEXT32rr,
        SARX32rr, SBB32rr, SBB32rr_REV, SHLX32rr, SHRX32rr, SUB32rr,
        SUB32rr_REV, XCHG32ar, XCHG32rr, XOR32rr, XOR32rr_REV]
     =
     ([TemporaryInfo (RegisterClass GR32) 0 False,
       TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [IMUL32r, MUL32r] =
+  | i `elem` [IMUL32r, MUL32r, MULX32rr] =
     ([TemporaryInfo (RegisterClass GR32) 0 False,
       TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False,
+      TemporaryInfo (RegisterClass GR32) 1 False])
+  | i `elem` [CPUID] =
+    ([TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass GR32) 1 False,
+      TemporaryInfo (RegisterClass GR32) 1 False,
+      TemporaryInfo (RegisterClass GR32) 1 False,
       TemporaryInfo (RegisterClass GR32) 1 False])
   | i `elem` [STOSL] =
     ([TemporaryInfo (RegisterClass GR32) 0 False,
       TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass Ptr_rc) 1 False,
       TemporaryInfo (RegisterClass GR32) 1 False])
+  | i `elem`
+      [MONITORXrrr, MONITORrrr, MWAITXrr, WRMSR, WRPKRUr, XSETBV]
+    =
+    ([TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [])
   | i `elem` [DIV32r, IDIV32r, REP_STOSD_32] =
     ([TemporaryInfo (RegisterClass GR32) 0 False,
       TemporaryInfo (RegisterClass GR32) 0 False,
@@ -342,18 +576,18 @@ operandInfo i
       TemporaryInfo (RegisterClass GR32) 0 False,
       TemporaryInfo (RegisterClass GR8) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [SHLD32rri8, SHRD32rri8] =
+  | i `elem` [CMOV_GR32, SHLD32rri8, SHRD32rri8] =
     ([TemporaryInfo (RegisterClass GR32) 0 False,
       TemporaryInfo (RegisterClass GR32) 0 False, BoundInfo],
      [TemporaryInfo (RegisterClass GR32) 1 False])
   | i `elem`
-      [RCL32rCL, RCR32rCL, ROL32rCL, ROR32rCL, SAR32rCL, SHL32rCL,
-       SHR32rCL]
+      [CRC32r32r8, RCL32rCL, RCR32rCL, ROL32rCL, ROR32rCL, SAR32rCL,
+       SHL32rCL, SHR32rCL]
     =
     ([TemporaryInfo (RegisterClass GR32) 0 False,
       TemporaryInfo (RegisterClass GR8) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [CMP32rm, TEST32rm] =
+  | i `elem` [CMP32rm, INVEPT32, INVPCID32, INVVPID32, TEST32rm] =
     ([TemporaryInfo (RegisterClass GR32) 0 False,
       TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
@@ -363,8 +597,9 @@ operandInfo i
       [ADC32rm, ADCX32rm, ADD32rm, AND32rm, ANDN32rm, CMOVA32rm,
        CMOVAE32rm, CMOVB32rm, CMOVBE32rm, CMOVE32rm, CMOVG32rm,
        CMOVGE32rm, CMOVL32rm, CMOVLE32rm, CMOVNE32rm, CMOVNO32rm,
-       CMOVNP32rm, CMOVNS32rm, CMOVO32rm, CMOVP32rm, CMOVS32rm, IMUL32rm,
-       OR32rm, SBB32rm, SUB32rm, XCHG32rm, XOR32rm]
+       CMOVNP32rm, CMOVNS32rm, CMOVO32rm, CMOVP32rm, CMOVS32rm,
+       CRC32r32m16, CRC32r32m32, CRC32r32m8, IMUL32rm, LXADD32, OR32rm,
+       PDEP32rm, PEXT32rm, SBB32rm, SUB32rm, XCHG32rm, XOR32rm]
     =
     ([TemporaryInfo (RegisterClass GR32) 0 False,
       TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
@@ -377,9 +612,10 @@ operandInfo i
     = ([TemporaryInfo (RegisterClass GR32) 0 False, BoundInfo], [])
   | i `elem`
       [ADC32ri, ADC32ri8, ADD32ri, ADD32ri8, ADD32ri8_DB, ADD32ri_DB,
-       AND32ri, AND32ri8, IMUL32rri, IMUL32rri8, OR32ri, OR32ri8, RCL32ri,
-       RCR32ri, ROL32ri, ROR32ri, RORX32ri, SAR32ri, SBB32ri, SBB32ri8,
-       SHL32ri, SHR32ri, SUB32ri, SUB32ri8, XOR32ri, XOR32ri8]
+       ADD32ri_LEA, AND32ri, AND32ri8, BEXTRI32ri, IMUL32rri, IMUL32rri8,
+       OR32ri, OR32ri8, RCL32ri, RCR32ri, ROL32ri, ROR32ri, RORX32ri,
+       SAR32ri, SBB32ri, SBB32ri8, SHL32ri, SHL32ri_LEA, SHR32ri, SUB32ri,
+       SUB32ri8, XOR32ri, XOR32ri8]
     =
     ([TemporaryInfo (RegisterClass GR32) 0 False, BoundInfo],
      [TemporaryInfo (RegisterClass GR32) 1 False])
@@ -387,22 +623,28 @@ operandInfo i
     ([TemporaryInfo (RegisterClass GR32_NOAX) 0 False,
       TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [CALL64r, JMP64r, PUSH64r, PUSH64rmr] =
-    ([TemporaryInfo (RegisterClass GR64) 0 False], [])
+  | i `elem`
+      [CALL64r, EH_RETURN64, JMP64r, MOV_TO_SP, PUSH64r, PUSH64rmr,
+       VMLOAD64, VMRUN64, VMSAVE64, WRFLAGS64, WRFSBASE64, WRGSBASE64]
+    = ([TemporaryInfo (RegisterClass GR64) 0 False], [])
   | i `elem` [CVTSI2SS64rr] =
     ([TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (RegisterClass FR32) 1 False])
-  | i `elem` [CVTSI2SD64rr, MOV64toSDrr] =
+  | i `elem` [CVTSI2SD64rr, MOV64toSDrr, VMOV64toSDrr] =
     ([TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (RegisterClass FR64) 1 False])
   | i `elem`
-      [BSF64rr, BSR64rr, BSWAP64r, CMPXCHG64rr, DEC64r, INC64r, LEAVE64,
-       MOV64rr, MOV64rr_REV, MOVE64, NEG64r, NOT64r, POPCNT64rr, RCL64r1,
-       RCR64r1, ROL64r1, ROR64r1, SAR64r1, SHL64r1, SHR64r1]
+      [ADOX64rr, BLCFILL64rr, BLCI64rr, BLCIC64rr, BLCMSK64rr, BLCS64rr,
+       BLSFILL64rr, BLSI64rr, BLSIC64rr, BLSMSK64rr, BLSR64rr, BSF64rr,
+       BSR64rr, BSWAP64r, CMPXCHG64rr, DEC64r, INC64r, LEAVE64, LSL64rr,
+       LZCNT64rr, MOV64rr, MOV64rr_REV, MOVE64, NEG64r, NOT64r,
+       POPCNT64rr, RCL64r1, RCR64r1, ROL64r1, ROR64r1, SAR64r1, SHL64r1,
+       SHL64r1_LEA, SHR64r1, T1MSKC64rr, TZCNT64rr, TZMSK64rr, VMREAD64rr,
+       VMWRITE64rr, XADD64rr]
     =
     ([TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
-  | i `elem` [CQO] =
+  | i `elem` [CQO, SEG_ALLOCA_64] =
     ([TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False,
       TemporaryInfo (RegisterClass GR64) 1 False])
@@ -412,12 +654,21 @@ operandInfo i
   | i `elem` [LEA64r_demat, MOV64ri32_demat, MOV64ri_demat] =
     ([TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (InfiniteRegisterClass RM64) 0 False])
-  | i `elem` [MOV64toPQIrr] =
+  | i `elem` [MOV64toPQIrr, VMOV64toPQIrr] =
     ([TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [VMREAD64rm] =
+    ([TemporaryInfo (RegisterClass GR64) 0 False],
+     [TemporaryInfo (RegisterClass Ptr_rc) 1 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 1 False, BoundInfo,
+      BoundInfo])
   | i `elem` [MOV64o32a, MOV64o64a] =
     ([TemporaryInfo (RegisterClass GR64) 0 False],
      [BoundInfo, BoundInfo])
+  | i `elem` [INVLPGA64] =
+    ([TemporaryInfo (RegisterClass GR64) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [])
   | i `elem`
       [BT64rr, BTC64rr, BTR64rr, BTS64rr, CMP64rr, CMP64rr_REV, TEST64rr]
     =
@@ -425,21 +676,28 @@ operandInfo i
       TemporaryInfo (RegisterClass GR64) 0 False],
      [])
   | i `elem`
-      [ADC64rr, ADC64rr_REV, ADCX64rr, ADD64rr, ADD64rr_DB, ADD64rr_REV,
-       AND64rr, AND64rr_REV, ANDN64rr, CMOVA64rr, CMOVAE64rr, CMOVB64rr,
-       CMOVBE64rr, CMOVE64rr, CMOVG64rr, CMOVGE64rr, CMOVL64rr,
-       CMOVLE64rr, CMOVNE64rr, CMOVNO64rr, CMOVNP64rr, CMOVNS64rr,
-       CMOVO64rr, CMOVP64rr, CMOVS64rr, IMUL64rr, OR64rr, OR64rr_REV,
+      [ADC64rr, ADC64rr_REV, ADCX64rr, ADD64rr, ADD64rr_DB, ADD64rr_LEA,
+       ADD64rr_REV, AND64rr, AND64rr_REV, ANDN64rr, BEXTR64rr, BZHI64rr,
+       CMOVA64rr, CMOVAE64rr, CMOVB64rr, CMOVBE64rr, CMOVE64rr, CMOVG64rr,
+       CMOVGE64rr, CMOVL64rr, CMOVLE64rr, CMOVNE64rr, CMOVNO64rr,
+       CMOVNP64rr, CMOVNS64rr, CMOVO64rr, CMOVP64rr, CMOVS64rr,
+       CRC32r64r64, IMUL64rr, OR64rr, OR64rr_REV, PDEP64rr, PEXT64rr,
        SARX64rr, SBB64rr, SBB64rr_REV, SHLX64rr, SHRX64rr, SUB64rr,
        SUB64rr_REV, XCHG64ar, XCHG64rr, XOR64rr, XOR64rr_REV]
     =
     ([TemporaryInfo (RegisterClass GR64) 0 False,
       TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
-  | i `elem` [IMUL64r, MUL64r] =
+  | i `elem` [IMUL64r, MUL64r, MULX64rr, XSTORE] =
     ([TemporaryInfo (RegisterClass GR64) 0 False,
       TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False,
+      TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem` [MONTMUL] =
+    ([TemporaryInfo (RegisterClass GR64) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False],
+     [TemporaryInfo (RegisterClass GR64) 1 False,
+      TemporaryInfo (RegisterClass GR64) 1 False,
       TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem` [STOSQ] =
     ([TemporaryInfo (RegisterClass GR64) 0 False,
@@ -452,9 +710,27 @@ operandInfo i
       TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False,
       TemporaryInfo (RegisterClass GR64) 1 False])
-  | i `elem` [REP_MOVSB_64, REP_MOVSD_64, REP_MOVSQ_64, REP_MOVSW_64]
+  | i `elem`
+      [REP_MOVSB_64, REP_MOVSD_64, REP_MOVSQ_64, REP_MOVSW_64, XSHA1,
+       XSHA256]
     =
     ([TemporaryInfo (RegisterClass GR64) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False],
+     [TemporaryInfo (RegisterClass GR64) 1 False,
+      TemporaryInfo (RegisterClass GR64) 1 False,
+      TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem` [XCRYPTCBC, XCRYPTCFB, XCRYPTCTR, XCRYPTECB, XCRYPTOFB]
+    =
+    ([TemporaryInfo (RegisterClass GR64) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False],
+     [TemporaryInfo (RegisterClass GR64) 1 False,
+      TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem` [GETSEC] =
+    ([TemporaryInfo (RegisterClass GR64) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False,
       TemporaryInfo (RegisterClass GR64) 0 False,
       TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False,
@@ -470,8 +746,8 @@ operandInfo i
       TemporaryInfo (RegisterClass GR64) 0 False, BoundInfo],
      [TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem`
-      [RCL64rCL, RCR64rCL, ROL64rCL, ROR64rCL, SAR64rCL, SHL64rCL,
-       SHR64rCL]
+      [CRC32r64r8, RCL64rCL, RCR64rCL, ROL64rCL, ROR64rCL, SAR64rCL,
+       SHL64rCL, SHR64rCL]
     =
     ([TemporaryInfo (RegisterClass GR64) 0 False,
       TemporaryInfo (RegisterClass GR8) 0 False],
@@ -480,7 +756,7 @@ operandInfo i
     ([TemporaryInfo (RegisterClass GR64) 0 False,
       TemporaryInfo (InfiniteRegisterClass M64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
-  | i `elem` [CMP64rm, TEST64rm] =
+  | i `elem` [CMP64rm, INVEPT64, INVPCID64, INVVPID64, TEST64rm] =
     ([TemporaryInfo (RegisterClass GR64) 0 False,
       TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
@@ -490,8 +766,9 @@ operandInfo i
       [ADC64rm, ADCX64rm, ADD64rm, AND64rm, ANDN64rm, CMOVA64rm,
        CMOVAE64rm, CMOVB64rm, CMOVBE64rm, CMOVE64rm, CMOVG64rm,
        CMOVGE64rm, CMOVL64rm, CMOVLE64rm, CMOVNE64rm, CMOVNO64rm,
-       CMOVNP64rm, CMOVNS64rm, CMOVO64rm, CMOVP64rm, CMOVS64rm, IMUL64rm,
-       OR64rm, SBB64rm, SUB64rm, XCHG64rm, XOR64rm]
+       CMOVNP64rm, CMOVNS64rm, CMOVO64rm, CMOVP64rm, CMOVS64rm,
+       CRC32r64m64, CRC32r64m8, IMUL64rm, LXADD64, OR64rm, PDEP64rm,
+       PEXT64rm, SBB64rm, SUB64rm, XCHG64rm, XOR64rm]
     =
     ([TemporaryInfo (RegisterClass GR64) 0 False,
       TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
@@ -504,10 +781,10 @@ operandInfo i
     = ([TemporaryInfo (RegisterClass GR64) 0 False, BoundInfo], [])
   | i `elem`
       [ADC64ri32, ADC64ri8, ADD64ri32, ADD64ri32_DB, ADD64ri8,
-       ADD64ri8_DB, AND64ri32, AND64ri8, IMUL64rri32, IMUL64rri8,
-       OR64ri32, OR64ri8, RCL64ri, RCR64ri, ROL64ri, ROR64ri, RORX64ri,
-       SAR64ri, SBB64ri32, SBB64ri8, SHL64ri, SHR64ri, SUB64ri32,
-       SUB64ri8, XOR64ri32, XOR64ri8]
+       ADD64ri8_DB, ADD64ri_LEA, AND64ri32, AND64ri8, BEXTRI64ri,
+       IMUL64rri32, IMUL64rri8, OR64ri32, OR64ri8, RCL64ri, RCR64ri,
+       ROL64ri, ROR64ri, RORX64ri, SAR64ri, SBB64ri32, SBB64ri8, SHL64ri,
+       SHL64ri_LEA, SHR64ri, SUB64ri32, SUB64ri8, XOR64ri32, XOR64ri8]
     =
     ([TemporaryInfo (RegisterClass GR64) 0 False, BoundInfo],
      [TemporaryInfo (RegisterClass GR64) 1 False])
@@ -526,7 +803,9 @@ operandInfo i
       TemporaryInfo (RegisterClass GR64_NOSP) 0 False, BoundInfo,
       BoundInfo],
      [TemporaryInfo (InfiniteRegisterClass RM64) 0 False])
-  | i `elem` [CBW, MOVSX16rr8, MOVZX16rr8] =
+  | i `elem` [SAHF] =
+    ([TemporaryInfo (RegisterClass GR8) 0 False], [])
+  | i `elem` [AAA, AAS, CBW, MOVSX16rr8, MOVZX16rr8] =
     ([TemporaryInfo (RegisterClass GR8) 0 False],
      [TemporaryInfo (RegisterClass GR16) 1 False])
   | i `elem` [MOVSX32rr8, MOVZX32rr8] =
@@ -536,8 +815,9 @@ operandInfo i
     ([TemporaryInfo (RegisterClass GR8) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem`
-      [CMPXCHG8rr, DEC8r, INC8r, MOV8rr, MOV8rr_REV, MOVE8, NEG8r, NOT8r,
-       RCL8r1, RCR8r1, ROL8r1, ROR8r1, SAR8r1, SHL8r1, SHR8r1]
+      [CMPXCHG8rr, DAA, DAS, DEC8r, INC8r, MOV8rr, MOV8rr_REV, MOVE8,
+       NEG8r, NOT8r, RCL8r1, RCR8r1, ROL8r1, ROR8r1, SAR8r1, SHL8r1,
+       SHR8r1, XADD8rr]
     =
     ([TemporaryInfo (RegisterClass GR8) 0 False],
      [TemporaryInfo (RegisterClass GR8) 1 False])
@@ -550,11 +830,19 @@ operandInfo i
   | i `elem` [MOV8o16a, MOV8o32a, MOV8o64a] =
     ([TemporaryInfo (RegisterClass GR8) 0 False],
      [BoundInfo, BoundInfo])
+  | i `elem` [OUT8rr] =
+    ([TemporaryInfo (RegisterClass GR8) 0 False,
+      TemporaryInfo (RegisterClass GR16) 0 False],
+     [])
   | i `elem` [DIV8r, IDIV8r] =
     ([TemporaryInfo (RegisterClass GR8) 0 False,
       TemporaryInfo (RegisterClass GR16) 0 False],
      [TemporaryInfo (RegisterClass GR8) 1 False,
       TemporaryInfo (RegisterClass GR8) 1 False])
+  | i `elem` [XLAT] =
+    ([TemporaryInfo (RegisterClass GR8) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass GR8) 1 False])
   | i `elem` [STOSB] =
     ([TemporaryInfo (RegisterClass GR8) 0 False,
       TemporaryInfo (RegisterClass GR32) 0 False],
@@ -590,6 +878,10 @@ operandInfo i
       TemporaryInfo (RegisterClass GR8) 0 False],
      [TemporaryInfo (RegisterClass GR8) 1 False,
       TemporaryInfo (RegisterClass GR16) 1 False])
+  | i `elem` [CMOV_GR8] =
+    ([TemporaryInfo (RegisterClass GR8) 0 False,
+      TemporaryInfo (RegisterClass GR8) 0 False, BoundInfo],
+     [TemporaryInfo (RegisterClass GR8) 1 False])
   | i `elem` [CMP8rm, TEST8rm] =
     ([TemporaryInfo (RegisterClass GR8) 0 False,
       TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
@@ -597,7 +889,8 @@ operandInfo i
       BoundInfo],
      [])
   | i `elem`
-      [ADC8rm, ADD8rm, AND8rm, OR8rm, SBB8rm, SUB8rm, XCHG8rm, XOR8rm]
+      [ADC8rm, ADD8rm, AND8rm, LXADD8, OR8rm, SBB8rm, SUB8rm, XCHG8rm,
+       XOR8rm]
     =
     ([TemporaryInfo (RegisterClass GR8) 0 False,
       TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
@@ -613,6 +906,10 @@ operandInfo i
     =
     ([TemporaryInfo (RegisterClass GR8) 0 False, BoundInfo],
      [TemporaryInfo (RegisterClass GR8) 1 False])
+  | i `elem` [VASTART_SAVE_XMM_REGS] =
+    ([TemporaryInfo (RegisterClass GR8) 0 False, BoundInfo, BoundInfo,
+      BoundInfo],
+     [])
   | i `elem` [MOVSX32_NOREXrr8, MOVZX32_NOREXrr8] =
     ([TemporaryInfo (RegisterClass GR8_NOREX) 0 False],
      [TemporaryInfo (RegisterClass GR32_NOREX) 1 False])
@@ -627,6 +924,9 @@ operandInfo i
   | i `elem` [LOAD16] =
     ([TemporaryInfo (InfiniteRegisterClass M16) 0 False],
      [TemporaryInfo (RegisterClass GR16) 1 False])
+  | i `elem` [LOAD256] =
+    ([TemporaryInfo (InfiniteRegisterClass M256) 0 False],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
   | i `elem` [LOAD32] =
     ([TemporaryInfo (InfiniteRegisterClass M32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
@@ -646,6 +946,12 @@ operandInfo i
   | i `elem` [LEA16r_remat, MOV16ri_alt_remat, MOV16ri_remat] =
     ([TemporaryInfo (InfiniteRegisterClass RM16) 0 False],
      [TemporaryInfo (RegisterClass GR16) 1 False])
+  | i `elem` [AVX2_SETALLONES_remat, AVX_SET0_remat] =
+    ([TemporaryInfo (InfiniteRegisterClass RM256) 0 False],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem` [FsFLD0SS_remat] =
+    ([TemporaryInfo (InfiniteRegisterClass RM32) 0 False],
+     [TemporaryInfo (RegisterClass FR32) 1 False])
   | i `elem`
       [LEA32r_remat, MOV32r0_remat, MOV32r1_remat, MOV32r_1_remat,
        MOV32ri64_remat, MOV32ri_alt_remat, MOV32ri_remat]
@@ -658,10 +964,24 @@ operandInfo i
   | i `elem` [MOV8ri_remat] =
     ([TemporaryInfo (InfiniteRegisterClass RM8) 0 False],
      [TemporaryInfo (RegisterClass GR8) 1 False])
-  | i `elem` [CVTSD2SIrr, CVTSS2SIrr, MOVPDI2DIrr] =
+  | i `elem`
+      [CVTSD2SIrr, CVTSS2SIrr, Int_CVTTSD2SIrr, Int_CVTTSS2SIrr,
+       Int_VCVTTSD2SIrr, Int_VCVTTSS2SIrr, MOVPDI2DIrr, VCVTSD2SIrr,
+       VCVTSS2SIrr, VMOVPDI2DIrr]
+    =
     ([TemporaryInfo (RegisterClass VR128) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [CVTSD2SI64rr, CVTSS2SI64rr, MOVPQIto64rr] =
+  | i `elem`
+      [MOVMSKPDrr, MOVMSKPSrr, PMOVMSKBrr, VMOVMSKPDrr, VMOVMSKPSrr,
+       VPMOVMSKBrr]
+    =
+    ([TemporaryInfo (RegisterClass VR128) 0 False],
+     [TemporaryInfo (RegisterClass GR32orGR64) 1 False])
+  | i `elem`
+      [CVTSD2SI64rr, CVTSS2SI64rr, Int_CVTTSD2SI64rr, Int_CVTTSS2SI64rr,
+       Int_VCVTTSD2SI64rr, Int_VCVTTSS2SI64rr, MOVPQIto64rr,
+       VCVTSD2SI64rr, VCVTSS2SI64rr, VMOVPQIto64rr]
+    =
     ([TemporaryInfo (RegisterClass VR128) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem` [STORE128] =
@@ -671,62 +991,387 @@ operandInfo i
     ([TemporaryInfo (RegisterClass VR128) 0 False],
      [TemporaryInfo (InfiniteRegisterClass RM128) 0 False])
   | i `elem`
-      [CVTDQ2PDrr, CVTDQ2PSrr, CVTPD2DQrr, CVTPD2PSrr, CVTPS2DQrr,
-       CVTPS2PDrr, CVTTPD2DQrr, CVTTPS2DQrr, MOVAPDrr, MOVAPDrr_REV,
-       MOVAPSrr, MOVAPSrr_REV, MOVDDUPrr, MOVDQArr, MOVDQArr_REV,
-       MOVDQUrr, MOVDQUrr_REV, MOVE128, MOVPQI2QIrr, MOVSHDUPrr,
-       MOVSLDUPrr, MOVUPDrr, MOVUPDrr_REV, MOVUPSrr, MOVUPSrr_REV,
-       MOVZPQILo2PQIrr]
+      [AESIMCrr, CVTDQ2PDrr, CVTDQ2PSrr, CVTPD2DQrr, CVTPD2PSrr,
+       CVTPS2DQrr, CVTPS2PDrr, CVTTPD2DQrr, CVTTPS2DQrr, MOVAPDrr,
+       MOVAPDrr_REV, MOVAPSrr, MOVAPSrr_REV, MOVDDUPrr, MOVDQArr,
+       MOVDQArr_REV, MOVDQUrr, MOVDQUrr_REV, MOVE128, MOVPQI2QIrr,
+       MOVSHDUPrr, MOVSLDUPrr, MOVUPDrr, MOVUPDrr_REV, MOVUPSrr,
+       MOVUPSrr_REV, MOVZPQILo2PQIrr, PABSBrr128, PABSDrr128, PABSWrr128,
+       PHMINPOSUWrr128, PMOVSXBDrr, PMOVSXBQrr, PMOVSXBWrr, PMOVSXDQrr,
+       PMOVSXWDrr, PMOVSXWQrr, PMOVZXBDrr, PMOVZXBQrr, PMOVZXBWrr,
+       PMOVZXDQrr, PMOVZXWDrr, PMOVZXWQrr, RCPPSr, RSQRTPSr, SQRTPDr,
+       SQRTPSr, VAESIMCrr, VBROADCASTSSrr, VCVTDQ2PDrr, VCVTDQ2PSrr,
+       VCVTPD2DQrr, VCVTPD2PSrr, VCVTPH2PSrr, VCVTPS2DQrr, VCVTPS2PDrr,
+       VCVTTPD2DQrr, VCVTTPS2DQrr, VFRCZPDrr, VFRCZPSrr, VFRCZSDrr,
+       VFRCZSSrr, VMOVAPDrr, VMOVAPDrr_REV, VMOVAPSrr, VMOVAPSrr_REV,
+       VMOVDDUPrr, VMOVDQArr, VMOVDQArr_REV, VMOVDQUrr, VMOVDQUrr_REV,
+       VMOVPQI2QIrr, VMOVSHDUPrr, VMOVSLDUPrr, VMOVUPDrr, VMOVUPDrr_REV,
+       VMOVUPSrr, VMOVUPSrr_REV, VMOVZPQILo2PQIrr, VPABSBrr128,
+       VPABSDrr128, VPABSWrr128, VPBROADCASTBrr, VPBROADCASTDrr,
+       VPBROADCASTQrr, VPBROADCASTWrr, VPHADDBDrr, VPHADDBQrr, VPHADDBWrr,
+       VPHADDDQrr, VPHADDUBDrr, VPHADDUBQrr, VPHADDUBWrr, VPHADDUDQrr,
+       VPHADDUWDrr, VPHADDUWQrr, VPHADDWDrr, VPHADDWQrr, VPHMINPOSUWrr128,
+       VPHSUBBWrr, VPHSUBDQrr, VPHSUBWDrr, VPMOVSXBDrr, VPMOVSXBQrr,
+       VPMOVSXBWrr, VPMOVSXDQrr, VPMOVSXWDrr, VPMOVSXWQrr, VPMOVZXBDrr,
+       VPMOVZXBQrr, VPMOVZXBWrr, VPMOVZXDQrr, VPMOVZXWDrr, VPMOVZXWQrr,
+       VRCPPSr, VRSQRTPSr, VSQRTPDr, VSQRTPSr]
     =
     ([TemporaryInfo (RegisterClass VR128) 0 False],
      [TemporaryInfo (RegisterClass VR128) 1 False])
-  | i `elem` [MOVSSrr, MOVSSrr_REV] =
+  | i `elem`
+      [VBROADCASTSDYrr, VBROADCASTSSYrr, VCVTDQ2PDYrr, VCVTPH2PSYrr,
+       VCVTPS2PDYrr, VPBROADCASTBYrr, VPBROADCASTDYrr, VPBROADCASTQYrr,
+       VPBROADCASTWYrr, VPMOVSXBDYrr, VPMOVSXBQYrr, VPMOVSXBWYrr,
+       VPMOVSXDQYrr, VPMOVSXWDYrr, VPMOVSXWQYrr, VPMOVZXBDYrr,
+       VPMOVZXBQYrr, VPMOVZXBWYrr, VPMOVZXDQYrr, VPMOVZXWDYrr,
+       VPMOVZXWQYrr]
+    =
+    ([TemporaryInfo (RegisterClass VR128) 0 False],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem` [MOVSSrr, MOVSSrr_REV, VMOVSSrr, VMOVSSrr_REV] =
     ([TemporaryInfo (RegisterClass VR128) 0 False,
       TemporaryInfo (RegisterClass FR32) 0 False],
      [TemporaryInfo (RegisterClass VR128) 1 False])
-  | i `elem` [MOVSDrr, MOVSDrr_REV] =
+  | i `elem` [MOVSDrr, MOVSDrr_REV, VMOVSDrr, VMOVSDrr_REV] =
     ([TemporaryInfo (RegisterClass VR128) 0 False,
       TemporaryInfo (RegisterClass FR64) 0 False],
      [TemporaryInfo (RegisterClass VR128) 1 False])
   | i `elem`
-      [ADDPDrr, ADDPSrr, ADDSUBPDrr, ADDSUBPSrr, ANDNPDrr, ANDNPSrr,
-       ANDPDrr, ANDPSrr, DIVPDrr, DIVPSrr, FvANDNPDrr, FvANDNPSrr,
-       FvANDPDrr, FvANDPSrr, FvORPDrr, FvORPSrr, FvXORPDrr, FvXORPSrr,
-       MAXCPDrr, MAXCPSrr, MAXPDrr, MAXPSrr, MINCPDrr, MINCPSrr, MINPDrr,
-       MINPSrr, MOVHLPSrr, MOVLHPSrr, MULPDrr, MULPSrr, ORPDrr, ORPSrr,
-       PACKSSDWrr, PACKSSWBrr, PACKUSDWrr, PACKUSWBrr, PADDBrr, PADDDrr,
-       PADDQrr, PADDWrr, PANDNrr, PANDrr, PCMPEQBrr, PCMPEQDrr, PCMPEQQrr,
-       PCMPEQWrr, PCMPGTBrr, PCMPGTDrr, PCMPGTQrr, PCMPGTWrr, PMULDQrr,
-       PMULUDQrr, PORrr, PSHUFBrr, PSLLDrr, PSLLQrr, PSLLWrr, PSRADrr,
-       PSRAWrr, PSRLDrr, PSRLQrr, PSRLWrr, PSUBBrr, PSUBDrr, PSUBQrr,
-       PSUBWrr, PUNPCKHBWrr, PUNPCKHDQrr, PUNPCKHQDQrr, PUNPCKHWDrr,
-       PUNPCKLBWrr, PUNPCKLDQrr, PUNPCKLQDQrr, PUNPCKLWDrr, PXORrr,
-       SUBPDrr, SUBPSrr, XORPDrr, XORPSrr]
+      [Int_CVTSI2SDrr, Int_CVTSI2SSrr, Int_VCVTSI2SDrr, Int_VCVTSI2SSrr]
+    =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [PINSRDrr, VPINSRDrr] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False, BoundInfo],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [PINSRBrr, PINSRWrri, VPINSRBrr, VPINSRWrri] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass GR32orGR64) 0 False, BoundInfo],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem`
+      [Int_CVTSI2SD64rr, Int_CVTSI2SS64rr, Int_VCVTSI2SD64rr,
+       Int_VCVTSI2SS64rr]
+    =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [PINSRQrr, VPINSRQrr] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False, BoundInfo],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem`
+      [Int_COMISDrr, Int_COMISSrr, Int_UCOMISDrr, Int_UCOMISSrr,
+       Int_VCOMISDrr, Int_VCOMISSrr, Int_VUCOMISDrr, Int_VUCOMISSrr,
+       PTESTrr, VPTESTrr, VTESTPDrr, VTESTPSrr]
+    =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False],
+     [])
+  | i `elem`
+      [ADDPDrr, ADDPSrr, ADDSDrr_Int, ADDSSrr_Int, ADDSUBPDrr,
+       ADDSUBPSrr, AESDECLASTrr, AESDECrr, AESENCLASTrr, AESENCrr,
+       ANDNPDrr, ANDNPSrr, ANDPDrr, ANDPSrr, BLENDVPDrr0, BLENDVPSrr0,
+       DIVPDrr, DIVPSrr, DIVSDrr_Int, DIVSSrr_Int, EXTRQ, FvANDNPDrr,
+       FvANDNPSrr, FvANDPDrr, FvANDPSrr, FvORPDrr, FvORPSrr, FvXORPDrr,
+       FvXORPSrr, HADDPDrr, HADDPSrr, HSUBPDrr, HSUBPSrr, INSERTQ,
+       Int_CVTSD2SSrr, Int_CVTSS2SDrr, Int_VCVTSD2SSrr, Int_VCVTSS2SDrr,
+       MAXCPDrr, MAXCPSrr, MAXPDrr, MAXPSrr, MAXSDrr_Int, MAXSSrr_Int,
+       MINCPDrr, MINCPSrr, MINPDrr, MINPSrr, MINSDrr_Int, MINSSrr_Int,
+       MOVHLPSrr, MOVLHPSrr, MULPDrr, MULPSrr, MULSDrr_Int, MULSSrr_Int,
+       ORPDrr, ORPSrr, PACKSSDWrr, PACKSSWBrr, PACKUSDWrr, PACKUSWBrr,
+       PADDBrr, PADDDrr, PADDQrr, PADDSBrr, PADDSWrr, PADDUSBrr,
+       PADDUSWrr, PADDWrr, PANDNrr, PANDrr, PAVGBrr, PAVGWrr, PBLENDVBrr0,
+       PCMPEQBrr, PCMPEQDrr, PCMPEQQrr, PCMPEQWrr, PCMPGTBrr, PCMPGTDrr,
+       PCMPGTQrr, PCMPGTWrr, PHADDDrr, PHADDSWrr128, PHADDWrr, PHSUBDrr,
+       PHSUBSWrr128, PHSUBWrr, PMADDUBSWrr128, PMADDWDrr, PMAXSBrr,
+       PMAXSDrr, PMAXSWrr, PMAXUBrr, PMAXUDrr, PMAXUWrr, PMINSBrr,
+       PMINSDrr, PMINSWrr, PMINUBrr, PMINUDrr, PMINUWrr, PMULDQrr,
+       PMULHRSWrr128, PMULHUWrr, PMULHWrr, PMULLDrr, PMULLWrr, PMULUDQrr,
+       PORrr, PSADBWrr, PSHUFBrr, PSIGNBrr, PSIGNDrr, PSIGNWrr, PSLLDrr,
+       PSLLQrr, PSLLWrr, PSRADrr, PSRAWrr, PSRLDrr, PSRLQrr, PSRLWrr,
+       PSUBBrr, PSUBDrr, PSUBQrr, PSUBSBrr, PSUBSWrr, PSUBUSBrr,
+       PSUBUSWrr, PSUBWrr, PUNPCKHBWrr, PUNPCKHDQrr, PUNPCKHQDQrr,
+       PUNPCKHWDrr, PUNPCKLBWrr, PUNPCKLDQrr, PUNPCKLQDQrr, PUNPCKLWDrr,
+       PXORrr, RCPSSr_Int, RSQRTSSr_Int, SHA1MSG1rr, SHA1MSG2rr,
+       SHA1NEXTErr, SHA256MSG1rr, SHA256MSG2rr, SHA256RNDS2rr,
+       SQRTSDr_Int, SQRTSSr_Int, SUBPDrr, SUBPSrr, SUBSDrr_Int,
+       SUBSSrr_Int, UNPCKHPDrr, UNPCKHPSrr, UNPCKLPDrr, UNPCKLPSrr,
+       VADDPDrr, VADDPSrr, VADDSDrr_Int, VADDSSrr_Int, VADDSUBPDrr,
+       VADDSUBPSrr, VAESDECLASTrr, VAESDECrr, VAESENCLASTrr, VAESENCrr,
+       VANDNPDrr, VANDNPSrr, VANDPDrr, VANDPSrr, VDIVPDrr, VDIVPSrr,
+       VDIVSDrr_Int, VDIVSSrr_Int, VFvANDNPDrr, VFvANDNPSrr, VFvANDPDrr,
+       VFvANDPSrr, VFvORPDrr, VFvORPSrr, VFvXORPDrr, VFvXORPSrr,
+       VHADDPDrr, VHADDPSrr, VHSUBPDrr, VHSUBPSrr, VMAXCPDrr, VMAXCPSrr,
+       VMAXPDrr, VMAXPSrr, VMAXSDrr_Int, VMAXSSrr_Int, VMINCPDrr,
+       VMINCPSrr, VMINPDrr, VMINPSrr, VMINSDrr_Int, VMINSSrr_Int,
+       VMOVHLPSrr, VMOVLHPSrr, VMULPDrr, VMULPSrr, VMULSDrr_Int,
+       VMULSSrr_Int, VORPDrr, VORPSrr, VPACKSSDWrr, VPACKSSWBrr,
+       VPACKUSDWrr, VPACKUSWBrr, VPADDBrr, VPADDDrr, VPADDQrr, VPADDSBrr,
+       VPADDSWrr, VPADDUSBrr, VPADDUSWrr, VPADDWrr, VPANDNrr, VPANDrr,
+       VPAVGBrr, VPAVGWrr, VPCMPEQBrr, VPCMPEQDrr, VPCMPEQQrr, VPCMPEQWrr,
+       VPCMPGTBrr, VPCMPGTDrr, VPCMPGTQrr, VPCMPGTWrr, VPERMILPDrr,
+       VPERMILPSrr, VPHADDDrr, VPHADDSWrr128, VPHADDWrr, VPHSUBDrr,
+       VPHSUBSWrr128, VPHSUBWrr, VPMADDUBSWrr128, VPMADDWDrr, VPMAXSBrr,
+       VPMAXSDrr, VPMAXSWrr, VPMAXUBrr, VPMAXUDrr, VPMAXUWrr, VPMINSBrr,
+       VPMINSDrr, VPMINSWrr, VPMINUBrr, VPMINUDrr, VPMINUWrr, VPMULDQrr,
+       VPMULHRSWrr128, VPMULHUWrr, VPMULHWrr, VPMULLDrr, VPMULLWrr,
+       VPMULUDQrr, VPORrr, VPROTBrr, VPROTDrr, VPROTQrr, VPROTWrr,
+       VPSADBWrr, VPSHABrr, VPSHADrr, VPSHAQrr, VPSHAWrr, VPSHLBrr,
+       VPSHLDrr, VPSHLQrr, VPSHLWrr, VPSHUFBrr, VPSIGNBrr, VPSIGNDrr,
+       VPSIGNWrr, VPSLLDrr, VPSLLQrr, VPSLLVDrr, VPSLLVQrr, VPSLLWrr,
+       VPSRADrr, VPSRAVDrr, VPSRAWrr, VPSRLDrr, VPSRLQrr, VPSRLVDrr,
+       VPSRLVQrr, VPSRLWrr, VPSUBBrr, VPSUBDrr, VPSUBQrr, VPSUBSBrr,
+       VPSUBSWrr, VPSUBUSBrr, VPSUBUSWrr, VPSUBWrr, VPUNPCKHBWrr,
+       VPUNPCKHDQrr, VPUNPCKHQDQrr, VPUNPCKHWDrr, VPUNPCKLBWrr,
+       VPUNPCKLDQrr, VPUNPCKLQDQrr, VPUNPCKLWDrr, VPXORrr, VRCPSSr_Int,
+       VRSQRTSSr_Int, VSQRTSDr_Int, VSQRTSSr_Int, VSUBPDrr, VSUBPSrr,
+       VSUBSDrr_Int, VSUBSSrr_Int, VUNPCKHPDrr, VUNPCKHPSrr, VUNPCKLPDrr,
+       VUNPCKLPSrr, VXORPDrr, VXORPSrr, XORPDrr, XORPSrr]
     =
     ([TemporaryInfo (RegisterClass VR128) 0 False,
       TemporaryInfo (RegisterClass VR128) 0 False],
      [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [MASKMOVDQU, VMASKMOVDQU] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [])
+  | i `elem` [MASKMOVDQU64, VMASKMOVDQU64] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False],
+     [])
   | i `elem`
-      [CMPPDrri, CMPPDrri_alt, CMPPSrri, CMPPSrri_alt, DPPDrri, DPPSrri,
-       MPSADBWrri]
+      [VBLENDVPDrr, VBLENDVPSrr, VFMADDPD4rr, VFMADDPD4rr_REV,
+       VFMADDPDr132r, VFMADDPDr213r, VFMADDPDr231r, VFMADDPS4rr,
+       VFMADDPS4rr_REV, VFMADDPSr132r, VFMADDPSr213r, VFMADDPSr231r,
+       VFMADDSD4rr_Int, VFMADDSDr132r_Int, VFMADDSDr213r_Int,
+       VFMADDSDr231r_Int, VFMADDSS4rr_Int, VFMADDSSr132r_Int,
+       VFMADDSSr213r_Int, VFMADDSSr231r_Int, VFMADDSUBPD4rr,
+       VFMADDSUBPD4rr_REV, VFMADDSUBPDr132r, VFMADDSUBPDr213r,
+       VFMADDSUBPDr231r, VFMADDSUBPS4rr, VFMADDSUBPS4rr_REV,
+       VFMADDSUBPSr132r, VFMADDSUBPSr213r, VFMADDSUBPSr231r,
+       VFMSUBADDPD4rr, VFMSUBADDPD4rr_REV, VFMSUBADDPDr132r,
+       VFMSUBADDPDr213r, VFMSUBADDPDr231r, VFMSUBADDPS4rr,
+       VFMSUBADDPS4rr_REV, VFMSUBADDPSr132r, VFMSUBADDPSr213r,
+       VFMSUBADDPSr231r, VFMSUBPD4rr, VFMSUBPD4rr_REV, VFMSUBPDr132r,
+       VFMSUBPDr213r, VFMSUBPDr231r, VFMSUBPS4rr, VFMSUBPS4rr_REV,
+       VFMSUBPSr132r, VFMSUBPSr213r, VFMSUBPSr231r, VFMSUBSD4rr_Int,
+       VFMSUBSDr132r_Int, VFMSUBSDr213r_Int, VFMSUBSDr231r_Int,
+       VFMSUBSS4rr_Int, VFMSUBSSr132r_Int, VFMSUBSSr213r_Int,
+       VFMSUBSSr231r_Int, VFNMADDPD4rr, VFNMADDPD4rr_REV, VFNMADDPDr132r,
+       VFNMADDPDr213r, VFNMADDPDr231r, VFNMADDPS4rr, VFNMADDPS4rr_REV,
+       VFNMADDPSr132r, VFNMADDPSr213r, VFNMADDPSr231r, VFNMADDSD4rr_Int,
+       VFNMADDSDr132r_Int, VFNMADDSDr213r_Int, VFNMADDSDr231r_Int,
+       VFNMADDSS4rr_Int, VFNMADDSSr132r_Int, VFNMADDSSr213r_Int,
+       VFNMADDSSr231r_Int, VFNMSUBPD4rr, VFNMSUBPD4rr_REV, VFNMSUBPDr132r,
+       VFNMSUBPDr213r, VFNMSUBPDr231r, VFNMSUBPS4rr, VFNMSUBPS4rr_REV,
+       VFNMSUBPSr132r, VFNMSUBPSr213r, VFNMSUBPSr231r, VFNMSUBSD4rr_Int,
+       VFNMSUBSDr132r_Int, VFNMSUBSDr213r_Int, VFNMSUBSDr231r_Int,
+       VFNMSUBSS4rr_Int, VFNMSUBSSr132r_Int, VFNMSUBSSr213r_Int,
+       VFNMSUBSSr231r_Int, VPBLENDVBrr, VPCMOVrr, VPMACSDDrr, VPMACSDQHrr,
+       VPMACSDQLrr, VPMACSSDDrr, VPMACSSDQHrr, VPMACSSDQLrr, VPMACSSWDrr,
+       VPMACSSWWrr, VPMACSWDrr, VPMACSWWrr, VPMADCSSWDrr, VPMADCSWDrr,
+       VPPERMrr]
+    =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [VPERMIL2PDrr, VPERMIL2PSrr] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem`
+      [VFMADDPD4rm, VFMADDPDr132m, VFMADDPDr213m, VFMADDPDr231m,
+       VFMADDPS4rm, VFMADDPSr132m, VFMADDPSr213m, VFMADDPSr231m,
+       VFMADDSD4rm_Int, VFMADDSDr132m_Int, VFMADDSDr213m_Int,
+       VFMADDSDr231m_Int, VFMADDSS4rm_Int, VFMADDSSr132m_Int,
+       VFMADDSSr213m_Int, VFMADDSSr231m_Int, VFMADDSUBPD4rm,
+       VFMADDSUBPDr132m, VFMADDSUBPDr213m, VFMADDSUBPDr231m,
+       VFMADDSUBPS4rm, VFMADDSUBPSr132m, VFMADDSUBPSr213m,
+       VFMADDSUBPSr231m, VFMSUBADDPD4rm, VFMSUBADDPDr132m,
+       VFMSUBADDPDr213m, VFMSUBADDPDr231m, VFMSUBADDPS4rm,
+       VFMSUBADDPSr132m, VFMSUBADDPSr213m, VFMSUBADDPSr231m, VFMSUBPD4rm,
+       VFMSUBPDr132m, VFMSUBPDr213m, VFMSUBPDr231m, VFMSUBPS4rm,
+       VFMSUBPSr132m, VFMSUBPSr213m, VFMSUBPSr231m, VFMSUBSD4rm_Int,
+       VFMSUBSDr132m_Int, VFMSUBSDr213m_Int, VFMSUBSDr231m_Int,
+       VFMSUBSS4rm_Int, VFMSUBSSr132m_Int, VFMSUBSSr213m_Int,
+       VFMSUBSSr231m_Int, VFNMADDPD4rm, VFNMADDPDr132m, VFNMADDPDr213m,
+       VFNMADDPDr231m, VFNMADDPS4rm, VFNMADDPSr132m, VFNMADDPSr213m,
+       VFNMADDPSr231m, VFNMADDSD4rm_Int, VFNMADDSDr132m_Int,
+       VFNMADDSDr213m_Int, VFNMADDSDr231m_Int, VFNMADDSS4rm_Int,
+       VFNMADDSSr132m_Int, VFNMADDSSr213m_Int, VFNMADDSSr231m_Int,
+       VFNMSUBPD4rm, VFNMSUBPDr132m, VFNMSUBPDr213m, VFNMSUBPDr231m,
+       VFNMSUBPS4rm, VFNMSUBPSr132m, VFNMSUBPSr213m, VFNMSUBPSr231m,
+       VFNMSUBSD4rm_Int, VFNMSUBSDr132m_Int, VFNMSUBSDr213m_Int,
+       VFNMSUBSDr231m_Int, VFNMSUBSS4rm_Int, VFNMSUBSSr132m_Int,
+       VFNMSUBSSr213m_Int, VFNMSUBSSr231m_Int, VPCMOVrm, VPPERMrm]
+    =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [VPERMIL2PDrm, VPERMIL2PSrm] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, BoundInfo],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [PCMPISTRM128rr, VPCMPISTRM128rr] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo],
+     [])
+  | i `elem` [PCMPISTRIREG, PCMPISTRIrr, VPCMPISTRIREG, VPCMPISTRIrr]
+    =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo],
+     [TemporaryInfo (RegisterClass GR32) 1 False])
+  | i `elem`
+      [BLENDPDrri, BLENDPSrri, CMOV_V2F64, CMOV_V2I64, CMOV_V4F32,
+       CMPPDrri, CMPPDrri_alt, CMPPSrri, CMPPSrri_alt, DPPDrri, DPPSrri,
+       INSERTPSrr, Int_CMPSDrr, Int_CMPSSrr, Int_VCMPSDrr, Int_VCMPSSrr,
+       MPSADBWrri, PALIGNR128rr, PBLENDWrri, PCLMULQDQrr, PCMPISTRM128REG,
+       ROUNDSDr_Int, ROUNDSSr_Int, SHA1RNDS4rri, SHUFPDrri, SHUFPSrri,
+       VBLENDPDrri, VBLENDPSrri, VCMPPDrri, VCMPPDrri_alt, VCMPPSrri,
+       VCMPPSrri_alt, VDPPDrri, VDPPSrri, VINSERTPSrr, VMPSADBWrri,
+       VPALIGNR128rr, VPBLENDDrri, VPBLENDWrri, VPCLMULQDQrr,
+       VPCMPISTRM128REG, VPCOMBri, VPCOMBri_alt, VPCOMDri, VPCOMDri_alt,
+       VPCOMQri, VPCOMQri_alt, VPCOMUBri, VPCOMUBri_alt, VPCOMUDri,
+       VPCOMUDri_alt, VPCOMUQri, VPCOMUQri_alt, VPCOMUWri, VPCOMUWri_alt,
+       VPCOMWri, VPCOMWri_alt, VROUNDSDr_Int, VROUNDSSr_Int, VSHUFPDrri,
+       VSHUFPSrri]
     =
     ([TemporaryInfo (RegisterClass VR128) 0 False,
       TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo],
      [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [PCMPESTRM128rr, VPCMPESTRM128rr] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [])
+  | i `elem` [PCMPESTRIREG, PCMPESTRIrr, VPCMPESTRIREG, VPCMPESTRIrr]
+    =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass GR32) 1 False])
+  | i `elem` [PCMPESTRM128REG, VPCMPESTRM128REG] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [Int_VCMPSDrm, Int_VCMPSSrm] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, BoundInfo],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [INSERTQI] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo, BoundInfo],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
   | i `elem`
-      [ADDPDrm, ADDPSrm, ADDSUBPDrm, ADDSUBPSrm, ANDNPDrm, ANDNPSrm,
-       ANDPDrm, ANDPSrm, DIVPDrm, DIVPSrm, FvANDNPDrm, FvANDNPSrm,
+      [VGATHERDPDrm, VGATHERDPSrm, VGATHERQPDrm, VGATHERQPSrm,
+       VPGATHERDDrm, VPGATHERDQrm, VPGATHERQDrm, VPGATHERQQrm]
+    =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo, BoundInfo,
+      TemporaryInfo (RegisterClass VR128) 0 False],
+     [TemporaryInfo (RegisterClass VR128) 1 False,
+      TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [VGATHERQPSYrm, VPGATHERQDYrm] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass VR256) 0 False, BoundInfo, BoundInfo,
+      TemporaryInfo (RegisterClass VR128) 0 False],
+     [TemporaryInfo (RegisterClass VR128) 1 False,
+      TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem`
+      [Int_COMISDrm, Int_COMISSrm, Int_UCOMISDrm, Int_UCOMISSrm,
+       Int_VCOMISDrm, Int_VCOMISSrm, Int_VUCOMISDrm, Int_VUCOMISSrm,
+       PTESTrm, VPTESTrm, VTESTPDrm, VTESTPSrm]
+    =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo],
+     [])
+  | i `elem`
+      [ADDPDrm, ADDPSrm, ADDSDrm_Int, ADDSSrm_Int, ADDSUBPDrm,
+       ADDSUBPSrm, AESDECLASTrm, AESDECrm, AESENCLASTrm, AESENCrm,
+       ANDNPDrm, ANDNPSrm, ANDPDrm, ANDPSrm, BLENDVPDrm0, BLENDVPSrm0,
+       DIVPDrm, DIVPSrm, DIVSDrm_Int, DIVSSrm_Int, FvANDNPDrm, FvANDNPSrm,
        FvANDPDrm, FvANDPSrm, FvORPDrm, FvORPSrm, FvXORPDrm, FvXORPSrm,
-       MAXCPDrm, MAXCPSrm, MAXPDrm, MAXPSrm, MINCPDrm, MINCPSrm, MINPDrm,
-       MINPSrm, MOVHPDrm, MOVHPSrm, MOVLPDrm, MOVLPSrm, MULPDrm, MULPSrm,
-       ORPDrm, ORPSrm, PACKSSDWrm, PACKSSWBrm, PACKUSDWrm, PACKUSWBrm,
-       PADDBrm, PADDDrm, PADDQrm, PADDWrm, PANDNrm, PANDrm, PCMPEQBrm,
+       HADDPDrm, HADDPSrm, HSUBPDrm, HSUBPSrm, Int_CVTSD2SSrm,
+       Int_CVTSI2SD64rm, Int_CVTSI2SDrm, Int_CVTSI2SS64rm, Int_CVTSI2SSrm,
+       Int_CVTSS2SDrm, Int_VCVTSD2SSrm, Int_VCVTSI2SD64rm,
+       Int_VCVTSI2SDrm, Int_VCVTSI2SS64rm, Int_VCVTSI2SSrm,
+       Int_VCVTSS2SDrm, MAXCPDrm, MAXCPSrm, MAXPDrm, MAXPSrm, MAXSDrm_Int,
+       MAXSSrm_Int, MINCPDrm, MINCPSrm, MINPDrm, MINPSrm, MINSDrm_Int,
+       MINSSrm_Int, MMX_CVTPI2PSirm, MOVHPDrm, MOVHPSrm, MOVLPDrm,
+       MOVLPSrm, MULPDrm, MULPSrm, MULSDrm_Int, MULSSrm_Int, ORPDrm,
+       ORPSrm, PACKSSDWrm, PACKSSWBrm, PACKUSDWrm, PACKUSWBrm, PADDBrm,
+       PADDDrm, PADDQrm, PADDSBrm, PADDSWrm, PADDUSBrm, PADDUSWrm,
+       PADDWrm, PANDNrm, PANDrm, PAVGBrm, PAVGWrm, PBLENDVBrm0, PCMPEQBrm,
        PCMPEQDrm, PCMPEQQrm, PCMPEQWrm, PCMPGTBrm, PCMPGTDrm, PCMPGTQrm,
-       PCMPGTWrm, PMULDQrm, PMULUDQrm, PORrm, PSHUFBrm, PSLLDrm, PSLLQrm,
-       PSLLWrm, PSRADrm, PSRAWrm, PSRLDrm, PSRLQrm, PSRLWrm, PSUBBrm,
-       PSUBDrm, PSUBQrm, PSUBWrm, PUNPCKHBWrm, PUNPCKHDQrm, PUNPCKHQDQrm,
+       PCMPGTWrm, PHADDDrm, PHADDSWrm128, PHADDWrm, PHSUBDrm,
+       PHSUBSWrm128, PHSUBWrm, PMADDUBSWrm128, PMADDWDrm, PMAXSBrm,
+       PMAXSDrm, PMAXSWrm, PMAXUBrm, PMAXUDrm, PMAXUWrm, PMINSBrm,
+       PMINSDrm, PMINSWrm, PMINUBrm, PMINUDrm, PMINUWrm, PMULDQrm,
+       PMULHRSWrm128, PMULHUWrm, PMULHWrm, PMULLDrm, PMULLWrm, PMULUDQrm,
+       PORrm, PSADBWrm, PSHUFBrm, PSIGNBrm, PSIGNDrm, PSIGNWrm, PSLLDrm,
+       PSLLQrm, PSLLWrm, PSRADrm, PSRAWrm, PSRLDrm, PSRLQrm, PSRLWrm,
+       PSUBBrm, PSUBDrm, PSUBQrm, PSUBSBrm, PSUBSWrm, PSUBUSBrm,
+       PSUBUSWrm, PSUBWrm, PUNPCKHBWrm, PUNPCKHDQrm, PUNPCKHQDQrm,
        PUNPCKHWDrm, PUNPCKLBWrm, PUNPCKLDQrm, PUNPCKLQDQrm, PUNPCKLWDrm,
-       PXORrm, SUBPDrm, SUBPSrm, XORPDrm, XORPSrm]
+       PXORrm, RCPSSm_Int, RSQRTSSm_Int, SHA1MSG1rm, SHA1MSG2rm,
+       SHA1NEXTErm, SHA256MSG1rm, SHA256MSG2rm, SHA256RNDS2rm,
+       SQRTSDm_Int, SQRTSSm_Int, SUBPDrm, SUBPSrm, SUBSDrm_Int,
+       SUBSSrm_Int, UNPCKHPDrm, UNPCKHPSrm, UNPCKLPDrm, UNPCKLPSrm,
+       VADDPDrm, VADDPSrm, VADDSDrm_Int, VADDSSrm_Int, VADDSUBPDrm,
+       VADDSUBPSrm, VAESDECLASTrm, VAESDECrm, VAESENCLASTrm, VAESENCrm,
+       VANDNPDrm, VANDNPSrm, VANDPDrm, VANDPSrm, VDIVPDrm, VDIVPSrm,
+       VDIVSDrm_Int, VDIVSSrm_Int, VFvANDNPDrm, VFvANDNPSrm, VFvANDPDrm,
+       VFvANDPSrm, VFvORPDrm, VFvORPSrm, VFvXORPDrm, VFvXORPSrm,
+       VHADDPDrm, VHADDPSrm, VHSUBPDrm, VHSUBPSrm, VMASKMOVPDrm,
+       VMASKMOVPSrm, VMAXCPDrm, VMAXCPSrm, VMAXPDrm, VMAXPSrm,
+       VMAXSDrm_Int, VMAXSSrm_Int, VMINCPDrm, VMINCPSrm, VMINPDrm,
+       VMINPSrm, VMINSDrm_Int, VMINSSrm_Int, VMOVHPDrm, VMOVHPSrm,
+       VMOVLPDrm, VMOVLPSrm, VMULPDrm, VMULPSrm, VMULSDrm_Int,
+       VMULSSrm_Int, VORPDrm, VORPSrm, VPACKSSDWrm, VPACKSSWBrm,
+       VPACKUSDWrm, VPACKUSWBrm, VPADDBrm, VPADDDrm, VPADDQrm, VPADDSBrm,
+       VPADDSWrm, VPADDUSBrm, VPADDUSWrm, VPADDWrm, VPANDNrm, VPANDrm,
+       VPAVGBrm, VPAVGWrm, VPCMPEQBrm, VPCMPEQDrm, VPCMPEQQrm, VPCMPEQWrm,
+       VPCMPGTBrm, VPCMPGTDrm, VPCMPGTQrm, VPCMPGTWrm, VPERMILPDrm,
+       VPERMILPSrm, VPHADDDrm, VPHADDSWrm128, VPHADDWrm, VPHSUBDrm,
+       VPHSUBSWrm128, VPHSUBWrm, VPMADDUBSWrm128, VPMADDWDrm,
+       VPMASKMOVDrm, VPMASKMOVQrm, VPMAXSBrm, VPMAXSDrm, VPMAXSWrm,
+       VPMAXUBrm, VPMAXUDrm, VPMAXUWrm, VPMINSBrm, VPMINSDrm, VPMINSWrm,
+       VPMINUBrm, VPMINUDrm, VPMINUWrm, VPMULDQrm, VPMULHRSWrm128,
+       VPMULHUWrm, VPMULHWrm, VPMULLDrm, VPMULLWrm, VPMULUDQrm, VPORrm,
+       VPROTBrm, VPROTDrm, VPROTQrm, VPROTWrm, VPSADBWrm, VPSHABrm,
+       VPSHADrm, VPSHAQrm, VPSHAWrm, VPSHLBrm, VPSHLDrm, VPSHLQrm,
+       VPSHLWrm, VPSHUFBrm, VPSIGNBrm, VPSIGNDrm, VPSIGNWrm, VPSLLDrm,
+       VPSLLQrm, VPSLLVDrm, VPSLLVQrm, VPSLLWrm, VPSRADrm, VPSRAVDrm,
+       VPSRAWrm, VPSRLDrm, VPSRLQrm, VPSRLVDrm, VPSRLVQrm, VPSRLWrm,
+       VPSUBBrm, VPSUBDrm, VPSUBQrm, VPSUBSBrm, VPSUBSWrm, VPSUBUSBrm,
+       VPSUBUSWrm, VPSUBWrm, VPUNPCKHBWrm, VPUNPCKHDQrm, VPUNPCKHQDQrm,
+       VPUNPCKHWDrm, VPUNPCKLBWrm, VPUNPCKLDQrm, VPUNPCKLQDQrm,
+       VPUNPCKLWDrm, VPXORrm, VRCPSSm_Int, VRSQRTSSm_Int, VSQRTSDm_Int,
+       VSQRTSSm_Int, VSUBPDrm, VSUBPSrm, VSUBSDrm_Int, VSUBSSrm_Int,
+       VUNPCKHPDrm, VUNPCKHPSrm, VUNPCKLPDrm, VUNPCKLPSrm, VXORPDrm,
+       VXORPSrm, XORPDrm, XORPSrm]
     =
     ([TemporaryInfo (RegisterClass VR128) 0 False,
       TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
@@ -734,21 +1379,375 @@ operandInfo i
       BoundInfo],
      [TemporaryInfo (RegisterClass VR128) 1 False])
   | i `elem`
-      [CMPPDrmi, CMPPDrmi_alt, CMPPSrmi, CMPPSrmi_alt, DPPDrmi, DPPSrmi,
-       MPSADBWrmi, ROUNDSDm, ROUNDSSm]
+      [VBLENDVPDrm, VBLENDVPSrm, VFMADDPD4mr, VFMADDPS4mr,
+       VFMADDSD4mr_Int, VFMADDSS4mr_Int, VFMADDSUBPD4mr, VFMADDSUBPS4mr,
+       VFMSUBADDPD4mr, VFMSUBADDPS4mr, VFMSUBPD4mr, VFMSUBPS4mr,
+       VFMSUBSD4mr_Int, VFMSUBSS4mr_Int, VFNMADDPD4mr, VFNMADDPS4mr,
+       VFNMADDSD4mr_Int, VFNMADDSS4mr_Int, VFNMSUBPD4mr, VFNMSUBPS4mr,
+       VFNMSUBSD4mr_Int, VFNMSUBSS4mr_Int, VPBLENDVBrm, VPCMOVmr,
+       VPMACSDDrm, VPMACSDQHrm, VPMACSDQLrm, VPMACSSDDrm, VPMACSSDQHrm,
+       VPMACSSDQLrm, VPMACSSWDrm, VPMACSSWWrm, VPMACSWDrm, VPMACSWWrm,
+       VPMADCSSWDrm, VPMADCSWDrm, VPPERMmr]
+    =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass VR128) 0 False],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [VPERMIL2PDmr, VPERMIL2PSmr] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [PCMPISTRM128rm, VPCMPISTRM128rm] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, BoundInfo],
+     [])
+  | i `elem` [PCMPISTRIMEM, PCMPISTRIrm, VPCMPISTRIMEM, VPCMPISTRIrm]
+    =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, BoundInfo],
+     [TemporaryInfo (RegisterClass GR32) 1 False])
+  | i `elem`
+      [BLENDPDrmi, BLENDPSrmi, CMPPDrmi, CMPPDrmi_alt, CMPPSrmi,
+       CMPPSrmi_alt, DPPDrmi, DPPSrmi, INSERTPSrm, MPSADBWrmi,
+       PALIGNR128rm, PBLENDWrmi, PCLMULQDQrm, PCMPISTRM128MEM, PINSRBrm,
+       PINSRDrm, PINSRQrm, PINSRWrmi, ROUNDSDm, ROUNDSSm, SHA1RNDS4rmi,
+       SHUFPDrmi, SHUFPSrmi, VBLENDPDrmi, VBLENDPSrmi, VCMPPDrmi,
+       VCMPPDrmi_alt, VCMPPSrmi, VCMPPSrmi_alt, VDPPDrmi, VDPPSrmi,
+       VINSERTPSrm, VMPSADBWrmi, VPALIGNR128rm, VPBLENDDrmi, VPBLENDWrmi,
+       VPCLMULQDQrm, VPCMPISTRM128MEM, VPCOMBmi, VPCOMBmi_alt, VPCOMDmi,
+       VPCOMDmi_alt, VPCOMQmi, VPCOMQmi_alt, VPCOMUBmi, VPCOMUBmi_alt,
+       VPCOMUDmi, VPCOMUDmi_alt, VPCOMUQmi, VPCOMUQmi_alt, VPCOMUWmi,
+       VPCOMUWmi_alt, VPCOMWmi, VPCOMWmi_alt, VPINSRBrm, VPINSRDrm,
+       VPINSRQrm, VPINSRWrmi, VROUNDSDm, VROUNDSSm, VSHUFPDrmi,
+       VSHUFPSrmi]
     =
     ([TemporaryInfo (RegisterClass VR128) 0 False,
       TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo, BoundInfo],
      [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [PCMPESTRM128rm, VPCMPESTRM128rm] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, BoundInfo, TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [])
+  | i `elem` [PCMPESTRIMEM, PCMPESTRIrm, VPCMPESTRIMEM, VPCMPESTRIrm]
+    =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, BoundInfo, TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass GR32) 1 False])
+  | i `elem` [PCMPESTRM128MEM, VPCMPESTRM128MEM] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, BoundInfo, TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [PEXTRDrr, VPEXTRDrr] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo],
+     [TemporaryInfo (RegisterClass GR32) 1 False])
   | i `elem`
-      [PSHUFDri, PSHUFHWri, PSHUFLWri, PSLLDQri, PSLLDri, PSLLQri,
-       PSLLWri, PSRADri, PSRAWri, PSRLDQri, PSRLDri, PSRLQri, PSRLWri,
-       ROUNDPDr, ROUNDPSr]
+      [EXTRACTPSrr, PEXTRBrr, PEXTRWri, PEXTRWrr_REV, VEXTRACTPSrr,
+       VPEXTRBrr, VPEXTRWri, VPEXTRWrr_REV]
+    =
+    ([TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo],
+     [TemporaryInfo (RegisterClass GR32orGR64) 1 False])
+  | i `elem` [PEXTRQrr, VPEXTRQrr] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo],
+     [TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem`
+      [AESKEYGENASSIST128rr, PSHUFDri, PSHUFHWri, PSHUFLWri, PSLLDQri,
+       PSLLDri, PSLLQri, PSLLWri, PSRADri, PSRAWri, PSRLDQri, PSRLDri,
+       PSRLQri, PSRLWri, ROUNDPDr, ROUNDPSr, VAESKEYGENASSIST128rr,
+       VCVTPS2PHrr, VPERMILPDri, VPERMILPSri, VPROTBri, VPROTDri,
+       VPROTQri, VPROTWri, VPSHUFDri, VPSHUFHWri, VPSHUFLWri, VPSLLDQri,
+       VPSLLDri, VPSLLQri, VPSLLWri, VPSRADri, VPSRAWri, VPSRLDQri,
+       VPSRLDri, VPSRLQri, VPSRLWri, VROUNDPDr, VROUNDPSr]
     =
     ([TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo],
      [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [EXTRQI] =
+    ([TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo,
+      BoundInfo],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [VMOVMSKPDYrr, VMOVMSKPSYrr, VPMOVMSKBYrr] =
+    ([TemporaryInfo (RegisterClass VR256) 0 False],
+     [TemporaryInfo (RegisterClass GR32orGR64) 1 False])
+  | i `elem` [STORE256] =
+    ([TemporaryInfo (RegisterClass VR256) 0 False],
+     [TemporaryInfo (InfiniteRegisterClass M256) 1 False])
+  | i `elem` [AVX2_SETALLONES_demat, AVX_SET0_demat] =
+    ([TemporaryInfo (RegisterClass VR256) 0 False],
+     [TemporaryInfo (InfiniteRegisterClass RM256) 0 False])
+  | i `elem` [VCVTPD2DQYrr, VCVTPD2PSYrr, VCVTTPD2DQYrr] =
+    ([TemporaryInfo (RegisterClass VR256) 0 False],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem`
+      [MOVE256, VCVTDQ2PSYrr, VCVTPS2DQYrr, VCVTTPS2DQYrr, VFRCZPDrrY,
+       VFRCZPSrrY, VMOVAPDYrr, VMOVAPDYrr_REV, VMOVAPSYrr, VMOVAPSYrr_REV,
+       VMOVDDUPYrr, VMOVDQAYrr, VMOVDQAYrr_REV, VMOVDQUYrr,
+       VMOVDQUYrr_REV, VMOVSHDUPYrr, VMOVSLDUPYrr, VMOVUPDYrr,
+       VMOVUPDYrr_REV, VMOVUPSYrr, VMOVUPSYrr_REV, VPABSBrr256,
+       VPABSDrr256, VPABSWrr256, VRCPPSYr, VRSQRTPSYr, VSQRTPDYr,
+       VSQRTPSYr]
+    =
+    ([TemporaryInfo (RegisterClass VR256) 0 False],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem`
+      [VPSLLDYrr, VPSLLQYrr, VPSLLWYrr, VPSRADYrr, VPSRAWYrr, VPSRLDYrr,
+       VPSRLQYrr, VPSRLWYrr]
+    =
+    ([TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem` [VINSERTF128rr, VINSERTI128rr] =
+    ([TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem` [VPTESTYrr, VTESTPDYrr, VTESTPSYrr] =
+    ([TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass VR256) 0 False],
+     [])
+  | i `elem`
+      [VADDPDYrr, VADDPSYrr, VADDSUBPDYrr, VADDSUBPSYrr, VANDNPDYrr,
+       VANDNPSYrr, VANDPDYrr, VANDPSYrr, VDIVPDYrr, VDIVPSYrr,
+       VFvANDNPDYrr, VFvANDNPSYrr, VFvANDPDYrr, VFvANDPSYrr, VFvORPDYrr,
+       VFvORPSYrr, VFvXORPDYrr, VFvXORPSYrr, VHADDPDYrr, VHADDPSYrr,
+       VHSUBPDYrr, VHSUBPSYrr, VMAXCPDYrr, VMAXCPSYrr, VMAXPDYrr,
+       VMAXPSYrr, VMINCPDYrr, VMINCPSYrr, VMINPDYrr, VMINPSYrr, VMULPDYrr,
+       VMULPSYrr, VORPDYrr, VORPSYrr, VPACKSSDWYrr, VPACKSSWBYrr,
+       VPACKUSDWYrr, VPACKUSWBYrr, VPADDBYrr, VPADDDYrr, VPADDQYrr,
+       VPADDSBYrr, VPADDSWYrr, VPADDUSBYrr, VPADDUSWYrr, VPADDWYrr,
+       VPANDNYrr, VPANDYrr, VPAVGBYrr, VPAVGWYrr, VPCMPEQBYrr,
+       VPCMPEQDYrr, VPCMPEQQYrr, VPCMPEQWYrr, VPCMPGTBYrr, VPCMPGTDYrr,
+       VPCMPGTQYrr, VPCMPGTWYrr, VPERMDYrr, VPERMILPDYrr, VPERMILPSYrr,
+       VPERMPSYrr, VPHADDDYrr, VPHADDSWrr256, VPHADDWYrr, VPHSUBDYrr,
+       VPHSUBSWrr256, VPHSUBWYrr, VPMADDUBSWrr256, VPMADDWDYrr,
+       VPMAXSBYrr, VPMAXSDYrr, VPMAXSWYrr, VPMAXUBYrr, VPMAXUDYrr,
+       VPMAXUWYrr, VPMINSBYrr, VPMINSDYrr, VPMINSWYrr, VPMINUBYrr,
+       VPMINUDYrr, VPMINUWYrr, VPMULDQYrr, VPMULHRSWrr256, VPMULHUWYrr,
+       VPMULHWYrr, VPMULLDYrr, VPMULLWYrr, VPMULUDQYrr, VPORYrr,
+       VPSADBWYrr, VPSHUFBYrr, VPSIGNBYrr, VPSIGNDYrr, VPSIGNWYrr,
+       VPSLLVDYrr, VPSLLVQYrr, VPSRAVDYrr, VPSRLVDYrr, VPSRLVQYrr,
+       VPSUBBYrr, VPSUBDYrr, VPSUBQYrr, VPSUBSBYrr, VPSUBSWYrr,
+       VPSUBUSBYrr, VPSUBUSWYrr, VPSUBWYrr, VPUNPCKHBWYrr, VPUNPCKHDQYrr,
+       VPUNPCKHQDQYrr, VPUNPCKHWDYrr, VPUNPCKLBWYrr, VPUNPCKLDQYrr,
+       VPUNPCKLQDQYrr, VPUNPCKLWDYrr, VPXORYrr, VSUBPDYrr, VSUBPSYrr,
+       VUNPCKHPDYrr, VUNPCKHPSYrr, VUNPCKLPDYrr, VUNPCKLPSYrr, VXORPDYrr,
+       VXORPSYrr]
+    =
+    ([TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass VR256) 0 False],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem`
+      [VBLENDVPDYrr, VBLENDVPSYrr, VFMADDPD4rrY, VFMADDPD4rrY_REV,
+       VFMADDPDr132rY, VFMADDPDr213rY, VFMADDPDr231rY, VFMADDPS4rrY,
+       VFMADDPS4rrY_REV, VFMADDPSr132rY, VFMADDPSr213rY, VFMADDPSr231rY,
+       VFMADDSUBPD4rrY, VFMADDSUBPD4rrY_REV, VFMADDSUBPDr132rY,
+       VFMADDSUBPDr213rY, VFMADDSUBPDr231rY, VFMADDSUBPS4rrY,
+       VFMADDSUBPS4rrY_REV, VFMADDSUBPSr132rY, VFMADDSUBPSr213rY,
+       VFMADDSUBPSr231rY, VFMSUBADDPD4rrY, VFMSUBADDPD4rrY_REV,
+       VFMSUBADDPDr132rY, VFMSUBADDPDr213rY, VFMSUBADDPDr231rY,
+       VFMSUBADDPS4rrY, VFMSUBADDPS4rrY_REV, VFMSUBADDPSr132rY,
+       VFMSUBADDPSr213rY, VFMSUBADDPSr231rY, VFMSUBPD4rrY,
+       VFMSUBPD4rrY_REV, VFMSUBPDr132rY, VFMSUBPDr213rY, VFMSUBPDr231rY,
+       VFMSUBPS4rrY, VFMSUBPS4rrY_REV, VFMSUBPSr132rY, VFMSUBPSr213rY,
+       VFMSUBPSr231rY, VFNMADDPD4rrY, VFNMADDPD4rrY_REV, VFNMADDPDr132rY,
+       VFNMADDPDr213rY, VFNMADDPDr231rY, VFNMADDPS4rrY, VFNMADDPS4rrY_REV,
+       VFNMADDPSr132rY, VFNMADDPSr213rY, VFNMADDPSr231rY, VFNMSUBPD4rrY,
+       VFNMSUBPD4rrY_REV, VFNMSUBPDr132rY, VFNMSUBPDr213rY,
+       VFNMSUBPDr231rY, VFNMSUBPS4rrY, VFNMSUBPS4rrY_REV, VFNMSUBPSr132rY,
+       VFNMSUBPSr213rY, VFNMSUBPSr231rY, VPBLENDVBYrr, VPCMOVrrY]
+    =
+    ([TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass VR256) 0 False],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem` [VPERMIL2PDrrY, VPERMIL2PSrrY] =
+    ([TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass VR256) 0 False, BoundInfo],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem`
+      [VFMADDPD4rmY, VFMADDPDr132mY, VFMADDPDr213mY, VFMADDPDr231mY,
+       VFMADDPS4rmY, VFMADDPSr132mY, VFMADDPSr213mY, VFMADDPSr231mY,
+       VFMADDSUBPD4rmY, VFMADDSUBPDr132mY, VFMADDSUBPDr213mY,
+       VFMADDSUBPDr231mY, VFMADDSUBPS4rmY, VFMADDSUBPSr132mY,
+       VFMADDSUBPSr213mY, VFMADDSUBPSr231mY, VFMSUBADDPD4rmY,
+       VFMSUBADDPDr132mY, VFMSUBADDPDr213mY, VFMSUBADDPDr231mY,
+       VFMSUBADDPS4rmY, VFMSUBADDPSr132mY, VFMSUBADDPSr213mY,
+       VFMSUBADDPSr231mY, VFMSUBPD4rmY, VFMSUBPDr132mY, VFMSUBPDr213mY,
+       VFMSUBPDr231mY, VFMSUBPS4rmY, VFMSUBPSr132mY, VFMSUBPSr213mY,
+       VFMSUBPSr231mY, VFNMADDPD4rmY, VFNMADDPDr132mY, VFNMADDPDr213mY,
+       VFNMADDPDr231mY, VFNMADDPS4rmY, VFNMADDPSr132mY, VFNMADDPSr213mY,
+       VFNMADDPSr231mY, VFNMSUBPD4rmY, VFNMSUBPDr132mY, VFNMSUBPDr213mY,
+       VFNMSUBPDr231mY, VFNMSUBPS4rmY, VFNMSUBPSr132mY, VFNMSUBPSr213mY,
+       VFNMSUBPSr231mY, VPCMOVrmY]
+    =
+    ([TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem` [VPERMIL2PDrmY, VPERMIL2PSrmY] =
+    ([TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, BoundInfo],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem`
+      [CMOV_V4F64, CMOV_V4I64, CMOV_V8F32, VBLENDPDYrri, VBLENDPSYrri,
+       VCMPPDYrri, VCMPPDYrri_alt, VCMPPSYrri, VCMPPSYrri_alt, VDPPSYrri,
+       VMPSADBWYrri, VPALIGNR256rr, VPBLENDDYrri, VPBLENDWYrri,
+       VPERM2F128rr, VPERM2I128rr, VSHUFPDYrri, VSHUFPSYrri]
+    =
+    ([TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass VR256) 0 False, BoundInfo],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem` [VGATHERDPDYrm, VPGATHERDQYrm] =
+    ([TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo, BoundInfo,
+      TemporaryInfo (RegisterClass VR256) 0 False],
+     [TemporaryInfo (RegisterClass VR256) 1 False,
+      TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem`
+      [VGATHERDPSYrm, VGATHERQPDYrm, VPGATHERDDYrm, VPGATHERQQYrm]
+    =
+    ([TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass VR256) 0 False, BoundInfo, BoundInfo,
+      TemporaryInfo (RegisterClass VR256) 0 False],
+     [TemporaryInfo (RegisterClass VR256) 1 False,
+      TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem` [VPTESTYrm, VTESTPDYrm, VTESTPSYrm] =
+    ([TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo],
+     [])
+  | i `elem`
+      [VADDPDYrm, VADDPSYrm, VADDSUBPDYrm, VADDSUBPSYrm, VANDNPDYrm,
+       VANDNPSYrm, VANDPDYrm, VANDPSYrm, VDIVPDYrm, VDIVPSYrm,
+       VFvANDNPDYrm, VFvANDNPSYrm, VFvANDPDYrm, VFvANDPSYrm, VFvORPDYrm,
+       VFvORPSYrm, VFvXORPDYrm, VFvXORPSYrm, VHADDPDYrm, VHADDPSYrm,
+       VHSUBPDYrm, VHSUBPSYrm, VMASKMOVPDYrm, VMASKMOVPSYrm, VMAXCPDYrm,
+       VMAXCPSYrm, VMAXPDYrm, VMAXPSYrm, VMINCPDYrm, VMINCPSYrm,
+       VMINPDYrm, VMINPSYrm, VMULPDYrm, VMULPSYrm, VORPDYrm, VORPSYrm,
+       VPACKSSDWYrm, VPACKSSWBYrm, VPACKUSDWYrm, VPACKUSWBYrm, VPADDBYrm,
+       VPADDDYrm, VPADDQYrm, VPADDSBYrm, VPADDSWYrm, VPADDUSBYrm,
+       VPADDUSWYrm, VPADDWYrm, VPANDNYrm, VPANDYrm, VPAVGBYrm, VPAVGWYrm,
+       VPCMPEQBYrm, VPCMPEQDYrm, VPCMPEQQYrm, VPCMPEQWYrm, VPCMPGTBYrm,
+       VPCMPGTDYrm, VPCMPGTQYrm, VPCMPGTWYrm, VPERMDYrm, VPERMILPDYrm,
+       VPERMILPSYrm, VPERMPSYrm, VPHADDDYrm, VPHADDSWrm256, VPHADDWYrm,
+       VPHSUBDYrm, VPHSUBSWrm256, VPHSUBWYrm, VPMADDUBSWrm256,
+       VPMADDWDYrm, VPMASKMOVDYrm, VPMASKMOVQYrm, VPMAXSBYrm, VPMAXSDYrm,
+       VPMAXSWYrm, VPMAXUBYrm, VPMAXUDYrm, VPMAXUWYrm, VPMINSBYrm,
+       VPMINSDYrm, VPMINSWYrm, VPMINUBYrm, VPMINUDYrm, VPMINUWYrm,
+       VPMULDQYrm, VPMULHRSWrm256, VPMULHUWYrm, VPMULHWYrm, VPMULLDYrm,
+       VPMULLWYrm, VPMULUDQYrm, VPORYrm, VPSADBWYrm, VPSHUFBYrm,
+       VPSIGNBYrm, VPSIGNDYrm, VPSIGNWYrm, VPSLLDYrm, VPSLLQYrm,
+       VPSLLVDYrm, VPSLLVQYrm, VPSLLWYrm, VPSRADYrm, VPSRAVDYrm,
+       VPSRAWYrm, VPSRLDYrm, VPSRLQYrm, VPSRLVDYrm, VPSRLVQYrm, VPSRLWYrm,
+       VPSUBBYrm, VPSUBDYrm, VPSUBQYrm, VPSUBSBYrm, VPSUBSWYrm,
+       VPSUBUSBYrm, VPSUBUSWYrm, VPSUBWYrm, VPUNPCKHBWYrm, VPUNPCKHDQYrm,
+       VPUNPCKHQDQYrm, VPUNPCKHWDYrm, VPUNPCKLBWYrm, VPUNPCKLDQYrm,
+       VPUNPCKLQDQYrm, VPUNPCKLWDYrm, VPXORYrm, VSUBPDYrm, VSUBPSYrm,
+       VUNPCKHPDYrm, VUNPCKHPSYrm, VUNPCKLPDYrm, VUNPCKLPSYrm, VXORPDYrm,
+       VXORPSYrm]
+    =
+    ([TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem`
+      [VBLENDVPDYrm, VBLENDVPSYrm, VFMADDPD4mrY, VFMADDPS4mrY,
+       VFMADDSUBPD4mrY, VFMADDSUBPS4mrY, VFMSUBADDPD4mrY, VFMSUBADDPS4mrY,
+       VFMSUBPD4mrY, VFMSUBPS4mrY, VFNMADDPD4mrY, VFNMADDPS4mrY,
+       VFNMSUBPD4mrY, VFNMSUBPS4mrY, VPBLENDVBYrm, VPCMOVmrY]
+    =
+    ([TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass VR256) 0 False],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem` [VPERMIL2PDmrY, VPERMIL2PSmrY] =
+    ([TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass VR256) 0 False, BoundInfo],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem`
+      [VBLENDPDYrmi, VBLENDPSYrmi, VCMPPDYrmi, VCMPPDYrmi_alt,
+       VCMPPSYrmi, VCMPPSYrmi_alt, VDPPSYrmi, VINSERTF128rm,
+       VINSERTI128rm, VMPSADBWYrmi, VPALIGNR256rm, VPBLENDDYrmi,
+       VPBLENDWYrmi, VPERM2F128rm, VPERM2I128rm, VSHUFPDYrmi, VSHUFPSYrmi]
+    =
+    ([TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, BoundInfo],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem` [VCVTPS2PHYrr, VEXTRACTF128rr, VEXTRACTI128rr] =
+    ([TemporaryInfo (RegisterClass VR256) 0 False, BoundInfo],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem`
+      [VPERMILPDYri, VPERMILPSYri, VPERMPDYri, VPERMQYri, VPSHUFDYri,
+       VPSHUFHWYri, VPSHUFLWYri, VPSLLDQYri, VPSLLDYri, VPSLLQYri,
+       VPSLLWYri, VPSRADYri, VPSRAWYri, VPSRLDQYri, VPSRLDYri, VPSRLQYri,
+       VPSRLWYri, VROUNDYPDr, VROUNDYPSr]
+    =
+    ([TemporaryInfo (RegisterClass VR256) 0 False, BoundInfo],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem` [SCASW] =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False,
+      TemporaryInfo (RegisterClass GR16) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass GR32) 1 False])
+  | i `elem` [SCASL] =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass GR32) 1 False])
+  | i `elem` [SCASQ] =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass GR32) 1 False])
+  | i `elem` [SCASB] =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False,
+      TemporaryInfo (RegisterClass GR8) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass GR32) 1 False])
+  | i `elem` [CMPSB, CMPSL, CMPSQ, CMPSW] =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False,
+      TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass GR32) 1 False,
+      TemporaryInfo (RegisterClass GR32) 1 False])
+  | i `elem` [LOCAL_ESCAPE] =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo], [])
+  | i `elem` [OUTSB, OUTSL, OUTSW] =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass GR16) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass GR32) 1 False])
   | i `elem` [LODSW] =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass GR32) 0 False],
@@ -777,16 +1776,28 @@ operandInfo i
       TemporaryInfo (RegisterClass GR32) 1 False,
       TemporaryInfo (RegisterClass GR32) 1 False])
   | i `elem`
-      [CALL16m, CALL32m, CALL64m, DEC16m, DEC32m, DEC64m, DEC8m,
-       FNSTCW16m, INC16m, INC32m, INC64m, INC8m, JMP16m, JMP32m, JMP64m,
-       NEG16m, NEG32m, NEG64m, NEG8m, NOOPL, NOOPW, NOT16m, NOT32m,
-       NOT64m, NOT8m, POP16rmm, POP32rmm, POP64rmm, PUSH16rmm, PUSH32rmm,
-       PUSH64rmm, RCL16m1, RCL32m1, RCL64m1, RCL8m1, RCR16m1, RCR32m1,
-       RCR64m1, RCR8m1, ROL16m1, ROL32m1, ROL64m1, ROL8m1, ROR16m1,
-       ROR32m1, ROR64m1, ROR8m1, SAR16m1, SAR32m1, SAR64m1, SAR8m1,
-       SETAEm, SETAm, SETBEm, SETBm, SETEm, SETGEm, SETGm, SETLEm, SETLm,
-       SETNEm, SETNOm, SETNPm, SETNSm, SETOm, SETPm, SETSm, SHL16m1,
-       SHL32m1, SHL64m1, SHL8m1, SHR16m1, SHR32m1, SHR64m1, SHR8m1]
+      [CALL16m, CALL32m, CALL64m, CLFLUSH, CLFLUSHOPT, CLWB, DEC16m,
+       DEC32m, DEC64m, DEC8m, EH_SjLj_LongJmp32, EH_SjLj_LongJmp64,
+       FARCALL16m, FARCALL32m, FARCALL64, FARJMP16m, FARJMP32m, FARJMP64,
+       FBLDm, FCOM32m, FCOM64m, FCOMP32m, FCOMP64m, FICOM16m, FICOM32m,
+       FICOMP16m, FICOMP32m, FLDCW16m, FLDENVm, FNSTCW16m, FXRSTOR,
+       FXRSTOR64, FXSAVE, FXSAVE64, INC16m, INC32m, INC64m, INC8m, INVLPG,
+       JMP16m, JMP32m, JMP64m, LDMXCSR, LGDT16m, LGDT32m, LGDT64m,
+       LIDT16m, LIDT32m, LIDT64m, LLDT16m, LMSW16m, LOCK_DEC16m,
+       LOCK_DEC32m, LOCK_DEC64m, LOCK_DEC8m, LOCK_INC16m, LOCK_INC32m,
+       LOCK_INC64m, LOCK_INC8m, LTRm, NEG16m, NEG32m, NEG64m, NEG8m,
+       NOOPL, NOOPW, NOT16m, NOT32m, NOT64m, NOT8m, POP16rmm, POP32rmm,
+       POP64rmm, PREFETCH, PREFETCHNTA, PREFETCHT0, PREFETCHT1,
+       PREFETCHT2, PREFETCHW, PUSH16rmm, PUSH32rmm, PUSH64rmm, RCL16m1,
+       RCL32m1, RCL64m1, RCL8m1, RCR16m1, RCR32m1, RCR64m1, RCR8m1,
+       RELEASE_DEC16m, RELEASE_DEC32m, RELEASE_DEC64m, RELEASE_DEC8m,
+       RELEASE_INC16m, RELEASE_INC32m, RELEASE_INC64m, RELEASE_INC8m,
+       ROL16m1, ROL32m1, ROL64m1, ROL8m1, ROR16m1, ROR32m1, ROR64m1,
+       ROR8m1, SAR16m1, SAR32m1, SAR64m1, SAR8m1, SETAEm, SETAm, SETBEm,
+       SETBm, SETEm, SETGEm, SETGm, SETLEm, SETLm, SETNEm, SETNOm, SETNPm,
+       SETNSm, SETOm, SETPm, SETSm, SHL16m1, SHL32m1, SHL64m1, SHL8m1,
+       SHR16m1, SHR32m1, SHR64m1, SHR8m1, STMXCSR, VERRm, VERWm, VLDMXCSR,
+       VMCLEARm, VMPTRLDm, VMXON, VSTMXCSR]
     =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
@@ -794,7 +1805,8 @@ operandInfo i
      [])
   | i `elem`
       [CVTSD2SSrm, CVTSI2SS64rm, CVTSI2SSrm, FsMOVAPSrm, FsVMOVAPSrm,
-       MOVDI2SSrm, MOVSSrm, SQRTSSm]
+       MOVDI2SSrm, MOVSSrm, RCPSSm, RSQRTSSm, SQRTSSm, VMOVDI2SSrm,
+       VMOVSSrm]
     =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
@@ -802,37 +1814,66 @@ operandInfo i
      [TemporaryInfo (RegisterClass FR32) 1 False])
   | i `elem`
       [CVTSI2SD64rm, CVTSI2SDrm, CVTSS2SDrm, FsMOVAPDrm, FsVMOVAPDrm,
-       MOV64toSDrm, MOVSDrm, SQRTSDm]
+       MOV64toSDrm, MOVSDrm, SQRTSDm, VMOV64toSDrm, VMOVSDrm]
     =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo],
      [TemporaryInfo (RegisterClass FR64) 1 False])
   | i `elem`
-      [BSF16rm, BSR16rm, LEA16r, MOV16rm, MOVBE16rm, MOVSX16rm8,
-       MOVZX16rm8, POPCNT16rm]
+      [ACQUIRE_MOV16rm, BOUNDS16rm, BSF16rm, BSR16rm, LAR16rm, LDS16rm,
+       LEA16r, LES16rm, LFS16rm, LGS16rm, LSL16rm, LSS16rm, LZCNT16rm,
+       MOV16rm, MOVBE16rm, MOVSX16rm8, MOVZX16rm8, POPCNT16rm, TZCNT16rm]
     =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo],
      [TemporaryInfo (RegisterClass GR16) 1 False])
   | i `elem`
-      [BSF32rm, BSR32rm, LEA32r, MOV32rm, MOVBE32rm, MOVSX32rm16,
-       MOVSX32rm8, MOVZX32rm16, MOVZX32rm8, POPCNT32rm]
+      [ACQUIRE_MOV32rm, ADOX32rm, BLCFILL32rm, BLCI32rm, BLCIC32rm,
+       BLCMSK32rm, BLCS32rm, BLSFILL32rm, BLSI32rm, BLSIC32rm, BLSMSK32rm,
+       BLSR32rm, BOUNDS32rm, BSF32rm, BSR32rm, CVTSD2SIrm, CVTSS2SIrm,
+       CVTTSD2SIrm, CVTTSS2SIrm, EH_SjLj_SetJmp32, EH_SjLj_SetJmp64,
+       Int_CVTTSD2SIrm, Int_CVTTSS2SIrm, Int_VCVTTSD2SIrm,
+       Int_VCVTTSS2SIrm, LAR32rm, LDS32rm, LEA32r, LES32rm, LFS32rm,
+       LGS32rm, LSL32rm, LSS32rm, LZCNT32rm, MOV32rm, MOVBE32rm,
+       MOVSX32rm16, MOVSX32rm8, MOVZX32rm16, MOVZX32rm8, POPCNT32rm,
+       T1MSKC32rm, TZCNT32rm, TZMSK32rm, VCVTSD2SIZrm, VCVTSD2SIrm,
+       VCVTSD2USIZrm, VCVTSS2SIZrm, VCVTSS2SIrm, VCVTSS2USIZrm,
+       VCVTTSD2SIZrm, VCVTTSD2SIZrm_Int, VCVTTSD2SIrm, VCVTTSD2USIZrm,
+       VCVTTSD2USIZrm_Int, VCVTTSS2SIZrm, VCVTTSS2SIZrm_Int, VCVTTSS2SIrm,
+       VCVTTSS2USIZrm, VCVTTSS2USIZrm_Int, VMWRITE32rm]
     =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo],
      [TemporaryInfo (RegisterClass GR32) 1 False])
+  | i `elem` [TLSCall_32] =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo],
+     [TemporaryInfo (RegisterClass GR32) 1 False,
+      TemporaryInfo (RegisterClass GR32) 1 False])
   | i `elem`
-      [BSF64rm, BSR64rm, MOV64rm, MOVBE64rm, MOVSX64rm16, MOVSX64rm32,
-       MOVSX64rm8, MOVZX64rm16, MOVZX64rm8, POPCNT64rm]
+      [ACQUIRE_MOV64rm, ADOX64rm, BLCFILL64rm, BLCI64rm, BLCIC64rm,
+       BLCMSK64rm, BLCS64rm, BLSFILL64rm, BLSI64rm, BLSIC64rm, BLSMSK64rm,
+       BLSR64rm, BSF64rm, BSR64rm, CVTSD2SI64rm, CVTSS2SI64rm,
+       CVTTSD2SI64rm, CVTTSS2SI64rm, Int_CVTTSD2SI64rm, Int_CVTTSS2SI64rm,
+       Int_VCVTTSD2SI64rm, Int_VCVTTSS2SI64rm, LAR64rm, LFS64rm, LGS64rm,
+       LSL64rm, LSS64rm, LZCNT64rm, MOV64rm, MOVBE64rm, MOVSX64rm16,
+       MOVSX64rm32, MOVSX64rm8, MOVZX64rm16, MOVZX64rm8, POPCNT64rm,
+       T1MSKC64rm, TZCNT64rm, TZMSK64rm, VCVTSD2SI64Zrm, VCVTSD2SI64rm,
+       VCVTSD2USI64Zrm, VCVTSS2SI64Zrm, VCVTSS2SI64rm, VCVTSS2USI64Zrm,
+       VCVTTSD2SI64Zrm, VCVTTSD2SI64Zrm_Int, VCVTTSD2SI64rm,
+       VCVTTSD2USI64Zrm, VCVTTSD2USI64Zrm_Int, VCVTTSS2SI64Zrm,
+       VCVTTSS2SI64Zrm_Int, VCVTTSS2SI64rm, VCVTTSS2USI64Zrm,
+       VCVTTSS2USI64Zrm_Int, VMWRITE64rm]
     =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo],
      [TemporaryInfo (RegisterClass GR64) 1 False])
-  | i `elem` [MOV8rm] =
+  | i `elem` [ACQUIRE_MOV8rm, MOV8rm] =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo],
@@ -848,30 +1889,71 @@ operandInfo i
       BoundInfo],
      [TemporaryInfo (InfiniteRegisterClass RM32) 0 False])
   | i `elem`
-      [CVTDQ2PDrm, CVTDQ2PSrm, CVTPD2DQrm, CVTPD2PSrm, CVTPS2DQrm,
-       CVTPS2PDrm, CVTTPD2DQrm, CVTTPS2DQrm, MOV64toPQIrm, MOVAPDrm,
-       MOVAPSrm, MOVDDUPrm, MOVDI2PDIrm, MOVDQArm, MOVDQUrm, MOVNTDQArm,
-       MOVQI2PQIrm, MOVSHDUPrm, MOVSLDUPrm, MOVUPDrm, MOVUPSrm,
-       MOVZPQILo2PQIrm, MOVZQI2PQIrm]
+      [AESIMCrm, CVTDQ2PDrm, CVTDQ2PSrm, CVTPD2DQrm, CVTPD2PSrm,
+       CVTPS2DQrm, CVTPS2PDrm, CVTTPD2DQrm, CVTTPS2DQrm, LDDQUrm,
+       MMX_CVTPI2PDirm, MOV64toPQIrm, MOVAPDrm, MOVAPSrm, MOVDDUPrm,
+       MOVDI2PDIrm, MOVDQArm, MOVDQUrm, MOVNTDQArm, MOVQI2PQIrm,
+       MOVSHDUPrm, MOVSLDUPrm, MOVUPDrm, MOVUPSrm, MOVZPQILo2PQIrm,
+       MOVZQI2PQIrm, PABSBrm128, PABSDrm128, PABSWrm128, PHMINPOSUWrm128,
+       PMOVSXBDrm, PMOVSXBQrm, PMOVSXBWrm, PMOVSXDQrm, PMOVSXWDrm,
+       PMOVSXWQrm, PMOVZXBDrm, PMOVZXBQrm, PMOVZXBWrm, PMOVZXDQrm,
+       PMOVZXWDrm, PMOVZXWQrm, RCPPSm, RSQRTPSm, SQRTPDm, SQRTPSm,
+       VAESIMCrm, VBROADCASTSSrm, VCVTDQ2PDrm, VCVTDQ2PSrm, VCVTPD2DQXrm,
+       VCVTPD2DQYrm, VCVTPD2PSXrm, VCVTPD2PSYrm, VCVTPH2PSrm, VCVTPS2DQrm,
+       VCVTPS2PDrm, VCVTTPD2DQXrm, VCVTTPD2DQYrm, VCVTTPS2DQrm, VFRCZPDrm,
+       VFRCZPSrm, VFRCZSDrm, VFRCZSSrm, VLDDQUrm, VMOV64toPQIrm,
+       VMOVAPDrm, VMOVAPSrm, VMOVDDUPrm, VMOVDI2PDIrm, VMOVDQArm,
+       VMOVDQUrm, VMOVNTDQArm, VMOVQI2PQIrm, VMOVSHDUPrm, VMOVSLDUPrm,
+       VMOVUPDrm, VMOVUPSrm, VMOVZPQILo2PQIrm, VMOVZQI2PQIrm, VPABSBrm128,
+       VPABSDrm128, VPABSWrm128, VPBROADCASTBrm, VPBROADCASTDrm,
+       VPBROADCASTQrm, VPBROADCASTWrm, VPHADDBDrm, VPHADDBQrm, VPHADDBWrm,
+       VPHADDDQrm, VPHADDUBDrm, VPHADDUBQrm, VPHADDUBWrm, VPHADDUDQrm,
+       VPHADDUWDrm, VPHADDUWQrm, VPHADDWDrm, VPHADDWQrm, VPHMINPOSUWrm128,
+       VPHSUBBWrm, VPHSUBDQrm, VPHSUBWDrm, VPMOVSXBDrm, VPMOVSXBQrm,
+       VPMOVSXBWrm, VPMOVSXDQrm, VPMOVSXWDrm, VPMOVSXWQrm, VPMOVZXBDrm,
+       VPMOVZXBQrm, VPMOVZXBWrm, VPMOVZXDQrm, VPMOVZXWDrm, VPMOVZXWQrm,
+       VRCPPSm, VRSQRTPSm, VSQRTPDm, VSQRTPSm]
     =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo],
      [TemporaryInfo (RegisterClass VR128) 1 False])
-  | i `elem` [MOVSS2DImr, MOVSSmr] =
+  | i `elem`
+      [VBROADCASTF128, VBROADCASTI128, VBROADCASTSDYrm, VBROADCASTSSYrm,
+       VCVTDQ2PDYrm, VCVTDQ2PSYrm, VCVTPH2PSYrm, VCVTPS2DQYrm,
+       VCVTPS2PDYrm, VCVTTPS2DQYrm, VFRCZPDrmY, VFRCZPSrmY, VLDDQUYrm,
+       VMOVAPDYrm, VMOVAPSYrm, VMOVDDUPYrm, VMOVDQAYrm, VMOVDQUYrm,
+       VMOVNTDQAYrm, VMOVSHDUPYrm, VMOVSLDUPYrm, VMOVUPDYrm, VMOVUPSYrm,
+       VPABSBrm256, VPABSDrm256, VPABSWrm256, VPBROADCASTBYrm,
+       VPBROADCASTDYrm, VPBROADCASTQYrm, VPBROADCASTWYrm, VPMOVSXBDYrm,
+       VPMOVSXBQYrm, VPMOVSXBWYrm, VPMOVSXDQYrm, VPMOVSXWDYrm,
+       VPMOVSXWQYrm, VPMOVZXBDYrm, VPMOVZXBQYrm, VPMOVZXBWYrm,
+       VPMOVZXDQYrm, VPMOVZXWDYrm, VPMOVZXWQYrm, VRCPPSYm, VRSQRTPSYm,
+       VSQRTPDYm, VSQRTPSYm]
+    =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem`
+      [MOVSS2DImr, MOVSSmr, RELEASE_FADD32mr, VMOVSS2DImr, VMOVSSmr]
+    =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo, TemporaryInfo (RegisterClass FR32) 0 False],
      [])
-  | i `elem` [MOVSDmr, MOVSDto64mr] =
+  | i `elem`
+      [MOVSDmr, MOVSDto64mr, RELEASE_FADD64mr, VMOVSDmr, VMOVSDto64mr]
+    =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo, TemporaryInfo (RegisterClass FR64) 0 False],
      [])
   | i `elem`
-      [ADC16mr, ADD16mr, AND16mr, BT16mr, BTC16mr, BTR16mr, BTS16mr,
-       CMP16mr, CMPXCHG16rm, MOV16mr, MOVBE16mr, OR16mr, SBB16mr, SUB16mr,
-       XOR16mr]
+      [ADC16mr, ADD16mr, AND16mr, ARPL16mr, BT16mr, BTC16mr, BTR16mr,
+       BTS16mr, CMP16mr, CMPXCHG16rm, LOCK_ADD16mr, LOCK_AND16mr,
+       LOCK_OR16mr, LOCK_SUB16mr, LOCK_XOR16mr, MOV16mr, MOVBE16mr,
+       OR16mr, RELEASE_MOV16mr, SBB16mr, SUB16mr, XADD16rm, XOR16mr]
     =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
@@ -889,6 +1971,12 @@ operandInfo i
       BoundInfo, TemporaryInfo (RegisterClass GR16) 0 False],
      [TemporaryInfo (RegisterClass GR8) 1 False,
       TemporaryInfo (RegisterClass GR8) 1 False])
+  | i `elem` [LCMPXCHG16] =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass GR16) 0 False,
+      TemporaryInfo (RegisterClass GR16) 0 False],
+     [TemporaryInfo (RegisterClass GR16) 1 False])
   | i `elem` [DIV16m, IDIV16m] =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
@@ -909,24 +1997,42 @@ operandInfo i
      [])
   | i `elem`
       [ADC32mr, ADD32mr, AND32mr, BT32mr, BTC32mr, BTR32mr, BTS32mr,
-       CMP32mr, CMPXCHG32rm, MOV32mr, MOVBE32mr, OR32mr, OR32mrLocked,
-       SBB32mr, SUB32mr, XOR32mr]
+       CMP32mr, CMPXCHG32rm, LOCK_ADD32mr, LOCK_AND32mr, LOCK_OR32mr,
+       LOCK_SUB32mr, LOCK_XOR32mr, MOV32mr, MOVBE32mr, MOVNTImr, OR32mr,
+       OR32mrLocked, RELEASE_ADD32mr, RELEASE_AND32mr, RELEASE_MOV32mr,
+       RELEASE_OR32mr, RELEASE_XOR32mr, SBB32mr, SUB32mr, XADD32rm,
+       XOR32mr]
     =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo, TemporaryInfo (RegisterClass GR32) 0 False],
      [])
-  | i `elem` [SARX32rm, SHLX32rm, SHRX32rm] =
+  | i `elem` [BEXTR32rm, BZHI32rm, SARX32rm, SHLX32rm, SHRX32rm] =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo, TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [IMUL32m, MUL32m] =
+  | i `elem` [IMUL32m, MUL32m, MULX32rm] =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo, TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False,
       TemporaryInfo (RegisterClass GR32) 1 False])
+  | i `elem`
+      [MONITOR, XRSTOR, XRSTOR64, XRSTORS, XRSTORS64, XSAVE, XSAVE64,
+       XSAVEC, XSAVEC64, XSAVEOPT, XSAVEOPT64, XSAVES, XSAVES64]
+    =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [])
+  | i `elem` [LCMPXCHG32] =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass GR32) 1 False])
   | i `elem` [DIV32m, IDIV32m] =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
@@ -934,7 +2040,7 @@ operandInfo i
       TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False,
       TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [CMPXCHG8B] =
+  | i `elem` [CMPXCHG8B, LCMPXCHG8B] =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo, TemporaryInfo (RegisterClass GR32) 0 False,
@@ -942,6 +2048,18 @@ operandInfo i
       TemporaryInfo (RegisterClass GR32) 0 False,
       TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False,
+      TemporaryInfo (RegisterClass GR32) 1 False])
+  | i `elem` [LCMPXCHG8B_SAVE_EBX] =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False,
+      TemporaryInfo (RegisterClass GR32) 0 False],
+     [TemporaryInfo (RegisterClass GR32) 1 False,
+      TemporaryInfo (RegisterClass GR32) 1 False,
+      TemporaryInfo (RegisterClass GR32) 1 False,
       TemporaryInfo (RegisterClass GR32) 1 False])
   | i `elem` [SHLD32mrCL, SHRD32mrCL] =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
@@ -956,24 +2074,35 @@ operandInfo i
      [])
   | i `elem`
       [ADC64mr, ADD64mr, AND64mr, BT64mr, BTC64mr, BTR64mr, BTS64mr,
-       CMP64mr, CMPXCHG64rm, MOV64mr, MOVBE64mr, OR64mr, SBB64mr, SUB64mr,
+       CMP64mr, CMPXCHG64rm, LOCK_ADD64mr, LOCK_AND64mr, LOCK_OR64mr,
+       LOCK_SUB64mr, LOCK_XOR64mr, MOV64mr, MOVBE64mr, MOVNTI_64mr,
+       OR64mr, RELEASE_ADD64mr, RELEASE_AND64mr, RELEASE_MOV64mr,
+       RELEASE_OR64mr, RELEASE_XOR64mr, SBB64mr, SUB64mr, XADD64rm,
        XOR64mr]
     =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo, TemporaryInfo (RegisterClass GR64) 0 False],
      [])
-  | i `elem` [SARX64rm, SHLX64rm, SHRX64rm] =
+  | i `elem`
+      [BEXTR64rm, BZHI64rm, SARX64rm, SHLX64rm, SHRX64rm, TLSCall_64]
+    =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo, TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
-  | i `elem` [IMUL64m, MUL64m] =
+  | i `elem` [IMUL64m, MUL64m, MULX64rm] =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo, TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False,
       TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem` [LCMPXCHG64] =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass GR64) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False],
+     [TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem` [DIV64m, IDIV64m] =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
@@ -981,7 +2110,7 @@ operandInfo i
       TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False,
       TemporaryInfo (RegisterClass GR64) 1 False])
-  | i `elem` [CMPXCHG16B] =
+  | i `elem` [CMPXCHG16B, LCMPXCHG16B] =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo, TemporaryInfo (RegisterClass GR64) 0 False,
@@ -989,6 +2118,18 @@ operandInfo i
       TemporaryInfo (RegisterClass GR64) 0 False,
       TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False,
+      TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem` [LCMPXCHG16B_SAVE_RBX] =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass GR64) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False,
+      TemporaryInfo (RegisterClass GR64) 0 False],
+     [TemporaryInfo (RegisterClass GR64) 1 False,
+      TemporaryInfo (RegisterClass GR64) 1 False,
+      TemporaryInfo (RegisterClass GR64) 1 False,
       TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem` [SHLD64mrCL, SHRD64mrCL] =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
@@ -1002,12 +2143,14 @@ operandInfo i
       BoundInfo, TemporaryInfo (RegisterClass GR64) 0 False, BoundInfo],
      [])
   | i `elem`
-      [ADC8mr, ADD8mr, AND8mr, CMP8mr, CMPXCHG8rm, MOV8mr, OR8mr,
+      [ADC8mr, ADD8mr, AND8mr, CMP8mr, CMPXCHG8rm, LOCK_ADD8mr,
+       LOCK_AND8mr, LOCK_OR8mr, LOCK_SUB8mr, LOCK_XOR8mr, MOV8mr, OR8mr,
        RCL16mCL, RCL32mCL, RCL64mCL, RCL8mCL, RCR16mCL, RCR32mCL,
-       RCR64mCL, RCR8mCL, ROL16mCL, ROL32mCL, ROL64mCL, ROL8mCL, ROR16mCL,
-       ROR32mCL, ROR64mCL, ROR8mCL, SAR16mCL, SAR32mCL, SAR64mCL, SAR8mCL,
-       SBB8mr, SHL16mCL, SHL32mCL, SHL64mCL, SHL8mCL, SHR16mCL, SHR32mCL,
-       SHR64mCL, SHR8mCL, SUB8mr, XOR8mr]
+       RCR64mCL, RCR8mCL, RELEASE_ADD8mr, RELEASE_AND8mr, RELEASE_MOV8mr,
+       RELEASE_OR8mr, RELEASE_XOR8mr, ROL16mCL, ROL32mCL, ROL64mCL,
+       ROL8mCL, ROR16mCL, ROR32mCL, ROR64mCL, ROR8mCL, SAR16mCL, SAR32mCL,
+       SAR64mCL, SAR8mCL, SBB8mr, SHL16mCL, SHL32mCL, SHL64mCL, SHL8mCL,
+       SHR16mCL, SHR32mCL, SHR64mCL, SHR8mCL, SUB8mr, XADD8rm, XOR8mr]
     =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
@@ -1019,15 +2162,68 @@ operandInfo i
       BoundInfo, TemporaryInfo (RegisterClass GR8) 0 False],
      [TemporaryInfo (RegisterClass GR8) 1 False,
       TemporaryInfo (RegisterClass GR16) 1 False])
+  | i `elem` [LCMPXCHG8] =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass GR8) 0 False,
+      TemporaryInfo (RegisterClass GR8) 0 False],
+     [TemporaryInfo (RegisterClass GR8) 1 False])
   | i `elem`
       [MOVAPDmr, MOVAPSmr, MOVDQAmr, MOVDQUmr, MOVHPDmr, MOVHPSmr,
        MOVLPDmr, MOVLPSmr, MOVNTDQmr, MOVNTPDmr, MOVNTPSmr, MOVNTSD,
        MOVNTSS, MOVPDI2DImr, MOVPQI2QImr, MOVPQIto64rm, MOVUPDmr,
-       MOVUPSmr]
+       MOVUPSmr, VMOVAPDmr, VMOVAPSmr, VMOVDQAmr, VMOVDQUmr, VMOVHPDmr,
+       VMOVHPSmr, VMOVLPDmr, VMOVLPSmr, VMOVNTDQmr, VMOVNTPDmr,
+       VMOVNTPSmr, VMOVPDI2DImr, VMOVPQI2QImr, VMOVPQIto64rm, VMOVUPDmr,
+       VMOVUPSmr]
     =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo, TemporaryInfo (RegisterClass VR128) 0 False],
+     [])
+  | i `elem`
+      [VPROTBmr, VPROTDmr, VPROTQmr, VPROTWmr, VPSHABmr, VPSHADmr,
+       VPSHAQmr, VPSHAWmr, VPSHLBmr, VPSHLDmr, VPSHLQmr, VPSHLWmr]
+    =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass VR128) 0 False],
+     [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem` [VMASKMOVPDmr, VMASKMOVPSmr, VPMASKMOVDmr, VPMASKMOVQmr]
+    =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass VR128) 0 False,
+      TemporaryInfo (RegisterClass VR128) 0 False],
+     [])
+  | i `elem`
+      [EXTRACTPSmr, PEXTRBmr, PEXTRDmr, PEXTRQmr, PEXTRWmr, VCVTPS2PHmr,
+       VEXTRACTPSmr, VPEXTRBmr, VPEXTRDmr, VPEXTRQmr, VPEXTRWmr]
+    =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass VR128) 0 False, BoundInfo],
+     [])
+  | i `elem`
+      [VMOVAPDYmr, VMOVAPSYmr, VMOVDQAYmr, VMOVDQUYmr, VMOVNTDQYmr,
+       VMOVNTPDYmr, VMOVNTPSYmr, VMOVUPDYmr, VMOVUPSYmr]
+    =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass VR256) 0 False],
+     [])
+  | i `elem`
+      [VMASKMOVPDYmr, VMASKMOVPSYmr, VPMASKMOVDYmr, VPMASKMOVQYmr]
+    =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass VR256) 0 False,
+      TemporaryInfo (RegisterClass VR256) 0 False],
+     [])
+  | i `elem` [VCVTPS2PHYmr, VEXTRACTF128mr, VEXTRACTI128mr] =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, TemporaryInfo (RegisterClass VR256) 0 False, BoundInfo],
      [])
   | i `elem`
       [ADC16mi, ADC16mi8, ADC32mi, ADC32mi8, ADC64mi32, ADC64mi8, ADC8mi,
@@ -1036,17 +2232,30 @@ operandInfo i
        AND64mi8, AND8mi, AND8mi8, BT16mi8, BT32mi8, BT64mi8, BTC16mi8,
        BTC32mi8, BTC64mi8, BTR16mi8, BTR32mi8, BTR64mi8, BTS16mi8,
        BTS32mi8, BTS64mi8, CMP16mi, CMP16mi8, CMP32mi, CMP32mi8,
-       CMP64mi32, CMP64mi8, CMP8mi, CMP8mi8, MOV16mi, MOV32mi, MOV64mi32,
-       MOV8mi, OR16mi, OR16mi8, OR32mi, OR32mi8, OR64mi32, OR64mi8, OR8mi,
-       OR8mi8, RCL16mi, RCL32mi, RCL64mi, RCL8mi, RCR16mi, RCR32mi,
-       RCR64mi, RCR8mi, ROL16mi, ROL32mi, ROL64mi, ROL8mi, ROR16mi,
-       ROR32mi, ROR64mi, ROR8mi, SAR16mi, SAR32mi, SAR64mi, SAR8mi,
-       SBB16mi, SBB16mi8, SBB32mi, SBB32mi8, SBB64mi32, SBB64mi8, SBB8mi,
-       SBB8mi8, SHL16mi, SHL32mi, SHL64mi, SHL8mi, SHR16mi, SHR32mi,
-       SHR64mi, SHR8mi, SUB16mi, SUB16mi8, SUB32mi, SUB32mi8, SUB64mi32,
-       SUB64mi8, SUB8mi, SUB8mi8, TEST16mi, TEST32mi, TEST64mi32, TEST8mi,
-       XOR16mi, XOR16mi8, XOR32mi, XOR32mi8, XOR64mi32, XOR64mi8, XOR8mi,
-       XOR8mi8]
+       CMP64mi32, CMP64mi8, CMP8mi, CMP8mi8, LOCK_ADD16mi, LOCK_ADD16mi8,
+       LOCK_ADD32mi, LOCK_ADD32mi8, LOCK_ADD64mi32, LOCK_ADD64mi8,
+       LOCK_ADD8mi, LOCK_AND16mi, LOCK_AND16mi8, LOCK_AND32mi,
+       LOCK_AND32mi8, LOCK_AND64mi32, LOCK_AND64mi8, LOCK_AND8mi,
+       LOCK_OR16mi, LOCK_OR16mi8, LOCK_OR32mi, LOCK_OR32mi8,
+       LOCK_OR64mi32, LOCK_OR64mi8, LOCK_OR8mi, LOCK_SUB16mi,
+       LOCK_SUB16mi8, LOCK_SUB32mi, LOCK_SUB32mi8, LOCK_SUB64mi32,
+       LOCK_SUB64mi8, LOCK_SUB8mi, LOCK_XOR16mi, LOCK_XOR16mi8,
+       LOCK_XOR32mi, LOCK_XOR32mi8, LOCK_XOR64mi32, LOCK_XOR64mi8,
+       LOCK_XOR8mi, MOV16mi, MOV32mi, MOV64mi32, MOV8mi, OR16mi, OR16mi8,
+       OR32mi, OR32mi8, OR64mi32, OR64mi8, OR8mi, OR8mi8, RCL16mi,
+       RCL32mi, RCL64mi, RCL8mi, RCR16mi, RCR32mi, RCR64mi, RCR8mi,
+       RELEASE_ADD32mi, RELEASE_ADD64mi32, RELEASE_ADD8mi,
+       RELEASE_AND32mi, RELEASE_AND64mi32, RELEASE_AND8mi,
+       RELEASE_MOV16mi, RELEASE_MOV32mi, RELEASE_MOV64mi32,
+       RELEASE_MOV8mi, RELEASE_OR32mi, RELEASE_OR64mi32, RELEASE_OR8mi,
+       RELEASE_XOR32mi, RELEASE_XOR64mi32, RELEASE_XOR8mi, ROL16mi,
+       ROL32mi, ROL64mi, ROL8mi, ROR16mi, ROR32mi, ROR64mi, ROR8mi,
+       SAR16mi, SAR32mi, SAR64mi, SAR8mi, SBB16mi, SBB16mi8, SBB32mi,
+       SBB32mi8, SBB64mi32, SBB64mi8, SBB8mi, SBB8mi8, SHL16mi, SHL32mi,
+       SHL64mi, SHL8mi, SHR16mi, SHR32mi, SHR64mi, SHR8mi, SUB16mi,
+       SUB16mi8, SUB32mi, SUB32mi8, SUB64mi32, SUB64mi8, SUB8mi, SUB8mi8,
+       TEST16mi, TEST32mi, TEST64mi32, TEST8mi, XOR16mi, XOR16mi8,
+       XOR32mi, XOR32mi8, XOR64mi32, XOR64mi8, XOR8mi, XOR8mi8]
     =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
@@ -1057,21 +2266,39 @@ operandInfo i
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo, BoundInfo],
      [TemporaryInfo (RegisterClass GR16) 1 False])
-  | i `elem` [IMUL32rmi, IMUL32rmi8, RORX32mi] =
+  | i `elem` [BEXTRI32mi, IMUL32rmi, IMUL32rmi8, RORX32mi] =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo, BoundInfo],
      [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [IMUL64rmi32, IMUL64rmi8, RORX64mi] =
+  | i `elem` [BEXTRI64mi, IMUL64rmi32, IMUL64rmi8, RORX64mi] =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo, BoundInfo],
      [TemporaryInfo (RegisterClass GR64) 1 False])
-  | i `elem` [PSHUFDmi, PSHUFHWmi, PSHUFLWmi, ROUNDPDm, ROUNDPSm] =
+  | i `elem`
+      [AESKEYGENASSIST128rm, PSHUFDmi, PSHUFHWmi, PSHUFLWmi, ROUNDPDm,
+       ROUNDPSm, VAESKEYGENASSIST128rm, VPERMILPDmi, VPERMILPSmi,
+       VPROTBmi, VPROTDmi, VPROTQmi, VPROTWmi, VPSHUFDmi, VPSHUFHWmi,
+       VPSHUFLWmi, VROUNDPDm, VROUNDPSm]
+    =
     ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
       BoundInfo, BoundInfo],
      [TemporaryInfo (RegisterClass VR128) 1 False])
+  | i `elem`
+      [VPERMILPDYmi, VPERMILPSYmi, VPERMPDYmi, VPERMQYmi, VPSHUFDYmi,
+       VPSHUFHWYmi, VPSHUFLWYmi, VROUNDYPDm, VROUNDYPSm]
+    =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, BoundInfo],
+     [TemporaryInfo (RegisterClass VR256) 1 False])
+  | i `elem` [VAARG_64] =
+    ([TemporaryInfo (RegisterClass Ptr_rc) 0 False, BoundInfo,
+      TemporaryInfo (RegisterClass Ptr_rc_nosp) 0 False, BoundInfo,
+      BoundInfo, BoundInfo, BoundInfo, BoundInfo],
+     [TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem` [MOVSX32_NOREXrm8, MOVZX32_NOREXrm8] =
     ([TemporaryInfo (RegisterClass Ptr_rc_norex) 0 False, BoundInfo,
       TemporaryInfo (RegisterClass Ptr_rc_norex_nosp) 0 False, BoundInfo,
@@ -1104,17 +2331,21 @@ operandInfo i
       BoundInfo, BoundInfo],
      [])
   | i `elem`
-      [ADDRSP_pseudo, CALL64pcrel32, CALLpcrel16, CALLpcrel32, PUSH16i8,
-       PUSH32i8, PUSH64i32, PUSH64i8, PUSHi16, PUSHi32, RETIW, RETL, RETQ,
-       SUBRSP_pseudo, TAILJMPd, TAILJMPd64, TAILJMPd64_REX]
+      [ADDRSP_pseudo, BUNDLE, CALL64pcrel32, CALLpcrel16, CALLpcrel32,
+       CFI_INSTRUCTION, DBG_VALUE, EH_LABEL, GC_LABEL, INLINEASM, INT,
+       IRET, KILL, LIFETIME_END, LIFETIME_START, LRETIL, LRETIQ, LRETIW,
+       PHI, PUSH16i8, PUSH32i8, PUSH64i32, PUSH64i8, PUSHi16, PUSHi32,
+       RETIW, RETL, RETQ, SEH_PushFrame, SEH_PushReg, SEH_StackAlloc,
+       STATEPOINT, SUBRSP_pseudo, TAILJMPd, TAILJMPd64, TAILJMPd64_REX,
+       XABORT]
     = ([BoundInfo], [])
-  | i `elem` [MOV16ri, MOV16ri_alt] =
+  | i `elem` [IN16ri, MOV16ri, MOV16ri_alt] =
     ([BoundInfo], [TemporaryInfo (RegisterClass GR16) 1 False])
-  | i `elem` [MOV32ri, MOV32ri64, MOV32ri_alt] =
+  | i `elem` [IN32ri, MOV32ri, MOV32ri64, MOV32ri_alt, MOVPC32r] =
     ([BoundInfo], [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [MOV64ri, MOV64ri32] =
+  | i `elem` [MOV64ri, MOV64ri32, POP_fi] =
     ([BoundInfo], [TemporaryInfo (RegisterClass GR64) 1 False])
-  | i `elem` [MOV8ri, MOV8ri_alt] =
+  | i `elem` [IN8ri, MOV8ri, MOV8ri_alt] =
     ([BoundInfo], [TemporaryInfo (RegisterClass GR8) 1 False])
   | i `elem` [MOV16ri_alt_source, MOV16ri_source] =
     ([BoundInfo], [TemporaryInfo (InfiniteRegisterClass RM16) 0 False])
@@ -1124,15 +2355,16 @@ operandInfo i
     ([BoundInfo], [TemporaryInfo (InfiniteRegisterClass RM64) 0 False])
   | i `elem` [MOV8ri_source] =
     ([BoundInfo], [TemporaryInfo (InfiniteRegisterClass RM8) 0 False])
-  | i `elem` [CMP16i16, TEST16i16] =
+  | i `elem` [COPY, FAULTING_LOAD_OP] = ([BoundInfo], [BoundInfo])
+  | i `elem` [CMP16i16, OUT16ir, TEST16i16] =
     ([BoundInfo, TemporaryInfo (RegisterClass GR16) 0 False], [])
   | i `elem`
-      [ADC16i16, ADD16i16, AND16i16, OR16i16, SBB16i16, SUB16i16,
+      [AAD8i8, ADC16i16, ADD16i16, AND16i16, OR16i16, SBB16i16, SUB16i16,
        XOR16i16]
     =
     ([BoundInfo, TemporaryInfo (RegisterClass GR16) 0 False],
      [TemporaryInfo (RegisterClass GR16) 1 False])
-  | i `elem` [CMP32i32, TEST32i32] =
+  | i `elem` [CMP32i32, OUT32ir, TEST32i32] =
     ([BoundInfo, TemporaryInfo (RegisterClass GR32) 0 False], [])
   | i `elem`
       [ADC32i32, ADD32i32, AND32i32, OR32i32, SBB32i32, SUB32i32,
@@ -1140,7 +2372,7 @@ operandInfo i
     =
     ([BoundInfo, TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [CMP64i32, TEST64i32] =
+  | i `elem` [CMP64i32, PUSH_fi, TEST64i32] =
     ([BoundInfo, TemporaryInfo (RegisterClass GR64) 0 False], [])
   | i `elem`
       [ADC64i32, ADD64i32, AND64i32, OR64i32, SBB64i32, SUB64i32,
@@ -1148,14 +2380,19 @@ operandInfo i
     =
     ([BoundInfo, TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
-  | i `elem` [CMP8i8, TEST8i8] =
+  | i `elem` [CMP8i8, OUT8ir, TEST8i8] =
     ([BoundInfo, TemporaryInfo (RegisterClass GR8) 0 False], [])
+  | i `elem` [AAM8i8] =
+    ([BoundInfo, TemporaryInfo (RegisterClass GR8) 0 False],
+     [TemporaryInfo (RegisterClass GR16) 1 False])
   | i `elem` [ADC8i8, ADD8i8, AND8i8, OR8i8, SBB8i8, SUB8i8, XOR8i8]
     =
     ([BoundInfo, TemporaryInfo (RegisterClass GR8) 0 False],
      [TemporaryInfo (RegisterClass GR8) 1 False])
-  | i `elem` [ENTER, RETIL, RETIQ, TCRETURNdi, TCRETURNdi64] =
-    ([BoundInfo, BoundInfo], [])
+  | i `elem`
+      [ENTER, FARCALL16i, FARCALL32i, FARJMP16i, FARJMP32i, RETIL, RETIQ,
+       SEH_SaveReg, SEH_SaveXMM, SEH_SetFrame, TCRETURNdi, TCRETURNdi64]
+    = ([BoundInfo, BoundInfo], [])
   | i `elem` [MOV16ao16, MOV16ao32, MOV16ao64] =
     ([BoundInfo, BoundInfo],
      [TemporaryInfo (RegisterClass GR16) 1 False])
@@ -1168,13 +2405,23 @@ operandInfo i
   | i `elem` [MOV8ao16, MOV8ao32, MOV8ao64] =
     ([BoundInfo, BoundInfo],
      [TemporaryInfo (RegisterClass GR8) 1 False])
+  | i `elem` [COPY_TO_REGCLASS, EXTRACT_SUBREG, REG_SEQUENCE] =
+    ([BoundInfo, BoundInfo], [BoundInfo])
+  | i `elem` [STACKMAP] = ([BoundInfo, BoundInfo, BoundInfo], [])
+  | i `elem` [INSERT_SUBREG, SUBREG_TO_REG] =
+    ([BoundInfo, BoundInfo, BoundInfo], [BoundInfo])
+  | i `elem` [PATCHPOINT] =
+    ([BoundInfo, BoundInfo, BoundInfo, BoundInfo, BoundInfo,
+      BoundInfo],
+     [BoundInfo])
   | i `elem`
-      [JAE_1, JAE_2, JAE_4, JA_1, JA_2, JA_4, JBE_1, JBE_2, JBE_4, JB_1,
-       JB_2, JB_4, JE_1, JE_2, JE_4, JGE_1, JGE_2, JGE_4, JG_1, JG_2,
-       JG_4, JLE_1, JLE_2, JLE_4, JL_1, JL_2, JL_4, JMP_1, JMP_2, JMP_4,
-       JNE_1, JNE_2, JNE_4, JNO_1, JNO_2, JNO_4, JNP_1, JNP_2, JNP_4,
-       JNS_1, JNS_2, JNS_4, JO_1, JO_2, JO_4, JP_1, JP_2, JP_4, JS_1,
-       JS_2, JS_4, LOOP, LOOPE, LOOPNE]
+      [EH_SjLj_Setup, JAE_1, JAE_2, JAE_4, JA_1, JA_2, JA_4, JBE_1,
+       JBE_2, JBE_4, JB_1, JB_2, JB_4, JE_1, JE_2, JE_4, JGE_1, JGE_2,
+       JGE_4, JG_1, JG_2, JG_4, JLE_1, JLE_2, JLE_4, JL_1, JL_2, JL_4,
+       JMP_1, JMP_2, JMP_4, JNE_1, JNE_2, JNE_4, JNO_1, JNO_2, JNO_4,
+       JNP_1, JNP_2, JNP_4, JNS_1, JNS_2, JNS_4, JO_1, JO_2, JO_4, JP_1,
+       JP_2, JP_4, JS_1, JS_2, JS_4, LOOP, LOOPE, LOOPNE, XBEGIN_2,
+       XBEGIN_4]
     = ([BlockRefInfo], [])
   | i `elem` [JCXZ] =
     ([BlockRefInfo, TemporaryInfo (RegisterClass GR16) 0 False], [])
@@ -1182,4 +2429,5 @@ operandInfo i
     ([BlockRefInfo, TemporaryInfo (RegisterClass GR32) 0 False], [])
   | i `elem` [JRCXZ] =
     ([BlockRefInfo, TemporaryInfo (RegisterClass GR64) 0 False], [])
+  | i `elem` [CATCHRET] = ([BlockRefInfo, BlockRefInfo], [])
 
