@@ -4227,6 +4227,14 @@ data X86Instruction = AAA
                     | MOV_FROM_SP
                     | MOV_TO_SP
                     | ALIGN_SP_32
+                    | ADD32ri_LEA
+                    | ADD32rr_LEA
+                    | ADD64ri_LEA
+                    | ADD64rr_LEA
+                    | SHL32r1_LEA
+                    | SHL32ri_LEA
+                    | SHL64r1_LEA
+                    | SHL64ri_LEA
                     | MOV8ri_source
                     | MOV8ri_demat
                     | MOV8ri_remat

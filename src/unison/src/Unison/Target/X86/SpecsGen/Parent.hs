@@ -796,7 +796,11 @@ parent i
        XSAVEOPT, XSAVEOPT64, XSAVES, XSAVES64, XSETBV, XSHA1, XSHA256,
        XSTORE, XTEST]
     = Nothing
+  | i `elem` [ADD32ri_LEA] = Just ADD32ri
+  | i `elem` [ADD32rr_LEA] = Just ADD32rr
+  | i `elem` [ADD64ri_LEA] = Just ADD64ri32
   | i `elem` [ADDRSP_pseudo] = Just ADD64ri8
+  | i `elem` [ADD64rr_LEA] = Just ADD64rr
   | i `elem` [ALIGN_SP_32] = Just AND64ri8
   | i `elem`
       [AVX2_SETALLONES_demat, AVX2_SETALLONES_remat,
@@ -851,6 +855,10 @@ parent i
   | i `elem` [STORE128] = Just MOVDQAmr
   | i `elem` [LOAD128] = Just MOVDQArm
   | i `elem` [MOVE128] = Just MOVDQArr
+  | i `elem` [SHL32r1_LEA] = Just SHL32r1
+  | i `elem` [SHL32ri_LEA] = Just SHL32ri
+  | i `elem` [SHL64r1_LEA] = Just SHL64r1
+  | i `elem` [SHL64ri_LEA] = Just SHL64ri
   | i `elem` [SUBRSP_pseudo] = Just SUB64ri8
   | i `elem` [STORE256] = Just VMOVDQAYmr
   | i `elem` [LOAD256] = Just VMOVDQAYrm
