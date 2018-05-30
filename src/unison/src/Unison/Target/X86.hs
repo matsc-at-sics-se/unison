@@ -202,11 +202,11 @@ fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
             oUs = [mkBoundMachineFrameObject True i s],
             oDs = [d]}
   | i `elem` [MOVE8, MOVE16, MOVE32, MOVE64, MOVE128, MOVE256] =
-    Linear {oIs = [TargetInstruction (fromCopyInstr i)],
+    Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
             oUs = [s],
             oDs = [d]}
   | i `elem` [STORE8, STORE16, STORE32, STORE64, STORE128, STORE256] =
-    Linear {oIs = [TargetInstruction (fromCopyInstr i)],
+    Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
             oUs = [mkBoundMachineFrameObject False i d,
                    mkBound (mkMachineImm 1),
                    mkBound MachineNullReg,
@@ -215,31 +215,50 @@ fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
                    s],
             oDs = []}
   | i `elem` [LOAD8, LOAD16, LOAD32, LOAD64, LOAD128, LOAD256] =
-    Linear {oIs = [TargetInstruction (fromCopyInstr i)],
+    Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
             oUs = [mkBoundMachineFrameObject False i s,
                    mkBound (mkMachineImm 1),
                    mkBound MachineNullReg,
                    mkBound (mkMachineImm 0),
                    mkBound MachineNullReg],
             oDs = [d]}
-fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [d,s]})
-  | i `elem` [ADD64ru] =
-    Linear {oIs = [TargetInstruction (fromCopyInstr i)],
-            oUs = [d,
-                   mkBoundMachineFrameObject False i s,
+fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1,src2], oDs = []})
+  | isRegMemInstr i
+  = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
+            oUs = [src1,
+                   mkBoundMachineFrameObject False i src2,
                    mkBound (mkMachineImm 1),
                    mkBound MachineNullReg,
                    mkBound (mkMachineImm 0),
                    mkBound MachineNullReg],
-            oDs = [d]}
-  | i `elem` [ADD64ur] =
-    Linear {oIs = [TargetInstruction (fromCopyInstr i)],
-            oUs = [mkBoundMachineFrameObject False i d,
+            oDs = []}
+  | isMemRegInstr i
+  = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
+            oUs = [mkBoundMachineFrameObject False i src1,
                    mkBound (mkMachineImm 1),
                    mkBound MachineNullReg,
                    mkBound (mkMachineImm 0),
                    mkBound MachineNullReg,
-                   s],
+                   src2],
+            oDs = []}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1,src2], oDs = [dst]})
+  | isRegMemInstr i
+  = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
+            oUs = [src1,
+                   mkBoundMachineFrameObject False i src2,
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg],
+            oDs = [dst]}
+  | isMemRegInstr i
+  = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
+            oUs = [mkBoundMachineFrameObject False i src1,
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg,
+                   src2],
             oDs = []}
 
 -- handle rematerialization copies
@@ -325,9 +344,6 @@ fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL64ri_LEA], oUs = [r,i], 
 fromCopy _ (Natural o) = o
 fromCopy _ o = error ("unmatched pattern: fromCopy " ++ show o)
 
-fromCopyInstr i
-  | isJust (SpecsGen.parent i) = fromJust (SpecsGen.parent i)
-
 logToMul (Bound (MachineImm 1)) = 2
 logToMul (Bound (MachineImm 2)) = 4
 logToMul (Bound (MachineImm 3)) = 8
@@ -358,13 +374,10 @@ mkBoundMachineFrameObject fixedSpill i (Register r) =
     in mkBound (mkMachineFrameObject (infRegPlace r) (Just size) size
                 fixedSpill)
 
-stackSize op
-  | op `elem` [STORE8, LOAD8] = 1
-  | op `elem` [STORE16, LOAD16] = 2
-  | op `elem` [STORE32, LOAD32] = 4
-  | op `elem` [STORE64, LOAD64, PUSH_cst, POP_cst, ADD64ru, ADD64ur] = 8
-  | op `elem` [STORE128, LOAD128] = 16
-  | op `elem` [STORE256, LOAD256] = 32
+stackSize i =
+  let (use,def) = operandInfo i
+      usages = [infRegClassUsage (InfiniteRegisterClass rc) | TemporaryInfo {oiRegClass = InfiniteRegisterClass rc} <- use++def]
+  in maximum (usages ++ [0])
 
 -- | Declares target architecture resources
 

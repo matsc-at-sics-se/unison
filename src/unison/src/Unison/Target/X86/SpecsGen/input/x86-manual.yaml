@@ -240,26 +240,6 @@ instruction-set:
            - RSP:             register
           itinerary:          IIC_POP_REG
 
-        - id:                 ADD64ur
-          parent:             ADD64mr
-          type:               linear
-          operands:
-           - src1:            [register, usedef, M64]
-           - src2:            [register, use, GR64]
-          uses:               [src1, src2]
-          defines:            [src1]
-          size:               0
-
-        - id:                 ADD64ru
-          parent:             ADD64rm
-          type:               linear
-          operands:
-           - src1:            [register, usedef, GR64]
-           - src2:            [register, use, M64]
-          uses:               [src1, src2]
-          defines:            [src1]
-          size:               0
-
         - id:                 POP_fi
           type:               copy
           operands:
@@ -398,3 +378,4828 @@ instruction-set:
           affects:
           affected-by:
           itinerary:          IIC_LEA
+
+        - id:                 ADC16ru
+          parent:             ADC16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADC16ur
+          parent:             ADC16mr
+          operands:
+           - src1:            [register, usedef, M16]
+           - src2:            [register, use, GR16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADC32ru
+          parent:             ADC32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADC32ur
+          parent:             ADC32mr
+          operands:
+           - src1:            [register, usedef, M32]
+           - src2:            [register, use, GR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADC64ru
+          parent:             ADC64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADC64ur
+          parent:             ADC64mr
+          operands:
+           - src1:            [register, usedef, M64]
+           - src2:            [register, use, GR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADC8ru
+          parent:             ADC8rm
+          operands:
+           - src1:            [register, usedef, GR8]
+           - src2:            [register, use, M8]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADC8ur
+          parent:             ADC8mr
+          operands:
+           - src1:            [register, usedef, M8]
+           - src2:            [register, use, GR8]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADCX32ru
+          parent:             ADCX32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADCX64ru
+          parent:             ADCX64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADD16ru
+          parent:             ADD16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADD16ur
+          parent:             ADD16mr
+          operands:
+           - src1:            [register, usedef, M16]
+           - src2:            [register, use, GR16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADD32ru
+          parent:             ADD32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADD32ur
+          parent:             ADD32mr
+          operands:
+           - src1:            [register, usedef, M32]
+           - src2:            [register, use, GR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADD64ru
+          parent:             ADD64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADD64ur
+          parent:             ADD64mr
+          operands:
+           - src1:            [register, usedef, M64]
+           - src2:            [register, use, GR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADD8ru
+          parent:             ADD8rm
+          operands:
+           - src1:            [register, usedef, GR8]
+           - src2:            [register, use, M8]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADD8ur
+          parent:             ADD8mr
+          operands:
+           - src1:            [register, usedef, M8]
+           - src2:            [register, use, GR8]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADDPDru
+          parent:             ADDPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADDPSru
+          parent:             ADDPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADDSDru
+          parent:             ADDSDrm
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADDSSru
+          parent:             ADDSSrm
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADDSUBPDru
+          parent:             ADDSUBPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADDSUBPSru
+          parent:             ADDSUBPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ADOX32ru
+          parent:             ADOX32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 ADOX64ru
+          parent:             ADOX64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 AESDECLASTru
+          parent:             AESDECLASTrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 AESDECru
+          parent:             AESDECrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 AESENCLASTru
+          parent:             AESENCLASTrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 AESENCru
+          parent:             AESENCrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 AESIMCru
+          parent:             AESIMCrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 AESKEYGENASSIST128ru
+          parent:             AESKEYGENASSIST128rm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 AND16ru
+          parent:             AND16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 AND16ur
+          parent:             AND16mr
+          operands:
+           - src1:            [register, usedef, M16]
+           - src2:            [register, use, GR16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 AND32ru
+          parent:             AND32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 AND32ur
+          parent:             AND32mr
+          operands:
+           - src1:            [register, usedef, M32]
+           - src2:            [register, use, GR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 AND64ru
+          parent:             AND64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 AND64ur
+          parent:             AND64mr
+          operands:
+           - src1:            [register, usedef, M64]
+           - src2:            [register, use, GR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 AND8ru
+          parent:             AND8rm
+          operands:
+           - src1:            [register, usedef, GR8]
+           - src2:            [register, use, M8]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 AND8ur
+          parent:             AND8mr
+          operands:
+           - src1:            [register, usedef, M8]
+           - src2:            [register, use, GR8]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ANDNPDru
+          parent:             ANDNPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ANDNPSru
+          parent:             ANDNPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ANDPDru
+          parent:             ANDPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ANDPSru
+          parent:             ANDPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ARPL16ur
+          parent:             ARPL16mr
+          operands:
+           - src1:            [register, def, M16]
+           - src2:            [register, use, GR16]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLCFILL32ru
+          parent:             BLCFILL32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLCFILL64ru
+          parent:             BLCFILL64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLCI32ru
+          parent:             BLCI32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLCI64ru
+          parent:             BLCI64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLCIC32ru
+          parent:             BLCIC32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLCIC64ru
+          parent:             BLCIC64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLCMSK32ru
+          parent:             BLCMSK32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLCMSK64ru
+          parent:             BLCMSK64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLCS32ru
+          parent:             BLCS32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLCS64ru
+          parent:             BLCS64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLSFILL32ru
+          parent:             BLSFILL32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLSFILL64ru
+          parent:             BLSFILL64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLSI32ru
+          parent:             BLSI32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLSI64ru
+          parent:             BLSI64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLSIC32ru
+          parent:             BLSIC32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLSIC64ru
+          parent:             BLSIC64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLSMSK32ru
+          parent:             BLSMSK32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLSMSK64ru
+          parent:             BLSMSK64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLSR32ru
+          parent:             BLSR32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BLSR64ru
+          parent:             BLSR64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BSF16ru
+          parent:             BSF16rm
+          operands:
+           - src1:            [register, def, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BSF32ru
+          parent:             BSF32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BSF64ru
+          parent:             BSF64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BSR16ru
+          parent:             BSR16rm
+          operands:
+           - src1:            [register, def, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BSR32ru
+          parent:             BSR32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BSR64ru
+          parent:             BSR64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 BT16ur
+          parent:             BT16mr
+          operands:
+           - src1:            [register, use, M16]
+           - src2:            [register, use, GR16]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 BT32ur
+          parent:             BT32mr
+          operands:
+           - src1:            [register, use, M32]
+           - src2:            [register, use, GR32]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 BT64ur
+          parent:             BT64mr
+          operands:
+           - src1:            [register, use, M64]
+           - src2:            [register, use, GR64]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 BTC16ur
+          parent:             BTC16mr
+          operands:
+           - src1:            [register, use, M16]
+           - src2:            [register, use, GR16]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 BTC32ur
+          parent:             BTC32mr
+          operands:
+           - src1:            [register, use, M32]
+           - src2:            [register, use, GR32]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 BTC64ur
+          parent:             BTC64mr
+          operands:
+           - src1:            [register, use, M64]
+           - src2:            [register, use, GR64]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 BTR16ur
+          parent:             BTR16mr
+          operands:
+           - src1:            [register, use, M16]
+           - src2:            [register, use, GR16]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 BTR32ur
+          parent:             BTR32mr
+          operands:
+           - src1:            [register, use, M32]
+           - src2:            [register, use, GR32]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 BTR64ur
+          parent:             BTR64mr
+          operands:
+           - src1:            [register, use, M64]
+           - src2:            [register, use, GR64]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 BTS16ur
+          parent:             BTS16mr
+          operands:
+           - src1:            [register, use, M16]
+           - src2:            [register, use, GR16]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 BTS32ur
+          parent:             BTS32mr
+          operands:
+           - src1:            [register, use, M32]
+           - src2:            [register, use, GR32]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 BTS64ur
+          parent:             BTS64mr
+          operands:
+           - src1:            [register, use, M64]
+           - src2:            [register, use, GR64]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 CMOVA16ru
+          parent:             CMOVA16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVA32ru
+          parent:             CMOVA32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVA64ru
+          parent:             CMOVA64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVAE16ru
+          parent:             CMOVAE16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVAE32ru
+          parent:             CMOVAE32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVAE64ru
+          parent:             CMOVAE64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVB16ru
+          parent:             CMOVB16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVB32ru
+          parent:             CMOVB32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVB64ru
+          parent:             CMOVB64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVBE16ru
+          parent:             CMOVBE16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVBE32ru
+          parent:             CMOVBE32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVBE64ru
+          parent:             CMOVBE64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVE16ru
+          parent:             CMOVE16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVE32ru
+          parent:             CMOVE32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVE64ru
+          parent:             CMOVE64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVG16ru
+          parent:             CMOVG16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVG32ru
+          parent:             CMOVG32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVG64ru
+          parent:             CMOVG64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVGE16ru
+          parent:             CMOVGE16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVGE32ru
+          parent:             CMOVGE32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVGE64ru
+          parent:             CMOVGE64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVL16ru
+          parent:             CMOVL16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVL32ru
+          parent:             CMOVL32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVL64ru
+          parent:             CMOVL64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVLE16ru
+          parent:             CMOVLE16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVLE32ru
+          parent:             CMOVLE32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVLE64ru
+          parent:             CMOVLE64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVNE16ru
+          parent:             CMOVNE16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVNE32ru
+          parent:             CMOVNE32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVNE64ru
+          parent:             CMOVNE64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVNO16ru
+          parent:             CMOVNO16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVNO32ru
+          parent:             CMOVNO32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVNO64ru
+          parent:             CMOVNO64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVNP16ru
+          parent:             CMOVNP16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVNP32ru
+          parent:             CMOVNP32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVNP64ru
+          parent:             CMOVNP64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVNS16ru
+          parent:             CMOVNS16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVNS32ru
+          parent:             CMOVNS32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVNS64ru
+          parent:             CMOVNS64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVO16ru
+          parent:             CMOVO16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVO32ru
+          parent:             CMOVO32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVO64ru
+          parent:             CMOVO64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVP16ru
+          parent:             CMOVP16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVP32ru
+          parent:             CMOVP32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVP64ru
+          parent:             CMOVP64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVS16ru
+          parent:             CMOVS16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVS32ru
+          parent:             CMOVS32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMOVS64ru
+          parent:             CMOVS64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMP16ru
+          parent:             CMP16rm
+          operands:
+           - src1:            [register, use, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 CMP16ur
+          parent:             CMP16mr
+          operands:
+           - src1:            [register, use, M16]
+           - src2:            [register, use, GR16]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 CMP32ru
+          parent:             CMP32rm
+          operands:
+           - src1:            [register, use, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 CMP32ur
+          parent:             CMP32mr
+          operands:
+           - src1:            [register, use, M32]
+           - src2:            [register, use, GR32]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 CMP64ru
+          parent:             CMP64rm
+          operands:
+           - src1:            [register, use, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 CMP64ur
+          parent:             CMP64mr
+          operands:
+           - src1:            [register, use, M64]
+           - src2:            [register, use, GR64]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 CMP8ru
+          parent:             CMP8rm
+          operands:
+           - src1:            [register, use, GR8]
+           - src2:            [register, use, M8]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 CMP8ur
+          parent:             CMP8mr
+          operands:
+           - src1:            [register, use, M8]
+           - src2:            [register, use, GR8]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 CMPSDru
+          parent:             CMPSDrm
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMPSSru
+          parent:             CMPSSrm
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 CMPXCHG16ru
+          parent:             CMPXCHG16rm
+          operands:
+           - src1:            [register, def, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CMPXCHG32ru
+          parent:             CMPXCHG32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CMPXCHG64ru
+          parent:             CMPXCHG64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CMPXCHG8ru
+          parent:             CMPXCHG8rm
+          operands:
+           - src1:            [register, def, GR8]
+           - src2:            [register, use, M8]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 COMISDru
+          parent:             COMISDrm
+          operands:
+           - src1:            [register, use, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 COMISSru
+          parent:             COMISSrm
+          operands:
+           - src1:            [register, use, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 CVTDQ2PDru
+          parent:             CVTDQ2PDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTDQ2PSru
+          parent:             CVTDQ2PSrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTPD2DQru
+          parent:             CVTPD2DQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTPD2PSru
+          parent:             CVTPD2PSrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTPS2DQru
+          parent:             CVTPS2DQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTPS2PDru
+          parent:             CVTPS2PDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTSD2SI64ru
+          parent:             CVTSD2SI64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTSD2SIru
+          parent:             CVTSD2SIrm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTSD2SSru
+          parent:             CVTSD2SSrm
+          operands:
+           - src1:            [register, def, FR32]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTSI2SD64ru
+          parent:             CVTSI2SD64rm
+          operands:
+           - src1:            [register, def, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTSI2SDru
+          parent:             CVTSI2SDrm
+          operands:
+           - src1:            [register, def, FR64]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTSI2SS64ru
+          parent:             CVTSI2SS64rm
+          operands:
+           - src1:            [register, def, FR32]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTSI2SSru
+          parent:             CVTSI2SSrm
+          operands:
+           - src1:            [register, def, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTSS2SDru
+          parent:             CVTSS2SDrm
+          operands:
+           - src1:            [register, def, FR64]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTSS2SI64ru
+          parent:             CVTSS2SI64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTSS2SIru
+          parent:             CVTSS2SIrm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTTPD2DQru
+          parent:             CVTTPD2DQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTTPS2DQru
+          parent:             CVTTPS2DQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTTSD2SI64ru
+          parent:             CVTTSD2SI64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTTSD2SIru
+          parent:             CVTTSD2SIrm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTTSS2SI64ru
+          parent:             CVTTSS2SI64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTTSS2SIru
+          parent:             CVTTSS2SIrm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 DIVPDru
+          parent:             DIVPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 DIVPSru
+          parent:             DIVPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 DIVSDru
+          parent:             DIVSDrm
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 DIVSSru
+          parent:             DIVSSrm
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 FsANDNPDru
+          parent:             FsANDNPDrm
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 FsANDNPSru
+          parent:             FsANDNPSrm
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 FsANDPDru
+          parent:             FsANDPDrm
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 FsANDPSru
+          parent:             FsANDPSrm
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 FsORPDru
+          parent:             FsORPDrm
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 FsORPSru
+          parent:             FsORPSrm
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 FsXORPDru
+          parent:             FsXORPDrm
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 FsXORPSru
+          parent:             FsXORPSrm
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 FvANDNPDru
+          parent:             FvANDNPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 FvANDNPSru
+          parent:             FvANDNPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 FvANDPDru
+          parent:             FvANDPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 FvANDPSru
+          parent:             FvANDPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 FvORPDru
+          parent:             FvORPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 FvORPSru
+          parent:             FvORPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 FvXORPDru
+          parent:             FvXORPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 FvXORPSru
+          parent:             FvXORPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 HADDPDru
+          parent:             HADDPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 HADDPSru
+          parent:             HADDPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 HSUBPDru
+          parent:             HSUBPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 HSUBPSru
+          parent:             HSUBPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 IMUL16ru
+          parent:             IMUL16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 IMUL32ru
+          parent:             IMUL32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 IMUL64ru
+          parent:             IMUL64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 INSERTPSru
+          parent:             INSERTPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 Int_COMISDru
+          parent:             Int_COMISDrm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 Int_COMISSru
+          parent:             Int_COMISSrm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 Int_CVTSD2SSru
+          parent:             Int_CVTSD2SSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 Int_CVTSI2SD64ru
+          parent:             Int_CVTSI2SD64rm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 Int_CVTSI2SDru
+          parent:             Int_CVTSI2SDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 Int_CVTSI2SS64ru
+          parent:             Int_CVTSI2SS64rm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 Int_CVTSI2SSru
+          parent:             Int_CVTSI2SSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 Int_CVTSS2SDru
+          parent:             Int_CVTSS2SDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 Int_CVTTSD2SI64ru
+          parent:             Int_CVTTSD2SI64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 Int_CVTTSD2SIru
+          parent:             Int_CVTTSD2SIrm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 Int_CVTTSS2SI64ru
+          parent:             Int_CVTTSS2SI64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 Int_CVTTSS2SIru
+          parent:             Int_CVTTSS2SIrm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 Int_UCOMISDru
+          parent:             Int_UCOMISDrm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 Int_UCOMISSru
+          parent:             Int_UCOMISSrm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 Int_VCOMISDru
+          parent:             Int_VCOMISDrm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 Int_VCOMISSru
+          parent:             Int_VCOMISSrm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 Int_VCVTTSD2SI64ru
+          parent:             Int_VCVTTSD2SI64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 Int_VCVTTSD2SIru
+          parent:             Int_VCVTTSD2SIrm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 Int_VCVTTSS2SI64ru
+          parent:             Int_VCVTTSS2SI64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 Int_VCVTTSS2SIru
+          parent:             Int_VCVTTSS2SIrm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 Int_VUCOMISDru
+          parent:             Int_VUCOMISDrm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 Int_VUCOMISSru
+          parent:             Int_VUCOMISSrm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 LAR16ru
+          parent:             LAR16rm
+          operands:
+           - src1:            [register, def, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 LAR32ru
+          parent:             LAR32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 LAR64ru
+          parent:             LAR64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 LSL16ru
+          parent:             LSL16rm
+          operands:
+           - src1:            [register, def, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 LSL32ru
+          parent:             LSL32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 LSL64ru
+          parent:             LSL64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 LZCNT16ru
+          parent:             LZCNT16rm
+          operands:
+           - src1:            [register, def, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 LZCNT32ru
+          parent:             LZCNT32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 LZCNT64ru
+          parent:             LZCNT64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MAXCPDru
+          parent:             MAXCPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MAXCPSru
+          parent:             MAXCPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MAXCSDru
+          parent:             MAXCSDrm
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MAXCSSru
+          parent:             MAXCSSrm
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MAXPDru
+          parent:             MAXPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MAXPSru
+          parent:             MAXPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MAXSDru
+          parent:             MAXSDrm
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MAXSSru
+          parent:             MAXSSrm
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MINCPDru
+          parent:             MINCPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MINCPSru
+          parent:             MINCPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MINCSDru
+          parent:             MINCSDrm
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MINCSSru
+          parent:             MINCSSrm
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MINPDru
+          parent:             MINPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MINPSru
+          parent:             MINPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MINSDru
+          parent:             MINSDrm
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MINSSru
+          parent:             MINSSrm
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MOV16ru
+          parent:             MOV16rm
+          operands:
+           - src1:            [register, def, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOV16ur
+          parent:             MOV16mr
+          operands:
+           - src1:            [register, def, M16]
+           - src2:            [register, use, GR16]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOV32ru
+          parent:             MOV32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOV32ur
+          parent:             MOV32mr
+          operands:
+           - src1:            [register, def, M32]
+           - src2:            [register, use, GR32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOV64ru
+          parent:             MOV64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOV64ur
+          parent:             MOV64mr
+          operands:
+           - src1:            [register, def, M64]
+           - src2:            [register, use, GR64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOV64toPQIru
+          parent:             MOV64toPQIrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOV64toSDru
+          parent:             MOV64toSDrm
+          operands:
+           - src1:            [register, def, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOV8ru
+          parent:             MOV8rm
+          operands:
+           - src1:            [register, def, GR8]
+           - src2:            [register, use, M8]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOV8ur
+          parent:             MOV8mr
+          operands:
+           - src1:            [register, def, M8]
+           - src2:            [register, use, GR8]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVAPDru
+          parent:             MOVAPDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVAPDur
+          parent:             MOVAPDmr
+          operands:
+           - src1:            [register, def, M128]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVAPSru
+          parent:             MOVAPSrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVAPSur
+          parent:             MOVAPSmr
+          operands:
+           - src1:            [register, def, M128]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVDDUPru
+          parent:             MOVDDUPrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVDI2PDIru
+          parent:             MOVDI2PDIrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVDI2SSru
+          parent:             MOVDI2SSrm
+          operands:
+           - src1:            [register, def, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVDQAru
+          parent:             MOVDQArm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVDQAur
+          parent:             MOVDQAmr
+          operands:
+           - src1:            [register, def, M128]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVDQUru
+          parent:             MOVDQUrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVDQUur
+          parent:             MOVDQUmr
+          operands:
+           - src1:            [register, def, M128]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVPDI2DIur
+          parent:             MOVPDI2DImr
+          operands:
+           - src1:            [register, def, M32]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVPQI2QIur
+          parent:             MOVPQI2QImr
+          operands:
+           - src1:            [register, def, M128]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVPQIto64ru
+          parent:             MOVPQIto64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVSDru
+          parent:             MOVSDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MOVSDur
+          parent:             MOVSDmr
+          operands:
+           - src1:            [register, usedef, M128]
+           - src2:            [register, use, FR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MOVSDto64ur
+          parent:             MOVSDto64mr
+          operands:
+           - src1:            [register, def, M64]
+           - src2:            [register, use, FR64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVSHDUPru
+          parent:             MOVSHDUPrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVSLDUPru
+          parent:             MOVSLDUPrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVSS2DIur
+          parent:             MOVSS2DImr
+          operands:
+           - src1:            [register, def, M32]
+           - src2:            [register, use, FR32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVSSru
+          parent:             MOVSSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MOVSSur
+          parent:             MOVSSmr
+          operands:
+           - src1:            [register, usedef, M128]
+           - src2:            [register, use, FR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MOVUPDru
+          parent:             MOVUPDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVUPDur
+          parent:             MOVUPDmr
+          operands:
+           - src1:            [register, def, M128]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVUPSru
+          parent:             MOVUPSrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVUPSur
+          parent:             MOVUPSmr
+          operands:
+           - src1:            [register, def, M128]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVZPQILo2PQIru
+          parent:             MOVZPQILo2PQIrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MULPDru
+          parent:             MULPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MULPSru
+          parent:             MULPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MULSDru
+          parent:             MULSDrm
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 MULSSru
+          parent:             MULSSrm
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 OR16ru
+          parent:             OR16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 OR16ur
+          parent:             OR16mr
+          operands:
+           - src1:            [register, usedef, M16]
+           - src2:            [register, use, GR16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 OR32ru
+          parent:             OR32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 OR32ur
+          parent:             OR32mr
+          operands:
+           - src1:            [register, usedef, M32]
+           - src2:            [register, use, GR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 OR64ru
+          parent:             OR64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 OR64ur
+          parent:             OR64mr
+          operands:
+           - src1:            [register, usedef, M64]
+           - src2:            [register, use, GR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 OR8ru
+          parent:             OR8rm
+          operands:
+           - src1:            [register, usedef, GR8]
+           - src2:            [register, use, M8]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 OR8ur
+          parent:             OR8mr
+          operands:
+           - src1:            [register, usedef, M8]
+           - src2:            [register, use, GR8]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ORPDru
+          parent:             ORPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 ORPSru
+          parent:             ORPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PACKSSDWru
+          parent:             PACKSSDWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PACKSSWBru
+          parent:             PACKSSWBrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PACKUSDWru
+          parent:             PACKUSDWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PACKUSWBru
+          parent:             PACKUSWBrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PADDBru
+          parent:             PADDBrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PADDDru
+          parent:             PADDDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PADDQru
+          parent:             PADDQrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PADDSBru
+          parent:             PADDSBrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PADDSWru
+          parent:             PADDSWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PADDUSBru
+          parent:             PADDUSBrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PADDUSWru
+          parent:             PADDUSWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PADDWru
+          parent:             PADDWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PALIGNR128ru
+          parent:             PALIGNR128rm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PANDNru
+          parent:             PANDNrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PANDru
+          parent:             PANDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PAVGBru
+          parent:             PAVGBrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PAVGWru
+          parent:             PAVGWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PCLMULQDQru
+          parent:             PCLMULQDQrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PCMPEQBru
+          parent:             PCMPEQBrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PCMPEQDru
+          parent:             PCMPEQDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PCMPEQQru
+          parent:             PCMPEQQrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PCMPEQWru
+          parent:             PCMPEQWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PCMPESTRIru
+          parent:             PCMPESTRIrm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 PCMPESTRM128ru
+          parent:             PCMPESTRM128rm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 PCMPGTBru
+          parent:             PCMPGTBrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PCMPGTDru
+          parent:             PCMPGTDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PCMPGTQru
+          parent:             PCMPGTQrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PCMPGTWru
+          parent:             PCMPGTWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PCMPISTRIru
+          parent:             PCMPISTRIrm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 PCMPISTRM128ru
+          parent:             PCMPISTRM128rm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 PEXTRDur
+          parent:             PEXTRDmr
+          operands:
+           - src1:            [register, def, M32]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 PEXTRQur
+          parent:             PEXTRQmr
+          operands:
+           - src1:            [register, def, M64]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 PHADDDru
+          parent:             PHADDDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PHADDWru
+          parent:             PHADDWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PHSUBDru
+          parent:             PHSUBDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PHSUBWru
+          parent:             PHSUBWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PINSRDru
+          parent:             PINSRDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PINSRQru
+          parent:             PINSRQrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMADDWDru
+          parent:             PMADDWDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMAXSBru
+          parent:             PMAXSBrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMAXSDru
+          parent:             PMAXSDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMAXSWru
+          parent:             PMAXSWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMAXUBru
+          parent:             PMAXUBrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMAXUDru
+          parent:             PMAXUDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMAXUWru
+          parent:             PMAXUWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMINSBru
+          parent:             PMINSBrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMINSDru
+          parent:             PMINSDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMINSWru
+          parent:             PMINSWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMINUBru
+          parent:             PMINUBrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMINUDru
+          parent:             PMINUDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMINUWru
+          parent:             PMINUWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMOVSXBDru
+          parent:             PMOVSXBDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 PMOVSXBQru
+          parent:             PMOVSXBQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 PMOVSXBWru
+          parent:             PMOVSXBWrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 PMOVSXDQru
+          parent:             PMOVSXDQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 PMOVSXWDru
+          parent:             PMOVSXWDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 PMOVSXWQru
+          parent:             PMOVSXWQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 PMOVZXBDru
+          parent:             PMOVZXBDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 PMOVZXBQru
+          parent:             PMOVZXBQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 PMOVZXBWru
+          parent:             PMOVZXBWrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 PMOVZXDQru
+          parent:             PMOVZXDQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 PMOVZXWDru
+          parent:             PMOVZXWDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 PMOVZXWQru
+          parent:             PMOVZXWQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 PMULDQru
+          parent:             PMULDQrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMULHUWru
+          parent:             PMULHUWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMULHWru
+          parent:             PMULHWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMULLDru
+          parent:             PMULLDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMULLWru
+          parent:             PMULLWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PMULUDQru
+          parent:             PMULUDQrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 POPCNT16ru
+          parent:             POPCNT16rm
+          operands:
+           - src1:            [register, def, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 POPCNT32ru
+          parent:             POPCNT32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 POPCNT64ru
+          parent:             POPCNT64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 PORru
+          parent:             PORrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSADBWru
+          parent:             PSADBWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSHUFBru
+          parent:             PSHUFBrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSIGNBru
+          parent:             PSIGNBrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSIGNDru
+          parent:             PSIGNDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSIGNWru
+          parent:             PSIGNWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSLLDru
+          parent:             PSLLDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSLLQru
+          parent:             PSLLQrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSLLWru
+          parent:             PSLLWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSRADru
+          parent:             PSRADrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSRAWru
+          parent:             PSRAWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSRLDru
+          parent:             PSRLDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSRLQru
+          parent:             PSRLQrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSRLWru
+          parent:             PSRLWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSUBBru
+          parent:             PSUBBrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSUBDru
+          parent:             PSUBDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSUBQru
+          parent:             PSUBQrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSUBSBru
+          parent:             PSUBSBrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSUBSWru
+          parent:             PSUBSWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSUBUSBru
+          parent:             PSUBUSBrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSUBUSWru
+          parent:             PSUBUSWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PSUBWru
+          parent:             PSUBWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PTESTru
+          parent:             PTESTrm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 PUNPCKHBWru
+          parent:             PUNPCKHBWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PUNPCKHDQru
+          parent:             PUNPCKHDQrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PUNPCKHQDQru
+          parent:             PUNPCKHQDQrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PUNPCKHWDru
+          parent:             PUNPCKHWDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PUNPCKLBWru
+          parent:             PUNPCKLBWrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PUNPCKLDQru
+          parent:             PUNPCKLDQrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PUNPCKLQDQru
+          parent:             PUNPCKLQDQrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PUNPCKLWDru
+          parent:             PUNPCKLWDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 PXORru
+          parent:             PXORrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SBB16ru
+          parent:             SBB16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SBB16ur
+          parent:             SBB16mr
+          operands:
+           - src1:            [register, usedef, M16]
+           - src2:            [register, use, GR16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SBB32ru
+          parent:             SBB32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SBB32ur
+          parent:             SBB32mr
+          operands:
+           - src1:            [register, usedef, M32]
+           - src2:            [register, use, GR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SBB64ru
+          parent:             SBB64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SBB64ur
+          parent:             SBB64mr
+          operands:
+           - src1:            [register, usedef, M64]
+           - src2:            [register, use, GR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SBB8ru
+          parent:             SBB8rm
+          operands:
+           - src1:            [register, usedef, GR8]
+           - src2:            [register, use, M8]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SBB8ur
+          parent:             SBB8mr
+          operands:
+           - src1:            [register, usedef, M8]
+           - src2:            [register, use, GR8]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SHA1MSG1ru
+          parent:             SHA1MSG1rm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SHA1MSG2ru
+          parent:             SHA1MSG2rm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SHA1NEXTEru
+          parent:             SHA1NEXTErm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SHA256MSG1ru
+          parent:             SHA256MSG1rm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SHA256MSG2ru
+          parent:             SHA256MSG2rm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SHA256RNDS2ru
+          parent:             SHA256RNDS2rm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SUB16ru
+          parent:             SUB16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SUB16ur
+          parent:             SUB16mr
+          operands:
+           - src1:            [register, usedef, M16]
+           - src2:            [register, use, GR16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SUB32ru
+          parent:             SUB32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SUB32ur
+          parent:             SUB32mr
+          operands:
+           - src1:            [register, usedef, M32]
+           - src2:            [register, use, GR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SUB64ru
+          parent:             SUB64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SUB64ur
+          parent:             SUB64mr
+          operands:
+           - src1:            [register, usedef, M64]
+           - src2:            [register, use, GR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SUB8ru
+          parent:             SUB8rm
+          operands:
+           - src1:            [register, usedef, GR8]
+           - src2:            [register, use, M8]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SUB8ur
+          parent:             SUB8mr
+          operands:
+           - src1:            [register, usedef, M8]
+           - src2:            [register, use, GR8]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SUBPDru
+          parent:             SUBPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SUBPSru
+          parent:             SUBPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SUBSDru
+          parent:             SUBSDrm
+          operands:
+           - src1:            [register, usedef, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 SUBSSru
+          parent:             SUBSSrm
+          operands:
+           - src1:            [register, usedef, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 T1MSKC32ru
+          parent:             T1MSKC32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 T1MSKC64ru
+          parent:             T1MSKC64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 TEST16ru
+          parent:             TEST16rm
+          operands:
+           - src1:            [register, use, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 TEST32ru
+          parent:             TEST32rm
+          operands:
+           - src1:            [register, use, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 TEST64ru
+          parent:             TEST64rm
+          operands:
+           - src1:            [register, use, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 TEST8ru
+          parent:             TEST8rm
+          operands:
+           - src1:            [register, use, GR8]
+           - src2:            [register, use, M8]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 TZCNT16ru
+          parent:             TZCNT16rm
+          operands:
+           - src1:            [register, def, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 TZCNT32ru
+          parent:             TZCNT32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 TZCNT64ru
+          parent:             TZCNT64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 TZMSK32ru
+          parent:             TZMSK32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 TZMSK64ru
+          parent:             TZMSK64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 UCOMISDru
+          parent:             UCOMISDrm
+          operands:
+           - src1:            [register, use, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 UCOMISSru
+          parent:             UCOMISSrm
+          operands:
+           - src1:            [register, use, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 UNPCKHPDru
+          parent:             UNPCKHPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 UNPCKHPSru
+          parent:             UNPCKHPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 UNPCKLPDru
+          parent:             UNPCKLPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 UNPCKLPSru
+          parent:             UNPCKLPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 VAESIMCru
+          parent:             VAESIMCrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VAESKEYGENASSIST128ru
+          parent:             VAESKEYGENASSIST128rm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VBROADCASTSDYru
+          parent:             VBROADCASTSDYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VBROADCASTSSYru
+          parent:             VBROADCASTSSYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VBROADCASTSSru
+          parent:             VBROADCASTSSrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCOMISDru
+          parent:             VCOMISDrm
+          operands:
+           - src1:            [register, use, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 VCOMISSru
+          parent:             VCOMISSrm
+          operands:
+           - src1:            [register, use, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 VCVTDQ2PDYru
+          parent:             VCVTDQ2PDYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTDQ2PDru
+          parent:             VCVTDQ2PDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTDQ2PSYru
+          parent:             VCVTDQ2PSYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTDQ2PSru
+          parent:             VCVTDQ2PSrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTPD2DQYru
+          parent:             VCVTPD2DQYrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTPD2PSYru
+          parent:             VCVTPD2PSYrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTPH2PSYru
+          parent:             VCVTPH2PSYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTPH2PSru
+          parent:             VCVTPH2PSrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTPS2DQYru
+          parent:             VCVTPS2DQYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTPS2DQru
+          parent:             VCVTPS2DQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTPS2PDYru
+          parent:             VCVTPS2PDYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTPS2PDru
+          parent:             VCVTPS2PDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTPS2PHYur
+          parent:             VCVTPS2PHYmr
+          operands:
+           - src1:            [register, def, M128]
+           - src2:            [register, use, VR256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTPS2PHur
+          parent:             VCVTPS2PHmr
+          operands:
+           - src1:            [register, def, M128]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTSD2SI64ru
+          parent:             VCVTSD2SI64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTSD2SIru
+          parent:             VCVTSD2SIrm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTSS2SI64ru
+          parent:             VCVTSS2SI64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTSS2SIru
+          parent:             VCVTSS2SIrm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTTPD2DQYru
+          parent:             VCVTTPD2DQYrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTTPS2DQYru
+          parent:             VCVTTPS2DQYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTTPS2DQru
+          parent:             VCVTTPS2DQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTTSD2SI64ru
+          parent:             VCVTTSD2SI64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTTSD2SIru
+          parent:             VCVTTSD2SIrm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTTSS2SI64ru
+          parent:             VCVTTSS2SI64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VCVTTSS2SIru
+          parent:             VCVTTSS2SIrm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VEXTRACTF128ur
+          parent:             VEXTRACTF128mr
+          operands:
+           - src1:            [register, def, M128]
+           - src2:            [register, use, VR256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VEXTRACTI128ur
+          parent:             VEXTRACTI128mr
+          operands:
+           - src1:            [register, def, M128]
+           - src2:            [register, use, VR256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VFRCZPDru
+          parent:             VFRCZPDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VFRCZPSru
+          parent:             VFRCZPSrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VFRCZSDru
+          parent:             VFRCZSDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VFRCZSSru
+          parent:             VFRCZSSrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOV64toPQIru
+          parent:             VMOV64toPQIrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOV64toSDru
+          parent:             VMOV64toSDrm
+          operands:
+           - src1:            [register, def, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVAPDYru
+          parent:             VMOVAPDYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVAPDYur
+          parent:             VMOVAPDYmr
+          operands:
+           - src1:            [register, def, M256]
+           - src2:            [register, use, VR256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVAPDru
+          parent:             VMOVAPDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVAPDur
+          parent:             VMOVAPDmr
+          operands:
+           - src1:            [register, def, M128]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVAPSYru
+          parent:             VMOVAPSYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVAPSYur
+          parent:             VMOVAPSYmr
+          operands:
+           - src1:            [register, def, M256]
+           - src2:            [register, use, VR256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVAPSru
+          parent:             VMOVAPSrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVAPSur
+          parent:             VMOVAPSmr
+          operands:
+           - src1:            [register, def, M128]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVDDUPYru
+          parent:             VMOVDDUPYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVDDUPru
+          parent:             VMOVDDUPrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVDI2PDIru
+          parent:             VMOVDI2PDIrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVDI2SSru
+          parent:             VMOVDI2SSrm
+          operands:
+           - src1:            [register, def, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVDQAYru
+          parent:             VMOVDQAYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVDQAYur
+          parent:             VMOVDQAYmr
+          operands:
+           - src1:            [register, def, M256]
+           - src2:            [register, use, VR256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVDQAru
+          parent:             VMOVDQArm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVDQAur
+          parent:             VMOVDQAmr
+          operands:
+           - src1:            [register, def, M128]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVDQUYru
+          parent:             VMOVDQUYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVDQUYur
+          parent:             VMOVDQUYmr
+          operands:
+           - src1:            [register, def, M256]
+           - src2:            [register, use, VR256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVDQUru
+          parent:             VMOVDQUrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVDQUur
+          parent:             VMOVDQUmr
+          operands:
+           - src1:            [register, def, M128]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVPDI2DIur
+          parent:             VMOVPDI2DImr
+          operands:
+           - src1:            [register, def, M32]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVPQI2QIur
+          parent:             VMOVPQI2QImr
+          operands:
+           - src1:            [register, def, M128]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVPQIto64ru
+          parent:             VMOVPQIto64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVSDto64ur
+          parent:             VMOVSDto64mr
+          operands:
+           - src1:            [register, def, M64]
+           - src2:            [register, use, FR64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVSHDUPYru
+          parent:             VMOVSHDUPYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVSHDUPru
+          parent:             VMOVSHDUPrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVSLDUPYru
+          parent:             VMOVSLDUPYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVSLDUPru
+          parent:             VMOVSLDUPrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVSS2DIur
+          parent:             VMOVSS2DImr
+          operands:
+           - src1:            [register, def, M32]
+           - src2:            [register, use, FR32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVUPDYru
+          parent:             VMOVUPDYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVUPDYur
+          parent:             VMOVUPDYmr
+          operands:
+           - src1:            [register, def, M256]
+           - src2:            [register, use, VR256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVUPDru
+          parent:             VMOVUPDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVUPDur
+          parent:             VMOVUPDmr
+          operands:
+           - src1:            [register, def, M128]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVUPSYru
+          parent:             VMOVUPSYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVUPSYur
+          parent:             VMOVUPSYmr
+          operands:
+           - src1:            [register, def, M256]
+           - src2:            [register, use, VR256]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVUPSru
+          parent:             VMOVUPSrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVUPSur
+          parent:             VMOVUPSmr
+          operands:
+           - src1:            [register, def, M128]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMOVZPQILo2PQIru
+          parent:             VMOVZPQILo2PQIrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMREAD32ru
+          parent:             VMREAD32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMREAD64ru
+          parent:             VMREAD64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMWRITE32ru
+          parent:             VMWRITE32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VMWRITE64ru
+          parent:             VMWRITE64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPBROADCASTBYru
+          parent:             VPBROADCASTBYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPBROADCASTBru
+          parent:             VPBROADCASTBrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPBROADCASTDYru
+          parent:             VPBROADCASTDYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPBROADCASTDru
+          parent:             VPBROADCASTDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPBROADCASTQYru
+          parent:             VPBROADCASTQYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPBROADCASTQru
+          parent:             VPBROADCASTQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPBROADCASTWYru
+          parent:             VPBROADCASTWYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPBROADCASTWru
+          parent:             VPBROADCASTWrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPCMPESTRIru
+          parent:             VPCMPESTRIrm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 VPCMPESTRM128ru
+          parent:             VPCMPESTRM128rm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 VPCMPISTRIru
+          parent:             VPCMPISTRIrm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 VPCMPISTRM128ru
+          parent:             VPCMPISTRM128rm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 VPEXTRDur
+          parent:             VPEXTRDmr
+          operands:
+           - src1:            [register, def, M32]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPEXTRQur
+          parent:             VPEXTRQmr
+          operands:
+           - src1:            [register, def, M64]
+           - src2:            [register, use, VR128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPHADDBDru
+          parent:             VPHADDBDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPHADDBQru
+          parent:             VPHADDBQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPHADDBWru
+          parent:             VPHADDBWrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPHADDDQru
+          parent:             VPHADDDQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPHADDUBDru
+          parent:             VPHADDUBDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPHADDUBQru
+          parent:             VPHADDUBQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPHADDUBWru
+          parent:             VPHADDUBWrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPHADDUDQru
+          parent:             VPHADDUDQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPHADDUWDru
+          parent:             VPHADDUWDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPHADDUWQru
+          parent:             VPHADDUWQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPHADDWDru
+          parent:             VPHADDWDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPHADDWQru
+          parent:             VPHADDWQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPHSUBBWru
+          parent:             VPHSUBBWrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPHSUBDQru
+          parent:             VPHSUBDQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPHSUBWDru
+          parent:             VPHSUBWDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVSXBDYru
+          parent:             VPMOVSXBDYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVSXBDru
+          parent:             VPMOVSXBDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVSXBQYru
+          parent:             VPMOVSXBQYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVSXBQru
+          parent:             VPMOVSXBQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVSXBWYru
+          parent:             VPMOVSXBWYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVSXBWru
+          parent:             VPMOVSXBWrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVSXDQYru
+          parent:             VPMOVSXDQYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVSXDQru
+          parent:             VPMOVSXDQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVSXWDYru
+          parent:             VPMOVSXWDYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVSXWDru
+          parent:             VPMOVSXWDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVSXWQYru
+          parent:             VPMOVSXWQYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVSXWQru
+          parent:             VPMOVSXWQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVZXBDYru
+          parent:             VPMOVZXBDYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVZXBDru
+          parent:             VPMOVZXBDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVZXBQYru
+          parent:             VPMOVZXBQYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVZXBQru
+          parent:             VPMOVZXBQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVZXBWYru
+          parent:             VPMOVZXBWYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVZXBWru
+          parent:             VPMOVZXBWrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVZXDQYru
+          parent:             VPMOVZXDQYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVZXDQru
+          parent:             VPMOVZXDQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVZXWDYru
+          parent:             VPMOVZXWDYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVZXWDru
+          parent:             VPMOVZXWDrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVZXWQYru
+          parent:             VPMOVZXWQYrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPMOVZXWQru
+          parent:             VPMOVZXWQrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 VPTESTYru
+          parent:             VPTESTYrm
+          operands:
+           - src1:            [register, use, VR256]
+           - src2:            [register, use, M256]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 VPTESTru
+          parent:             VPTESTrm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 VTESTPDYru
+          parent:             VTESTPDYrm
+          operands:
+           - src1:            [register, use, VR256]
+           - src2:            [register, use, M256]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 VTESTPDru
+          parent:             VTESTPDrm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 VTESTPSYru
+          parent:             VTESTPSYrm
+          operands:
+           - src1:            [register, use, VR256]
+           - src2:            [register, use, M256]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 VTESTPSru
+          parent:             VTESTPSrm
+          operands:
+           - src1:            [register, use, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 VUCOMISDru
+          parent:             VUCOMISDrm
+          operands:
+           - src1:            [register, use, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 VUCOMISSru
+          parent:             VUCOMISSrm
+          operands:
+           - src1:            [register, use, FR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            []
+
+        - id:                 XADD16ru
+          parent:             XADD16rm
+          operands:
+           - src1:            [register, def, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 XADD32ru
+          parent:             XADD32rm
+          operands:
+           - src1:            [register, def, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 XADD64ru
+          parent:             XADD64rm
+          operands:
+           - src1:            [register, def, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 XADD8ru
+          parent:             XADD8rm
+          operands:
+           - src1:            [register, def, GR8]
+           - src2:            [register, use, M8]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 XCHG16ru
+          parent:             XCHG16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 XCHG32ru
+          parent:             XCHG32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 XCHG64ru
+          parent:             XCHG64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 XCHG8ru
+          parent:             XCHG8rm
+          operands:
+           - src1:            [register, usedef, GR8]
+           - src2:            [register, use, M8]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 XOR16ru
+          parent:             XOR16rm
+          operands:
+           - src1:            [register, usedef, GR16]
+           - src2:            [register, use, M16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 XOR16ur
+          parent:             XOR16mr
+          operands:
+           - src1:            [register, usedef, M16]
+           - src2:            [register, use, GR16]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 XOR32ru
+          parent:             XOR32rm
+          operands:
+           - src1:            [register, usedef, GR32]
+           - src2:            [register, use, M32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 XOR32ur
+          parent:             XOR32mr
+          operands:
+           - src1:            [register, usedef, M32]
+           - src2:            [register, use, GR32]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 XOR64ru
+          parent:             XOR64rm
+          operands:
+           - src1:            [register, usedef, GR64]
+           - src2:            [register, use, M64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 XOR64ur
+          parent:             XOR64mr
+          operands:
+           - src1:            [register, usedef, M64]
+           - src2:            [register, use, GR64]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 XOR8ru
+          parent:             XOR8rm
+          operands:
+           - src1:            [register, usedef, GR8]
+           - src2:            [register, use, M8]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 XOR8ur
+          parent:             XOR8mr
+          operands:
+           - src1:            [register, usedef, M8]
+           - src2:            [register, use, GR8]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 XORPDru
+          parent:             XORPDrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+
+        - id:                 XORPSru
+          parent:             XORPSrm
+          operands:
+           - src1:            [register, usedef, VR128]
+           - src2:            [register, use, M128]
+          uses:               [src1, src2]
+          defines:            [src1]
+

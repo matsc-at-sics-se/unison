@@ -26,6 +26,7 @@ module Unison.Target.X86.Transforms
      spillAfterAlign) where
 
 import qualified Data.Map as M
+import Data.List
 import Data.List.Split
 import qualified Data.Graph.Inductive as G
 import Data.Maybe
@@ -141,8 +142,11 @@ handlePromotedOperands o = o
 
 generalizeRegisterOperands
   o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ADD64rr]})} =
-  o {oOpr = Natural ni {oIs = [TargetInstruction ADD64rr, TargetInstruction ADD64ru, TargetInstruction ADD64ur]}}
+    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction i], oUs = uses})}
+  | isGeneralizable i && (nub uses) == uses
+  = o {oOpr = Natural ni {oIs = [TargetInstruction i] ++
+                                (if hasRegMemInstr i then [TargetInstruction (regMemInstr i)] else []) ++
+                                (if hasMemRegInstr i then [TargetInstruction (memRegInstr i)] else [])}}
 generalizeRegisterOperands o = o
 
 preAssignOperands ops regs =
@@ -186,59 +190,47 @@ insnReadsEflags TargetInstruction {oTargetInstr = i} =
   in (OtherSideEffect EFLAGS) `elem` rs
 insnReadsEflags _ = False
 
-alternativeLEA precious o
-  | (oId o) `elem` precious
-  = o
-
-alternativeLEA _
+alternativeLEA precious
   o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
-  | ti `elem` [ADD32ri, ADD32ri8, ADD32ri8_DB, ADD32ri_DB]
-  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD32ri_LEA]}}
-
-alternativeLEA _
-  o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
-  | ti `elem` [ADD32rr, ADD32rr_DB, ADD32rr_REV]
-  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD32rr_LEA]}}
-
-alternativeLEA _
-  o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
-  | ti `elem` [ADD64ri8, ADD64ri8_DB, ADD64ri32, ADD64ri32_DB]
-  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD64ri_LEA]}}
-
-alternativeLEA _
-  o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
-  | ti `elem` [ADD64rr, ADD64rr_DB, ADD64rr_REV]
-  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD64rr_LEA]}}
-
-alternativeLEA _
-  o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
-  | ti `elem` [SHL32r1]
-  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL32r1_LEA]}}
-
-alternativeLEA _
-  o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti], oUs = [_,Bound (MachineImm sh)]})}
-  | ti `elem` [SHL32ri] && 1 <= sh && sh <= 3
-  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL32ri_LEA]}}
-
-alternativeLEA _
-  o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
-  | ti `elem` [SHL64r1]
-  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL64r1_LEA]}}
-
-alternativeLEA _
-  o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti], oUs = [_,Bound (MachineImm sh)]})}
-  | ti `elem` [SHL64ri] && 1 <= sh && sh <= 3
-  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL64ri_LEA]}}
+    oOpr = Natural ni @ (Linear {oUs = ous, oIs = ois})}
+  | (oId o) `notElem` precious
+  = o {oOpr = Natural ni {oIs = concatMap (altLEA ous) ois}}
 
 alternativeLEA _ o = o
+
+altLEA _ (TargetInstruction ti)
+  | ti `elem` [ADD32ri, ADD32ri8, ADD32ri8_DB, ADD32ri_DB]
+  = [TargetInstruction ti, TargetInstruction ADD32ri_LEA]
+
+altLEA _ (TargetInstruction ti)
+  | ti `elem` [ADD32rr, ADD32rr_DB, ADD32rr_REV]
+  = [TargetInstruction ti, TargetInstruction ADD32rr_LEA]
+
+altLEA _ (TargetInstruction ti)
+  | ti `elem` [ADD64ri8, ADD64ri8_DB, ADD64ri32, ADD64ri32_DB]
+  = [TargetInstruction ti, TargetInstruction ADD64ri_LEA]
+
+altLEA _ (TargetInstruction ti)
+  | ti `elem` [ADD64rr, ADD64rr_DB, ADD64rr_REV]
+  = [TargetInstruction ti, TargetInstruction ADD64rr_LEA]
+
+altLEA _ (TargetInstruction ti)
+  | ti `elem` [SHL32r1]
+  = [TargetInstruction ti, TargetInstruction SHL32r1_LEA]
+
+altLEA [_,Bound (MachineImm sh)] (TargetInstruction ti)
+  | ti `elem` [SHL32ri] && 1 <= sh && sh <= 3
+  = [TargetInstruction ti, TargetInstruction SHL32ri_LEA]
+
+altLEA _ (TargetInstruction ti)
+  | ti `elem` [SHL64r1]
+  = [TargetInstruction ti, TargetInstruction SHL64r1_LEA]
+
+altLEA [_,Bound (MachineImm sh)] (TargetInstruction ti)
+  | ti `elem` [SHL64ri] && 1 <= sh && sh <= 3
+  = [TargetInstruction ti, TargetInstruction SHL64ri_LEA]
+
+altLEA _ oi = [oi]
 
 -- This transform creates a fixed frame object to represent the return address
 -- which is implicit in LLVM's input.
