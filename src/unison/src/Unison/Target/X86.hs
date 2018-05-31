@@ -438,14 +438,9 @@ reg32ToReg64' R14D = R14
 reg32ToReg64' R15D = R15
 
 mkBoundMachineFrameObject fixedSpill i (Register r) =
-    let size = stackSize i
+    let size = instrInfiniteUsage i
     in mkBound (mkMachineFrameObject (infRegPlace r) (Just size) size
                 fixedSpill)
-
-stackSize i =
-  let (use,def) = operandInfo i
-      usages = [infRegClassUsage (InfiniteRegisterClass rc) | TemporaryInfo {oiRegClass = InfiniteRegisterClass rc} <- use++def]
-  in maximum (usages ++ [0])
 
 nthUseIsInfinite n i =
   let (use,_) = operandInfo i
@@ -731,7 +726,8 @@ transforms ImportPreLift = [peephole extractReturnRegs,
                             addPrologueEpilogue,
                             addVzeroupper]
 transforms ImportPostLift = [mapToOperation handlePromotedOperands,
-                             mapToOperation generalizeRegisterOperands,
+                             generalizeRegisterDefines,
+                             generalizeRegisterUses,
                              transAlternativeLEA]
 transforms ImportPostCC = [liftReturnAddress]
 transforms ExportPreOffs = [revertFixedFrame]

@@ -12,7 +12,8 @@ This file is part of Unison, see http://unison-code.github.io
 module Unison.Target.X86.Transforms
     (extractReturnRegs,
      handlePromotedOperands,
-     generalizeRegisterOperands,
+     generalizeRegisterDefines,
+     generalizeRegisterUses,
      transAlternativeLEA,
      liftReturnAddress,
      revertFixedFrame,
@@ -140,15 +141,6 @@ handlePromotedOperands
   in o {oOpr = Natural ni {oDs = defs', oUs = uses'}}
 handlePromotedOperands o = o
 
-generalizeRegisterOperands
-  o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction i], oUs = uses})}
-  | isGeneralizable i && (nub uses) == uses
-  = o {oOpr = Natural ni {oIs = [TargetInstruction i] ++
-                                (if hasRegMemInstr i then [TargetInstruction (regMemInstr i)] else []) ++
-                                (if hasMemRegInstr i then [TargetInstruction (memRegInstr i)] else [])}}
-generalizeRegisterOperands o = o
-
 preAssignOperands ops regs =
   let regOps = map (\r -> Register (TargetRegister r)) regs
       no = length ops
@@ -156,6 +148,59 @@ preAssignOperands ops regs =
       (original, promoted) = splitAt (no - nr) ops
       promoted' = map (\(t, r) -> preAssign t r) (zip promoted regOps)
   in original ++ promoted'
+
+--
+-- for register-defining instructions, add memory-defining variants
+-- N.B. a use operand that occurs twice could be an implicit usedef
+-- N.B. instructions defining a 32-bit register implicitly zeroes the 32 upper bits,
+-- which is not the case for its memory-defining counterpart!
+-- So we do not add such variants if the temp being defined can be used by a (combine).
+-- 
+
+generalizeRegisterDefines f @ Function {fCode = code} =
+  let code' = mapToOperationInBlocks (generalizeRegisterDefines' (flatten code)) code
+  in f {fCode = code'}
+
+generalizeRegisterDefines' flatcode
+  o @ SingleOperation {
+    oOpr = Natural ni @ (Linear {oDs = ods, oUs = ous, oIs = ois})}
+  | (nub ous) == ous
+  = o {oOpr = Natural ni {oIs = concatMap (genRegDef ods flatcode) ois}}
+
+generalizeRegisterDefines' _ o = o
+
+genRegDef ods flatcode (TargetInstruction i)
+  | hasMemRegInstr i && noCombineHazard (memRegInstr i) ods flatcode
+  = [TargetInstruction i, TargetInstruction (memRegInstr i)]
+genRegDef _ _ ti = [ti]
+
+noCombineHazard i _ _ | instrInfiniteUsage i /= 4 = True
+
+noCombineHazard _ ods flatcode =
+  let allusers = concatMap (flip users flatcode) ods
+  in all (not . isCombine) allusers 
+
+--
+-- for register-using instructions, add memory-using variants
+-- N.B. a use operand that occurs twice does not work here
+--
+
+generalizeRegisterUses f @ Function {fCode = code} =
+  let code' = mapToOperationInBlocks generalizeRegisterUses' code
+  in f {fCode = code'}
+
+generalizeRegisterUses'
+  o @ SingleOperation {
+    oOpr = Natural ni @ (Linear {oUs = ous, oIs = ois})}
+  | (nub ous) == ous
+  = o {oOpr = Natural ni {oIs = concatMap genRegUse ois}}
+
+generalizeRegisterUses' o = o
+
+genRegUse (TargetInstruction i)
+  | hasRegMemInstr i
+  = [TargetInstruction i, TargetInstruction (regMemInstr i)]
+genRegUse ti = [ti]
 
 -- This transform adds LEA variants of various ADD and MUL instructions.
 -- Beware! Currently unsound, because it assumes that the ADD or MUL defines dead EFLAGS.

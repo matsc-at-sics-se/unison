@@ -10,7 +10,7 @@ Main authors:
 This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.X86.Common
-    (unitLatency, align, 
+    (unitLatency, align, instrInfiniteUsage,
      isRematerializable, isSourceInstr, isDematInstr, isRematInstr, sourceInstr, dematInstr, rematInstr, originalInstr,
      isGeneralizable,
      hasRegMemInstr, hasMemRegInstr, isRegMemInstr, isMemRegInstr, regMemInstr, memRegInstr, 
@@ -26,9 +26,15 @@ import qualified Unison.Target.X86.SpecsGen as SpecsGen
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
 import Unison.Target.X86.X86RegisterClassDecl
 import Unison.Target.X86.X86RegisterDecl
+import Unison.Target.X86.Registers
 
 unitLatency to = API.isBoolOption "unit-latency" to
 align to = API.isBoolOption "align" to
+
+instrInfiniteUsage i =
+  let (use,def) = SpecsGen.operandInfo i
+      usages = [infRegClassUsage (InfiniteRegisterClass rc) | TemporaryInfo {oiRegClass = InfiniteRegisterClass rc} <- use++def]
+  in maximum (usages ++ [0])
 
 data RematTriple = RematTriple {
   source :: X86Instruction,
