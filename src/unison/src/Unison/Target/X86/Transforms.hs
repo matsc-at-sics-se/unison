@@ -271,6 +271,11 @@ liftStackArgSize' rcs o
    in off + w
 liftStackArgSize' _ _ = 0
 
+-- TODO: an alternative method to compute the width of rc is:
+--   raRcUsage ra rc
+--   where ra = mkRegisterArray target 0
+-- (see Invariants.hs. line 165)
+
 temporaryInfoWidth TemporaryInfo {oiRegClass = RegisterClass rc}
   | rc == GR32 = 4
   | rc == GR64 = 8

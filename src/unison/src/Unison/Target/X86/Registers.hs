@@ -380,18 +380,44 @@ registers (RegisterClass ALL) =
 
 registers rc = error ("unmatched: registers " ++ show rc)
 
--- | Index type (low/high/copy) of subregisters
+-- | Index type (low/high/copy) of subregisters. The raw subregister indices are
+-- taken from X86GenRegisterInfo.inc in LLVM's build directory.
 
-subRegIndexType sr
-    | sr == (NamedSubRegIndex "sub_32bit") ||
-      sr == (NamedSubRegIndex "sub_16bit") ||
-      sr == (NamedSubRegIndex "sub_8bit") ||
-      sr == (NamedSubRegIndex "sub_8bit_hi") ||
-      sr == (RawSubRegIndex 1) ||
-      sr == (RawSubRegIndex 2) ||
-      sr == (RawSubRegIndex 3) ||
-      sr == (RawSubRegIndex 4) = LowSubRegIndex
-subRegIndexType subreg = error ("unmatched: subRegIndexType " ++ show subreg)
+subRegIndexType rc sr
+    | sr == (NamedSubRegIndex "sub_32bit") || sr == (RawSubRegIndex 4) =
+        case rc of
+         "gr64"      -> [LowSubRegIndex]
+         "gr64_nosp" -> [LowSubRegIndex]
+
+subRegIndexType rc sr
+    | sr == (NamedSubRegIndex "sub_16bit") || sr == (RawSubRegIndex 3) =
+        case rc of
+         "gr64"      -> [LowSubRegIndex, LowSubRegIndex]
+         "gr64_nosp" -> [LowSubRegIndex, LowSubRegIndex]
+         "gr32"      -> [LowSubRegIndex]
+         "gr32_nosp" -> [LowSubRegIndex]
+
+subRegIndexType rc sr
+    | sr == (NamedSubRegIndex "sub_8bit") || sr == (RawSubRegIndex 1) =
+        case rc of
+         "gr64"      -> [LowSubRegIndex, LowSubRegIndex, LowSubRegIndex]
+         "gr64_nosp" -> [LowSubRegIndex, LowSubRegIndex, LowSubRegIndex]
+         "gr32"      -> [LowSubRegIndex, LowSubRegIndex]
+         "gr32_nosp" -> [LowSubRegIndex, LowSubRegIndex]
+         "gr16"      -> [LowSubRegIndex]
+         "gr16_nosp" -> [LowSubRegIndex]
+
+subRegIndexType rc sr
+    | sr == (NamedSubRegIndex "sub_8bit_hi") || sr == (RawSubRegIndex 2) =
+        case rc of
+         "gr64"      -> [HighSubRegIndex, LowSubRegIndex, LowSubRegIndex]
+         "gr64_nosp" -> [HighSubRegIndex, LowSubRegIndex, LowSubRegIndex]
+         "gr32"      -> [HighSubRegIndex, LowSubRegIndex]
+         "gr32_nosp" -> [HighSubRegIndex, LowSubRegIndex]
+         "gr16"      -> [HighSubRegIndex]
+         "gr16_nosp" -> [HighSubRegIndex]
+
+subRegIndexType rc sr = error ("unmatched: subRegIndexType " ++ show (rc, sr))
 
 -- | Map from infinite register class to register usage
 
