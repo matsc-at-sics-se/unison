@@ -378,11 +378,11 @@ nop = Linear [TargetInstruction NOOP] [] []
 --       first (++ [ProgramCounterSideEffect]) $ SpecsGen.readWriteInfo i
 --   | otherwise = SpecsGen.readWriteInfo i
 
--- ensure precedence between YMM dirtying insn and VZEROUPPER
+-- ensure precedence between YMM def/use insn and VZEROUPPER
 -- by letting the former "read" YMM0, which is "written" by the latter
 readWriteInfo i
-  | isDirtyYMMInsn i =
-      first (++ [OtherSideEffect YMM0]) $ SpecsGen.readWriteInfo i
+  | isDirtyYMMInsn i || isUseYMMInsn i
+  = first (++ [OtherSideEffect YMM0]) $ SpecsGen.readWriteInfo i
   | otherwise = SpecsGen.readWriteInfo i
 
 -- | Implementation of frame setup and destroy operations. All functions

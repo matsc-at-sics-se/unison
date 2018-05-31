@@ -14,7 +14,7 @@ module Unison.Target.X86.Common
      isRematerializable, isSourceInstr,
      isDematInstr, isRematInstr, sourceInstr, dematInstr, rematInstr,
      originalInstr, spillInstrs, condMoveInstrs, promotedRegs, readsSideEffect,
-     writesSideEffect, isDirtyYMMInsn, isDirtyYMMOp) where
+     writesSideEffect, isDirtyYMMInsn, isDirtyYMMOp, isUseYMMInsn) where
 
 import qualified Data.Map as M
 
@@ -105,6 +105,9 @@ isDirtyYMMOp o
 
 isDirtyYMMInsn i
   = any temporaryInfoYMM (snd $ SpecsGen.operandInfo i)
+
+isUseYMMInsn i
+  = any temporaryInfoYMM (fst $ SpecsGen.operandInfo i)
 
 temporaryInfoYMM TemporaryInfo {oiRegClass = (RegisterClass VR256)} = True
 temporaryInfoYMM _ = False
