@@ -191,7 +191,10 @@ rematInstrs i
 
 -- | Transforms copy instructions into natural instructions
 
+--
 -- handle regular copies
+-- 
+
 fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
   | i `elem` [PUSH_cst] =
     Linear {oIs = [TargetInstruction PUSH_fi],
@@ -222,8 +225,23 @@ fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
                    mkBound (mkMachineImm 0),
                    mkBound MachineNullReg],
             oDs = [d]}
+
+-- 
+-- handle reg-mem variants of reg-reg instructions
+-- 
+
 fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1,src2], oDs = []})
-  | isRegMemInstr i
+  | isRegMemInstr i && nthUseIsInfinite 1 i
+  = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
+            oUs = [mkBoundMachineFrameObject False i src1,
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg,
+                   src2],
+            oDs = []}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1,src2], oDs = []})
+  | isRegMemInstr i && nthUseIsInfinite 2 i
   = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
             oUs = [src1,
                    mkBoundMachineFrameObject False i src2,
@@ -232,7 +250,54 @@ fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1,src2], oDs 
                    mkBound (mkMachineImm 0),
                    mkBound MachineNullReg],
             oDs = []}
-  | isMemRegInstr i
+fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1], oDs = [dst]})
+  | isRegMemInstr i && nthUseIsInfinite 1 i
+  = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
+            oUs = [mkBoundMachineFrameObject False i src1,
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg],
+            oDs = [dst]}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1,src2], oDs = [dst]})
+  | isRegMemInstr i && nthUseIsInfinite 1 i
+  = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
+            oUs = [mkBoundMachineFrameObject False i src1,
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg,
+                   src2],
+            oDs = [dst]}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1,src2], oDs = [dst]})
+  | isRegMemInstr i && nthUseIsInfinite 2 i
+  = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
+            oUs = [src1,
+                   mkBoundMachineFrameObject False i src2,
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg],
+            oDs = [dst]}
+fromCopy _ o @ (Natural Linear {oIs = [TargetInstruction i]})
+  | isRegMemInstr i
+  = error ("unmatched pattern: fromCopy " ++ show o)
+
+--
+-- handle mem-reg variants of reg-reg instructions
+--
+
+fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1], oDs = []})
+  | isMemRegInstr i && nthUseIsInfinite 1 i
+  = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
+            oUs = [mkBoundMachineFrameObject False i src1,
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg],
+            oDs = []}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1,src2], oDs = []})
+  | isMemRegInstr i && nthUseIsInfinite 1 i
   = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
             oUs = [mkBoundMachineFrameObject False i src1,
                    mkBound (mkMachineImm 1),
@@ -242,16 +307,7 @@ fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1,src2], oDs 
                    src2],
             oDs = []}
 fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1,src2], oDs = [dst]})
-  | isRegMemInstr i
-  = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
-            oUs = [src1,
-                   mkBoundMachineFrameObject False i src2,
-                   mkBound (mkMachineImm 1),
-                   mkBound MachineNullReg,
-                   mkBound (mkMachineImm 0),
-                   mkBound MachineNullReg],
-            oDs = [dst]}
-  | isMemRegInstr i
+  | isMemRegInstr i && nthUseIsInfinite 1 i && SpecsGen.alignedPairs i ([src1,src2], [dst]) == [(src1,dst)]
   = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
             oUs = [mkBoundMachineFrameObject False i src1,
                    mkBound (mkMachineImm 1),
@@ -260,8 +316,14 @@ fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1,src2], oDs 
                    mkBound MachineNullReg,
                    src2],
             oDs = []}
+fromCopy _ o @ (Natural Linear {oIs = [TargetInstruction i]})
+  | isMemRegInstr i
+  = error ("unmatched pattern: fromCopy " ++ show o)
 
+-- 
 -- handle rematerialization copies
+-- 
+
 fromCopy (Just (Linear {oUs = us}))
          Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
   | isDematInstr i =
@@ -271,11 +333,17 @@ fromCopy (Just (Linear {oUs = us}))
   | True =
     Linear {oIs = [TargetInstruction i], oUs = [s], oDs = [d]}
 
+--
 -- handle rematerialization sources
+--
+
 fromCopy _ (Natural o @ Linear {oIs = [TargetInstruction i]})
   | isSourceInstr i = o {oIs = [mkNullInstruction]}
 
+-- 
 -- handle reselected instructions
+--
+
 fromCopy _ (Natural Linear {oIs = [TargetInstruction ADD32ri_LEA], oUs = [r,i], oDs = [d]})
   = Linear {oIs = [TargetInstruction LEA64_32r],
             oUs = [mkBound (toMachineOperand (reg32ToReg64 r)),
@@ -378,6 +446,10 @@ stackSize i =
   let (use,def) = operandInfo i
       usages = [infRegClassUsage (InfiniteRegisterClass rc) | TemporaryInfo {oiRegClass = InfiniteRegisterClass rc} <- use++def]
   in maximum (usages ++ [0])
+
+nthUseIsInfinite n i =
+  let (use,_) = operandInfo i
+  in isInfiniteRegisterClass $ oiRegClass $ head $ drop (n-1) use
 
 -- | Declares target architecture resources
 
