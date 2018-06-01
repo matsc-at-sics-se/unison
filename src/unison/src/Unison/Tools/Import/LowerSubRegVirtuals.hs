@@ -32,7 +32,7 @@ lowerSubRegVirtual stf tid2rc (accIs, id) (mi @
   = let subreg = toSubRegIndex sr
         subops = stf (tid2rc M.! sid) subreg
         (dids, sids, id') = planSubRegs subops did sid id
-        mis = lowerSubRegVirtual' subops dids sids mi
+        mis = map (lowerSubRegVirtual' mi) (zip3 subops dids sids)
     in lowerSubRegVirtual stf tid2rc (accIs ++ mis, id') is
 
 lowerSubRegVirtual stf tid2rc (accIs, id) (mi @
@@ -59,13 +59,10 @@ planSubRegs (_ : subops) did sid id
   = let (dids', sids', id') = planSubRegs subops did id (id + 1)
     in ((id : dids'), (sid : sids'), id')
 
-lowerSubRegVirtual' [] [] [] _ = []
-lowerSubRegVirtual' (subop : subops) (did : dids) (sid : sids) (mi @ MachineSingle {})
-  = let opcode =
-          case subop of
-            LowSubRegIndex  -> LOW
-            HighSubRegIndex -> HIGH
-            CopySubRegIndex -> COPY
-        mi' = mi {msOpcode = mkMachineVirtualOpc opcode,
-                  msOperands = [mkSimpleMachineTemp did, mkSimpleMachineTemp sid]}
-    in (mi' : lowerSubRegVirtual' subops dids sids mi)
+lowerSubRegVirtual' (mi @ MachineSingle {}) (subop, did, sid)
+  = mi {msOpcode = mkMachineVirtualOpc $ subopToOp subop,
+        msOperands = [mkSimpleMachineTemp did, mkSimpleMachineTemp sid]}
+
+subopToOp LowSubRegIndex  = LOW
+subopToOp HighSubRegIndex = HIGH
+subopToOp CopySubRegIndex = COPY
