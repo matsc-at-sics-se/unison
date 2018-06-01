@@ -465,7 +465,7 @@ addStackIndexReadsSP o = o
 
 addFunWrites o
   | isFun o
-  = mapToWrites (++ [OtherSideEffect YMM0,OtherSideEffect EFLAGS]) o
+  = mapToWrites (++ [OtherSideEffect EFLAGS]) o
 addFunWrites o = o
 
 addVzeroupper f @ Function {fCode = code} =
