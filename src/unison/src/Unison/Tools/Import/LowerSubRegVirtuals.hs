@@ -26,17 +26,14 @@ lowerSubRegVirtuals mf @ MachineFunction {} target =
   in mf'
 
 lowerSubRegVirtual stf tid2rc (accIs, id) (mi @
-  MachineSingle {msOperands = [d @ MachineTemp {},
-                               s @ MachineTemp {mtId = sid}, sr]} : is)
-  | isMachineExtractSubReg mi =
-    let subreg = toSubRegIndex sr
-        opcode =
-          case stf (tid2rc M.! sid) subreg of
-            [LowSubRegIndex]  -> LOW
-            [HighSubRegIndex] -> HIGH
-            [CopySubRegIndex] -> COPY
-        mi' = mi {msOpcode = mkMachineVirtualOpc opcode, msOperands = [d, s]}
-    in lowerSubRegVirtual stf tid2rc (accIs ++ [mi'], id) is
+  MachineSingle {msOperands = [MachineTemp {mtId = did},
+                               MachineTemp {mtId = sid}, sr]} : is)
+  | isMachineExtractSubReg mi
+  = let subreg = toSubRegIndex sr
+        subops = stf (tid2rc M.! sid) subreg
+        (dids, sids, id') = planSubRegs subops did sid id
+        mis = lowerSubRegVirtual' subops dids sids mi
+    in lowerSubRegVirtual stf tid2rc (accIs ++ mis, id') is
 
 lowerSubRegVirtual stf tid2rc (accIs, id) (mi @
   MachineSingle {msOperands = [d @ MachineTemp {},
@@ -56,3 +53,19 @@ lowerSubRegVirtual stf tid2rc (accIs, id) (mi : is) =
   lowerSubRegVirtual stf tid2rc (accIs ++ [mi], id) is
 
 lowerSubRegVirtual _ _ (is, acc) [] = (is, acc)
+
+planSubRegs [_] did sid id = ([did], [sid], id)
+planSubRegs (_ : subops) did sid id
+  = let (dids', sids', id') = planSubRegs subops did id (id + 1)
+    in ((id : dids'), (sid : sids'), id')
+
+lowerSubRegVirtual' [] [] [] _ = []
+lowerSubRegVirtual' (subop : subops) (did : dids) (sid : sids) (mi @ MachineSingle {})
+  = let opcode =
+          case subop of
+            LowSubRegIndex  -> LOW
+            HighSubRegIndex -> HIGH
+            CopySubRegIndex -> COPY
+        mi' = mi {msOpcode = mkMachineVirtualOpc opcode,
+                  msOperands = [mkSimpleMachineTemp did, mkSimpleMachineTemp sid]}
+    in (mi' : lowerSubRegVirtual' subops dids sids mi)
