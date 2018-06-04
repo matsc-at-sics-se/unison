@@ -186,7 +186,8 @@ rematInstrs i
               VMOVAPSYrm,
               SETAEr, SETAr, SETBEr, SETBr, SETEr, SETGEr, SETGr, SETLEr, SETLr,
               SETNEr, SETNOr, SETNPr, SETNSr, SETOr, SETPr, SETSr,
-              SETB_C8r, SETB_C16r, SETB_C32r, SETB_C64r] = Nothing
+              SETB_C8r, SETB_C16r, SETB_C32r, SETB_C64r,
+	      MOV32mi_unison] = Nothing
   | otherwise = trace ("consider rematInstrs " ++ show i) Nothing
 
 -- | Transforms copy instructions into natural instructions
