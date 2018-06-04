@@ -1210,6 +1210,7 @@ fromMachineInstruction itf oif
                   RETURN           -> mkReturn id us'
                   EXIT             -> mkExit id
                   COMBINE          -> mkCombine id (us' !! 0) (us' !! 1) (head ds')
+                  FUN              -> mkFun id us' ds'
                   ADJCALLSTACKDOWN -> mkFrameSetup id (head us')
                   ADJCALLSTACKDOWN32 -> mkFrameSetup id (head us')
                   ADJCALLSTACKDOWN64 -> mkFrameSetup id (head us')
@@ -1264,6 +1265,10 @@ splitMachineVirtualOperands opcode operands
   | opcode `elem` [IMPLICIT_DEF] = ([], operands)
 splitMachineVirtualOperands opcode (operand:operands)
   | opcode `elem` [PHI, COMBINE] = (operands, [operand])
+splitMachineVirtualOperands opcode operands
+  | opcode `elem` [FUN] =
+    (filter isMachineRegImplicit operands,
+     filter isMachineRegImplicitDef operands)
 splitMachineVirtualOperands opcode (s:_)
   | opcode `elem` [ADJCALLSTACKDOWN, ADJCALLSTACKDOWN32, ADJCALLSTACKDOWN64,
                    ADJCALLSTACKUP, ADJCALLSTACKUP32, ADJCALLSTACKUP64] = ([s], [])
