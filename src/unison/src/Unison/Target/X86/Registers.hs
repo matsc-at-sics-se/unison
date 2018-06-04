@@ -384,6 +384,11 @@ registers rc = error ("unmatched: registers " ++ show rc)
 -- taken from X86GenRegisterInfo.inc in LLVM's build directory.
 
 subRegIndexType rc sr
+    | sr == (NamedSubRegIndex "sub_xmm") || sr == (RawSubRegIndex 5) =
+        case rc of
+         "vr256"     -> [LowSubRegIndex]
+
+subRegIndexType rc sr
     | sr == (NamedSubRegIndex "sub_32bit") || sr == (RawSubRegIndex 4) =
         case rc of
          "gr64"      -> [LowSubRegIndex]
