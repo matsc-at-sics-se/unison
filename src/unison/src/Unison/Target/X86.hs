@@ -388,7 +388,17 @@ stackDirection = API.StackGrowsDown
 
 -- | Target dependent pre-processing functions
 
-preProcess _ = [mapToMachineInstruction promoteImplicitOperands]
+preProcess _ = [mapToMachineInstruction cleanFunRegisters,
+                mapToMachineInstruction promoteImplicitOperands]
+
+-- This transformation hides the stack pointer as a use and definition of
+-- function calls.
+cleanFunRegisters
+ mi @ MachineSingle {msOpcode = MachineVirtualOpc FUN, msOperands = mos} =
+    let mos' = [mr | mr @ MachineReg {mrName = r} <- mos, r /= RSP]
+    in mi {msOperands = mos'}
+
+cleanFunRegisters mi = mi
 
 -- This transformation adds implicit uses and definitions that have been
 -- promoted with specsgen. The order of the operands is:
