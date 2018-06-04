@@ -14,7 +14,7 @@ module Unison.Target.X86 (target) where
 import Debug.Trace
 import Data.Maybe
 import qualified Data.Set as S
-import Control.Arrow
+-- import Control.Arrow
 
 import Common.Util
 
@@ -466,23 +466,8 @@ resources =
 
 nop = Linear [TargetInstruction NOOP] [] []
 
--- avoid this practice
--- readWriteInfo i
---   | i `elem` [SUBRSP_pseudo, ADDRSP_pseudo] =
---       second (++ [ControlSideEffect,OtherSideEffect RSP]) $ SpecsGen.readWriteInfo i
---   | otherwise = SpecsGen.readWriteInfo i
-
--- readWriteInfo i
---   | i `elem` [VZEROUPPER] =
---       first (++ [ProgramCounterSideEffect]) $ SpecsGen.readWriteInfo i
---   | otherwise = SpecsGen.readWriteInfo i
-
--- ensure precedence between YMM dirtying insn and VZEROUPPER
--- by letting the former "read" YMM0, which is "written" by the latter
 readWriteInfo i
-  | isDirtyYMMInsn i =
-      first (++ [OtherSideEffect YMM0]) $ SpecsGen.readWriteInfo i
-  | otherwise = SpecsGen.readWriteInfo i
+  = SpecsGen.readWriteInfo i
 
 -- | Implementation of frame setup and destroy operations. All functions
 -- observed so far have a reserved call frame (hasReservedCallFrame(MF)), which
@@ -760,5 +745,29 @@ expandCopy _ _ o = [o]
 
 -- | Custom processor constraints
 
-constraints _ = []
+-- force VZEROUPPER operations to be scheduled exactly one cycle before their
+-- corresponding call/tailcall/return operation
+
+constraints f =
+  fixVzeroupperConstraints f
+
+fixVzeroupperConstraints f =
+  let fcode = flatCode f
+      ops = filter isVzeroupperRelevant fcode
+  in fixVzeroupperConstraints' ops
+
+fixVzeroupperConstraints' (o1 : o2 : rest)
+  | isVzeroupper o1
+  = [AndExpr [DistanceExpr (oId o2) (oId o1) (-1),
+              DistanceExpr (oId o1) (oId o2) ( 1)]] ++
+    fixVzeroupperConstraints' rest
+fixVzeroupperConstraints' (_ : rest)
+  = fixVzeroupperConstraints' rest
+fixVzeroupperConstraints' [] = []
+
+isVzeroupperRelevant o =
+  isVzeroupper o || isBranch o || isCall o || isTailCall o
+
+isVzeroupper o =
+  (TargetInstruction VZEROUPPER) `elem` oInstructions o
 

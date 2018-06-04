@@ -11,11 +11,11 @@ This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.X86.Common
     (unitLatency, align, instrInfiniteUsage,
-     isRematerializable, isSourceInstr, isDematInstr, isRematInstr, sourceInstr, dematInstr, rematInstr, originalInstr,
-     isGeneralizable,
+     isRematerializable, isSourceInstr,
+     isDematInstr, isRematInstr, sourceInstr, dematInstr, rematInstr, originalInstr,
      hasRegMemInstr, hasMemRegInstr, isRegMemInstr, isMemRegInstr, regMemInstr, memRegInstr, 
      spillInstrs, condMoveInstrs, promotedRegs, readsSideEffect,
-     writesSideEffect, isDirtyYMMInsn, isDirtyYMMOp) where
+     writesSideEffect, isDirtyYMMInsn, isDirtyYMMOp, isUseYMMInsn) where
 
 import qualified Data.Map as M
 import Data.Maybe
@@ -114,14 +114,15 @@ isDirtyYMMOp o
 isDirtyYMMInsn i
   = any temporaryInfoYMM (snd $ SpecsGen.operandInfo i)
 
+isUseYMMInsn i
+  = any temporaryInfoYMM (fst $ SpecsGen.operandInfo i)
+
 temporaryInfoYMM TemporaryInfo {oiRegClass = (RegisterClass VR256)} = True
 temporaryInfoYMM _ = False
 
 data MemTempTuple = MemTempTuple {
   regMem  :: Maybe X86Instruction,
   memReg  :: Maybe X86Instruction}
-
-isGeneralizable i = M.member i memTempVersions
 
 hasRegMemInstr i =
   let val = M.lookup i memTempVersions
