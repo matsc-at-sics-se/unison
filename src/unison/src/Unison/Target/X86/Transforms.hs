@@ -39,7 +39,7 @@ import Unison.Target.X86.Common
 import Unison.Target.X86.BranchInfo
 import Unison.Target.X86.X86RegisterDecl
 import Unison.Target.X86.X86RegisterClassDecl
-import Unison.Target.X86.Registers()
+import Unison.Target.X86.Registers
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
 
@@ -470,13 +470,15 @@ addFunWrites o = o
 
 addVzeroupper f @ Function {fCode = code} =
   let icfg   = ICFG.fromBCFG $ BCFG.fromFunction branchInfo' f
-      cnodes = [id | (id, (_, o)) <- G.labNodes icfg, isCall o]
+      cnodes = [id | (id, (_, o)) <- G.labNodes icfg, isCall o || isTailCall o]
       rnodes = [id | (id, (_, o)) <- G.labNodes icfg,
-                (TargetInstruction RETQ) `elem` oInstructions o || isTailCall o]
+                (TargetInstruction RETQ) `elem` oInstructions o]
       cedges = concat [[(id, s) | s <- G.suc icfg id] | id <- cnodes]
       icfg'  = G.delEdges cedges icfg
       icfgr  = G.grev icfg'
-      creach = [(id, G.reachable id icfgr) | id <- cnodes ++ rnodes]
+      callFuns = filter (\o -> isCall o || isTailCall o || isFun o) (flatten code)
+      cnodes' = filter (insertCandidate icfg callFuns) cnodes
+      creach = [(id, G.reachable id icfgr) | id <- cnodes' ++ rnodes]
       ymmreach = [snd (fromJust (G.lab icfg id)) | (id, reachers) <- creach,
                   any (isYMMDirtying icfg) reachers]
       code'  = foldl insertVzeroupper code ymmreach
@@ -494,3 +496,23 @@ insertVzeroupper code o =
       vzu = mkLinear oid [TargetInstruction VZEROUPPER] [] []
       code' = map (insertOperationInBlock before (isIdOf o) vzu) code
    in code'
+
+insertCandidate icfg callFuns id =
+  let o = snd (fromJust (G.lab icfg id))
+  in relevantFunAfter callFuns o
+
+relevantFunAfter [] o = True
+
+relevantFunAfter (call : fun : _) o
+  | call == o
+  = let (SingleOperation {oOpr = Virtual (Fun {oFunctionUs = funuses})}) = fun
+    in not (any ymmPreassigned funuses)
+
+relevantFunAfter (_ : rest) o
+  = relevantFunAfter rest o
+
+ymmPreassigned p =
+  case preAssignment p of
+    Nothing -> False
+    Just (Register (TargetRegister r)) -> r `elem` registers (RegisterClass VR256)
+

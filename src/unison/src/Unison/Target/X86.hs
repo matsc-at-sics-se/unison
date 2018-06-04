@@ -609,10 +609,10 @@ maybeAdjustSP off
 
 transforms ImportPreLift = [peephole extractReturnRegs,
                             liftStackArgSize,
-                            addPrologueEpilogue,
-                            addVzeroupper]
+                            addPrologueEpilogue]
 transforms ImportPostLift = [mapToOperation handlePromotedOperands,
-                             transAlternativeLEA]
+                             transAlternativeLEA,
+                             addVzeroupper]
 transforms ImportPostCC = [liftReturnAddress]
 transforms ExportPreOffs = [revertFixedFrame]
 transforms ExportPreLow = [myLowerFrameIndices]
