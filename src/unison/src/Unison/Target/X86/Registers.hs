@@ -387,48 +387,53 @@ subRegIndexType rc sr
     | sr == (NamedSubRegIndex "sub_xmm") || sr == (RawSubRegIndex 5) =
         case rc of
          "vr256"     -> [LowSubRegIndex]
-         _           -> error ("SubRegIndexType: missing register class " ++ show rc) 
+         _           -> error ("SubRegIndexType: missing register class " ++ show rc ++ " " ++ show sr) 
 
 subRegIndexType rc sr
     | sr == (NamedSubRegIndex "sub_32bit") || sr == (RawSubRegIndex 4) =
         case rc of
          "gr64"      -> [LowSubRegIndex]
          "gr64_nosp" -> [LowSubRegIndex]
+         "gr64_norex_nosp" -> [LowSubRegIndex]
          "gr64_with_sub_8bit" -> [LowSubRegIndex]
-         _           -> error ("SubRegIndexType: missing register class " ++ show rc) 
+         _           -> error ("SubRegIndexType: missing register class " ++ show rc ++ " " ++ show sr) 
 
 subRegIndexType rc sr
     | sr == (NamedSubRegIndex "sub_16bit") || sr == (RawSubRegIndex 3) =
         case rc of
          "gr64"      -> [LowSubRegIndex, LowSubRegIndex]
          "gr64_nosp" -> [LowSubRegIndex, LowSubRegIndex]
+         "gr64_norex_nosp" -> [LowSubRegIndex, LowSubRegIndex]
          "gr32"      -> [LowSubRegIndex]
          "gr32_nosp" -> [LowSubRegIndex]
-         _           -> error ("SubRegIndexType: missing register class " ++ show rc) 
+         _           -> error ("SubRegIndexType: missing register class " ++ show rc ++ " " ++ show sr) 
 
 subRegIndexType rc sr
     | sr == (NamedSubRegIndex "sub_8bit") || sr == (RawSubRegIndex 1) =
         case rc of
          "gr64"      -> [LowSubRegIndex, LowSubRegIndex, LowSubRegIndex]
          "gr64_nosp" -> [LowSubRegIndex, LowSubRegIndex, LowSubRegIndex]
+         "gr64_norex_nosp" -> [LowSubRegIndex, LowSubRegIndex, LowSubRegIndex]
          "gr64_with_sub_8bit" -> [LowSubRegIndex, LowSubRegIndex, LowSubRegIndex]
          "gr32"      -> [LowSubRegIndex, LowSubRegIndex]
          "gr32_nosp" -> [LowSubRegIndex, LowSubRegIndex]
          "gr16"      -> [LowSubRegIndex]
          "gr16_nosp" -> [LowSubRegIndex]
-         _           -> error ("SubRegIndexType: missing register class " ++ show rc) 
+         _           -> error ("SubRegIndexType: missing register class " ++ show rc ++ " " ++ show sr) 
 
 subRegIndexType rc sr
     | sr == (NamedSubRegIndex "sub_8bit_hi") || sr == (RawSubRegIndex 2) =
         case rc of
          "gr64"      -> [HighSubRegIndex, LowSubRegIndex, LowSubRegIndex]
          "gr64_nosp" -> [HighSubRegIndex, LowSubRegIndex, LowSubRegIndex]
+         "gr64_norex_nosp" -> [HighSubRegIndex, LowSubRegIndex, LowSubRegIndex]
+         "gr64_abcd" -> [HighSubRegIndex, LowSubRegIndex, LowSubRegIndex]
          "gr32"      -> [HighSubRegIndex, LowSubRegIndex]
          "gr32_nosp" -> [HighSubRegIndex, LowSubRegIndex]
          "gr32_abcd" -> [HighSubRegIndex, LowSubRegIndex]
          "gr16"      -> [HighSubRegIndex]
          "gr16_nosp" -> [HighSubRegIndex]
-         _           -> error ("SubRegIndexType: missing register class " ++ show rc) 
+         _           -> error ("SubRegIndexType: missing register class " ++ show rc ++ " " ++ show sr) 
 
 subRegIndexType rc sr = error ("unmatched: subRegIndexType " ++ show (rc, sr))
 

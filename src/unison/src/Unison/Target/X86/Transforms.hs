@@ -263,28 +263,19 @@ rspCopy _ = []
 
 liftStackArgSize' rcs o
  | (length $ oUses o) == 6 && (head $ oUses o) `elem` rcs
- = let (ri, _) = SpecsGen.operandInfo (oTargetInstr $ head $ oInstructions o)
-       (_, [ui]) = splitAt 5 ri
-       w = temporaryInfoWidth ui
-       [_,_,_,offp,_,_] = oUses o
+ = let (SingleOperation {oOpr = Natural (Linear {oUs = us, oIs = [TargetInstruction ti]})}) = o
+       w = instructionMemWidth ti
+       [_,_,_,offp,_,_] = us
        (Bound (MachineImm off)) = offp
    in off + w
 liftStackArgSize' _ _ = 0
 
--- TODO: an alternative method to compute the width of rc is:
---   raRcUsage ra rc
---   where ra = mkRegisterArray target 0
--- (see Invariants.hs. line 165)
-
-temporaryInfoWidth TemporaryInfo {oiRegClass = RegisterClass rc}
-  | rc == GR32 = 4
-  | rc == GR64 = 8
-  | rc == FR32 = 4
-  | rc == FR64 = 8
-  | rc == FR128 = 16
-  | rc == VR128 = 16
-  | rc == VR256 = 32
-  | True = error ("unmatched: temporaryInfoWidth " ++ show rc)
+instructionMemWidth ti
+  | ti `elem` [MOV8mi, MOV8mr] = 1
+  | ti `elem` [MOV16mi, MOV16mr] = 2
+  | ti `elem` [MOV32mi, MOV32mr] = 4
+  | ti `elem` [MOV64mi32, MOV64mr] = 8
+  | True = error ("unmatched: instructionMemWidth " ++ show ti)
 
 -- This transform inserts Prologue/Epilogue, either simple or complex,
 -- if alignment by more than 16 is required.
@@ -501,7 +492,7 @@ insertCandidate icfg callFuns id =
   let o = snd (fromJust (G.lab icfg id))
   in relevantFunAfter callFuns o
 
-relevantFunAfter [] o = True
+relevantFunAfter [] _ = True
 
 relevantFunAfter (call : fun : _) o
   | call == o
