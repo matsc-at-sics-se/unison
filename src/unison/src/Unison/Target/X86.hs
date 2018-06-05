@@ -591,10 +591,17 @@ expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc V_SETALLONES,
 
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc mto,
                                    msOperands = [lab,MachineImm off]}
-  | mto `elem` [TCRETURNdi, TCRETURNri, TCRETURNmi, TCRETURNdi64, TCRETURNri64, TCRETURNmi64]
+  | mto `elem` [TCRETURNdi, TCRETURNri, TCRETURNdi64, TCRETURNri64]
   = maybeAdjustSP off ++
     [[mi {msOpcode = mkMachineTargetOpc (expandedTailJump mto),
           msOperands = [lab]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc mto,
+                                   msOperands = [a,b,c,d,e,MachineImm off]}
+  | mto `elem` [TCRETURNmi, TCRETURNmi64]
+  = maybeAdjustSP off ++
+    [[mi {msOpcode = mkMachineTargetOpc (expandedTailJump mto),
+          msOperands = [a,b,c,d,e]}]]
 
 expandPseudo _ mi = [[mi]]
 
