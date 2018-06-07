@@ -1290,13 +1290,15 @@ buildInstructionAttributes ips =
 toMachineFunction :: Show i => Show r => Function i r -> MachineFunction i r
 toMachineFunction
   Function {fName = name, fCode = code, fFixedStackFrame = ffs,
-            fStackFrame = fs, fJumpTable = jt, fSource = src} =
+            fStackFrame = fs, fConstants = cs, fJumpTable = jt, fSource = src} =
   let mff = toMachineFunctionPropertyFixedFrame ffs
       mf  = toMachineFunctionPropertyFrame fs
+      mcs = toMachineFunctionPropertyConstants cs
       mjt = toMachineFunctionPropertyJumpTable jt
       mbs = map toMachineBlock code
   in mkMachineFunction name
-         (maybeToList mff ++ maybeToList mf ++ maybeToList mjt) mbs src
+         (maybeToList mff ++ maybeToList mf ++ maybeToList mcs ++
+          maybeToList mjt) mbs src
 
 toMachineFunctionPropertyFixedFrame ::
     [FrameObject r] -> Maybe (MachineFunctionProperty r)
@@ -1314,6 +1316,12 @@ toMachineFrameObjectInfo :: FrameObject r -> MachineFrameObjectInfo r
 toMachineFrameObjectInfo fo = mkMachineFrameObjectInfo (foIndex fo)
                               (foOffset fo) (foSize fo) (foAlignment fo)
                               (foCSRegister fo)
+
+toMachineFunctionPropertyConstants ::
+  [(Integer, String, Integer)] -> Maybe (MachineFunctionProperty r)
+toMachineFunctionPropertyConstants [] = Nothing
+toMachineFunctionPropertyConstants cs =
+  Just $ mkMachineFunctionPropertyConstants cs
 
 toMachineFunctionPropertyJumpTable ::
   (String, [JumpTableEntry]) -> Maybe (MachineFunctionProperty r)
