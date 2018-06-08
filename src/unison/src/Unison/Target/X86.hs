@@ -14,12 +14,10 @@ module Unison.Target.X86 (target) where
 import Debug.Trace
 import Data.Maybe
 import qualified Data.Set as S
--- import Control.Arrow
 
 import Common.Util
 
 import MachineIR
-import MachineIR.Transformations.AddImplicitRegs
 
 import Unison
 import qualified Unison.Target.API as API
@@ -428,7 +426,36 @@ promoteImplicitRegs i regs mos =
 
 -- | Target dependent post-processing functions
 
-postProcess to = [expandPseudos to, flip addImplicitRegs (target, [])]
+postProcess to = [mapToMachineInstruction demoteImplicitOperands,
+                  mapToMachineInstruction addImplicitRegs,
+                  expandPseudos to]
+
+-- This transformation removes operands that are explicit according to OperandInfo
+-- but in fact are implicit according to ReadWriteInfo.  It also sets MachineInstructionPropertyDefs
+-- to the number of truly explicit defs, because Prepareforemission would compute the wrong value
+-- otherwise.
+
+demoteImplicitOperands mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = mos, msProperties = props}
+  = let (uif,dif) = operandInfo i
+        ws  = filter (writesSideEffect i) promotedRegs
+        rs  = filter (readsSideEffect i) promotedRegs
+        (eds, mos') = splitAt (length dif - length ws) mos
+        (_, mos'') = splitAt (length ws) mos'
+        (eus, _) = splitAt (length uif - length rs) mos''
+        props' = props ++ [mkMachineInstructionPropertyDefs (toInteger $ length eds)]
+  in mi {msOperands = eds++eus, msProperties = props'}
+
+-- This transformation replaces MachineIR.Transformations.AddImplicitRegs, which would otherwise
+-- for every write side-effect add both MachineRegImplicit and MachineRegImplicitDef.
+
+addImplicitRegs mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = mos} =
+  let (uif,dif) = readWriteInfo i
+      imp   = [MachineReg d [mkMachineRegImplicitDefine] |
+               (OtherSideEffect d) <- dif] ++
+              [MachineReg u [mkMachineRegImplicit] |
+               (OtherSideEffect u) <- uif]
+      mos'  = mos ++ imp
+  in mi {msOperands = mos'}
 
 expandPseudos to = mapToMachineBlock (expandBlockPseudos (expandPseudo to))
 
