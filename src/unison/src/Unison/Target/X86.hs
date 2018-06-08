@@ -426,9 +426,9 @@ promoteImplicitRegs i regs mos =
 
 -- | Target dependent post-processing functions
 
-postProcess to = [mapToMachineInstruction demoteImplicitOperands,
-                  mapToMachineInstruction addImplicitRegs,
-                  expandPseudos to]
+postProcess to = [expandPseudos to,
+                  mapToMachineInstruction demoteImplicitOperands,
+                  mapToMachineInstruction addImplicitRegs]
 
 -- This transformation removes operands that are explicit according to OperandInfo
 -- but in fact are implicit according to ReadWriteInfo.  It also sets MachineInstructionPropertyDefs
