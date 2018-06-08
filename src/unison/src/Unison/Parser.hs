@@ -30,7 +30,7 @@ import Control.Arrow
 import Common.Util hiding (between)
 
 import MachineIR.Base (MachineOperand, MachineIRVersion (..),
-                       mfiIndex, mjtiIndex)
+                       mfiIndex, mjtiIndex, mcpiIndex)
 import MachineIR.Parser
 
 import Unison.Base
@@ -65,7 +65,7 @@ data LsOperand r =
 data LsAttributes r =
   LsAttributes (LsAttribute r) (LsAttribute r) (LsAttribute r) (LsAttribute r)
                (LsAttribute r) (LsAttribute r) (LsAttribute r) (LsAttribute r)
-               (LsAttribute r) (LsAttribute r) (LsAttribute r)
+               (LsAttribute r) (LsAttribute r) (LsAttribute r) (LsAttribute r)
   deriving (Show)
 
 data LsAttribute r =
@@ -79,7 +79,8 @@ data LsAttribute r =
   LsJTBlocks [LsOperand r] |
   LsBranchTaken (Maybe Bool) |
   LsPrescheduled (Maybe IssueCycle) |
-  LsRematOrigin (Maybe OperationId)
+  LsRematOrigin (Maybe OperationId) |
+  LsSplitBarrier Bool
   deriving (Show)
 
 data LsRWObject =
@@ -111,6 +112,9 @@ data LsFrameObject =
   LsFrameObject Integer Integer (Maybe Integer) Integer (Maybe String)
   deriving (Eq, Show)
 
+data LsConstantObject = LsConstantObject Integer String Integer
+  deriving (Eq, Show)
+
 parse :: Read i => Read r =>
          TargetWithOptions i r rc s -> String -> Function i r
 parse target s =
@@ -132,6 +136,8 @@ sFile =
      fobjs  <- frameObjectLine `endBy` newline
      sp     <- spOffsetLine
      ss     <- stackArgSizeLine
+     constantsMarkerLine
+     consts <- constantObjectLine `endBy` newline
      jumpTableMarkerLine
      jtk    <- option [] (jumpTableKindLine `endBy` newline)
      jtes   <- jumpTableEntryLine `endBy` newline
@@ -141,7 +147,7 @@ sFile =
      src    <- sourceLine `endBy` newline
      eof
      return (comms, name, body, listToMaybe cs, listToMaybe rts, ffobjs, fobjs,
-             sp, ss, (toKind jtk, jtes), goal, rfs, src)
+             sp, ss, consts, (toKind jtk, jtes), goal, rfs, src)
 
 toKind [] = ""
 toKind [k] = k
@@ -158,6 +164,7 @@ bodyLine             = tryLineOf (bLabelDeclaration <|> blockOperation)
 congruenceLine       = tryLineOf congruenceList
 rematerializableLine = tryLineOf rematTupleList
 frameObjectLine      = tryLineOf frameObject
+constantObjectLine   = tryLineOf constantObject
 jumpTableKindLine    = tryLineOf jumpTableKind
 jumpTableEntryLine   = tryLineOf jumpTableEntry
 sourceLine           = tryLineOf source
@@ -168,6 +175,7 @@ congruencesMarkerLine = lineOf (marker "adjacent")
 rematerializableMarkerLine = lineOf (marker "rematerializable")
 fixedframeMarkerLine  = lineOf (marker "fixed-frame")
 frameMarkerLine       = lineOf (marker "frame")
+constantsMarkerLine   = lineOf (marker "constants")
 jumpTableMarkerLine   = lineOf (marker "jump-table")
 sourceMarkerLine      = lineOf (marker "source")
 
@@ -315,7 +323,8 @@ attributes =
                             (fetchAttr (LsJTBlocks []) isLsJTBlocks attrs)
                             (fetchAttr (LsBranchTaken Nothing) isLsBranchTaken attrs)
                             (fetchAttr (LsPrescheduled Nothing) isLsPrescheduled attrs)
-                            (fetchAttr (LsRematOrigin Nothing) isLsRematOrigin attrs))
+                            (fetchAttr (LsRematOrigin Nothing) isLsRematOrigin attrs)
+                            (fetchAttr (LsSplitBarrier False) isLsSplitBarrier attrs))
 
 attribute = try (sideEffectListAttribute "reads" LsReads)
             <|> sideEffectListAttribute "writes" LsWrites
@@ -328,6 +337,7 @@ attribute = try (sideEffectListAttribute "reads" LsReads)
             <|> operandListAttribute "jtblocks" LsJTBlocks
             <|> boolAttribute "taken" (LsBranchTaken . Just)
             <|> integerAttribute "cycle" (LsPrescheduled . Just)
+            <|> simpleAttribute "split-barrier" (LsSplitBarrier True)
 
 sideEffectListAttribute = attributeList sideEffect
 
@@ -426,19 +436,19 @@ frameObject =
      whiteSpace
      char ':'
      whiteSpace
-     off <- frameObjectProperty "offset"
+     off <- signedDecimalObjectProperty "offset"
      comma
      size <- optionMaybe frameSizeAndComma
-     align <- frameObjectProperty "align"
+     align <- signedDecimalObjectProperty "align"
      csreg <- optionMaybe frameCSReg
      return (LsFrameObject (mfiIndex mfi) off size align csreg)
 
 frameSizeAndComma =
-  do size <- frameObjectProperty "size"
+  do size <- signedDecimalObjectProperty "size"
      comma
      return size
 
-frameObjectProperty p =
+signedDecimalObjectProperty p =
   do string p
      whiteSpace
      char '='
@@ -454,6 +464,32 @@ frameCSReg =
      oneOf "%$"
      r <- many1 alphaNumDashAtDotUnderscore
      return r
+
+constantObject =
+  do mci <- mirConstantPoolIndex
+     whiteSpace
+     char ':'
+     whiteSpace
+     val <- constantVal
+     comma
+     align <- signedDecimalObjectProperty "align"
+     return (LsConstantObject (read (mcpiIndex mci)) val align)
+
+constantVal =
+  do string "value"
+     whiteSpace
+     char '='
+     whiteSpace
+     c <- try unstructuredConstantVal <|> try structuredConstantVal
+     return c
+
+unstructuredConstantVal =
+  do char '\''
+     v <- many $ noneOf "\'"
+     char '\''
+     return v
+
+structuredConstantVal = many1 (noneOf ",")
 
 jumpTableKind =
   do string "kind:"
@@ -592,18 +628,23 @@ isLsPrescheduled _                  = False
 isLsRematOrigin (LsRematOrigin _) = True
 isLsRematOrigin _                 = False
 
+isLsSplitBarrier (LsSplitBarrier _) = True
+isLsSplitBarrier _                 = False
+
 toFunction target
-  (cmms, name, body, cs, rts, ffobjs, fobjs, sp, ss, (jtk, jt), goal, rfs, src) =
+  (cmms, name, body, cs, rts, ffobjs, fobjs, sp, ss, consts, (jtk, jt), goal,
+   rfs, src) =
   let cms     = [cm | (LsComment cm) <- cmms]
       code    = map (toBB target) (split (dWhen isLsBB) body)
       cs'     = map (mapTuple toOperand) $ fromMaybe [] cs
       rts'    = map (first toOperand) $ fromMaybe [] rts
       ffobjs' = map toFrameObj ffobjs
       fobjs'  = map toFrameObj fobjs
+      consts' = map toConstantObj consts
       goal'   = map toHLGoal goal
       src'    = concat [l ++ "\n" | l <- src]
-  in mkCompleteFunction cms name code cs' rts' ffobjs' fobjs' sp ss (jtk, jt)
-     goal' rfs src'
+  in mkCompleteFunction cms name code cs' rts' ffobjs' fobjs' sp ss consts'
+     (jtk, jt) goal' rfs src'
 
 toBB target (LsBlock l as : code) =
   Block l (toBlockAttributes as) (map (toOperation target) code)
@@ -646,6 +687,8 @@ toOperand (LsOperandRef pid) = mkOperandRef pid
 
 toFrameObj (LsFrameObject idx off size ali csreg) =
   mkFrameObject idx off size ali (fmap read csreg)
+
+toConstantObj (LsConstantObject id v a) = (id, v, a)
 
 toHLGoal LsSpeed = Speed
 toHLGoal LsSize = Size
@@ -691,9 +734,9 @@ readInstr (LsTargetInstruction i) = TargetInstruction (read i)
 toAttributes (LsAttributes (LsReads reads) (LsWrites writes) (LsAttrCall call)
               (LsMem mem) (LsActivators acs) (LsVirtualCopy vcopy)
               (LsRemat rm) (LsJTBlocks bs) (LsBranchTaken bt)
-              (LsPrescheduled pa) (LsRematOrigin ro)) =
+              (LsPrescheduled pa) (LsRematOrigin ro) (LsSplitBarrier sb)) =
   mkAttributes (map toRWObject reads) (map toRWObject writes) call mem
-               (map readInstr acs) vcopy rm (map lsBlockRefId bs) bt pa ro
+               (map readInstr acs) vcopy rm (map lsBlockRefId bs) bt pa ro sb
 
 lsBlockRefId (LsBlockRef bid) = bid
 
@@ -707,6 +750,7 @@ mkNullLsAttributes =
   LsAttributes (LsReads []) (LsWrites []) (LsAttrCall Nothing) (LsMem Nothing)
   (LsActivators []) (LsVirtualCopy False) (LsRemat False) (LsJTBlocks [])
   (LsBranchTaken Nothing) (LsPrescheduled Nothing) (LsRematOrigin Nothing)
+  (LsSplitBarrier False)
 
 mkNullLsBlockAttributes = LsBlockAttributes []
 

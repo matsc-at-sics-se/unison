@@ -147,23 +147,27 @@ mkFrameDestroy id s =
 
 mkFunction = mkCompleteFunction [] ""
 
-mkCompleteFunction comments name code cs rts ffobjs fobjs sp ss jt goal rfs src =
+mkCompleteFunction comments name code cs rts ffobjs fobjs sp ss consts jt goal
+  rfs src =
   Function {fComments = comments, fName = name, fCode = code, fCongruences = cs,
             fRematerializable = rts, fFixedStackFrame = ffobjs,
             fStackFrame = fobjs, fStackPointerOffset = sp, fStackArgSize = ss,
-            fJumpTable = jt, fGoal = goal, fRemovedFreqs = rfs, fSource = src}
+            fConstants = consts, fJumpTable = jt, fGoal = goal,
+            fRemovedFreqs = rfs, fSource = src}
 
 mkBlock = Block
 
 mkDummyBlock = mkBlock (-1) mkNullBlockAttributes
 
-mkAttributes reads writes call mem acts vcopy remat jtblocks btaken pres rorig =
+mkAttributes reads writes call mem acts vcopy remat jtblocks btaken pres rorig
+             splitBar =
     Attributes {aReads = reads, aWrites = writes, aCall = call,
                 aMem = mem, aActivators = acts, aVirtualCopy = vcopy,
                 aRemat = remat, aJTBlocks = jtblocks, aBranchTaken = btaken,
-                aPrescheduled = pres, aRematOrigin = rorig}
+                aPrescheduled = pres, aRematOrigin = rorig,
+                aSplitBarrier = splitBar}
 
-mkNullAttributes = mkAttributes [] [] Nothing Nothing [] False False [] Nothing Nothing Nothing
+mkNullAttributes = mkAttributes [] [] Nothing Nothing [] False False [] Nothing Nothing Nothing False
 
 mkBlockAttributes entry exit return freq split =
     BlockAttributes {aEntry = entry, aExit = exit, aReturn = return,
