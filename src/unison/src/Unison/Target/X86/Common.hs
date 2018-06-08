@@ -66,7 +66,8 @@ rematVersions = M.fromList
    (V_SETALLONES, RematTriple V_SETALLONES_source V_SETALLONES_demat V_SETALLONES_remat),
    (AVX_SET0, RematTriple AVX_SET0_source AVX_SET0_demat AVX_SET0_remat),
    (AVX2_SETALLONES, RematTriple AVX2_SETALLONES_source AVX2_SETALLONES_demat AVX2_SETALLONES_remat),
-   (FsFLD0SS, RematTriple FsFLD0SS_source FsFLD0SS_demat FsFLD0SS_remat)]
+   (FsFLD0SS, RematTriple FsFLD0SS_source FsFLD0SS_demat FsFLD0SS_remat),
+   (FsFLD0SD, RematTriple FsFLD0SD_source FsFLD0SD_demat FsFLD0SD_remat)]
 
 spillInstrs = [MOV8mr, MOV8mr_NOREX, MOV8rm, MOV8rm_NOREX,
                MOV16mr, MOV16rm, MOV32mr, MOV32rm, MOV64mr, MOV64rm]

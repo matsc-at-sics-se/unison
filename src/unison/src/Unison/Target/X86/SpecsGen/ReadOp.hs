@@ -4291,5 +4291,8 @@ readOp "AVX2_SETALLONES_remat" = AVX2_SETALLONES_remat
 readOp "FsFLD0SS_source" = FsFLD0SS_source
 readOp "FsFLD0SS_demat" = FsFLD0SS_demat
 readOp "FsFLD0SS_remat" = FsFLD0SS_remat
+readOp "FsFLD0SD_source" = FsFLD0SD_source
+readOp "FsFLD0SD_demat" = FsFLD0SD_demat
+readOp "FsFLD0SD_remat" = FsFLD0SD_remat
 readOp a = error ("unmatched: readOp " ++ show a)
 

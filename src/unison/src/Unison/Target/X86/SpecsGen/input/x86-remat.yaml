@@ -78,3 +78,7 @@ instruction-set:
    - id: FsFLD0SS
      home-class: FR32
      infinite-class: RM32
+
+   - id: FsFLD0SD
+     home-class: FR64
+     infinite-class: RM64

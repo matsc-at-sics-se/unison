@@ -4293,4 +4293,7 @@ instance Show X86Instruction where
         show FsFLD0SS_source = "FsFLD0SS_source"
         show FsFLD0SS_demat = "FsFLD0SS_demat"
         show FsFLD0SS_remat = "FsFLD0SS_remat"
+        show FsFLD0SD_source = "FsFLD0SD_source"
+        show FsFLD0SD_demat = "FsFLD0SD_demat"
+        show FsFLD0SD_remat = "FsFLD0SD_remat"
 

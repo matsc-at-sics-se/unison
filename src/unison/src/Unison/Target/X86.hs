@@ -181,7 +181,7 @@ rematInstrs i
               IMUL64rmi32,
               MOVSX16rm8, MOVSX32rm8, MOVSX32_NOREXrm8, MOVSX32rm16, MOVSX64rm8, MOVSX64rm16, MOVSX64rm32, 
               MOVZX16rm8, MOVZX32rm8, MOVZX32_NOREXrm8, MOVZX32rm16, MOVZX64rm8, MOVZX64rm16,
-              VMOVAPSYrm,
+              VMOVAPSrm, VMOVUPSrm, VMOVSDrm, VMOVAPSYrm,
               SETAEr, SETAr, SETBEr, SETBr, SETEr, SETGEr, SETGr, SETLEr, SETLr,
               SETNEr, SETNOr, SETNPr, SETNSr, SETOr, SETPr, SETSr,
               SETB_C8r, SETB_C16r, SETB_C32r, SETB_C64r] = Nothing
@@ -503,12 +503,11 @@ expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ALIGN_SP_32}
 
 -- expand pseudos that stem from llvm; see X86ExpandPseudo.cpp
 
--- could do it with XOR, which clobbers EFLAGS
+-- doing it with XOR, which clobbers EFLAGS
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r0,
                                    msOperands = [dst]}
-  = let imm = mkMachineImm 0
-  in [[mi {msOpcode = mkMachineTargetOpc MOV32ri,
-           msOperands = [dst, imm]}]]
+  = [[mi {msOpcode = mkMachineTargetOpc XOR32rr,
+          msOperands = [dst, dst, dst]}]]
 
 -- could do it with XOR + INC, which clobbers EFLAGS
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r1,

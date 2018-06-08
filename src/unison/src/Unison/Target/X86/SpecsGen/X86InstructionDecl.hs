@@ -4292,5 +4292,8 @@ data X86Instruction = AAA
                     | FsFLD0SS_source
                     | FsFLD0SS_demat
                     | FsFLD0SS_remat
+                    | FsFLD0SD_source
+                    | FsFLD0SD_demat
+                    | FsFLD0SD_remat
                     deriving (Eq, Ord)
 

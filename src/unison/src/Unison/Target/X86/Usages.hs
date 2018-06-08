@@ -52,6 +52,7 @@ itineraryUsage i _
        AVX_SET0_demat, AVX_SET0_source,
        AVX2_SETALLONES_demat, AVX2_SETALLONES_source,
        FsFLD0SS_demat, FsFLD0SS_source,
+       FsFLD0SD_demat, FsFLD0SD_source,
        XRELEASE_PREFIX, XACQUIRE_PREFIX]
   = []
 

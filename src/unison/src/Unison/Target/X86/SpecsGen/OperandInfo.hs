@@ -72,6 +72,8 @@ operandInfo i
   | i `elem`
       [FsFLD0SS_source, MOV32r0_source, MOV32r1_source, MOV32r_1_source]
     = ([], [TemporaryInfo (InfiniteRegisterClass RM32) 0 False])
+  | i `elem` [FsFLD0SD_source] =
+    ([], [TemporaryInfo (InfiniteRegisterClass RM64) 0 False])
   | i `elem` [V_SET0, V_SETALLONES] =
     ([], [TemporaryInfo (RegisterClass VR128) 1 False])
   | i `elem` [AVX2_SETALLONES, AVX_SET0] =
@@ -219,6 +221,9 @@ operandInfo i
     =
     ([TemporaryInfo (RegisterClass FR64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
+  | i `elem` [FsFLD0SD_demat] =
+    ([TemporaryInfo (RegisterClass FR64) 0 False],
+     [TemporaryInfo (InfiniteRegisterClass RM64) 0 False])
   | i `elem` [COMISDrr, UCOMISDrr, VCOMISDrr, VUCOMISDrr] =
     ([TemporaryInfo (RegisterClass FR64) 0 False,
       TemporaryInfo (RegisterClass FR64) 0 False],
@@ -950,6 +955,9 @@ operandInfo i
     =
     ([TemporaryInfo (InfiniteRegisterClass RM32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
+  | i `elem` [FsFLD0SD_remat] =
+    ([TemporaryInfo (InfiniteRegisterClass RM64) 0 False],
+     [TemporaryInfo (RegisterClass FR64) 1 False])
   | i `elem` [LEA64r_remat, MOV64ri32_remat, MOV64ri_remat] =
     ([TemporaryInfo (InfiniteRegisterClass RM64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])

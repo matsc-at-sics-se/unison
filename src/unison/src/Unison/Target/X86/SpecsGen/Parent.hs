@@ -808,6 +808,8 @@ parent i
     = Just AVX2_SETALLONES
   | i `elem` [AVX_SET0_demat, AVX_SET0_remat, AVX_SET0_source] =
     Just AVX_SET0
+  | i `elem` [FsFLD0SD_demat, FsFLD0SD_remat, FsFLD0SD_source] =
+    Just FsFLD0SD
   | i `elem` [FsFLD0SS_demat, FsFLD0SS_remat, FsFLD0SS_source] =
     Just FsFLD0SS
   | i `elem` [LEA16r_demat, LEA16r_remat, LEA16r_source] =
