@@ -275,6 +275,7 @@ instructionMemWidth ti
   | ti `elem` [MOV16mi, MOV16mr] = 2
   | ti `elem` [MOV32mi, MOV32mr] = 4
   | ti `elem` [MOV64mi32, MOV64mr] = 8
+  | ti `elem` [VMOVAPSYmr] = 32
   | True = error ("unmatched: instructionMemWidth " ++ show ti)
 
 -- This transform inserts Prologue/Epilogue, either simple or complex,
@@ -315,10 +316,11 @@ mkReg = mkRegister . mkTargetRegister
 addSimplePr _ (_, oid, _) (e:code) = [e, mkSubSp oid] ++ code
 
 addSimpleEp _ (_, oid, _) code =
-  let addSp = mkLinear oid [TargetInstruction ADDRSP_pseudo]
-              [Bound mkMachineFrameSize] []
+  let addSp  = mkLinear oid [TargetInstruction ADDRSP_pseudo]
+               [Bound mkMachineFrameSize] []
+      addSp' = makeSplitBarrier addSp
       [code', e] = splitEpilogue code
-  in code' ++ [addSp] ++ e
+  in code' ++ [addSp'] ++ e
 
 addComplexPr tid (_, oid, _) (e:code) =
   let mov64 = mkLinear oid       [TargetInstruction MOV_FROM_SP] [] [mkPreAssignedTemp tid (mkReg RBP)]
@@ -327,9 +329,12 @@ addComplexPr tid (_, oid, _) (e:code) =
   in [e, mov64, and64, subSp] ++ code
 
 addComplexEp tid (_, oid, _) code =
-  let mov64 = mkLinear oid [TargetInstruction MOV_TO_SP] [mkTemp tid] []
+  let mov64  = mkLinear oid [TargetInstruction MOV_TO_SP] [mkTemp tid] []
+      mov64' = makeSplitBarrier mov64
       [code', e] = splitEpilogue code
-  in code' ++ [mov64] ++ e
+  in code' ++ [mov64'] ++ e
+
+makeSplitBarrier = mapToAttrSplitBarrier (const True)
 
 -- This transform prevents any STORE* from occurring before the prologue and any LOAD* from occurring after the epilogue.
 
