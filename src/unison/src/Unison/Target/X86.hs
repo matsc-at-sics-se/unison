@@ -101,9 +101,9 @@ copies _fInfo False _t _rs _d [u] | isKill u = ([], [[]])
 copies _ False _ rs _ us | any isReserved rs =
   ([], replicate (length us) [])
 
--- Add only one store for entry calle-saved temporaries
--- Add only one load for exit calle-saved temporaries
--- Do not add copies for intermediate calle-saved temporaries
+-- Add only one store for entry callee-saved temporaries
+-- Add only one load for exit callee-saved temporaries
+-- Do not add copies for intermediate callee-saved temporaries
 copies (f, cst, _, _, _, _) False t [_r] _d [_u]
   | S.member t cst =
     (
@@ -139,14 +139,14 @@ copies (Function {fFixedStackFrame = fobjs}, _, _cg, _ra, _, _) _
     (maximum $ map foOffset fobjs) >= 0
   = ([], [[]])
 
--- Default: extend def and uses
+-- If 32-bit temp is used by some (combine), then prevent spilling,
+-- because the upper 32 bits could be assumed to be zero later.
+-- Otherwise, extend def and uses.
 copies (f, _, cg, ra, _, _) _ t _ d us =
   let w = widthOfTemp ra cg f t (d:us)
-  in
-     (
-       defCopies w,
-       map (useCopies w) us
-     )
+  in if w == 4 && any isCombine us
+     then ([], [[]])
+     else (defCopies w, map (useCopies w) us)
 
 defCopies 1 = [mkNullInstruction, TargetInstruction MOVE8, TargetInstruction STORE8]
 defCopies 2 = [mkNullInstruction, TargetInstruction MOVE16, TargetInstruction STORE16]
