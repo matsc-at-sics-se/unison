@@ -57,7 +57,10 @@ toFrameIndex o2i (Bound mfo)
       (i, as) = o2i M.! o
       idx     = toInteger $ fromJust $ elemIndex o as
       -- assume the highest part of a fr. obj. is stored in the lowest position
-      off     = toInteger (length as) - (fromJust $ mfoSize mfo) - idx
+      -- BIG-ENDIAN: the highest part of a fr. obj. is stored in the lowest position
+      -- off  = toInteger (length as) - (fromJust $ mfoSize mfo) - idx
+      -- LITTLE-ENDIAN: the highest part of a fr. obj. is stored in the highest position
+      off     = idx
       fi      = mkBound (mkMachineFrameIndex i False off)
   in fi
 toFrameIndex _ op = op
