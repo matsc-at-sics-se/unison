@@ -17,6 +17,7 @@ module Unison.Target.X86.Transforms
      revertFixedFrame,
      liftStackArgSize,
      addPrologueEpilogue,
+     suppressCombineCopies,
      movePrologueEpilogue,
      myLowerFrameIndices,
      addStackIndexReadsSP,
@@ -335,6 +336,24 @@ addComplexEp tid (_, oid, _) code =
   in code' ++ [mov64'] ++ e
 
 makeSplitBarrier = mapToAttrSplitBarrier (const True)
+
+-- This transformation suppresses unsafe 32-bit copies in the first argument of (combine),
+-- because instructions with a 32-bit destination implicitly zeroes the upper 32 bits.
+
+suppressCombineCopies f @ Function {fCode = code} =
+  let t2h = M.fromList $ concatMap definerInsns (flatten code)
+      code' = mapToOperationInBlocks (suppressCombineCopies' t2h) code
+  in f {fCode = code'}
+
+definerInsns o =
+  let insns = oInstructions o
+      hazard = (TargetInstruction MOVE32) `elem` insns
+  in [(mkTemp t, hazard) | t <- defTemporaries [o]]
+
+suppressCombineCopies' t2h o @ SingleOperation {oOpr = Virtual (co @ Combine {oCombineLowU = p @ MOperand {altTemps = alts}})}
+  = let alts' = [t | t <- alts, not (t2h M.! t)]
+    in o {oOpr = Virtual (co {oCombineLowU = p {altTemps = alts'}})}
+suppressCombineCopies' _ o = o
 
 -- This transform prevents any STORE* from occurring before the prologue and any LOAD* from occurring after the epilogue.
 

@@ -144,8 +144,10 @@ copies (Function {fFixedStackFrame = fobjs}, _, _cg, _ra, _, _) _
 -- Otherwise, extend def and uses.
 copies (f, _, cg, ra, _, _) _ t _ d us =
   let w = widthOfTemp ra cg f t (d:us)
-  in if w == 4 && any isCombine us
+  in if w == 4 && all isCombine us
      then ([], [[]])
+  else if w == 4 && any isCombine us
+     then (defCopies w, [useCopies 4 u | u <- us, not $ isCombine u])
      else (defCopies w, map (useCopies w) us)
 
 defCopies 1 = [mkNullInstruction, TargetInstruction MOVE8, TargetInstruction STORE8]
@@ -659,6 +661,7 @@ transforms ImportPostLift = [mapToOperation handlePromotedOperands,
 transforms ImportPostCC = [liftReturnAddress]
 transforms ExportPreOffs = [revertFixedFrame]
 transforms ExportPreLow = [myLowerFrameIndices]
+transforms AugmentPreRW = [suppressCombineCopies]
 transforms AugmentPostRW = [movePrologueEpilogue,
                             mapToOperation addStackIndexReadsSP,
                             mapToOperation addFunWrites,
