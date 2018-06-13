@@ -102,6 +102,7 @@ showMachineConstants (id, v, a) =
 
 showConstantValue v
   | head v == '<' = "\'" ++ v ++ "\'"
+  | head v == '[' = "\'" ++ v ++ "\'"
   | otherwise = v
 
 showMachineFrameObjectInfo v
