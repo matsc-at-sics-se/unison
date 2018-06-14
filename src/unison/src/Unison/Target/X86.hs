@@ -691,7 +691,7 @@ expandCopy _ _ o = [o]
 -- | Custom processor constraints
 
 -- force VZEROUPPER operations to be scheduled exactly one cycle before their
--- corresponding call/tailcall/return operation
+-- corresponding call/tailcall/return/out operation
 
 constraints f =
   fixVzeroupperConstraints f
@@ -711,7 +711,7 @@ fixVzeroupperConstraints' (_ : rest)
 fixVzeroupperConstraints' [] = []
 
 isVzeroupperRelevant o =
-  isVzeroupper o || isBranch o || isCall o || isTailCall o
+  isVzeroupper o || isBranch o || isCall o || isTailCall o || isDelimiter o
 
 isVzeroupper o =
   (TargetInstruction VZEROUPPER) `elem` oInstructions o
