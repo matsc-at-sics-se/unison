@@ -665,6 +665,7 @@ transforms AugmentPostRW = [movePrologueEpilogue,
                             addVzeroupper,
                             mapToOperation addStackIndexReadsSP,
                             mapToOperation addFunWrites,
+                            removeDeadEflags,
                             peephole spillAfterAlign]
 transforms _ = []
 

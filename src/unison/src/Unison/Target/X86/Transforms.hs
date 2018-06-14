@@ -23,9 +23,11 @@ module Unison.Target.X86.Transforms
      addStackIndexReadsSP,
      addFunWrites,
      addVzeroupper,
+     removeDeadEflags,
      spillAfterAlign) where
 
 import qualified Data.Map as M
+import Data.List
 import Data.List.Split
 import qualified Data.Graph.Inductive as G
 import Data.Maybe
@@ -147,8 +149,8 @@ preAssignOperands ops regs =
       promoted' = map (\(t, r) -> preAssign t r) (zip promoted regOps)
   in original ++ promoted'
 
--- This transform adds LEA variants of various ADD and MUL instructions.
--- Beware! Currently unsound, because it assumes that the ADD or MUL defines dead EFLAGS.
+-- This transform adds LEA variants of various ADD and MUL instructions, which write eflags,
+-- except if there is some operation that reads those eflags.
 
 transAlternativeLEA f @ Function {fCode = code} =
   let icfg   = ICFG.fromBCFG $ BCFG.fromFunction branchInfo' f
@@ -491,6 +493,9 @@ addFunWrites o
   = mapToWrites (++ [OtherSideEffect EFLAGS]) o
 addFunWrites o = o
 
+-- This transformation adds VZEROUPPER instructions right before calls and returns
+-- after stretches of code that touches any YMM register.
+
 addVzeroupper f @ Function {fCode = code} =
   let icfg   = ICFG.fromBCFG $ BCFG.fromFunction branchInfo' f
       cnodes = [id | (id, (_, o)) <- G.labNodes icfg, isCall o || isTailCall o]
@@ -539,3 +544,51 @@ ymmPreassigned p =
     Nothing -> False
     Just (Register (TargetRegister r)) -> r `elem` registers (RegisterClass VR256)
 
+-- This transform removes any EFLAGS write side-effect,
+-- except if there is some reachable operation that reads those EFLAGS.
+
+removeDeadEflags f @ Function {fCode = code} =
+  let icfg   = ICFG.fromBCFG $ BCFG.fromFunction branchInfo' f
+      srcids = [id | (id, (_, o)) <- G.labNodes icfg, oWritesEflags o]
+      sinkids = [id | (id, (_, o)) <- G.labNodes icfg, oReadsEflags o]
+      srcedges = concat [[(p,id) | p <- G.pre icfg id] | id <- srcids]
+      sinkedges = concat [[(id,s) | s <- G.suc icfg id] | id <- sinkids]
+      icfg'  = G.delEdges (srcedges ++ sinkedges) icfg
+      creach = [(id, G.reachable id icfg') | id <- srcids]
+      livesrcs = [oId $ snd (fromJust (G.lab icfg' id)) | (id, reachers) <- creach,
+                                                          any (nodeReadsEflags icfg') reachers]
+      code' = mapToOperationInBlocks (removeDeadEflags' livesrcs) code
+  in f {fCode = code'}
+
+removeDeadEflags' livesrcs o
+  | (oId o) `elem` livesrcs
+  = o
+
+removeDeadEflags' _ o
+  | oReadsEflags o
+  = oFlipReadEflags o
+
+removeDeadEflags' _ o
+  | oWritesEflags o
+  = oFlipWriteEflags o
+
+removeDeadEflags' _ o = o
+
+nodeReadsEflags icfg id =
+  oReadsEflags $ snd (fromJust (G.lab icfg id))
+
+oReadsEflags (SingleOperation {oAs = Attributes {aReads = rs}})
+  = (OtherSideEffect EFLAGS) `elem` rs
+
+oWritesEflags (SingleOperation {oAs = Attributes {aWrites = ws}})
+  = (OtherSideEffect EFLAGS) `elem` ws
+
+oFlipReadEflags o @ (SingleOperation {oAs = atts @ Attributes {aReads = rs, aWrites = ws}})
+  = let rs' = delete (OtherSideEffect EFLAGS) rs
+        ws' = [OtherSideEffect EFLAGS] ++ ws
+  in o {oAs = atts {aReads = rs', aWrites = ws'}}
+
+oFlipWriteEflags o @ (SingleOperation {oAs = atts @ Attributes {aReads = rs, aWrites = ws}})
+  = let ws' = delete (OtherSideEffect EFLAGS) ws
+        rs' = [OtherSideEffect EFLAGS] ++ rs
+  in o {oAs = atts {aReads = rs', aWrites = ws'}}
