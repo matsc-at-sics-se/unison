@@ -356,6 +356,8 @@ suppressCombineCopies' t2h o @ SingleOperation {oOpr = Virtual (co @ Combine {oC
 suppressCombineCopies' _ o = o
 
 -- This transform prevents any STORE* from occurring before the prologue and any LOAD* from occurring after the epilogue.
+-- Note that a LOAD* can have a _remat alternative, which could write dead eflags.
+-- Note that STORE* can be mixed with PUSH and LOAD* can be mixed with POP*.
 
 movePrologueEpilogue f @ Function {fCode = code} =
   let outBs    = returnBlockIds code
@@ -366,24 +368,30 @@ movePrologueEpilogue f @ Function {fCode = code} =
 moveEpilogueInBlock aef code l =
     mapToBlock aef l code
 
-movePrf buf (o:code)
+movePrf moves (o:code)
   | isCopy o && (oWriteObjects o) == []
-  = movePrf (buf ++ [o]) code
-movePrf buf (o @ SingleOperation {oOpr = Natural (Linear {oIs = [TargetInstruction SUBRSP_pseudo]})}
-             : code)
-  = [o] ++ buf ++ code
-movePrf buf (o:code)
-  = [o] ++ movePrf buf code
+  = movePrf (moves ++ [o]) code
+movePrf moves (o @ SingleOperation {oOpr = Natural (Linear {oIs = [TargetInstruction SUBRSP_pseudo]})}
+              : code)
+  = [o] ++ moves ++ code
+movePrf moves (o:code)
+  = [o] ++ movePrf moves code
 
 moveEpf code =
   let [code', (epi : code'')] = split (keepDelimsL $ whenElt (\o -> isEpi o)) code
   in code' ++ moveEpf' [] epi code''
 
-moveEpf' buf epi (o:code)
+moveEpf' pops epi (o:code)
   | isCopy o && (oWriteObjects o) == []
-  = moveEpf' (buf ++ [o]) epi code
-moveEpf' buf epi code
-  = buf ++ [epi] ++ code
+  = [o] ++ moveEpf' pops epi code
+moveEpf' pops epi (o:code)
+  | isCopy o && (oWriteObjects o) == [OtherSideEffect EFLAGS]
+  = [o] ++ moveEpf' pops epi code
+moveEpf' pops epi (o:code)
+  | isCopy o
+  = moveEpf' (pops ++ [o]) epi code
+moveEpf' pops epi code
+  = [epi] ++ pops ++ code
 
 isEpi SingleOperation {oOpr = Natural (Linear {oIs = [TargetInstruction ti]})} =
   ti `elem` [ADDRSP_pseudo, MOV_TO_SP]
