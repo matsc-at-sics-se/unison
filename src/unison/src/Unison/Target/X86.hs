@@ -656,13 +656,13 @@ transforms ImportPreLift = [peephole extractReturnRegs,
                             liftStackArgSize,
                             addPrologueEpilogue]
 transforms ImportPostLift = [mapToOperation handlePromotedOperands,
-                             transAlternativeLEA,
-                             addVzeroupper]
+                             transAlternativeLEA]
 transforms ImportPostCC = [liftReturnAddress]
 transforms ExportPreOffs = [revertFixedFrame]
 transforms ExportPreLow = [myLowerFrameIndices]
 transforms AugmentPreRW = [suppressCombineCopies]
 transforms AugmentPostRW = [movePrologueEpilogue,
+                            addVzeroupper,
                             mapToOperation addStackIndexReadsSP,
                             mapToOperation addFunWrites,
                             peephole spillAfterAlign]
