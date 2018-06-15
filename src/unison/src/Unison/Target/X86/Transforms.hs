@@ -24,6 +24,7 @@ module Unison.Target.X86.Transforms
      addFunWrites,
      addVzeroupper,
      removeDeadEflags,
+     moveOptWritesEflags,
      spillAfterAlign) where
 
 import qualified Data.Map as M
@@ -544,12 +545,14 @@ ymmPreassigned p =
     Nothing -> False
     Just (Register (TargetRegister r)) -> r `elem` registers (RegisterClass VR256)
 
--- This transform removes any EFLAGS write side-effect,
--- except if there is some reachable operation that reads those EFLAGS.
+-- In order to remove many false dependencies, this transform juggles EFLAGS side-effects:
+-- reads eflags -> writes eflags
+-- writes eflags, LIVE -> writes eflags
+-- writes eflags, DEAD -> reads eflags
 
 removeDeadEflags f @ Function {fCode = code} =
   let icfg   = ICFG.fromBCFG $ BCFG.fromFunction branchInfo' f
-      srcids = [id | (id, (_, o)) <- G.labNodes icfg, oWritesEflags o]
+      srcids = [id | (id, (_, o)) <- G.labNodes icfg, isMandatory o, oWritesEflags o]
       sinkids = [id | (id, (_, o)) <- G.labNodes icfg, oReadsEflags o]
       srcedges = concat [[(p,id) | p <- G.pre icfg id] | id <- srcids]
       sinkedges = concat [[(id,s) | s <- G.suc icfg id] | id <- sinkids]
@@ -592,3 +595,42 @@ oFlipWriteEflags o @ (SingleOperation {oAs = atts @ Attributes {aReads = rs, aWr
   = let ws' = delete (OtherSideEffect EFLAGS) ws
         rs' = [OtherSideEffect EFLAGS] ++ rs
   in o {oAs = atts {aReads = rs', aWrites = ws'}}
+
+-- If there is some static sequence:
+--   Mandatory writes eflags
+--   [...]
+--   Optional  writes eflags
+--   [...]
+--   Reads eflags
+-- then any such optional ops are made to precede the mandatory write
+
+moveOptWritesEflags f @ Function {fCode = code} =
+  let ls    = map bLab code
+      code' = foldl (moveOptWritesEflags' moveOptW) code ls
+  in f {fCode = code'}
+
+moveOptWritesEflags' aef code l =
+    mapToBlock aef l code
+
+moveOptW [] = []
+
+moveOptW (o:code)
+  | oWritesEflags o
+  = moveOptW' [] [o] code
+
+moveOptW (o:code) =
+  [o] ++ moveOptW code
+
+moveOptW' hazard others []
+  = hazard ++ others
+
+moveOptW' hazard others (o:code)
+  | oWritesEflags o || isDelimiter o
+  = hazard ++ others ++ [o] ++ moveOptW code
+
+moveOptW' hazard others (o:code)
+  | oReadsEflags o
+  = moveOptW' (hazard ++ [o]) others code
+
+moveOptW' hazard others (o:code)
+  = moveOptW' hazard (others ++ [o]) code
