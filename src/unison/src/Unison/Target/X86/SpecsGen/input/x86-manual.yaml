@@ -285,6 +285,12 @@ instruction-set:
           affected-by:
            - RSP:             register
 
+        - id:                 SPILL32
+          parent:             NOOP
+
+        - id:                 SPILL
+          parent:             NOOP
+
         - id:                 ADD32ri_LEA
           parent:             ADD32ri
           operands:

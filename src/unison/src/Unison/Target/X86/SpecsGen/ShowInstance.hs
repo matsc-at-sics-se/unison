@@ -4228,6 +4228,8 @@ instance Show X86Instruction where
         show MOV_FROM_SP = "MOV_FROM_SP"
         show MOV_TO_SP = "MOV_TO_SP"
         show ALIGN_SP_32 = "ALIGN_SP_32"
+        show SPILL32 = "SPILL32"
+        show SPILL = "SPILL"
         show ADD32ri_LEA = "ADD32ri_LEA"
         show ADD32rr_LEA = "ADD32rr_LEA"
         show ADD64ri_LEA = "ADD64ri_LEA"

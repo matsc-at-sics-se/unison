@@ -905,6 +905,7 @@ parent i
   | i `elem` [STORE128] = Just MOVDQAmr
   | i `elem` [LOAD128] = Just MOVDQArm
   | i `elem` [MOVE128] = Just MOVDQArr
+  | i `elem` [SPILL, SPILL32] = Just NOOP
   | i `elem` [SHL32r1_LEA] = Just SHL32r1
   | i `elem` [SHL32ri_LEA] = Just SHL32ri
   | i `elem` [SHL64r1_LEA] = Just SHL64r1

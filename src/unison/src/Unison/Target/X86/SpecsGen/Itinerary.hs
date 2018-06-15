@@ -355,7 +355,7 @@ itinerary i
   | i `elem` [MUL64m, MUL64r] = IIC_MUL64
   | i `elem` [MUL8m, MUL8r, MULX32rm, MULX32rr, MULX64rm, MULX64rr] =
     IIC_MUL8
-  | i `elem` [NOOP, NOOPL, NOOPW] = IIC_NOP
+  | i `elem` [NOOP, NOOPL, NOOPW, SPILL, SPILL32] = IIC_NOP
   | i `elem` [OUTSB, OUTSL, OUTSW] = IIC_OUTS
   | i `elem` [OUT16ir, OUT32ir, OUT8ir] = IIC_OUT_IR
   | i `elem` [OUT16rr, OUT32rr, OUT8rr] = IIC_OUT_RR

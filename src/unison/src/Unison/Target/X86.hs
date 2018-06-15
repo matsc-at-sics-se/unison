@@ -464,6 +464,10 @@ addImplicitRegs mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = 
 
 expandPseudos to = mapToMachineBlock (expandBlockPseudos (expandPseudo to))
 
+expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc i})
+  | i `elem` [SPILL32, SPILL]
+  = []
+
 expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc SUBRSP_pseudo, msOperands = [MachineImm 0]})
   = [[mkMachineSingle (MachineTargetOpc NOOP) [] []]]
 

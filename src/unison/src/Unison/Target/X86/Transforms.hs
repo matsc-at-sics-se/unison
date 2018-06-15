@@ -307,12 +307,19 @@ addPrologueEpilogue f @ Function {fCode = code, fStackFrame = objs} =
                   (tid', _, _) -> tid'
       code'    = mapToEntryBlock (addPrf tid ids) code
       outBs    = returnBlockIds code'
+      inOutBs  = nub $ [bLab $ entryBlock code'] ++ outBs
       code''   = foldl (addEpilogueInBlock (addEpf tid)) code' outBs
-  in f {fCode = code''}
+      code'''  = foldl (addSpillIndInBlock addSpillInd) code'' inOutBs
+  in f {fCode = code'''}
 
 addEpilogueInBlock aef code l =
     let ids   = newIndexes $ flatten code
         code' = mapToBlock (aef ids) l code
+    in code'
+
+addSpillIndInBlock f code l =
+    let ids   = newIndexes $ flatten code
+        code' = mapToBlock (f ids) l code
     in code'
 
 mkSubSp oid =
@@ -323,7 +330,9 @@ splitEpilogue code =
 
 mkReg = mkRegister . mkTargetRegister
 
-addSimplePr _ (_, oid, _) (e:code) = [e, mkSubSp oid] ++ code
+addSimplePr _ (_, oid, _) (e:code) =
+  let subSp  = mkSubSp oid
+  in [e, subSp] ++ code
 
 addSimpleEp _ (_, oid, _) code =
   let addSp  = mkLinear oid [TargetInstruction ADDRSP_pseudo]
@@ -333,9 +342,9 @@ addSimpleEp _ (_, oid, _) code =
   in code' ++ [addSp'] ++ e
 
 addComplexPr tid (_, oid, _) (e:code) =
-  let mov64 = mkLinear oid       [TargetInstruction MOV_FROM_SP] [] [mkPreAssignedTemp tid (mkReg RBP)]
-      and64 = mkLinear (oid + 1) [TargetInstruction ALIGN_SP_32] [] []
-      subSp = mkSubSp  (oid + 2)
+  let mov64  = mkLinear (oid + 0) [TargetInstruction MOV_FROM_SP] [] [mkPreAssignedTemp tid (mkReg RBP)]
+      and64  = mkLinear (oid + 1) [TargetInstruction ALIGN_SP_32] [] []
+      subSp  = mkSubSp  (oid + 2)
   in [e, mov64, and64, subSp] ++ code
 
 addComplexEp tid (_, oid, _) code =
@@ -343,6 +352,27 @@ addComplexEp tid (_, oid, _) code =
       mov64' = makeSplitBarrier mov64
       [code', e] = splitEpilogue code
   in code' ++ [mov64'] ++ e
+
+addSpillInd (_, oid, _) (e:code) =
+  let spill  = mkSpillInd32 (oid + 0)
+      spill' = mkSpillInd (oid + 1)
+  in [e, spill, spill'] ++ code
+
+mkSpillInd32 oid =
+  mkAct32 $ makeOptional $ mkLinear oid [TargetInstruction SPILL32] [] []
+
+mkSpillInd oid =
+  mkAct $ makeOptional $ mkLinear oid [TargetInstruction SPILL] [] []
+
+mkAct32 = addActivators [TargetInstruction STORE256]
+
+mkAct = addActivators [TargetInstruction STORE8,
+                       TargetInstruction STORE16,
+                       TargetInstruction STORE32,
+                       TargetInstruction STORE64,
+                       TargetInstruction STORE128]
+
+addActivators = mapToActivators . (++)
 
 makeSplitBarrier = mapToAttrSplitBarrier (const True)
 
