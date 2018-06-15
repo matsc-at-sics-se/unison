@@ -156,10 +156,14 @@ itinerary i
        CMOVS16rm]
     = IIC_CMOV16_RM
   | i `elem`
-      [CMOVA16rr, CMOVAE16rr, CMOVB16rr, CMOVBE16rr, CMOVE16rr,
-       CMOVG16rr, CMOVGE16rr, CMOVL16rr, CMOVLE16rr, CMOVNE16rr,
-       CMOVNO16rr, CMOVNP16rr, CMOVNS16rr, CMOVO16rr, CMOVP16rr,
-       CMOVS16rr]
+      [CMOVA16rr, CMOVA16rr_swap, CMOVAE16rr, CMOVAE16rr_swap, CMOVB16rr,
+       CMOVB16rr_swap, CMOVBE16rr, CMOVBE16rr_swap, CMOVE16rr,
+       CMOVE16rr_swap, CMOVG16rr, CMOVG16rr_swap, CMOVGE16rr,
+       CMOVGE16rr_swap, CMOVL16rr, CMOVL16rr_swap, CMOVLE16rr,
+       CMOVLE16rr_swap, CMOVNE16rr, CMOVNE16rr_swap, CMOVNO16rr,
+       CMOVNO16rr_swap, CMOVNP16rr, CMOVNP16rr_swap, CMOVNS16rr,
+       CMOVNS16rr_swap, CMOVO16rr, CMOVO16rr_swap, CMOVP16rr,
+       CMOVP16rr_swap, CMOVS16rr, CMOVS16rr_swap]
     = IIC_CMOV16_RR
   | i `elem`
       [CMOVA32rm, CMOVA64rm, CMOVAE32rm, CMOVAE64rm, CMOVB32rm,
@@ -170,12 +174,22 @@ itinerary i
        CMOVO32rm, CMOVO64rm, CMOVP32rm, CMOVP64rm, CMOVS32rm, CMOVS64rm]
     = IIC_CMOV32_RM
   | i `elem`
-      [CMOVA32rr, CMOVA64rr, CMOVAE32rr, CMOVAE64rr, CMOVB32rr,
-       CMOVB64rr, CMOVBE32rr, CMOVBE64rr, CMOVE32rr, CMOVE64rr, CMOVG32rr,
-       CMOVG64rr, CMOVGE32rr, CMOVGE64rr, CMOVL32rr, CMOVL64rr,
-       CMOVLE32rr, CMOVLE64rr, CMOVNE32rr, CMOVNE64rr, CMOVNO32rr,
-       CMOVNO64rr, CMOVNP32rr, CMOVNP64rr, CMOVNS32rr, CMOVNS64rr,
-       CMOVO32rr, CMOVO64rr, CMOVP32rr, CMOVP64rr, CMOVS32rr, CMOVS64rr]
+      [CMOVA32rr, CMOVA32rr_swap, CMOVA64rr, CMOVA64rr_swap, CMOVAE32rr,
+       CMOVAE32rr_swap, CMOVAE64rr, CMOVAE64rr_swap, CMOVB32rr,
+       CMOVB32rr_swap, CMOVB64rr, CMOVB64rr_swap, CMOVBE32rr,
+       CMOVBE32rr_swap, CMOVBE64rr, CMOVBE64rr_swap, CMOVE32rr,
+       CMOVE32rr_swap, CMOVE64rr, CMOVE64rr_swap, CMOVG32rr,
+       CMOVG32rr_swap, CMOVG64rr, CMOVG64rr_swap, CMOVGE32rr,
+       CMOVGE32rr_swap, CMOVGE64rr, CMOVGE64rr_swap, CMOVL32rr,
+       CMOVL32rr_swap, CMOVL64rr, CMOVL64rr_swap, CMOVLE32rr,
+       CMOVLE32rr_swap, CMOVLE64rr, CMOVLE64rr_swap, CMOVNE32rr,
+       CMOVNE32rr_swap, CMOVNE64rr, CMOVNE64rr_swap, CMOVNO32rr,
+       CMOVNO32rr_swap, CMOVNO64rr, CMOVNO64rr_swap, CMOVNP32rr,
+       CMOVNP32rr_swap, CMOVNP64rr, CMOVNP64rr_swap, CMOVNS32rr,
+       CMOVNS32rr_swap, CMOVNS64rr, CMOVNS64rr_swap, CMOVO32rr,
+       CMOVO32rr_swap, CMOVO64rr, CMOVO64rr_swap, CMOVP32rr,
+       CMOVP32rr_swap, CMOVP64rr, CMOVP64rr_swap, CMOVS32rr,
+       CMOVS32rr_swap, CMOVS64rr, CMOVS64rr_swap]
     = IIC_CMOV32_RR
   | i `elem` [CMPSB, CMPSL, CMPSQ, CMPSW] = IIC_CMPS
   | i `elem` [CMPXCHG16B] = IIC_CMPXCHG_16B

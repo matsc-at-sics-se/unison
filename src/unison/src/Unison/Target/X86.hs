@@ -302,6 +302,9 @@ fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL64ri_LEA], oUs = [r,i], 
                    mkBound (toMachineOperand 0),
                    mkBound MachineNullReg],
             oDs = [d]}
+fromCopy _ (Natural o @ Linear {oIs = [TargetInstruction ti], oUs = [src1,src2]})
+  | ti `elem` condMoveInverses
+  = o {oIs = [TargetInstruction (fromCopyInstr ti)], oUs = [src2,src1]}
 
 fromCopy _ (Natural o) = o
 fromCopy _ o = error ("unmatched pattern: fromCopy " ++ show o)

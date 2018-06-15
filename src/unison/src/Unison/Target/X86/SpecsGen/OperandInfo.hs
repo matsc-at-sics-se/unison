@@ -365,12 +365,16 @@ operandInfo i
      [])
   | i `elem`
       [ADC16rr, ADC16rr_REV, ADD16rr, ADD16rr_DB, ADD16rr_REV, AND16rr,
-       AND16rr_REV, CMOVA16rr, CMOVAE16rr, CMOVB16rr, CMOVBE16rr,
-       CMOVE16rr, CMOVG16rr, CMOVGE16rr, CMOVL16rr, CMOVLE16rr,
-       CMOVNE16rr, CMOVNO16rr, CMOVNP16rr, CMOVNS16rr, CMOVO16rr,
-       CMOVP16rr, CMOVS16rr, IMUL16rr, OR16rr, OR16rr_REV, SBB16rr,
-       SBB16rr_REV, SUB16rr, SUB16rr_REV, XCHG16ar, XCHG16rr, XOR16rr,
-       XOR16rr_REV]
+       AND16rr_REV, CMOVA16rr, CMOVA16rr_swap, CMOVAE16rr,
+       CMOVAE16rr_swap, CMOVB16rr, CMOVB16rr_swap, CMOVBE16rr,
+       CMOVBE16rr_swap, CMOVE16rr, CMOVE16rr_swap, CMOVG16rr,
+       CMOVG16rr_swap, CMOVGE16rr, CMOVGE16rr_swap, CMOVL16rr,
+       CMOVL16rr_swap, CMOVLE16rr, CMOVLE16rr_swap, CMOVNE16rr,
+       CMOVNE16rr_swap, CMOVNO16rr, CMOVNO16rr_swap, CMOVNP16rr,
+       CMOVNP16rr_swap, CMOVNS16rr, CMOVNS16rr_swap, CMOVO16rr,
+       CMOVO16rr_swap, CMOVP16rr, CMOVP16rr_swap, CMOVS16rr,
+       CMOVS16rr_swap, IMUL16rr, OR16rr, OR16rr_REV, SBB16rr, SBB16rr_REV,
+       SUB16rr, SUB16rr_REV, XCHG16ar, XCHG16rr, XOR16rr, XOR16rr_REV]
     =
     ([TemporaryInfo (RegisterClass GR16) 0 False,
       TemporaryInfo (RegisterClass GR16) 0 False],
@@ -520,12 +524,17 @@ operandInfo i
   | i `elem`
       [ADC32rr, ADC32rr_REV, ADCX32rr, ADD32rr, ADD32rr_DB, ADD32rr_LEA,
        ADD32rr_REV, AND32rr, AND32rr_REV, ANDN32rr, BEXTR32rr, BZHI32rr,
-       CMOVA32rr, CMOVAE32rr, CMOVB32rr, CMOVBE32rr, CMOVE32rr, CMOVG32rr,
-       CMOVGE32rr, CMOVL32rr, CMOVLE32rr, CMOVNE32rr, CMOVNO32rr,
-       CMOVNP32rr, CMOVNS32rr, CMOVO32rr, CMOVP32rr, CMOVS32rr,
-       CRC32r32r32, IMUL32rr, OR32rr, OR32rr_REV, PDEP32rr, PEXT32rr,
-       SARX32rr, SBB32rr, SBB32rr_REV, SHLX32rr, SHRX32rr, SUB32rr,
-       SUB32rr_REV, XCHG32ar, XCHG32rr, XOR32rr, XOR32rr_REV]
+       CMOVA32rr, CMOVA32rr_swap, CMOVAE32rr, CMOVAE32rr_swap, CMOVB32rr,
+       CMOVB32rr_swap, CMOVBE32rr, CMOVBE32rr_swap, CMOVE32rr,
+       CMOVE32rr_swap, CMOVG32rr, CMOVG32rr_swap, CMOVGE32rr,
+       CMOVGE32rr_swap, CMOVL32rr, CMOVL32rr_swap, CMOVLE32rr,
+       CMOVLE32rr_swap, CMOVNE32rr, CMOVNE32rr_swap, CMOVNO32rr,
+       CMOVNO32rr_swap, CMOVNP32rr, CMOVNP32rr_swap, CMOVNS32rr,
+       CMOVNS32rr_swap, CMOVO32rr, CMOVO32rr_swap, CMOVP32rr,
+       CMOVP32rr_swap, CMOVS32rr, CMOVS32rr_swap, CRC32r32r32, IMUL32rr,
+       OR32rr, OR32rr_REV, PDEP32rr, PEXT32rr, SARX32rr, SBB32rr,
+       SBB32rr_REV, SHLX32rr, SHRX32rr, SUB32rr, SUB32rr_REV, XCHG32ar,
+       XCHG32rr, XOR32rr, XOR32rr_REV]
     =
     ([TemporaryInfo (RegisterClass GR32) 0 False,
       TemporaryInfo (RegisterClass GR32) 0 False],
@@ -683,12 +692,17 @@ operandInfo i
   | i `elem`
       [ADC64rr, ADC64rr_REV, ADCX64rr, ADD64rr, ADD64rr_DB, ADD64rr_LEA,
        ADD64rr_REV, AND64rr, AND64rr_REV, ANDN64rr, BEXTR64rr, BZHI64rr,
-       CMOVA64rr, CMOVAE64rr, CMOVB64rr, CMOVBE64rr, CMOVE64rr, CMOVG64rr,
-       CMOVGE64rr, CMOVL64rr, CMOVLE64rr, CMOVNE64rr, CMOVNO64rr,
-       CMOVNP64rr, CMOVNS64rr, CMOVO64rr, CMOVP64rr, CMOVS64rr,
-       CRC32r64r64, IMUL64rr, OR64rr, OR64rr_REV, PDEP64rr, PEXT64rr,
-       SARX64rr, SBB64rr, SBB64rr_REV, SHLX64rr, SHRX64rr, SUB64rr,
-       SUB64rr_REV, XCHG64ar, XCHG64rr, XOR64rr, XOR64rr_REV]
+       CMOVA64rr, CMOVA64rr_swap, CMOVAE64rr, CMOVAE64rr_swap, CMOVB64rr,
+       CMOVB64rr_swap, CMOVBE64rr, CMOVBE64rr_swap, CMOVE64rr,
+       CMOVE64rr_swap, CMOVG64rr, CMOVG64rr_swap, CMOVGE64rr,
+       CMOVGE64rr_swap, CMOVL64rr, CMOVL64rr_swap, CMOVLE64rr,
+       CMOVLE64rr_swap, CMOVNE64rr, CMOVNE64rr_swap, CMOVNO64rr,
+       CMOVNO64rr_swap, CMOVNP64rr, CMOVNP64rr_swap, CMOVNS64rr,
+       CMOVNS64rr_swap, CMOVO64rr, CMOVO64rr_swap, CMOVP64rr,
+       CMOVP64rr_swap, CMOVS64rr, CMOVS64rr_swap, CRC32r64r64, IMUL64rr,
+       OR64rr, OR64rr_REV, PDEP64rr, PEXT64rr, SARX64rr, SBB64rr,
+       SBB64rr_REV, SHLX64rr, SHRX64rr, SUB64rr, SUB64rr_REV, XCHG64ar,
+       XCHG64rr, XOR64rr, XOR64rr_REV]
     =
     ([TemporaryInfo (RegisterClass GR64) 0 False,
       TemporaryInfo (RegisterClass GR64) 0 False],

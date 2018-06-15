@@ -235,6 +235,12 @@ alternativeLEA _
   | ti `elem` [SHL64ri] && 1 <= sh && sh <= 3
   = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL64ri_LEA]}}
 
+alternativeLEA _
+  o @ SingleOperation {
+    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
+  | M.member ti condMoveAlts
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction (condMoveAlts M.! ti)]}}
+
 alternativeLEA _ o = o
 
 -- This transform creates a fixed frame object to represent the return address
