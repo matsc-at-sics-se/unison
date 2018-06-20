@@ -4218,15 +4218,16 @@ data X86Instruction = AAA
                     | MOVE64
                     | MOVE128
                     | MOVE256
-                    | SUBRSP_pseudo
-                    | ADDRSP_pseudo
+                    | FPUSH32
+                    | FPUSH
+                    | NOFPUSH
+                    | FPOP32
+                    | FPOP
+                    | NOFPOP
                     | PUSH_cst
                     | PUSH_fi
                     | POP_cst
                     | POP_fi
-                    | MOV_FROM_SP
-                    | MOV_TO_SP
-                    | ALIGN_SP_32
                     | SPILL32
                     | SPILL
                     | ADD32ri_LEA

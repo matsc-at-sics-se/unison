@@ -129,13 +129,13 @@ copies (Function {fCode = code}, _, _, _, _, _) False t _ d [u]
     not (mayCrossMemDep readWriteInfo d u code) &&
     compatibleClassesForTemp t [d, u] = ([], [[]])
 
--- If function has >6 arguments, then they will be accessed off RBP. Therefore,
+-- If function has >6 arguments, then they will be accessed off RBX. Therefore,
 -- do not spill def and use stemming from
---  o12: [t24:rbp] <- MOV_FROM_SP []
---  o35: [] <- MOV_TO_SP [t24]
+--  o12: [t24:rbp] <- FPUSH32 [_]
+--  o35: [] <- FPOP32 [t24,_]
 copies (Function {fFixedStackFrame = fobjs}, _, _cg, _ra, _, _) _
-       (Temporary {tReg = (Just (Register (TargetRegister RBP)))}) _ _d us
-  | (TargetInstruction MOV_TO_SP) `elem` (concatMap oInstructions us) &&
+       (Temporary {tReg = (Just (Register (TargetRegister RBX)))}) _ _d us
+  | (TargetInstruction FPUSH32) `elem` (concatMap oInstructions us) &&
     (maximum $ map foOffset fobjs) >= 0
   = ([], [[]])
 
@@ -179,7 +179,8 @@ isReserved r = r `elem` reserved
 rematInstrs i
   | isRematerializable i =
       Just (sourceInstr i, dematInstr i, rematInstr i)
-  | i `elem` [MOV8rm, MOV16rm, MOV32rm, MOV64rm, MOV_FROM_SP,
+  | i `elem` [FPUSH32, FPUSH, NOFPUSH,
+              MOV8rm, MOV16rm, MOV32rm, MOV64rm,
               IMUL64rmi32,
               MOVSX16rm8, MOVSX32rm8, MOVSX32_NOREXrm8, MOVSX32rm16, MOVSX64rm8, MOVSX64rm16, MOVSX64rm32, 
               MOVZX16rm8, MOVZX32rm8, MOVZX32_NOREXrm8, MOVZX32rm16, MOVZX64rm8, MOVZX64rm16,
@@ -362,7 +363,11 @@ resources =
 
      -- Resources as defined by X86ScheduleV6
 
-     Resource Pipe 1
+     Resource Pipe 1,
+
+     -- Fake resources to prevent bad nogoods
+
+     Resource NoDominator 1
 
     ]
 
@@ -465,50 +470,43 @@ addImplicitRegs mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = 
 expandPseudos to = mapToMachineBlock (expandBlockPseudos (expandPseudo to))
 
 expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc i})
-  | i `elem` [SPILL32, SPILL]
+  | i `elem` [SPILL32, SPILL, NOFPUSH, NOFPOP]
   = []
 
-expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc SUBRSP_pseudo, msOperands = [MachineImm 0]})
-  = [[mkMachineSingle (MachineTargetOpc NOOP) [] []]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SUBRSP_pseudo,
-                                   msOperands = [off]}
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPUSH,
+                                   msOperands = [_,off]}
   = let sp = mkMachineReg RSP
     in [[mi {msOpcode = mkMachineTargetOpc SUB64ri32,
              msOperands = [sp, sp, off]}]]
 
-expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc ADDRSP_pseudo, msOperands = [MachineImm 0]})
-  = [[mkMachineSingle (MachineTargetOpc NOOP) [] []]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADDRSP_pseudo,
-                                   msOperands = [off]}
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPUSH32,
+                                   msOperands = [dst,off]}
   = let sp = mkMachineReg RSP
-    in [[mi {msOpcode = mkMachineTargetOpc ADD64ri32,
+        im32 = mkMachineImm (-32)
+    in [[mi {msOpcode = mkMachineTargetOpc MOV64rr,
+             msOperands = [dst, sp]}],
+        [mi {msOpcode = mkMachineTargetOpc AND64ri8,
+             msOperands = [sp, sp, im32]}],
+        [mi {msOpcode = mkMachineTargetOpc SUB64ri8,
              msOperands = [sp, sp, off]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPOP,
+                                   msOperands = [_,off]}
+  = let sp = mkMachineReg RSP
+    in [[mi {msOpcode = mkMachineTargetOpc ADD64ri8,
+             msOperands = [sp, sp, off]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPOP32,
+                                   msOperands = [src,_]}
+  = let sp = mkMachineReg RSP
+    in [[mi {msOpcode = mkMachineTargetOpc MOV64rr,
+             msOperands = [sp, src]}]]
 
 expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc PUSH_fi, msOperands = [_, s]})
   = [[mkMachineSingle (MachineTargetOpc PUSH64r) [] [s]]]
 
 expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc POP_fi, msOperands = [d, _]})
   = [[mkMachineSingle (MachineTargetOpc POP64r) [] [d]]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV_FROM_SP,
-                                   msOperands = [dst]}
-  = let sp = mkMachineReg RSP
-    in [[mi {msOpcode = mkMachineTargetOpc MOV64rr,
-             msOperands = [dst, sp]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV_TO_SP,
-                                   msOperands = [src]}
-  = let sp = mkMachineReg RSP
-    in [[mi {msOpcode = mkMachineTargetOpc MOV64rr,
-             msOperands = [sp, src]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ALIGN_SP_32}
-  = let sp = mkMachineReg RSP
-        im32 = mkMachineImm (-32)
-    in [[mi {msOpcode = mkMachineTargetOpc AND64ri8,
-             msOperands = [sp, sp, im32]}]]
 
 -- expand pseudos that stem from llvm; see X86ExpandPseudo.cpp
 
@@ -669,12 +667,12 @@ transforms ExportPreOffs = [revertFixedFrame]
 transforms ExportPreLow = [myLowerFrameIndices]
 transforms AugmentPreRW = [suppressCombineCopies]
 transforms AugmentPostRW = [movePrologueEpilogue,
+                            addSpillIndicators,
                             addVzeroupper,
                             mapToOperation addStackIndexReadsSP,
                             mapToOperation addFunWrites,
                             removeDeadEflags,
-                            moveOptWritesEflags,
-                            peephole spillAfterAlign]
+                            moveOptWritesEflags]
 transforms _ = []
 
 -- | Latency of read-write dependencies
@@ -703,7 +701,8 @@ expandCopy _ _ o = [o]
 -- corresponding call/tailcall/return/out operation
 
 constraints f =
-  fixVzeroupperConstraints f
+  fixVzeroupperConstraints f ++
+  prologueEpilogueConstraints f
 
 fixVzeroupperConstraints f =
   let fcode = flatCode f
@@ -712,8 +711,8 @@ fixVzeroupperConstraints f =
 
 fixVzeroupperConstraints' (o1 : o2 : rest)
   | isVzeroupper o1
-  = [AndExpr [DistanceExpr (oId o2) (oId o1) (-1),
-              DistanceExpr (oId o1) (oId o2) ( 1)]] ++
+  = [DistanceExpr (oId o2) (oId o1) (-1),
+     DistanceExpr (oId o1) (oId o2) ( 1)] ++
     fixVzeroupperConstraints' rest
 fixVzeroupperConstraints' (_ : rest)
   = fixVzeroupperConstraints' rest
@@ -725,3 +724,102 @@ isVzeroupperRelevant o =
 isVzeroupper o =
   (TargetInstruction VZEROUPPER) `elem` oInstructions o
 
+prologueEpilogueConstraints Function {fCode = blocks, fStackFrame = objs, fStackArgSize = sasize} =
+  let fcode = flatten blocks
+      align = maximum $ [8] ++ map foAlignment (objs)
+      mustFpush32 = (align == 32)
+      mustFpush = (align == 16 || sasize > 0)
+      mayFpush = any isCall fcode
+      blockInfo = concatMap proEpiInfo blocks
+  in concatMap indicatorConstraints blockInfo ++
+     (concatMap (prologueConstraints mustFpush32 mustFpush mayFpush) blockInfo) ++
+     (concatMap (epilogueConstraints mustFpush32 mustFpush mayFpush) blockInfo)
+
+indicatorConstraints (Nothing, Nothing, _, _, _, _) = []
+
+indicatorConstraints (Just osp32, Just osp, _, _, _, _)
+  = [DistanceExpr osp32 1 0, DistanceExpr osp 1 0]
+
+prologueConstraints _ _ _ (_, _, Nothing, _, _, _) = []
+
+prologueConstraints True _ _ (_, _, Just ofpush, _, _, _)
+  = [ImplementsExpr ofpush (TargetInstruction FPUSH32)]
+
+prologueConstraints _ True _ (Just osp32, _, Just ofpush, _, _, _)
+  = [XorExpr (ActiveExpr osp32) (ImplementsExpr ofpush (TargetInstruction FPUSH))] ++
+    [NotExpr (ImplementsExpr ofpush (TargetInstruction NOFPUSH))]
+
+prologueConstraints _ _ True (Just osp32, Just osp, Just ofpush, _, [p1,p2,p3,p4,p5,p6], _) =
+  let nofcond = AndExpr [NotExpr (ActiveExpr osp32),
+                         NotExpr (ActiveExpr osp),
+                         XorExpr (XorExpr (XorExpr (ActiveExpr p1) (ActiveExpr p2))
+                                          (XorExpr (ActiveExpr p3) (ActiveExpr p4)))
+                                 (XorExpr (ActiveExpr p5) (ActiveExpr p6))]
+  in [XorExpr (NotExpr (ActiveExpr osp32)) (ImplementsExpr ofpush (TargetInstruction FPUSH32))] ++
+     [XorExpr (NotExpr nofcond) (ImplementsExpr ofpush (TargetInstruction NOFPUSH))]
+
+prologueConstraints _ _ _ (Just osp32, Just osp, Just ofpush, _, _, _) =
+  let nofcond = AndExpr [NotExpr (ActiveExpr osp32),
+                         NotExpr (ActiveExpr osp)]
+  in [XorExpr (NotExpr (ActiveExpr osp32)) (ImplementsExpr ofpush (TargetInstruction FPUSH32))] ++
+     [XorExpr (NotExpr nofcond) (ImplementsExpr ofpush (TargetInstruction NOFPUSH))]
+
+epilogueConstraints _ _ _ (_, _, _, Nothing, _, _) = []
+
+epilogueConstraints True _ _ (_, _, _, Just ofpop, _, _)
+  = [ImplementsExpr ofpop (TargetInstruction FPOP32)]
+
+epilogueConstraints _ True _ (Just osp32, _, _, Just ofpop, _, _)
+  = [XorExpr (ActiveExpr osp32) (ImplementsExpr ofpop (TargetInstruction FPOP))] ++
+    [NotExpr (ImplementsExpr ofpop (TargetInstruction NOFPOP))]
+
+epilogueConstraints _ _ True (Just osp32, Just osp, _, Just ofpop, _, [p1,p2,p3,p4,p5,p6]) =
+  let nofcond = AndExpr [NotExpr (ActiveExpr osp32),
+                         NotExpr (ActiveExpr osp),
+                         XorExpr (XorExpr (XorExpr (ActiveExpr p1) (ActiveExpr p2))
+                                          (XorExpr (ActiveExpr p3) (ActiveExpr p4)))
+                                 (XorExpr (ActiveExpr p5) (ActiveExpr p6))]
+  in [XorExpr (NotExpr (ActiveExpr osp32)) (ImplementsExpr ofpop (TargetInstruction FPOP32))] ++
+     [XorExpr (NotExpr nofcond) (ImplementsExpr ofpop (TargetInstruction NOFPOP))]
+
+epilogueConstraints _ _ _ (Just osp32, Just osp, _, Just ofpop, _, _) =
+  let nofcond = AndExpr [NotExpr (ActiveExpr osp32),
+                         NotExpr (ActiveExpr osp)]
+  in [XorExpr (NotExpr (ActiveExpr osp32)) (ImplementsExpr ofpop (TargetInstruction FPOP32))] ++
+     [XorExpr (NotExpr nofcond) (ImplementsExpr ofpop (TargetInstruction NOFPOP))]
+
+proEpiInfo b @ Block {bCode = code}
+  | isEntryBlock b || isExitBlock b
+  = [proEpiInfo' Nothing Nothing Nothing Nothing [] [] code]
+
+proEpiInfo _ = []
+
+proEpiInfo' osp32 osp ofpush ofpop opushl opopl []
+  = (osp32, osp, ofpush, ofpop, opushl, opopl)
+
+proEpiInfo' _ osp ofpush ofpop opushl opopl (o : code)
+  | (TargetInstruction SPILL32) `elem` oInstructions o
+  = proEpiInfo' (Just (oId o)) osp ofpush ofpop opushl opopl code
+
+proEpiInfo' osp32 _ ofpush ofpop opushl opopl (o : code)
+  | (TargetInstruction SPILL) `elem` oInstructions o
+  = proEpiInfo' osp32 (Just (oId o)) ofpush ofpop opushl opopl code
+
+proEpiInfo' osp32 osp _ ofpop opushl opopl (o : code)
+  | (TargetInstruction FPUSH) `elem` oInstructions o
+  = proEpiInfo' osp32 osp (Just (oId o)) ofpop opushl opopl code
+
+proEpiInfo' osp32 osp ofpush _ opushl opopl (o : code)
+  | (TargetInstruction FPOP) `elem` oInstructions o
+  = proEpiInfo' osp32 osp ofpush (Just (oId o)) opushl opopl code
+
+proEpiInfo' osp32 osp ofpush ofpop opushl opopl (o : code)
+  | (TargetInstruction PUSH_cst) `elem` oInstructions o
+  = proEpiInfo' osp32 osp ofpush ofpop ((oId o) : opushl) opopl code
+
+proEpiInfo' osp32 osp ofpush ofpop opushl opopl (o : code)
+  | (TargetInstruction POP_cst) `elem` oInstructions o
+  = proEpiInfo' osp32 osp ofpush ofpop opushl ((oId o) : opopl) code
+
+proEpiInfo' osp32 osp ofpush ofpop opushl opopl (_ : code)
+  = proEpiInfo' osp32 osp ofpush ofpop opushl opopl code

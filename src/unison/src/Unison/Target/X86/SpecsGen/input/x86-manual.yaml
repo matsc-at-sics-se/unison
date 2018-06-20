@@ -174,11 +174,48 @@ instruction-set:
           parent:             VMOVDQAYrr
           type:               copy
 
-        - id:                 SUBRSP_pseudo
+        - id:                 FPUSH32
           parent:             SUB64ri8
           operands:
            - imm:             bound
+           - dst:             [register, def, AUXB]
           uses:               [imm]
+          defines:            [dst]
+          affects:
+           - EFLAGS:          register
+           - RSP:             register
+          affected-by:
+           - RSP:             register
+
+        - id:                 FPUSH
+          parent:             SUB64ri8
+          operands:
+           - imm:             bound
+           - dst:             [register, def, AUXE]
+          uses:               [imm]
+          defines:            [dst]
+          affects:
+           - EFLAGS:          register
+           - RSP:             register
+          affected-by:
+           - RSP:             register
+
+        - id:                 NOFPUSH
+          parent:             SUB64ri8
+          operands:
+           - imm:             bound
+           - dst:             [register, def, AUXE]
+          uses:               [imm]
+          defines:            [dst]
+          affects:
+          affected-by:
+
+        - id:                 FPOP32
+          parent:             SUB64ri8
+          operands:
+           - src:             [register, use, GR64]
+           - imm:             bound
+          uses:               [src,imm]
           defines:            []
           affects:
            - EFLAGS:          register
@@ -186,17 +223,28 @@ instruction-set:
           affected-by:
            - RSP:             register
 
-        - id:                 ADDRSP_pseudo
-          parent:             ADD64ri8
+        - id:                 FPOP
+          parent:             SUB64ri8
           operands:
+           - src:             [register, use, AUXE]
            - imm:             bound
-          uses:               [imm]
+          uses:               [src,imm]
           defines:            []
           affects:
            - EFLAGS:          register
            - RSP:             register
           affected-by:
            - RSP:             register
+
+        - id:                 NOFPOP
+          parent:             SUB64ri8
+          operands:
+           - src:             [register, use, AUXE]
+           - imm:             bound
+          uses:               [src,imm]
+          defines:            []
+          affects:
+          affected-by:
 
         - id:                 PUSH_cst
           type:               copy
@@ -253,37 +301,6 @@ instruction-set:
           affected-by:
            - RSP:             register
           itinerary:          IIC_POP_REG
-
-        - id:                 MOV_FROM_SP
-          parent:             MOV64rr
-          operands:
-           - dst:             [register, def, GR64]
-          uses:               []
-          defines:            [dst]
-          affected-by:
-           - RSP:             register
-
-        - id:                 MOV_TO_SP
-          parent:             MOV64rr
-          operands:
-           - src:             [register, use, GR64]
-          uses:               [src]
-          defines:            []
-          affects:
-           - RSP:             register
-
-        - id:                 ALIGN_SP_32
-          parent:             AND64ri8
-          type:               linear
-          operands:
-          uses:               []
-          defines:            []
-          size:               0
-          affects:
-           - RSP:             register
-           - EFLAGS:          register
-          affected-by:
-           - RSP:             register
 
         - id:                 SPILL32
           parent:             NOOP

@@ -799,9 +799,7 @@ parent i
   | i `elem` [ADD32ri_LEA] = Just ADD32ri
   | i `elem` [ADD32rr_LEA] = Just ADD32rr
   | i `elem` [ADD64ri_LEA] = Just ADD64ri32
-  | i `elem` [ADDRSP_pseudo] = Just ADD64ri8
   | i `elem` [ADD64rr_LEA] = Just ADD64rr
-  | i `elem` [ALIGN_SP_32] = Just AND64ri8
   | i `elem`
       [AVX2_SETALLONES_demat, AVX2_SETALLONES_remat,
        AVX2_SETALLONES_source]
@@ -896,7 +894,7 @@ parent i
   | i `elem` [MOV64ri32_demat, MOV64ri32_remat, MOV64ri32_source] =
     Just MOV64ri32
   | i `elem` [LOAD64] = Just MOV64rm
-  | i `elem` [MOVE64, MOV_FROM_SP, MOV_TO_SP] = Just MOV64rr
+  | i `elem` [MOVE64] = Just MOV64rr
   | i `elem` [STORE8] = Just MOV8mr
   | i `elem` [MOV8ri_demat, MOV8ri_remat, MOV8ri_source] =
     Just MOV8ri
@@ -910,7 +908,8 @@ parent i
   | i `elem` [SHL32ri_LEA] = Just SHL32ri
   | i `elem` [SHL64r1_LEA] = Just SHL64r1
   | i `elem` [SHL64ri_LEA] = Just SHL64ri
-  | i `elem` [SUBRSP_pseudo] = Just SUB64ri8
+  | i `elem` [FPOP, FPOP32, FPUSH, FPUSH32, NOFPOP, NOFPUSH] =
+    Just SUB64ri8
   | i `elem` [STORE256] = Just VMOVDQAYmr
   | i `elem` [LOAD256] = Just VMOVDQAYrm
   | i `elem` [MOVE256] = Just VMOVDQAYrr

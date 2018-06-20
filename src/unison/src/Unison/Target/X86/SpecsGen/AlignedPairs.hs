@@ -4,11 +4,11 @@ module Unison.Target.X86.SpecsGen.AlignedPairs (alignedPairs) where
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
 alignedPairs i ([], [])
   | i `elem`
-      [ALIGN_SP_32, CATCHPAD, CLAC, CLC, CLD, CLEANUPRET, CLGI, CLI,
-       CLTS, CMC, CS_PREFIX, DATA16_PREFIX, DS_PREFIX, EH_RESTORE, ENCLS,
-       ENCLU, ES_PREFIX, F2XM1, FCOMPP, FDECSTP, FEMMS, FINCSTP, FLDL2E,
-       FLDL2T, FLDLG2, FLDLN2, FLDPI, FNOP, FPATAN, FPREM, FPREM1, FPTAN,
-       FRNDINT, FSCALE, FSINCOS, FS_PREFIX, FXAM, FXTRACT, FYL2X, FYL2XP1,
+      [CATCHPAD, CLAC, CLC, CLD, CLEANUPRET, CLGI, CLI, CLTS, CMC,
+       CS_PREFIX, DATA16_PREFIX, DS_PREFIX, EH_RESTORE, ENCLS, ENCLU,
+       ES_PREFIX, F2XM1, FCOMPP, FDECSTP, FEMMS, FINCSTP, FLDL2E, FLDL2T,
+       FLDLG2, FLDLN2, FLDPI, FNOP, FPATAN, FPREM, FPREM1, FPTAN, FRNDINT,
+       FSCALE, FSINCOS, FS_PREFIX, FXAM, FXTRACT, FYL2X, FYL2XP1,
        GS_PREFIX, HLT, INT3, INTO, INVD, IRET16, IRET32, IRET64,
        Int_MemBarrier, LFENCE, LOCK_PREFIX, LRETL, LRETQ, LRETW, MFENCE,
        MMX_EMMS, MORESTACK_RET, MORESTACK_RET_RESTORE_R10, NOOP, PAUSE,
@@ -35,14 +35,13 @@ alignedPairs i ([], [_])
        AVX_SET0_source, FsFLD0SD, FsFLD0SD_source, FsFLD0SS,
        FsFLD0SS_source, IMPLICIT_DEF, LOAD_STACK_GUARD, MOV32r0,
        MOV32r0_source, MOV32r1, MOV32r1_source, MOV32r_1, MOV32r_1_source,
-       MOV_FROM_SP, RDFLAGS32, RDFLAGS64, RDFSBASE, RDFSBASE64, RDGSBASE,
-       RDGSBASE64, RDPKRU, RDRAND16r, RDRAND32r, RDRAND64r, RDSEED16r,
-       RDSEED32r, RDSEED64r, SETAEr, SETAr, SETBEr, SETB_C16r, SETB_C32r,
-       SETB_C64r, SETB_C8r, SETBr, SETEr, SETGEr, SETGr, SETLEr, SETLr,
-       SETNEr, SETNOr, SETNPr, SETNSr, SETOr, SETPr, SETSr, SLDT16r,
-       SLDT32r, SLDT64r, SMSW16r, SMSW32r, SMSW64r, STR16r, STR32r,
-       STR64r, V_SET0, V_SET0_source, V_SETALLONES, V_SETALLONES_source,
-       XBEGIN]
+       RDFLAGS32, RDFLAGS64, RDFSBASE, RDFSBASE64, RDGSBASE, RDGSBASE64,
+       RDPKRU, RDRAND16r, RDRAND32r, RDRAND64r, RDSEED16r, RDSEED32r,
+       RDSEED64r, SETAEr, SETAr, SETBEr, SETB_C16r, SETB_C32r, SETB_C64r,
+       SETB_C8r, SETBr, SETEr, SETGEr, SETGr, SETLEr, SETLr, SETNEr,
+       SETNOr, SETNPr, SETNSr, SETOr, SETPr, SETSr, SLDT16r, SLDT32r,
+       SLDT64r, SMSW16r, SMSW32r, SMSW64r, STR16r, STR32r, STR64r, V_SET0,
+       V_SET0_source, V_SETALLONES, V_SETALLONES_source, XBEGIN]
     = []
 alignedPairs i ([], [_, _, _, _, _])
   | i `elem`
@@ -294,9 +293,9 @@ alignedPairs i ([_, _, _, _, _, _], [_])
 alignedPairs i ([_, _, _], []) | i `elem` [STACKMAP] = []
 alignedPairs i ([_], [])
   | i `elem`
-      [ADDRSP_pseudo, PUSH16i8, PUSH32i8, PUSH64i32, PUSH64i8, PUSHi16,
-       PUSHi32, SUBRSP_pseudo, XABORT]
+      [PUSH16i8, PUSH32i8, PUSH64i32, PUSH64i8, PUSHi16, PUSHi32, XABORT]
     = []
+alignedPairs i ([_], [_]) | i `elem` [FPUSH, FPUSH32, NOFPUSH] = []
 alignedPairs i ([_, _, _], [_]) | i `elem` [SUBREG_TO_REG] = []
 alignedPairs i ([_], [_]) | i `elem` [MOVPC32r] = []
 alignedPairs i ([_, _], []) | i `elem` [ENTER] = []
@@ -347,7 +346,7 @@ alignedPairs i ([_], [_, _]) | i `elem` [SEG_ALLOCA_32] = []
 alignedPairs i ([_], [_, _]) | i `elem` [SEG_ALLOCA_64] = []
 alignedPairs i ([_], [])
   | i `elem`
-      [LLDT16r, LMSW16r, LTRr, MOV_TO_SP, WRFLAGS32, WRFLAGS64, WRFSBASE,
+      [LLDT16r, LMSW16r, LTRr, WRFLAGS32, WRFLAGS64, WRFSBASE,
        WRFSBASE64, WRGSBASE, WRGSBASE64, WRPKRU]
     = []
 alignedPairs i ([_], [_])
@@ -471,6 +470,7 @@ alignedPairs i ([_, _], [_, _]) | i `elem` [IMUL64r, MUL64r] = []
 alignedPairs i ([_, _, _], [_, _])
   | i `elem` [DIV64r, IDIV64r] = []
 alignedPairs i ([_, _], [_, _]) | i `elem` [MULX64rr] = []
+alignedPairs i ([_, _], []) | i `elem` [FPOP, FPOP32, NOFPOP] = []
 alignedPairs i ([src, _, _], [src'])
   | i `elem` [EXTRQI] = [(src, src')]
 alignedPairs i ([_, _], []) | i `elem` [TEST8ri_NOREX] = []

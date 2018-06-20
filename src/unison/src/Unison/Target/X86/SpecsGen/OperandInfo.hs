@@ -6,11 +6,11 @@ import Unison.Target.X86.SpecsGen.X86InstructionDecl
 import Unison.Target.X86.X86RegisterClassDecl
 operandInfo i
   | i `elem`
-      [ALIGN_SP_32, CATCHPAD, CLAC, CLC, CLD, CLEANUPRET, CLGI, CLI,
-       CLTS, CMC, CS_PREFIX, DATA16_PREFIX, DS_PREFIX, EH_RESTORE, ENCLS,
-       ENCLU, ES_PREFIX, F2XM1, FCOMPP, FDECSTP, FEMMS, FINCSTP, FLDL2E,
-       FLDL2T, FLDLG2, FLDLN2, FLDPI, FNOP, FPATAN, FPREM, FPREM1, FPTAN,
-       FRNDINT, FSCALE, FSINCOS, FS_PREFIX, FXAM, FXTRACT, FYL2X, FYL2XP1,
+      [CATCHPAD, CLAC, CLC, CLD, CLEANUPRET, CLGI, CLI, CLTS, CMC,
+       CS_PREFIX, DATA16_PREFIX, DS_PREFIX, EH_RESTORE, ENCLS, ENCLU,
+       ES_PREFIX, F2XM1, FCOMPP, FDECSTP, FEMMS, FINCSTP, FLDL2E, FLDL2T,
+       FLDLG2, FLDLN2, FLDPI, FNOP, FPATAN, FPREM, FPREM1, FPTAN, FRNDINT,
+       FSCALE, FSINCOS, FS_PREFIX, FXAM, FXTRACT, FYL2X, FYL2XP1,
        GS_PREFIX, HLT, INT3, INTO, INVD, IRET16, IRET32, IRET64,
        Int_MemBarrier, LFENCE, LOCK_PREFIX, LRETL, LRETQ, LRETW, MFENCE,
        MMX_EMMS, MORESTACK_RET, MORESTACK_RET_RESTORE_R10, NOOP, PAUSE,
@@ -48,8 +48,8 @@ operandInfo i
       TemporaryInfo (RegisterClass GR32) 1 False,
       TemporaryInfo (RegisterClass GR32) 1 False])
   | i `elem`
-      [MOV_FROM_SP, POP64r, POP64rmr, RDFLAGS64, RDFSBASE64, RDGSBASE64,
-       RDRAND64r, RDSEED64r, SETB_C64r, SLDT64r, SMSW64r, STR64r]
+      [POP64r, POP64rmr, RDFLAGS64, RDFSBASE64, RDGSBASE64, RDRAND64r,
+       RDSEED64r, SETB_C64r, SLDT64r, SMSW64r, STR64r]
     = ([], [TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem` [RDTSC] =
     ([],
@@ -90,6 +90,8 @@ operandInfo i
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 1 False, BoundInfo,
       BoundInfo])
   | i `elem` [IMPLICIT_DEF] = ([], [BoundInfo])
+  | i `elem` [FPOP, NOFPOP] =
+    ([TemporaryInfo (RegisterClass AUXE) 0 False, BoundInfo], [])
   | i `elem` [CMOV_FR128] =
     ([TemporaryInfo (RegisterClass FR128) 0 False,
       TemporaryInfo (RegisterClass FR128) 0 False, BoundInfo],
@@ -638,8 +640,8 @@ operandInfo i
       TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
   | i `elem`
-      [CALL64r, EH_RETURN64, JMP64r, MOV_TO_SP, PUSH64r, PUSH64rmr,
-       VMLOAD64, VMRUN64, VMSAVE64, WRFLAGS64, WRFSBASE64, WRGSBASE64]
+      [CALL64r, EH_RETURN64, JMP64r, PUSH64r, PUSH64rmr, VMLOAD64,
+       VMRUN64, VMSAVE64, WRFLAGS64, WRFSBASE64, WRGSBASE64]
     = ([TemporaryInfo (RegisterClass GR64) 0 False], [])
   | i `elem` [CVTSI2SS64rr] =
     ([TemporaryInfo (RegisterClass GR64) 0 False],
@@ -792,7 +794,7 @@ operandInfo i
      [TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem`
       [BT64ri8, BTC64ri8, BTR64ri8, BTS64ri8, CMP64ri32, CMP64ri8,
-       TEST64ri32]
+       FPOP32, TEST64ri32]
     = ([TemporaryInfo (RegisterClass GR64) 0 False, BoundInfo], [])
   | i `elem`
       [ADC64ri32, ADC64ri8, ADD64ri32, ADD64ri32_DB, ADD64ri8,
@@ -2345,14 +2347,17 @@ operandInfo i
       BoundInfo, BoundInfo],
      [])
   | i `elem`
-      [ADDRSP_pseudo, BUNDLE, CALL64pcrel32, CALLpcrel16, CALLpcrel32,
-       CFI_INSTRUCTION, DBG_VALUE, EH_LABEL, GC_LABEL, INLINEASM, INT,
-       IRET, KILL, LIFETIME_END, LIFETIME_START, LRETIL, LRETIQ, LRETIW,
-       PHI, PUSH16i8, PUSH32i8, PUSH64i32, PUSH64i8, PUSHi16, PUSHi32,
-       RETIW, RETL, RETQ, SEH_PushFrame, SEH_PushReg, SEH_StackAlloc,
-       STATEPOINT, SUBRSP_pseudo, TAILJMPd, TAILJMPd64, TAILJMPd64_REX,
-       XABORT]
+      [BUNDLE, CALL64pcrel32, CALLpcrel16, CALLpcrel32, CFI_INSTRUCTION,
+       DBG_VALUE, EH_LABEL, GC_LABEL, INLINEASM, INT, IRET, KILL,
+       LIFETIME_END, LIFETIME_START, LRETIL, LRETIQ, LRETIW, PHI,
+       PUSH16i8, PUSH32i8, PUSH64i32, PUSH64i8, PUSHi16, PUSHi32, RETIW,
+       RETL, RETQ, SEH_PushFrame, SEH_PushReg, SEH_StackAlloc, STATEPOINT,
+       TAILJMPd, TAILJMPd64, TAILJMPd64_REX, XABORT]
     = ([BoundInfo], [])
+  | i `elem` [FPUSH32] =
+    ([BoundInfo], [TemporaryInfo (RegisterClass AUXB) 1 False])
+  | i `elem` [FPUSH, NOFPUSH] =
+    ([BoundInfo], [TemporaryInfo (RegisterClass AUXE) 1 False])
   | i `elem` [IN16ri, MOV16ri, MOV16ri_alt] =
     ([BoundInfo], [TemporaryInfo (RegisterClass GR16) 1 False])
   | i `elem` [IN32ri, MOV32ri, MOV32ri64, MOV32ri_alt, MOVPC32r] =

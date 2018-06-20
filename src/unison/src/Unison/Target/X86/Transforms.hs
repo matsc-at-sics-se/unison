@@ -22,14 +22,15 @@ module Unison.Target.X86.Transforms
      myLowerFrameIndices,
      addStackIndexReadsSP,
      addFunWrites,
+     addSpillIndicators,
      addVzeroupper,
      removeDeadEflags,
-     moveOptWritesEflags,
-     spillAfterAlign) where
+     moveOptWritesEflags) where
 
 import qualified Data.Map as M
 import Data.List
 import Data.List.Split
+import qualified Data.Set as S
 import qualified Data.Graph.Inductive as G
 import Data.Maybe
 
@@ -116,14 +117,6 @@ extractReturnRegs _ (
    )
 
 extractReturnRegs _ (o : rest) _ = (rest, [o])
-
-spillAfterAlign _ (o :
-                   p @ SingleOperation {oOpr = Natural (Linear {oIs = [TargetInstruction ALIGN_SP_32]})} :
-                   q @ SingleOperation {oOpr = Natural (Linear {oIs = [TargetInstruction SUBRSP_pseudo]})} :
-                   rest) _
-  | isCopy o
-  = (rest, [p,q,o])
-spillAfterAlign _ (o : rest) _ = (rest, [o])
 
 {-
     o10: [t14,t15] <- IMUL64m [%stack.0,1,_,8,_,t13] (mem: 1)
@@ -295,84 +288,43 @@ instructionMemWidth ti
 -- Additionally, we need to ensure that SP is modulo 16 aligned at
 -- all recursive calls!  At any rate, the frame size needs to be a multiple of 8.
 
-addPrologueEpilogue f @ Function {fCode = code, fStackFrame = objs} =
+addPrologueEpilogue f @ Function {fCode = code} =
   let flatcode = flatten code
-      align    = if any isDirtyYMMOp flatcode then 32 else 8
-      align'   = maximum $ [align] ++ map foAlignment (objs)
-      (addPrf, addEpf) = if align' > 16
-                         then (addComplexPr, addComplexEp)
-                         else (addSimplePr, addSimpleEp)
       ids      = newIndexes flatcode
       tid      = case ids of
                   (tid', _, _) -> tid'
-      code'    = mapToEntryBlock (addPrf tid ids) code
+      code'    = mapToEntryBlock (addPrologue tid ids) code
       outBs    = returnBlockIds code'
-      inOutBs  = nub $ [bLab $ entryBlock code'] ++ outBs
-      code''   = foldl (addEpilogueInBlock (addEpf tid)) code' outBs
-      code'''  = foldl (addSpillIndInBlock addSpillInd) code'' inOutBs
-  in f {fCode = code'''}
+      code''   = foldl (addEpilogueInBlock (addEpilogue tid)) code' outBs
+  in f {fCode = code''}
 
 addEpilogueInBlock aef code l =
     let ids   = newIndexes $ flatten code
         code' = mapToBlock (aef ids) l code
     in code'
 
-addSpillIndInBlock f code l =
-    let ids   = newIndexes $ flatten code
-        code' = mapToBlock (f ids) l code
-    in code'
+mkPush oid tid =
+  mkLinear oid [TargetInstruction FPUSH32, TargetInstruction FPUSH, TargetInstruction NOFPUSH]
+               [Bound mkMachineFrameSize]
+               [mkTemp tid]
 
-mkSubSp oid =
-  mkLinear oid [TargetInstruction SUBRSP_pseudo] [Bound mkMachineFrameSize] []
+mkPop oid tid =
+  mkLinear oid [TargetInstruction FPOP32, TargetInstruction FPOP, TargetInstruction NOFPOP]
+               [mkTemp tid, Bound mkMachineFrameSize]
+               []
+
+addPrologue tid (_, oid, _) (e:code) =
+  let push = mkPush oid tid
+  in [e, push] ++ code
+
+addEpilogue tid (_, oid, _) code =
+  let pop  = mkPop oid tid
+      pop' = makeSplitBarrier pop
+      [code', tail] = splitEpilogue code
+  in code' ++ [pop'] ++ tail
 
 splitEpilogue code =
   split (keepDelimsL $ whenElt (\o -> isBranch o || isTailCall o)) code
-
-mkReg = mkRegister . mkTargetRegister
-
-addSimplePr _ (_, oid, _) (e:code) =
-  let subSp  = mkSubSp oid
-  in [e, subSp] ++ code
-
-addSimpleEp _ (_, oid, _) code =
-  let addSp  = mkLinear oid [TargetInstruction ADDRSP_pseudo]
-               [Bound mkMachineFrameSize] []
-      addSp' = makeSplitBarrier addSp
-      [code', e] = splitEpilogue code
-  in code' ++ [addSp'] ++ e
-
-addComplexPr tid (_, oid, _) (e:code) =
-  let mov64  = mkLinear (oid + 0) [TargetInstruction MOV_FROM_SP] [] [mkPreAssignedTemp tid (mkReg RBP)]
-      and64  = mkLinear (oid + 1) [TargetInstruction ALIGN_SP_32] [] []
-      subSp  = mkSubSp  (oid + 2)
-  in [e, mov64, and64, subSp] ++ code
-
-addComplexEp tid (_, oid, _) code =
-  let mov64  = mkLinear oid [TargetInstruction MOV_TO_SP] [mkTemp tid] []
-      mov64' = makeSplitBarrier mov64
-      [code', e] = splitEpilogue code
-  in code' ++ [mov64'] ++ e
-
-addSpillInd (_, oid, _) (e:code) =
-  let spill  = mkSpillInd32 (oid + 0)
-      spill' = mkSpillInd (oid + 1)
-  in [e, spill, spill'] ++ code
-
-mkSpillInd32 oid =
-  mkAct32 $ makeOptional $ mkLinear oid [TargetInstruction SPILL32] [] []
-
-mkSpillInd oid =
-  mkAct $ makeOptional $ mkLinear oid [TargetInstruction SPILL] [] []
-
-mkAct32 = addActivators [TargetInstruction STORE256]
-
-mkAct = addActivators [TargetInstruction STORE8,
-                       TargetInstruction STORE16,
-                       TargetInstruction STORE32,
-                       TargetInstruction STORE64,
-                       TargetInstruction STORE128]
-
-addActivators = mapToActivators . (++)
 
 makeSplitBarrier = mapToAttrSplitBarrier (const True)
 
@@ -407,11 +359,11 @@ movePrologueEpilogue f @ Function {fCode = code} =
 moveEpilogueInBlock aef code l =
     mapToBlock aef l code
 
-movePrf moves (o:code)
+movePrf moves (o : code)
   | isCopy o && (oWriteObjects o) == []
   = movePrf (moves ++ [o]) code
-movePrf moves (o @ SingleOperation {oOpr = Natural (Linear {oIs = [TargetInstruction SUBRSP_pseudo]})}
-              : code)
+movePrf moves (o : code)
+  | isPro o
   = [o] ++ moves ++ code
 movePrf moves (o:code)
   = [o] ++ movePrf moves code
@@ -432,8 +384,12 @@ moveEpf' pops epi (o:code)
 moveEpf' pops epi code
   = [epi] ++ pops ++ code
 
-isEpi SingleOperation {oOpr = Natural (Linear {oIs = [TargetInstruction ti]})} =
-  ti `elem` [ADDRSP_pseudo, MOV_TO_SP]
+isPro SingleOperation {oOpr = Natural (Linear {oIs = is})} =
+  (TargetInstruction FPUSH) `elem` is
+isPro _ = False
+
+isEpi SingleOperation {oOpr = Natural (Linear {oIs = is})} =
+  (TargetInstruction FPOP) `elem` is
 isEpi _ = False
 
 -- This transform replaces stack frame object indices in the code by actual
@@ -460,7 +416,7 @@ myLowerFrameIndices' need done align f @ Function {fCode = code, fFixedStackFram
 myLowerFrameIndices' need done align f @ Function {fCode = code, fFixedStackFrame = fobjs,
                                                    fStackFrame = objs} =
   let need'    = ((((need-1) `div` align) + 1) * align)
-      code'    = replaceFIsByImms done  done  (mkTargetRegister RBP) True fobjs code
+      code'    = replaceFIsByImms done  done  (mkTargetRegister RBX) True fobjs code
       code''   = replaceFIsByImms need'    0  (mkTargetRegister RSP) False objs code'
   in f {fCode = code''}
 
@@ -473,10 +429,15 @@ liftFIif basereg fixed decr idxToOff (Bundle os) =
   mkBundle $ map (liftFIif basereg fixed decr idxToOff) os
 
 liftFIif _ False decr _
-  o @ SingleOperation {oOpr = Natural ni @ (Linear {oIs = [TargetInstruction i]})}
-  | i `elem` [SUBRSP_pseudo, ADDRSP_pseudo]
+  o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [use1]})}
+  | use1 == Bound mkMachineFrameSize
   = let use1' = mkBound (mkMachineImm decr)
     in o {oOpr = Natural ni {oUs = [use1']}}
+liftFIif _ False decr _
+  o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [use1,use2]})}
+  | use2 == Bound mkMachineFrameSize
+  = let use2' = mkBound (mkMachineImm decr)
+    in o {oOpr = Natural ni {oUs = [use1,use2']}}
 liftFIif basereg fixed _ idxToOff
   o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [(Bound (MachineFrameIndex idx fixed' off1)),
                                                            use2,
@@ -529,6 +490,37 @@ addFunWrites o
   | isFun o
   = mapToWrites (++ [OtherSideEffect EFLAGS]) o
 addFunWrites o = o
+
+-- This transformation adds SPILL32 and SPILL optional operations instructions
+-- in entry and exit blocks
+
+addSpillIndicators f @ Function {fCode = code} =
+  let fcode = flatten code
+      insts = S.fromList $ concatMap oInstructions fcode
+      act32 = intersectionWithList insts [TargetInstruction STORE256]
+      act   = intersectionWithList insts [TargetInstruction STORE8,
+                                          TargetInstruction STORE16,
+                                          TargetInstruction STORE32,
+                                          TargetInstruction STORE64,
+                                          TargetInstruction STORE128]
+      (_, oid, _) = newIndexes $ fcode 
+      (_, code') = mapAccumL (addSpillIndicatorsToBlock act32 act) oid code
+  in f {fCode = code'}
+
+intersectionWithList set = S.toList . S.intersection set . S.fromList
+
+addSpillIndicatorsToBlock act32 act oid b @ Block {bCode = (e : code)}
+  | (isEntryBlock b || isExitBlock b)
+  = let spill  = mkSpillInd act32 (oid + 0) SPILL32
+        spill' = mkSpillInd act (oid + 1) SPILL
+    in ((oid + 2), b {bCode = [e, spill, spill'] ++ code})
+
+addSpillIndicatorsToBlock _ _ oid b = (oid, b)
+
+mkSpillInd act oid ti =
+  addActivators act $ makeOptional $ mkLinear oid [TargetInstruction ti] [] []
+
+addActivators = mapToActivators . (++)
 
 -- This transformation adds VZEROUPPER instructions right before calls and returns
 -- after stretches of code that touches any YMM register.

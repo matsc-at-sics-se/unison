@@ -205,7 +205,7 @@ regClasses =
                        FR32, FR64, FR128, VR128, VR256,
                        FR32_AUX,
                        VR2048_AUX,
-                       AUX] ++
+                       AUXE, AUXR, AUXB] ++
     map InfiniteRegisterClass [M8, M16, M32, M64, M128, M256, RM8, RM16, RM32, RM64, RM128, RM256]
 
 -- | Individual registers of each register class (octal, internal names)
@@ -372,8 +372,14 @@ registers (RegisterClass VR128) =
 registers (RegisterClass VR256) =
     [YMM0, YMM1, YMM2, YMM3, YMM4, YMM5, YMM6, YMM7, YMM8, YMM9, YMM10, YMM11, YMM12, YMM13, YMM14, YMM15]
 
-registers (RegisterClass AUX) =
-    [EFLAGS, RIP]
+registers (RegisterClass AUXE) =
+    [EFLAGS]
+
+registers (RegisterClass AUXR) =
+    [RIP]
+
+registers (RegisterClass AUXB) =
+    [RBX]
 
 registers (RegisterClass ALL) =
     registers (RegisterClass GPR) ++ registers (RegisterClass VR128)
