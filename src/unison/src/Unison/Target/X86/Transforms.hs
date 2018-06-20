@@ -429,15 +429,17 @@ liftFIif basereg fixed decr idxToOff (Bundle os) =
   mkBundle $ map (liftFIif basereg fixed decr idxToOff) os
 
 liftFIif _ False decr _
-  o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [use1]})}
-  | use1 == Bound mkMachineFrameSize
+  o @ SingleOperation {oOpr = Natural ni @ (Linear {oIs = [TargetInstruction i]})}
+  | i `elem` [FPUSH32, FPUSH, NOFPUSH]
   = let use1' = mkBound (mkMachineImm decr)
     in o {oOpr = Natural ni {oUs = [use1']}}
+
 liftFIif _ False decr _
-  o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [use1,use2]})}
-  | use2 == Bound mkMachineFrameSize
+  o @ SingleOperation {oOpr = Natural ni @ (Linear {oIs = [TargetInstruction i], oUs = [use1,_]})}
+  | i `elem` [FPOP32, FPOP, NOFPOP]
   = let use2' = mkBound (mkMachineImm decr)
     in o {oOpr = Natural ni {oUs = [use1,use2']}}
+
 liftFIif basereg fixed _ idxToOff
   o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [(Bound (MachineFrameIndex idx fixed' off1)),
                                                            use2,
@@ -448,6 +450,7 @@ liftFIif basereg fixed _ idxToOff
   = let use1' = mkRegister basereg
         use4' = mkBound (mkMachineImm $ (idxToOff M.! idx) + off1 + off2)
     in o {oOpr = Natural ni {oUs = [use1',use2,use3,use4',use5]}}
+
 liftFIif basereg fixed _ idxToOff
   o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [(Bound (MachineFrameIndex idx fixed' off1)),
                                                            use2,
@@ -459,6 +462,7 @@ liftFIif basereg fixed _ idxToOff
   = let use1' = mkRegister basereg
         use4' = mkBound (mkMachineImm $ (idxToOff M.! idx) + off1 + off2)
     in o {oOpr = Natural ni {oUs = [use1',use2,use3,use4',use5,use6]}}
+
 liftFIif basereg fixed _ idxToOff
   o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [use1,
                                                            (Bound (MachineFrameIndex idx fixed' off1)),
@@ -470,6 +474,7 @@ liftFIif basereg fixed _ idxToOff
   = let use2' = mkRegister basereg
         use5' = mkBound (mkMachineImm $ (idxToOff M.! idx) + off1 + off2)
     in o {oOpr = Natural ni {oUs = [use1,use2',use3,use4,use5',use6]}}
+
 liftFIif _ _ _ _ o = o
 
 addStackIndexReadsSP
@@ -527,19 +532,20 @@ addActivators = mapToActivators . (++)
 
 addVzeroupper f @ Function {fCode = code} =
   let icfg   = ICFG.fromBCFG $ BCFG.fromFunction branchInfo' f
-      cnodes = [id | (id, (_, o)) <- G.labNodes icfg, isCall o || isTailCall o]
-      rnodes = [id | (id, (_, o)) <- G.labNodes icfg,
-                (TargetInstruction RETQ) `elem` oInstructions o]
+      cnodes = [id | (id, (_, o)) <- G.labNodes icfg, isCall o || isTailCall o || isRet o]
       cedges = concat [[(id, s) | s <- G.suc icfg id] | id <- cnodes]
       icfg'  = G.delEdges cedges icfg
       icfgr  = G.grev icfg'
-      callFuns = filter (\o -> isCall o || isTailCall o || isFun o) (flatten code)
-      cnodes' = filter (insertCandidate icfg callFuns) cnodes
-      creach = [(id, G.reachable id icfgr) | id <- cnodes' ++ rnodes]
+      controlInsns = filter (\o -> isCall o || isTailCall o || isFun o || isRet o || isDelimiter o) (flatten code)
+      cnodes' = filter (insertCandidate icfg controlInsns) cnodes
+      creach = [(id, G.reachable id icfgr) | id <- cnodes']
       ymmreach = [snd (fromJust (G.lab icfg id)) | (id, reachers) <- creach,
                   any (isYMMDirtying icfg) reachers]
       code'  = foldl insertVzeroupper code ymmreach
   in f {fCode = code'}
+
+isRet o =
+  (TargetInstruction RETQ) `elem` oInstructions o
 
 isYMMDirtying icfg id =
   isDirtyYMMOp $ snd (fromJust (G.lab icfg id))
@@ -554,19 +560,23 @@ insertVzeroupper code o =
       code' = map (insertOperationInBlock before (isIdOf o) vzu) code
    in code'
 
-insertCandidate icfg callFuns id =
+insertCandidate icfg controlInsns id =
   let o = snd (fromJust (G.lab icfg id))
-  in relevantFunAfter callFuns o
+  in unusedYMMAfter controlInsns o
 
-relevantFunAfter [] _ = True
+unusedYMMAfter [] _ = True
 
-relevantFunAfter (call : fun : _) o
+unusedYMMAfter (call : (SingleOperation {oOpr = Virtual (Fun {oFunctionUs = funuses})}) : _) o
   | call == o
-  = let (SingleOperation {oOpr = Virtual (Fun {oFunctionUs = funuses})}) = fun
-    in not (any ymmPreassigned funuses)
+  = not (any ymmPreassigned funuses)
 
-relevantFunAfter (_ : rest) o
-  = relevantFunAfter rest o
+unusedYMMAfter (ret : out : _) o
+  | ret == o
+  = let (SingleOperation {oOpr = Virtual (Delimiter (Out {oOuts = outuses}))}) = out
+    in not (any ymmPreassigned outuses)
+
+unusedYMMAfter (_ : rest) o
+  = unusedYMMAfter rest o
 
 ymmPreassigned p =
   case preAssignment p of
