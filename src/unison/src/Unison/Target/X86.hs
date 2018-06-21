@@ -26,7 +26,6 @@ import Unison.Target.Query
 import Unison.Analysis.TemporaryType
 import Unison.Target.X86.Common
 import Unison.Target.X86.Registers
-import Unison.Target.X86.OperandInfo
 import Unison.Target.X86.Transforms
 import Unison.Target.X86.Usages
 import Unison.Target.X86.BranchInfo
@@ -34,7 +33,6 @@ import Unison.Target.X86.X86RegisterDecl
 import Unison.Target.X86.X86ResourceDecl
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
-import Unison.Target.X86.SpecsGen.X86ItineraryDecl
 
 target =
     API.TargetDescription {
@@ -56,7 +54,7 @@ target =
       API.tCopies           = const copies,
       API.tRematInstrs      = const rematInstrs,
       API.tFromCopy         = const fromCopy,
-      API.tOperandInfo      = const operandInfo,
+      API.tOperandInfo      = operandInfo,
       API.tAlignedPairs     = const SpecsGen.alignedPairs,
       API.tPackedPairs      = const (const (const [])),
       API.tRelatedPairs     = const (const []),
@@ -396,279 +394,11 @@ stackDirection = API.StackGrowsDown
 preProcess _ = [mapToMachineInstruction cleanFunRegisters,
                 mapToMachineInstruction promoteImplicitOperands]
 
--- This transformation hides the stack pointer as a use and definition of
--- function calls.
-cleanFunRegisters
- mi @ MachineSingle {msOpcode = MachineVirtualOpc FUN, msOperands = mos} =
-    let mos' = [mr | mr @ MachineReg {mrName = r} <- mos, r /= RSP]
-    in mi {msOperands = mos'}
-
-cleanFunRegisters mi = mi
-
--- This transformation adds implicit uses and definitions that have been
--- promoted with specsgen. The order of the operands is:
--- 1. explicit defs
--- 2. implicit defs
--- 3. explicit uses
--- 4. implicit uses
--- 5. rest (for example, memory annotations to be lifted)
--- The transformation relies on the register lifting functionality in 'uni
--- import' to lift the added implicit uses and definitions to temporaries.
-promoteImplicitOperands
-  mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = mos} =
-    let mos' = promoteImplicitRegs i promotedRegs mos
-    in mi {msOperands = mos'}
-
-promoteImplicitOperands mi = mi
-
-promoteImplicitRegs i regs mos =
-  let oif = operandInfo i
-      ws  = filter (writesSideEffect i) regs
-      firstImpDef = length (snd oif) - length ws
-      (eds, mos1) = splitAt firstImpDef mos
-      rs  = filter (readsSideEffect i) regs
-      firstImpUse = length (fst oif) - length rs
-      (eus, mos2) = splitAt firstImpUse mos1
-  in eds ++ map mkMachineReg ws ++ eus ++ map mkMachineReg rs ++ mos2
-
 -- | Target dependent post-processing functions
 
 postProcess to = [expandPseudos to,
                   mapToMachineInstruction demoteImplicitOperands,
                   mapToMachineInstruction addImplicitRegs]
-
--- This transformation removes operands that are explicit according to OperandInfo
--- but in fact are implicit according to ReadWriteInfo.  It also sets MachineInstructionPropertyDefs
--- to the number of truly explicit defs, because Prepareforemission would compute the wrong value
--- otherwise.
-
-demoteImplicitOperands mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = mos, msProperties = props}
-  = let (uif,dif) = operandInfo i
-        ws  = filter (writesSideEffect i) promotedRegs
-        rs  = filter (readsSideEffect i) promotedRegs
-        (eds, mos') = splitAt (length dif - length ws) mos
-        (_, mos'') = splitAt (length ws) mos'
-        (eus, _) = splitAt (length uif - length rs) mos''
-        props' = props ++ [mkMachineInstructionPropertyDefs (toInteger $ length eds)]
-  in mi {msOperands = eds++eus, msProperties = props'}
-
--- This transformation replaces MachineIR.Transformations.AddImplicitRegs, which would otherwise
--- for every write side-effect add both MachineRegImplicit and MachineRegImplicitDef.
-
-addImplicitRegs mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = mos} =
-  let (uif,dif) = readWriteInfo i
-      imp   = [MachineReg d [mkMachineRegImplicitDefine] |
-               (OtherSideEffect d) <- dif] ++
-              [MachineReg u [mkMachineRegImplicit] |
-               (OtherSideEffect u) <- uif]
-      mos'  = mos ++ imp
-  in mi {msOperands = mos'}
-
-expandPseudos to = mapToMachineBlock (expandBlockPseudos (expandPseudo to))
-
-expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc i})
-  | i `elem` [SPILL32, SPILL, NOFPUSH, NOFPOP]
-  = []
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPUSH,
-                                   msOperands = [_,off]}
-  | off == MachineImm 8
-  = let cx = mkMachineReg RCX
-    in [[mi {msOpcode = mkMachineTargetOpc PUSH64r,
-             msOperands = [cx]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPUSH,
-                                   msOperands = [_,off]}
-  = let sp = mkMachineReg RSP
-    in [[mi {msOpcode = mkMachineTargetOpc SUB64ri8,
-             msOperands = [sp, sp, off]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPUSH32,
-                                   msOperands = [dst,off]}
-  = let sp = mkMachineReg RSP
-        im32 = mkMachineImm (-32)
-    in [[mi {msOpcode = mkMachineTargetOpc MOV64rr,
-             msOperands = [dst, sp]}],
-        [mi {msOpcode = mkMachineTargetOpc AND64ri8,
-             msOperands = [sp, sp, im32]}],
-        [mi {msOpcode = mkMachineTargetOpc SUB64ri8,
-             msOperands = [sp, sp, off]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPOP,
-                                   msOperands = [_,off]}
-  | off == MachineImm 8
-  = let cx = mkMachineReg RCX
-    in [[mi {msOpcode = mkMachineTargetOpc POP64r,
-             msOperands = [cx]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPOP,
-                                   msOperands = [_,off]}
-  = let sp = mkMachineReg RSP
-    in [[mi {msOpcode = mkMachineTargetOpc ADD64ri8,
-             msOperands = [sp, sp, off]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPOP32,
-                                   msOperands = [src,_]}
-  = let sp = mkMachineReg RSP
-    in [[mi {msOpcode = mkMachineTargetOpc MOV64rr,
-             msOperands = [sp, src]}]]
-
-expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc PUSH_fi, msOperands = [_, s]})
-  = [[mkMachineSingle (MachineTargetOpc PUSH64r) [] [s]]]
-
-expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc POP_fi, msOperands = [d, _]})
-  = [[mkMachineSingle (MachineTargetOpc POP64r) [] [d]]]
-
--- expand pseudos that stem from llvm; see X86ExpandPseudo.cpp
-
--- doing it with XOR, which clobbers EFLAGS
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r0,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc XOR32rr,
-          msOperands = [dst, dst, dst]}]]
-
--- could do it with XOR + INC, which clobbers EFLAGS
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r1,
-                                   msOperands = [dst]}
-  = let imm = mkMachineImm 1
-  in [[mi {msOpcode = mkMachineTargetOpc MOV32ri,
-           msOperands = [dst, imm]}]]
-
--- could do it with XOR + DEC, which clobbers EFLAGS
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r_1,
-                                   msOperands = [dst]}
-  = let imm = mkMachineImm (-1)
-  in [[mi {msOpcode = mkMachineTargetOpc MOV32ri,
-           msOperands = [dst, imm]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32ri64}
-  = [[mi {msOpcode = mkMachineTargetOpc MOV32ri}]]
-
--- candidate for LEA?
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD16ri8_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD16ri8}]]
-
--- candidate for LEA?
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD16ri_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD16ri}]]
-
--- candidate for LEA?
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD16rr_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD16rr}]]
-
--- candidate for LEA?
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD32ri8_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD32ri8}]]
-
--- candidate for LEA?
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD32ri_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD32ri}]]
-
--- candidate for LEA?
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD32rr_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD32rr}]]
-
--- candidate for LEA?
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64ri8_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD64ri8}]]
-
--- candidate for LEA?
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64ri32_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD64ri32}]]
-
--- candidate for LEA?
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64rr_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD64rr}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc AVX2_SETALLONES,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc VPCMPEQDrr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc AVX_SET0,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc VXORPSYrr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FsFLD0SD,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc FsXORPDrr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FsFLD0SS,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc FsXORPSrr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C8r,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc SBB8rr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C16r,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc SBB16rr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C32r,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc SBB32rr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C64r,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc SBB64rr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc TEST8ri_NOREX}
-  = [[mi {msOpcode = mkMachineTargetOpc TEST8ri}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc V_SET0,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc VXORPSrr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc V_SETALLONES,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc PCMPEQDrr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc mto,
-                                   msOperands = [lab,MachineImm off]}
-  | mto `elem` [TCRETURNdi, TCRETURNri, TCRETURNdi64, TCRETURNri64]
-  = maybeAdjustSP off ++
-    [[mi {msOpcode = mkMachineTargetOpc (expandedTailJump mto),
-          msOperands = [lab]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc mto,
-                                   msOperands = [a,b,c,d,e,MachineImm off]}
-  | mto `elem` [TCRETURNmi, TCRETURNmi64]
-  = maybeAdjustSP off ++
-    [[mi {msOpcode = mkMachineTargetOpc (expandedTailJump mto),
-          msOperands = [a,b,c,d,e]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc i}
-  | SpecsGen.itinerary i == NoItinerary
-  = trace ("WARNING: missing expansion of instruction " ++ show i) [[mi]]
-
-expandPseudo _ mi = [[mi]]
-
-expandedTailJump TCRETURNdi = TAILJMPd
-expandedTailJump TCRETURNri = TAILJMPr
-expandedTailJump TCRETURNmi = TAILJMPm
-expandedTailJump TCRETURNdi64 = TAILJMPd64
-expandedTailJump TCRETURNri64 = TAILJMPr64
-expandedTailJump TCRETURNmi64 = TAILJMPm64
-
-maybeAdjustSP 0 = []
-maybeAdjustSP off
-  | off > 0
-  = let sp = mkMachineReg RSP
-    in [[mkMachineSingle (mkMachineTargetOpc ADD64ri32) [] [sp, sp, mkMachineImm off]]]
-maybeAdjustSP off
-  | off < 0
-  = let sp = mkMachineReg RSP
-    in [[mkMachineSingle (mkMachineTargetOpc SUB64ri32) [] [sp, sp, mkMachineImm (-off)]]]
 
 -- | Gives a list of function transformers
 
@@ -696,8 +426,6 @@ readWriteLatency _ _ (_, Read) (_, Write) = 0
 readWriteLatency _ _ ((_, VirtualType (DelimiterType InType)), _) (_, _) = 1
 readWriteLatency _ _ ((_, VirtualType FunType), _) (_, _) = 1
 readWriteLatency _ _ ((_, VirtualType _), _) (_, _) = 0
-readWriteLatency _ _ ((TargetInstruction p, _), _) (_, _)
-  | p `elem` [NOFPUSH, NOFPOP] = 0
 readWriteLatency to _ ((TargetInstruction p, _), _) (_, _) =
     maybeMax 0 $ map occupation (usages to p)
 
@@ -877,3 +605,13 @@ proEpiInfo' osp32 osp ofpush ofpop opushl opopl (o : code)
 
 proEpiInfo' osp32 osp ofpush ofpop opushl opopl (_ : code)
   = proEpiInfo' osp32 osp ofpush ofpop opushl opopl code
+
+-- slight adjustment of operandInfo
+
+operandInfo _ i
+  | i `elem` [NOFPUSH] =
+    let ([use], [def]) = SpecsGen.operandInfo i
+    in ([use], [def {oiLatency = 0}])
+  | otherwise =
+    SpecsGen.operandInfo i
+
