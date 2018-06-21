@@ -23,7 +23,6 @@ itineraryUsage' to i it =
 
 -- these are NoItinerary and disappear, whereas other NoItinerary are pseudos for real instructions
 itineraryUsage i _
-  | i `elem` [NOFPUSH, NOFPOP] = [mkUsage NoDominator 1 0]
   | isVoidInstruction i = []
   | i == FPUSH32 = [mkUsage Pipe 1 3]
   | otherwise = [mkUsage Pipe 1 1]

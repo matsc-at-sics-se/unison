@@ -514,11 +514,16 @@ addSpillIndicators f @ Function {fCode = code} =
 
 intersectionWithList set = S.toList . S.intersection set . S.fromList
 
+addSpillIndicatorsToBlock [] act oid b @ Block {bCode = (e : code)}
+  | (isEntryBlock b || isExitBlock b)
+  = let spill    = mkSpillInd act (oid + 0) SPILL
+    in ((oid + 1), b {bCode = [e, spill] ++ code})
+
 addSpillIndicatorsToBlock act32 act oid b @ Block {bCode = (e : code)}
   | (isEntryBlock b || isExitBlock b)
-  = let spill  = mkSpillInd act32 (oid + 0) SPILL32
-        spill' = mkSpillInd act (oid + 1) SPILL
-    in ((oid + 2), b {bCode = [e, spill, spill'] ++ code})
+  = let spill32  = mkSpillInd act32 (oid + 0) SPILL32
+        spill    = mkSpillInd act (oid + 1) SPILL
+    in ((oid + 2), b {bCode = [e, spill32, spill] ++ code})
 
 addSpillIndicatorsToBlock _ _ oid b = (oid, b)
 
@@ -592,8 +597,8 @@ removeDeadEflags f @ Function {fCode = code} =
   let icfg   = ICFG.fromBCFG $ BCFG.fromFunction branchInfo' f
       srcids = [id | (id, (_, o)) <- G.labNodes icfg, isMandatory o, oWritesEflags o]
       sinkids = [id | (id, (_, o)) <- G.labNodes icfg, oReadsEflags o]
-      srcedges = concat [[(p,id) | p <- G.pre icfg id] | id <- srcids]
-      sinkedges = concat [[(id,s) | s <- G.suc icfg id] | id <- sinkids]
+      srcedges = concat [[(p,id) | p <- G.pre icfg id] | id <- srcids, not (id `elem` sinkids)]
+      sinkedges = concat [[(id,s) | s <- G.suc icfg id] | id <- sinkids, not (id `elem` srcids)]
       icfg'  = G.delEdges (srcedges ++ sinkedges) icfg
       creach = [(id, G.reachable id icfg') | id <- srcids]
       livesrcs = [oId $ snd (fromJust (G.lab icfg' id)) | (id, reachers) <- creach,

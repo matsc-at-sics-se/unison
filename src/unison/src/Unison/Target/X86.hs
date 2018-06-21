@@ -34,6 +34,7 @@ import Unison.Target.X86.X86RegisterDecl
 import Unison.Target.X86.X86ResourceDecl
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
+import Unison.Target.X86.SpecsGen.X86ItineraryDecl
 
 target =
     API.TargetDescription {
@@ -363,11 +364,7 @@ resources =
 
      -- Resources as defined by X86ScheduleV6
 
-     Resource Pipe 1,
-
-     -- Fake resources to prevent bad nogoods
-
-     Resource NoDominator 1
+     Resource Pipe 1
 
     ]
 
@@ -475,8 +472,15 @@ expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc i})
 
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPUSH,
                                    msOperands = [_,off]}
+  | off == MachineImm 8
+  = let cx = mkMachineReg RCX
+    in [[mi {msOpcode = mkMachineTargetOpc PUSH64r,
+             msOperands = [cx]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPUSH,
+                                   msOperands = [_,off]}
   = let sp = mkMachineReg RSP
-    in [[mi {msOpcode = mkMachineTargetOpc SUB64ri32,
+    in [[mi {msOpcode = mkMachineTargetOpc SUB64ri8,
              msOperands = [sp, sp, off]}]]
 
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPUSH32,
@@ -489,6 +493,13 @@ expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPUSH32,
              msOperands = [sp, sp, im32]}],
         [mi {msOpcode = mkMachineTargetOpc SUB64ri8,
              msOperands = [sp, sp, off]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPOP,
+                                   msOperands = [_,off]}
+  | off == MachineImm 8
+  = let cx = mkMachineReg RCX
+    in [[mi {msOpcode = mkMachineTargetOpc POP64r,
+             msOperands = [cx]}]]
 
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPOP,
                                    msOperands = [_,off]}
@@ -636,6 +647,10 @@ expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc mto,
     [[mi {msOpcode = mkMachineTargetOpc (expandedTailJump mto),
           msOperands = [a,b,c,d,e]}]]
 
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc i}
+  | SpecsGen.itinerary i == NoItinerary
+  = trace ("WARNING: missing expansion of instruction " ++ show i) [[mi]]
+
 expandPseudo _ mi = [[mi]]
 
 expandedTailJump TCRETURNdi = TAILJMPd
@@ -681,6 +696,8 @@ readWriteLatency _ _ (_, Read) (_, Write) = 0
 readWriteLatency _ _ ((_, VirtualType (DelimiterType InType)), _) (_, _) = 1
 readWriteLatency _ _ ((_, VirtualType FunType), _) (_, _) = 1
 readWriteLatency _ _ ((_, VirtualType _), _) (_, _) = 0
+readWriteLatency _ _ ((TargetInstruction p, _), _) (_, _)
+  | p `elem` [NOFPUSH, NOFPOP] = 0
 readWriteLatency to _ ((TargetInstruction p, _), _) (_, _) =
     maybeMax 0 $ map occupation (usages to p)
 
@@ -731,23 +748,39 @@ prologueEpilogueConstraints Function {fCode = blocks, fStackFrame = objs, fStack
       mustFpush = (align == 16 || sasize > 0)
       mayFpush = any isCall fcode
       blockInfo = concatMap proEpiInfo blocks
-  in concatMap indicatorConstraints blockInfo ++
+      blockIns = map (oId . blockIn) blocks
+  in (concatMap indicatorConstraints $ zip blockIns blockInfo) ++
      (concatMap (prologueConstraints mustFpush32 mustFpush mayFpush) blockInfo) ++
      (concatMap (epilogueConstraints mustFpush32 mustFpush mayFpush) blockInfo)
 
-indicatorConstraints (Nothing, Nothing, _, _, _, _) = []
+indicatorConstraints (_, (Nothing, Nothing, _, _, _, _)) = []
 
-indicatorConstraints (Just osp32, Just osp, _, _, _, _)
-  = [DistanceExpr osp32 1 0, DistanceExpr osp 1 0]
+indicatorConstraints (oin, (Nothing, Just osp, _, _, _, _))
+  = [DistanceExpr osp   oin (-1)]
+
+indicatorConstraints (oin, (Just osp32, Just osp, _, _, _, _))
+  = [DistanceExpr osp32 oin (-1),
+     DistanceExpr osp   oin (-1)]
 
 prologueConstraints _ _ _ (_, _, Nothing, _, _, _) = []
 
 prologueConstraints True _ _ (_, _, Just ofpush, _, _, _)
   = [ImplementsExpr ofpush (TargetInstruction FPUSH32)]
 
+prologueConstraints _ True _ (Nothing, _, Just ofpush, _, _, _)
+  = [ImplementsExpr ofpush (TargetInstruction FPUSH)]
+
 prologueConstraints _ True _ (Just osp32, _, Just ofpush, _, _, _)
   = [XorExpr (ActiveExpr osp32) (ImplementsExpr ofpush (TargetInstruction FPUSH))] ++
     [NotExpr (ImplementsExpr ofpush (TargetInstruction NOFPUSH))]
+
+prologueConstraints _ _ True (Nothing, Just osp, Just ofpush, _, [p1,p2,p3,p4,p5,p6], _) =
+  let nofcond = AndExpr [NotExpr (ActiveExpr osp),
+                         XorExpr (XorExpr (XorExpr (ActiveExpr p1) (ActiveExpr p2))
+                                          (XorExpr (ActiveExpr p3) (ActiveExpr p4)))
+                                 (XorExpr (ActiveExpr p5) (ActiveExpr p6))]
+  in [NotExpr (ImplementsExpr ofpush (TargetInstruction FPUSH32))] ++
+     [XorExpr (NotExpr nofcond) (ImplementsExpr ofpush (TargetInstruction NOFPUSH))]
 
 prologueConstraints _ _ True (Just osp32, Just osp, Just ofpush, _, [p1,p2,p3,p4,p5,p6], _) =
   let nofcond = AndExpr [NotExpr (ActiveExpr osp32),
@@ -757,6 +790,11 @@ prologueConstraints _ _ True (Just osp32, Just osp, Just ofpush, _, [p1,p2,p3,p4
                                  (XorExpr (ActiveExpr p5) (ActiveExpr p6))]
   in [XorExpr (NotExpr (ActiveExpr osp32)) (ImplementsExpr ofpush (TargetInstruction FPUSH32))] ++
      [XorExpr (NotExpr nofcond) (ImplementsExpr ofpush (TargetInstruction NOFPUSH))]
+
+prologueConstraints _ _ _ (Nothing, Just osp, Just ofpush, _, _, _) =
+  let fcond = ActiveExpr osp
+  in [NotExpr (ImplementsExpr ofpush (TargetInstruction FPUSH32))] ++
+     [XorExpr fcond (ImplementsExpr ofpush (TargetInstruction NOFPUSH))]
 
 prologueConstraints _ _ _ (Just osp32, Just osp, Just ofpush, _, _, _) =
   let nofcond = AndExpr [NotExpr (ActiveExpr osp32),
@@ -769,9 +807,20 @@ epilogueConstraints _ _ _ (_, _, _, Nothing, _, _) = []
 epilogueConstraints True _ _ (_, _, _, Just ofpop, _, _)
   = [ImplementsExpr ofpop (TargetInstruction FPOP32)]
 
+epilogueConstraints _ True _ (Nothing, _, _, Just ofpop, _, _)
+  = [ImplementsExpr ofpop (TargetInstruction FPOP)]
+
 epilogueConstraints _ True _ (Just osp32, _, _, Just ofpop, _, _)
   = [XorExpr (ActiveExpr osp32) (ImplementsExpr ofpop (TargetInstruction FPOP))] ++
     [NotExpr (ImplementsExpr ofpop (TargetInstruction NOFPOP))]
+
+epilogueConstraints _ _ True (Nothing, Just osp, _, Just ofpop, _, [p1,p2,p3,p4,p5,p6]) =
+  let nofcond = AndExpr [NotExpr (ActiveExpr osp),
+                         XorExpr (XorExpr (XorExpr (ActiveExpr p1) (ActiveExpr p2))
+                                          (XorExpr (ActiveExpr p3) (ActiveExpr p4)))
+                                 (XorExpr (ActiveExpr p5) (ActiveExpr p6))]
+  in [NotExpr (ImplementsExpr ofpop (TargetInstruction FPOP32))] ++
+     [XorExpr (NotExpr nofcond) (ImplementsExpr ofpop (TargetInstruction NOFPOP))]
 
 epilogueConstraints _ _ True (Just osp32, Just osp, _, Just ofpop, _, [p1,p2,p3,p4,p5,p6]) =
   let nofcond = AndExpr [NotExpr (ActiveExpr osp32),
@@ -781,6 +830,11 @@ epilogueConstraints _ _ True (Just osp32, Just osp, _, Just ofpop, _, [p1,p2,p3,
                                  (XorExpr (ActiveExpr p5) (ActiveExpr p6))]
   in [XorExpr (NotExpr (ActiveExpr osp32)) (ImplementsExpr ofpop (TargetInstruction FPOP32))] ++
      [XorExpr (NotExpr nofcond) (ImplementsExpr ofpop (TargetInstruction NOFPOP))]
+
+epilogueConstraints _ _ _ (Nothing, Just osp, _, Just ofpop, _, _) =
+  let fcond = ActiveExpr osp
+  in [NotExpr (ImplementsExpr ofpop (TargetInstruction FPOP32))] ++
+     [XorExpr fcond (ImplementsExpr ofpop (TargetInstruction NOFPOP))]
 
 epilogueConstraints _ _ _ (Just osp32, Just osp, _, Just ofpop, _, _) =
   let nofcond = AndExpr [NotExpr (ActiveExpr osp32),
