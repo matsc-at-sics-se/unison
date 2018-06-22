@@ -14,12 +14,15 @@ module Unison.Target.X86.Common
      isRematerializable, isSourceInstr,
      isDematInstr, isRematInstr, sourceInstr, dematInstr, rematInstr, originalInstr,
      hasRegMemInstr, hasMemRegInstr, isRegMemInstr, isMemRegInstr, regMemInstr, memRegInstr, 
-     spillInstrs, condMoveInstrs, promotedRegs, readsSideEffect,
-     writesSideEffect, isDirtyYMMInsn, isDirtyYMMOp, isUseYMMInsn) where
+     spillInstrs, condMoveInstrs, condMoveInverses, condMoveAlts,
+     promotedRegs, readsSideEffect,
+     writesSideEffect, isDirtyYMMInsn, isDirtyYMMOp, isUseYMMInsn,
+     reg32ToReg64, machineReg32ToReg64) where
 
 import qualified Data.Map as M
 import Data.Maybe
 
+import MachineIR
 import Unison
 import qualified Unison.Target.API as API
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
@@ -74,30 +77,79 @@ rematVersions = M.fromList
    (V_SETALLONES, RematTriple V_SETALLONES_source V_SETALLONES_demat V_SETALLONES_remat),
    (AVX_SET0, RematTriple AVX_SET0_source AVX_SET0_demat AVX_SET0_remat),
    (AVX2_SETALLONES, RematTriple AVX2_SETALLONES_source AVX2_SETALLONES_demat AVX2_SETALLONES_remat),
-   (FsFLD0SS, RematTriple FsFLD0SS_source FsFLD0SS_demat FsFLD0SS_remat)]
+   (FsFLD0SS, RematTriple FsFLD0SS_source FsFLD0SS_demat FsFLD0SS_remat),
+   (FsFLD0SD, RematTriple FsFLD0SD_source FsFLD0SD_demat FsFLD0SD_remat)]
 
 spillInstrs = [MOV8mr, MOV8mr_NOREX, MOV8rm, MOV8rm_NOREX,
                MOV16mr, MOV16rm, MOV32mr, MOV32rm, MOV64mr, MOV64rm]
 
-condMoveInstrs = [CMOVA16rm, CMOVA16rr,
-     CMOVA32rm, CMOVA32rr, CMOVA64rm, CMOVA64rr, CMOVAE16rm, CMOVAE16rr,
-     CMOVAE32rm, CMOVAE32rr, CMOVAE64rm, CMOVAE64rr, CMOVB16rm,
-     CMOVB16rr, CMOVB32rm, CMOVB32rr, CMOVB64rm, CMOVB64rr, CMOVBE16rm,
-     CMOVBE16rr, CMOVBE32rm, CMOVBE32rr, CMOVBE64rm, CMOVBE64rr,
-     CMOVE16rm, CMOVE16rr, CMOVE32rm, CMOVE32rr, CMOVE64rm, CMOVE64rr,
-     CMOVG16rm, CMOVG16rr, CMOVG32rm, CMOVG32rr, CMOVG64rm, CMOVG64rr,
-     CMOVGE16rm, CMOVGE16rr, CMOVGE32rm, CMOVGE32rr, CMOVGE64rm,
-     CMOVGE64rr, CMOVL16rm, CMOVL16rr, CMOVL32rm, CMOVL32rr, CMOVL64rm,
-     CMOVL64rr, CMOVLE16rm, CMOVLE16rr, CMOVLE32rm, CMOVLE32rr,
-     CMOVLE64rm, CMOVLE64rr, CMOVNE16rm, CMOVNE16rr, CMOVNE32rm,
-     CMOVNE32rr, CMOVNE64rm, CMOVNE64rr, CMOVNO16rm, CMOVNO16rr,
-     CMOVNO32rm, CMOVNO32rr, CMOVNO64rm, CMOVNO64rr, CMOVNP16rm,
-     CMOVNP16rr, CMOVNP32rm, CMOVNP32rr, CMOVNP64rm, CMOVNP64rr,
-     CMOVNS16rm, CMOVNS16rr, CMOVNS32rm, CMOVNS32rr, CMOVNS64rm,
-     CMOVNS64rr, CMOVO16rm, CMOVO16rr, CMOVO32rm, CMOVO32rr, CMOVO64rm,
-     CMOVO64rr, CMOVP16rm, CMOVP16rr, CMOVP32rm, CMOVP32rr, CMOVP64rm,
-     CMOVP64rr, CMOVS16rm, CMOVS16rr, CMOVS32rm, CMOVS32rr, CMOVS64rm,
-     CMOVS64rr]
+condMoveAlts = M.fromList
+  [(CMOVA16rr, CMOVA16rr_swap),
+   (CMOVA32rr, CMOVA32rr_swap),
+   (CMOVA64rr, CMOVA64rr_swap),
+   (CMOVAE16rr, CMOVAE16rr_swap),
+   (CMOVAE32rr, CMOVAE32rr_swap),
+   (CMOVAE64rr, CMOVAE64rr_swap),
+   (CMOVB16rr, CMOVB16rr_swap),
+   (CMOVB32rr, CMOVB32rr_swap),
+   (CMOVB64rr, CMOVB64rr_swap),
+   (CMOVBE16rr, CMOVBE16rr_swap),
+   (CMOVBE32rr, CMOVBE32rr_swap),
+   (CMOVBE64rr, CMOVBE64rr_swap),
+   (CMOVE16rr, CMOVE16rr_swap),
+   (CMOVE32rr, CMOVE32rr_swap),
+   (CMOVE64rr, CMOVE64rr_swap),
+   (CMOVG16rr, CMOVG16rr_swap),
+   (CMOVG32rr, CMOVG32rr_swap),
+   (CMOVG64rr, CMOVG64rr_swap),
+   (CMOVGE16rr, CMOVGE16rr_swap),
+   (CMOVGE32rr, CMOVGE32rr_swap),
+   (CMOVGE64rr, CMOVGE64rr_swap),
+   (CMOVL16rr, CMOVL16rr_swap),
+   (CMOVL32rr, CMOVL32rr_swap),
+   (CMOVL64rr, CMOVL64rr_swap),
+   (CMOVLE16rr, CMOVLE16rr_swap),
+   (CMOVLE32rr, CMOVLE32rr_swap),
+   (CMOVLE64rr, CMOVLE64rr_swap),
+   (CMOVNE16rr, CMOVNE16rr_swap),
+   (CMOVNE32rr, CMOVNE32rr_swap),
+   (CMOVNE64rr, CMOVNE64rr_swap),
+   (CMOVNO16rr, CMOVNO16rr_swap),
+   (CMOVNO32rr, CMOVNO32rr_swap),
+   (CMOVNO64rr, CMOVNO64rr_swap),
+   (CMOVNP16rr, CMOVNP16rr_swap),
+   (CMOVNP32rr, CMOVNP32rr_swap),
+   (CMOVNP64rr, CMOVNP64rr_swap),
+   (CMOVNS16rr, CMOVNS16rr_swap),
+   (CMOVNS32rr, CMOVNS32rr_swap),
+   (CMOVNS64rr, CMOVNS64rr_swap),
+   (CMOVO16rr, CMOVO16rr_swap),
+   (CMOVO32rr, CMOVO32rr_swap),
+   (CMOVO64rr, CMOVO64rr_swap),
+   (CMOVP16rr, CMOVP16rr_swap),
+   (CMOVP32rr, CMOVP32rr_swap),
+   (CMOVP64rr, CMOVP64rr_swap),
+   (CMOVS16rr, CMOVS16rr_swap),
+   (CMOVS32rr, CMOVS32rr_swap),
+   (CMOVS64rr, CMOVS64rr_swap)]
+
+condMoveForwards = map fst $ M.toList condMoveAlts
+
+condMoveInverses = map snd $ M.toList condMoveAlts
+
+condMoveMemories = [CMOVA16rm, CMOVA32rm, CMOVA64rm, CMOVAE16rm,
+    CMOVAE32rm, CMOVAE64rm, CMOVB16rm, CMOVB32rm, CMOVB64rm,
+    CMOVBE16rm, CMOVBE32rm, CMOVBE64rm, CMOVE16rm, CMOVE32rm,
+    CMOVE64rm, CMOVG16rm, CMOVG32rm, CMOVG64rm, CMOVGE16rm,
+    CMOVGE32rm, CMOVGE64rm, CMOVL16rm, CMOVL32rm, CMOVL64rm,
+    CMOVLE16rm, CMOVLE32rm, CMOVLE64rm, CMOVNE16rm, CMOVNE32rm,
+    CMOVNE64rm, CMOVNO16rm, CMOVNO32rm, CMOVNO64rm, CMOVNP16rm,
+    CMOVNP32rm, CMOVNP64rm, CMOVNS16rm, CMOVNS32rm, CMOVNS64rm,
+    CMOVO16rm, CMOVO32rm, CMOVO64rm, CMOVP16rm, CMOVP32rm, CMOVP64rm,
+    CMOVS16rm, CMOVS32rm, CMOVS64rm]
+
+condMoveInstrs =
+  condMoveForwards ++ condMoveInverses ++ condMoveMemories
 
 -- This list should contain exactly the registers that are promoted by
 -- 'specsgen' (see 'run-specsgen-x86' recipe in Makefile).
@@ -1561,3 +1613,26 @@ memTempVersions = M.fromList
    (XORPDrr, MemTempTuple (Just XORPDrm_unison) Nothing ),
    (XORPSrr, MemTempTuple (Just XORPSrm_unison) Nothing )]
 
+reg32ToReg64 (Register (TargetRegister r)) =
+  let r' = reg32ToReg64' r
+  in (Register (TargetRegister r'))
+
+reg32ToReg64' EAX = RAX
+reg32ToReg64' ECX = RCX
+reg32ToReg64' EDX = RDX
+reg32ToReg64' EBX = RBX
+reg32ToReg64' ESI = RSI
+reg32ToReg64' EDI = RDI
+reg32ToReg64' ESP = RSP
+reg32ToReg64' EBP = RBP
+reg32ToReg64' R8D = R8
+reg32ToReg64' R9D = R9
+reg32ToReg64' R10D = R10
+reg32ToReg64' R11D = R11
+reg32ToReg64' R12D = R12
+reg32ToReg64' R13D = R13
+reg32ToReg64' R14D = R14
+reg32ToReg64' R15D = R15
+
+machineReg32ToReg64 MachineReg {mrName = r} =
+  mkMachineReg (reg32ToReg64' r)

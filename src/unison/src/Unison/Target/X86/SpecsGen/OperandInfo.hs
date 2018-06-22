@@ -6,11 +6,11 @@ import Unison.Target.X86.SpecsGen.X86InstructionDecl
 import Unison.Target.X86.X86RegisterClassDecl
 operandInfo i
   | i `elem`
-      [ALIGN_SP_32, CATCHPAD, CLAC, CLC, CLD, CLEANUPRET, CLGI, CLI,
-       CLTS, CMC, CS_PREFIX, DATA16_PREFIX, DS_PREFIX, EH_RESTORE, ENCLS,
-       ENCLU, ES_PREFIX, F2XM1, FCOMPP, FDECSTP, FEMMS, FINCSTP, FLDL2E,
-       FLDL2T, FLDLG2, FLDLN2, FLDPI, FNOP, FPATAN, FPREM, FPREM1, FPTAN,
-       FRNDINT, FSCALE, FSINCOS, FS_PREFIX, FXAM, FXTRACT, FYL2X, FYL2XP1,
+      [CATCHPAD, CLAC, CLC, CLD, CLEANUPRET, CLGI, CLI, CLTS, CMC,
+       CS_PREFIX, DATA16_PREFIX, DS_PREFIX, EH_RESTORE, ENCLS, ENCLU,
+       ES_PREFIX, F2XM1, FCOMPP, FDECSTP, FEMMS, FINCSTP, FLDL2E, FLDL2T,
+       FLDLG2, FLDLN2, FLDPI, FNOP, FPATAN, FPREM, FPREM1, FPTAN, FRNDINT,
+       FSCALE, FSINCOS, FS_PREFIX, FXAM, FXTRACT, FYL2X, FYL2XP1,
        GS_PREFIX, HLT, INT3, INTO, INVD, IRET16, IRET32, IRET64,
        Int_MemBarrier, LFENCE, LOCK_PREFIX, LRETL, LRETQ, LRETW, MFENCE,
        MMX_EMMS, MORESTACK_RET, MORESTACK_RET_RESTORE_R10, NOOP, PAUSE,
@@ -19,11 +19,11 @@ operandInfo i
        POPSS16, POPSS32, PUSHCS16, PUSHCS32, PUSHDS16, PUSHDS32, PUSHES16,
        PUSHES32, PUSHF16, PUSHF32, PUSHF64, PUSHFS16, PUSHFS32, PUSHFS64,
        PUSHGS16, PUSHGS32, PUSHGS64, PUSHSS16, PUSHSS32, RETW,
-       REX64_PREFIX, RSM, SEH_EndPrologue, SEH_Epilogue, SFENCE,
-       SS_PREFIX, STAC, STC, STD, STGI, STI, SWAPGS, SYSCALL, SYSENTER,
-       SYSEXIT, SYSEXIT64, SYSRET, SYSRET64, TRAP, UD2B, VMCALL, VMFUNC,
-       VMLAUNCH, VMMCALL, VMRESUME, VMXOFF, VZEROALL, VZEROUPPER, WAIT,
-       WBINVD, XACQUIRE_PREFIX, XEND, XRELEASE_PREFIX, XTEST]
+       REX64_PREFIX, RSM, SEH_EndPrologue, SEH_Epilogue, SFENCE, SPILL,
+       SPILL32, SS_PREFIX, STAC, STC, STD, STGI, STI, SWAPGS, SYSCALL,
+       SYSENTER, SYSEXIT, SYSEXIT64, SYSRET, SYSRET64, TRAP, UD2B, VMCALL,
+       VMFUNC, VMLAUNCH, VMMCALL, VMRESUME, VMXOFF, VZEROALL, VZEROUPPER,
+       WAIT, WBINVD, XACQUIRE_PREFIX, XEND, XRELEASE_PREFIX, XTEST]
     = ([], [])
   | i `elem` [FsFLD0SS] =
     ([], [TemporaryInfo (RegisterClass FR32) 1 False])
@@ -48,8 +48,8 @@ operandInfo i
       TemporaryInfo (RegisterClass GR32) 1 False,
       TemporaryInfo (RegisterClass GR32) 1 False])
   | i `elem`
-      [MOV_FROM_SP, POP64r, POP64rmr, RDFLAGS64, RDFSBASE64, RDGSBASE64,
-       RDRAND64r, RDSEED64r, SETB_C64r, SLDT64r, SMSW64r, STR64r]
+      [POP64r, POP64rmr, RDFLAGS64, RDFSBASE64, RDGSBASE64, RDRAND64r,
+       RDSEED64r, SETB_C64r, SLDT64r, SMSW64r, STR64r]
     = ([], [TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem` [RDTSC] =
     ([],
@@ -84,6 +84,8 @@ operandInfo i
   | i `elem`
       [FsFLD0SS_source, MOV32r0_source, MOV32r1_source, MOV32r_1_source]
     = ([], [TemporaryInfo (InfiniteRegisterClass RM32) 0 False])
+  | i `elem` [FsFLD0SD_source] =
+    ([], [TemporaryInfo (InfiniteRegisterClass RM64) 0 False])
   | i `elem` [V_SET0, V_SETALLONES] =
     ([], [TemporaryInfo (RegisterClass VR128) 1 False])
   | i `elem` [AVX2_SETALLONES, AVX_SET0] =
@@ -100,6 +102,8 @@ operandInfo i
       TemporaryInfo (RegisterClass Ptr_rc_nosp) 1 False, BoundInfo,
       BoundInfo])
   | i `elem` [IMPLICIT_DEF] = ([], [BoundInfo])
+  | i `elem` [FPOP, NOFPOP] =
+    ([TemporaryInfo (RegisterClass AUXE) 0 False, BoundInfo], [])
   | i `elem` [CMOV_FR128] =
     ([TemporaryInfo (RegisterClass FR128) 0 False,
       TemporaryInfo (RegisterClass FR128) 0 False, BoundInfo],
@@ -277,6 +281,9 @@ operandInfo i
     =
     ([TemporaryInfo (RegisterClass FR64) 0 False],
      [TemporaryInfo (InfiniteRegisterClass M64) 1 False])
+  | i `elem` [FsFLD0SD_demat] =
+    ([TemporaryInfo (RegisterClass FR64) 0 False],
+     [TemporaryInfo (InfiniteRegisterClass RM64) 0 False])
   | i `elem` [COMISDrr, UCOMISDrr, VCOMISDrr, VUCOMISDrr] =
     ([TemporaryInfo (RegisterClass FR64) 0 False,
       TemporaryInfo (RegisterClass FR64) 0 False],
@@ -453,12 +460,16 @@ operandInfo i
      [])
   | i `elem`
       [ADC16rr, ADC16rr_REV, ADD16rr, ADD16rr_DB, ADD16rr_REV, AND16rr,
-       AND16rr_REV, CMOVA16rr, CMOVAE16rr, CMOVB16rr, CMOVBE16rr,
-       CMOVE16rr, CMOVG16rr, CMOVGE16rr, CMOVL16rr, CMOVLE16rr,
-       CMOVNE16rr, CMOVNO16rr, CMOVNP16rr, CMOVNS16rr, CMOVO16rr,
-       CMOVP16rr, CMOVS16rr, IMUL16rr, OR16rr, OR16rr_REV, SBB16rr,
-       SBB16rr_REV, SUB16rr, SUB16rr_REV, XCHG16ar, XCHG16rr, XOR16rr,
-       XOR16rr_REV]
+       AND16rr_REV, CMOVA16rr, CMOVA16rr_swap, CMOVAE16rr,
+       CMOVAE16rr_swap, CMOVB16rr, CMOVB16rr_swap, CMOVBE16rr,
+       CMOVBE16rr_swap, CMOVE16rr, CMOVE16rr_swap, CMOVG16rr,
+       CMOVG16rr_swap, CMOVGE16rr, CMOVGE16rr_swap, CMOVL16rr,
+       CMOVL16rr_swap, CMOVLE16rr, CMOVLE16rr_swap, CMOVNE16rr,
+       CMOVNE16rr_swap, CMOVNO16rr, CMOVNO16rr_swap, CMOVNP16rr,
+       CMOVNP16rr_swap, CMOVNS16rr, CMOVNS16rr_swap, CMOVO16rr,
+       CMOVO16rr_swap, CMOVP16rr, CMOVP16rr_swap, CMOVS16rr,
+       CMOVS16rr_swap, IMUL16rr, OR16rr, OR16rr_REV, SBB16rr, SBB16rr_REV,
+       SUB16rr, SUB16rr_REV, XCHG16ar, XCHG16rr, XOR16rr, XOR16rr_REV]
     =
     ([TemporaryInfo (RegisterClass GR16) 0 False,
       TemporaryInfo (RegisterClass GR16) 0 False],
@@ -625,12 +636,17 @@ operandInfo i
   | i `elem`
       [ADC32rr, ADC32rr_REV, ADCX32rr, ADD32rr, ADD32rr_DB, ADD32rr_LEA,
        ADD32rr_REV, AND32rr, AND32rr_REV, ANDN32rr, BEXTR32rr, BZHI32rr,
-       CMOVA32rr, CMOVAE32rr, CMOVB32rr, CMOVBE32rr, CMOVE32rr, CMOVG32rr,
-       CMOVGE32rr, CMOVL32rr, CMOVLE32rr, CMOVNE32rr, CMOVNO32rr,
-       CMOVNP32rr, CMOVNS32rr, CMOVO32rr, CMOVP32rr, CMOVS32rr,
-       CRC32r32r32, IMUL32rr, OR32rr, OR32rr_REV, PDEP32rr, PEXT32rr,
-       SARX32rr, SBB32rr, SBB32rr_REV, SHLX32rr, SHRX32rr, SUB32rr,
-       SUB32rr_REV, XCHG32ar, XCHG32rr, XOR32rr, XOR32rr_REV]
+       CMOVA32rr, CMOVA32rr_swap, CMOVAE32rr, CMOVAE32rr_swap, CMOVB32rr,
+       CMOVB32rr_swap, CMOVBE32rr, CMOVBE32rr_swap, CMOVE32rr,
+       CMOVE32rr_swap, CMOVG32rr, CMOVG32rr_swap, CMOVGE32rr,
+       CMOVGE32rr_swap, CMOVL32rr, CMOVL32rr_swap, CMOVLE32rr,
+       CMOVLE32rr_swap, CMOVNE32rr, CMOVNE32rr_swap, CMOVNO32rr,
+       CMOVNO32rr_swap, CMOVNP32rr, CMOVNP32rr_swap, CMOVNS32rr,
+       CMOVNS32rr_swap, CMOVO32rr, CMOVO32rr_swap, CMOVP32rr,
+       CMOVP32rr_swap, CMOVS32rr, CMOVS32rr_swap, CRC32r32r32, IMUL32rr,
+       OR32rr, OR32rr_REV, PDEP32rr, PEXT32rr, SARX32rr, SBB32rr,
+       SBB32rr_REV, SHLX32rr, SHRX32rr, SUB32rr, SUB32rr_REV, XCHG32ar,
+       XCHG32rr, XOR32rr, XOR32rr_REV]
     =
     ([TemporaryInfo (RegisterClass GR32) 0 False,
       TemporaryInfo (RegisterClass GR32) 0 False],
@@ -754,8 +770,8 @@ operandInfo i
       TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
   | i `elem`
-      [CALL64r, EH_RETURN64, JMP64r, MOV_TO_SP, PUSH64r, PUSH64rmr,
-       VMLOAD64, VMRUN64, VMSAVE64, WRFLAGS64, WRFSBASE64, WRGSBASE64]
+      [CALL64r, EH_RETURN64, JMP64r, PUSH64r, PUSH64rmr, VMLOAD64,
+       VMRUN64, VMSAVE64, WRFLAGS64, WRFSBASE64, WRGSBASE64]
     = ([TemporaryInfo (RegisterClass GR64) 0 False], [])
   | i `elem` [CVTSI2SS64rr] =
     ([TemporaryInfo (RegisterClass GR64) 0 False],
@@ -808,12 +824,17 @@ operandInfo i
   | i `elem`
       [ADC64rr, ADC64rr_REV, ADCX64rr, ADD64rr, ADD64rr_DB, ADD64rr_LEA,
        ADD64rr_REV, AND64rr, AND64rr_REV, ANDN64rr, BEXTR64rr, BZHI64rr,
-       CMOVA64rr, CMOVAE64rr, CMOVB64rr, CMOVBE64rr, CMOVE64rr, CMOVG64rr,
-       CMOVGE64rr, CMOVL64rr, CMOVLE64rr, CMOVNE64rr, CMOVNO64rr,
-       CMOVNP64rr, CMOVNS64rr, CMOVO64rr, CMOVP64rr, CMOVS64rr,
-       CRC32r64r64, IMUL64rr, OR64rr, OR64rr_REV, PDEP64rr, PEXT64rr,
-       SARX64rr, SBB64rr, SBB64rr_REV, SHLX64rr, SHRX64rr, SUB64rr,
-       SUB64rr_REV, XCHG64ar, XCHG64rr, XOR64rr, XOR64rr_REV]
+       CMOVA64rr, CMOVA64rr_swap, CMOVAE64rr, CMOVAE64rr_swap, CMOVB64rr,
+       CMOVB64rr_swap, CMOVBE64rr, CMOVBE64rr_swap, CMOVE64rr,
+       CMOVE64rr_swap, CMOVG64rr, CMOVG64rr_swap, CMOVGE64rr,
+       CMOVGE64rr_swap, CMOVL64rr, CMOVL64rr_swap, CMOVLE64rr,
+       CMOVLE64rr_swap, CMOVNE64rr, CMOVNE64rr_swap, CMOVNO64rr,
+       CMOVNO64rr_swap, CMOVNP64rr, CMOVNP64rr_swap, CMOVNS64rr,
+       CMOVNS64rr_swap, CMOVO64rr, CMOVO64rr_swap, CMOVP64rr,
+       CMOVP64rr_swap, CMOVS64rr, CMOVS64rr_swap, CRC32r64r64, IMUL64rr,
+       OR64rr, OR64rr_REV, PDEP64rr, PEXT64rr, SARX64rr, SBB64rr,
+       SBB64rr_REV, SHLX64rr, SHRX64rr, SUB64rr, SUB64rr_REV, XCHG64ar,
+       XCHG64rr, XOR64rr, XOR64rr_REV]
     =
     ([TemporaryInfo (RegisterClass GR64) 0 False,
       TemporaryInfo (RegisterClass GR64) 0 False],
@@ -920,7 +941,7 @@ operandInfo i
      [TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem`
       [BT64ri8, BTC64ri8, BTR64ri8, BTS64ri8, CMP64ri32, CMP64ri8,
-       TEST64ri32]
+       FPOP32, TEST64ri32]
     = ([TemporaryInfo (RegisterClass GR64) 0 False, BoundInfo], [])
   | i `elem`
       [ADC64ri32, ADC64ri8, ADD64ri32, ADD64ri32_DB, ADD64ri8,
@@ -1856,6 +1877,9 @@ operandInfo i
     =
     ([TemporaryInfo (InfiniteRegisterClass RM32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
+  | i `elem` [FsFLD0SD_remat] =
+    ([TemporaryInfo (InfiniteRegisterClass RM64) 0 False],
+     [TemporaryInfo (RegisterClass FR64) 1 False])
   | i `elem` [LEA64r_remat, MOV64ri32_remat, MOV64ri_remat] =
     ([TemporaryInfo (InfiniteRegisterClass RM64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
@@ -3442,14 +3466,17 @@ operandInfo i
       BoundInfo, BoundInfo],
      [])
   | i `elem`
-      [ADDRSP_pseudo, BUNDLE, CALL64pcrel32, CALLpcrel16, CALLpcrel32,
-       CFI_INSTRUCTION, DBG_VALUE, EH_LABEL, GC_LABEL, INLINEASM, INT,
-       IRET, KILL, LIFETIME_END, LIFETIME_START, LRETIL, LRETIQ, LRETIW,
-       PHI, PUSH16i8, PUSH32i8, PUSH64i32, PUSH64i8, PUSHi16, PUSHi32,
-       RETIW, RETL, RETQ, SEH_PushFrame, SEH_PushReg, SEH_StackAlloc,
-       STATEPOINT, SUBRSP_pseudo, TAILJMPd, TAILJMPd64, TAILJMPd64_REX,
-       XABORT]
+      [BUNDLE, CALL64pcrel32, CALLpcrel16, CALLpcrel32, CFI_INSTRUCTION,
+       DBG_VALUE, EH_LABEL, GC_LABEL, INLINEASM, INT, IRET, KILL,
+       LIFETIME_END, LIFETIME_START, LRETIL, LRETIQ, LRETIW, PHI,
+       PUSH16i8, PUSH32i8, PUSH64i32, PUSH64i8, PUSHi16, PUSHi32, RETIW,
+       RETL, RETQ, SEH_PushFrame, SEH_PushReg, SEH_StackAlloc, STATEPOINT,
+       TAILJMPd, TAILJMPd64, TAILJMPd64_REX, XABORT]
     = ([BoundInfo], [])
+  | i `elem` [FPUSH32] =
+    ([BoundInfo], [TemporaryInfo (RegisterClass AUXB) 1 False])
+  | i `elem` [FPUSH, NOFPUSH] =
+    ([BoundInfo], [TemporaryInfo (RegisterClass AUXE) 1 False])
   | i `elem` [IN16ri, MOV16ri, MOV16ri_alt] =
     ([BoundInfo], [TemporaryInfo (RegisterClass GR16) 1 False])
   | i `elem` [IN32ri, MOV32ri, MOV32ri64, MOV32ri_alt, MOVPC32r] =

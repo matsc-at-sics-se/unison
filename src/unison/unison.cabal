@@ -127,7 +127,8 @@ Library
 
                    Common.Util
 
-  Other-modules:  Unison.Tools.Import.AdjustPhiLabels
+  Other-modules:  Unison.Tools.Import.ConnectCalls
+                  Unison.Tools.Import.AdjustPhiLabels
                   Unison.Tools.Import.RemoveUnreachableBlocks
                   Unison.Tools.Import.CorrectDoubleBranches
                   Unison.Tools.Import.DropDebugLocations
@@ -147,6 +148,7 @@ Library
                   Unison.Tools.Import.LiftUndefRegs
                   Unison.Tools.Import.LowerInsertSubRegs
                   Unison.Tools.Import.LowerSubRegVirtuals
+                  Unison.Tools.Import.LowerCalls
                   Unison.Tools.Import.RelocateDefines
                   Unison.Tools.Import.RemoveUselessVirtuals
                   Unison.Tools.Import.RepairCSSA

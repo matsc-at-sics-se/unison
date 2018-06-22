@@ -14,12 +14,10 @@ module Unison.Target.X86 (target) where
 import Debug.Trace
 import Data.Maybe
 import qualified Data.Set as S
--- import Control.Arrow
 
 import Common.Util
 
 import MachineIR
-import MachineIR.Transformations.AddImplicitRegs
 
 import Unison
 import qualified Unison.Target.API as API
@@ -28,7 +26,6 @@ import Unison.Target.Query
 import Unison.Analysis.TemporaryType
 import Unison.Target.X86.Common
 import Unison.Target.X86.Registers
-import Unison.Target.X86.OperandInfo
 import Unison.Target.X86.Transforms
 import Unison.Target.X86.Usages
 import Unison.Target.X86.BranchInfo
@@ -57,7 +54,7 @@ target =
       API.tCopies           = const copies,
       API.tRematInstrs      = const rematInstrs,
       API.tFromCopy         = const fromCopy,
-      API.tOperandInfo      = const operandInfo,
+      API.tOperandInfo      = operandInfo,
       API.tAlignedPairs     = const SpecsGen.alignedPairs,
       API.tPackedPairs      = const (const (const [])),
       API.tRelatedPairs     = const (const []),
@@ -103,9 +100,9 @@ copies _fInfo False _t _rs _d [u] | isKill u = ([], [[]])
 copies _ False _ rs _ us | any isReserved rs =
   ([], replicate (length us) [])
 
--- Add only one store for entry calle-saved temporaries
--- Add only one load for exit calle-saved temporaries
--- Do not add copies for intermediate calle-saved temporaries
+-- Add only one store for entry callee-saved temporaries
+-- Add only one load for exit callee-saved temporaries
+-- Do not add copies for intermediate callee-saved temporaries
 copies (f, cst, _, _, _, _) False t [_r] _d [_u]
   | S.member t cst =
     (
@@ -124,31 +121,32 @@ copies (f, _, _, _, _, _) False t [] d [u]
     ([], [[]])
 
 -- Do not extend rematerializable instructions used only once, locally
--- FIXME: review whether this is always safe
 copies (Function {fCode = code}, _, _, _, _, _) False t _ d [u]
   | isNatural d && (isNatural u || isFun u) &&
     (isRematerializable (targetInst (oInstructions d))) &&
     not (mayCrossMemDep readWriteInfo d u code) &&
     compatibleClassesForTemp t [d, u] = ([], [[]])
 
--- If function has >6 arguments, then they will be accessed off RBP. Therefore,
+-- If function has >6 arguments, then they will be accessed off RBX. Therefore,
 -- do not spill def and use stemming from
---  o12: [t24:rbp] <- MOV_FROM_SP []
---  o35: [] <- MOV_TO_SP [t24]
+--  o12: [t24:rbp] <- FPUSH32 [_]
+--  o35: [] <- FPOP32 [t24,_]
 copies (Function {fFixedStackFrame = fobjs}, _, _cg, _ra, _, _) _
-       (Temporary {tReg = (Just (Register (TargetRegister RBP)))}) _ _d us
-  | (TargetInstruction MOV_TO_SP) `elem` (concatMap oInstructions us) &&
+       (Temporary {tReg = (Just (Register (TargetRegister RBX)))}) _ _d us
+  | (TargetInstruction FPUSH32) `elem` (concatMap oInstructions us) &&
     (maximum $ map foOffset fobjs) >= 0
   = ([], [[]])
 
--- Default: extend def and uses
+-- If 32-bit temp is used by some (combine), then prevent spilling,
+-- because the upper 32 bits could be assumed to be zero later.
+-- Otherwise, extend def and uses.
 copies (f, _, cg, ra, _, _) _ t _ d us =
   let w = widthOfTemp ra cg f t (d:us)
-  in
-     (
-       defCopies w,
-       map (useCopies w) us
-     )
+  in if w == 4 && all isCombine us
+     then ([], [[]])
+  else if w == 4 && any isCombine us
+     then (defCopies w, [useCopies 4 u | u <- us, not $ isCombine u])
+     else (defCopies w, map (useCopies w) us)
 
 defCopies 1 = [mkNullInstruction, TargetInstruction MOVE8, TargetInstruction STORE8]
 defCopies 2 = [mkNullInstruction, TargetInstruction MOVE16, TargetInstruction STORE16]
@@ -179,11 +177,12 @@ isReserved r = r `elem` reserved
 rematInstrs i
   | isRematerializable i =
       Just (sourceInstr i, dematInstr i, rematInstr i)
-  | i `elem` [MOV8rm, MOV16rm, MOV32rm, MOV64rm, MOV_FROM_SP,
+  | i `elem` [FPUSH32, FPUSH, NOFPUSH,
+              MOV8rm, MOV16rm, MOV32rm, MOV64rm,
               IMUL64rmi32,
               MOVSX16rm8, MOVSX32rm8, MOVSX32_NOREXrm8, MOVSX32rm16, MOVSX64rm8, MOVSX64rm16, MOVSX64rm32, 
               MOVZX16rm8, MOVZX32rm8, MOVZX32_NOREXrm8, MOVZX32rm16, MOVZX64rm8, MOVZX64rm16,
-              VMOVAPSYrm,
+              VMOVAPSrm, VMOVUPSrm, VMOVSDrm, VMOVAPSYrm,
               SETAEr, SETAr, SETBEr, SETBr, SETEr, SETGEr, SETGr, SETLEr, SETLr,
               SETNEr, SETNOr, SETNPr, SETNSr, SETOr, SETPr, SETSr,
               SETB_C8r, SETB_C16r, SETB_C32r, SETB_C64r,
@@ -409,6 +408,9 @@ fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL64ri_LEA], oUs = [r,i], 
                    mkBound (toMachineOperand 0),
                    mkBound MachineNullReg],
             oDs = [d]}
+fromCopy _ (Natural o @ Linear {oIs = [TargetInstruction ti], oUs = [src1,src2]})
+  | ti `elem` condMoveInverses
+  = o {oIs = [TargetInstruction (fromCopyInstr ti)], oUs = [src2,src1]}
 
 fromCopy _ (Natural o) = o
 fromCopy _ o = error ("unmatched pattern: fromCopy " ++ show o)
@@ -416,27 +418,6 @@ fromCopy _ o = error ("unmatched pattern: fromCopy " ++ show o)
 logToMul (Bound (MachineImm 1)) = 2
 logToMul (Bound (MachineImm 2)) = 4
 logToMul (Bound (MachineImm 3)) = 8
-
-reg32ToReg64 (Register (TargetRegister r)) =
-  let r' = reg32ToReg64' r
-  in (Register (TargetRegister r'))
-
-reg32ToReg64' EAX = RAX
-reg32ToReg64' ECX = RCX
-reg32ToReg64' EDX = RDX
-reg32ToReg64' EBX = RBX
-reg32ToReg64' ESI = RSI
-reg32ToReg64' EDI = RDI
-reg32ToReg64' ESP = RSP
-reg32ToReg64' EBP = RBP
-reg32ToReg64' R8D = R8
-reg32ToReg64' R9D = R9
-reg32ToReg64' R10D = R10
-reg32ToReg64' R11D = R11
-reg32ToReg64' R12D = R12
-reg32ToReg64' R13D = R13
-reg32ToReg64' R14D = R14
-reg32ToReg64' R15D = R15
 
 mkBoundMachineFrameObject fixedSpill i (Register r) =
     let size = instrInfiniteUsage i
@@ -467,6 +448,11 @@ resources =
 
 nop = Linear [TargetInstruction NOOP] [] []
 
+-- FIXME: revisit this clause if these instructions involve XOR
+readWriteInfo i
+  | i `elem` [MOV32r0, MOV32r0_remat, MOV32r1, MOV32r1_remat, MOV32r_1, MOV32r_1_remat]
+  = ([], [])
+
 readWriteInfo i
   = SpecsGen.readWriteInfo i
 
@@ -488,229 +474,20 @@ stackDirection = API.StackGrowsDown
 
 -- | Target dependent pre-processing functions
 
-preProcess _ = [mapToMachineInstruction promoteImplicitOperands]
-
--- This transformation adds implicit uses and definitions that have been
--- promoted with specsgen. The order of the operands is:
--- 1. explicit defs
--- 2. implicit defs
--- 3. explicit uses
--- 4. implicit uses
--- 5. rest (for example, memory annotations to be lifted)
--- The transformation relies on the register lifting functionality in 'uni
--- import' to lift the added implicit uses and definitions to temporaries.
-promoteImplicitOperands
-  mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = mos} =
-    let mos' = promoteImplicitRegs i promotedRegs mos
-    in mi {msOperands = mos'}
-
-promoteImplicitOperands mi = mi
-
-promoteImplicitRegs i regs mos =
-  let oif = operandInfo i
-      ws  = filter (writesSideEffect i) regs
-      firstImpDef = length (snd oif) - length ws
-      (eds, mos1) = splitAt firstImpDef mos
-      rs  = filter (readsSideEffect i) regs
-      firstImpUse = length (fst oif) - length rs
-      (eus, mos2) = splitAt firstImpUse mos1
-  in eds ++ map mkMachineReg ws ++ eus ++ map mkMachineReg rs ++ mos2
+preProcess _ = [mapToMachineInstruction cleanFunRegisters,
+                mapToMachineInstruction promoteImplicitOperands]
 
 -- | Target dependent post-processing functions
 
-postProcess to = [expandPseudos to, flip addImplicitRegs (target, [])]
-
-expandPseudos to = mapToMachineBlock (expandBlockPseudos (expandPseudo to))
-
-expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc SUBRSP_pseudo, msOperands = [MachineImm 0]})
-  = [[mkMachineSingle (MachineTargetOpc NOOP) [] []]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SUBRSP_pseudo,
-                                   msOperands = [off]}
-  = let sp = mkMachineReg RSP
-    in [[mi {msOpcode = mkMachineTargetOpc SUB64ri32,
-             msOperands = [sp, sp, off]}]]
-
-expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc ADDRSP_pseudo, msOperands = [MachineImm 0]})
-  = [[mkMachineSingle (MachineTargetOpc NOOP) [] []]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADDRSP_pseudo,
-                                   msOperands = [off]}
-  = let sp = mkMachineReg RSP
-    in [[mi {msOpcode = mkMachineTargetOpc ADD64ri32,
-             msOperands = [sp, sp, off]}]]
-
-expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc PUSH_fi, msOperands = [_, s]})
-  = [[mkMachineSingle (MachineTargetOpc PUSH64r) [] [s]]]
-
-expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc POP_fi, msOperands = [d, _]})
-  = [[mkMachineSingle (MachineTargetOpc POP64r) [] [d]]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV_FROM_SP,
-                                   msOperands = [dst]}
-  = let sp = mkMachineReg RSP
-    in [[mi {msOpcode = mkMachineTargetOpc MOV64rr,
-             msOperands = [dst, sp]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV_TO_SP,
-                                   msOperands = [src]}
-  = let sp = mkMachineReg RSP
-    in [[mi {msOpcode = mkMachineTargetOpc MOV64rr,
-             msOperands = [sp, src]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ALIGN_SP_32}
-  = let sp = mkMachineReg RSP
-        im32 = mkMachineImm (-32)
-    in [[mi {msOpcode = mkMachineTargetOpc AND64ri8,
-             msOperands = [sp, sp, im32]}]]
-
--- expand pseudos that stem from llvm; see X86ExpandPseudo.cpp
-
--- could do it with XOR, which clobbers EFLAGS
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r0,
-                                   msOperands = [dst]}
-  = let imm = mkMachineImm 0
-  in [[mi {msOpcode = mkMachineTargetOpc MOV32ri,
-           msOperands = [dst, imm]}]]
-
--- could do it with XOR + INC, which clobbers EFLAGS
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r1,
-                                   msOperands = [dst]}
-  = let imm = mkMachineImm 1
-  in [[mi {msOpcode = mkMachineTargetOpc MOV32ri,
-           msOperands = [dst, imm]}]]
-
--- could do it with XOR + DEC, which clobbers EFLAGS
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r_1,
-                                   msOperands = [dst]}
-  = let imm = mkMachineImm (-1)
-  in [[mi {msOpcode = mkMachineTargetOpc MOV32ri,
-           msOperands = [dst, imm]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32ri64}
-  = [[mi {msOpcode = mkMachineTargetOpc MOV32ri}]]
-
--- candidate for LEA?
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD16ri8_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD16ri8}]]
-
--- candidate for LEA?
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD16ri_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD16ri}]]
-
--- candidate for LEA?
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD16rr_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD16rr}]]
-
--- candidate for LEA?
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD32ri8_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD32ri8}]]
-
--- candidate for LEA?
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD32ri_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD32ri}]]
-
--- candidate for LEA?
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD32rr_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD32rr}]]
-
--- candidate for LEA?
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64ri8_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD64ri8}]]
-
--- candidate for LEA?
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64ri32_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD64ri32}]]
-
--- candidate for LEA?
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64rr_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD64rr}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc AVX2_SETALLONES,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc VPCMPEQDrr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc AVX_SET0,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc VXORPSYrr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FsFLD0SD,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc FsXORPDrr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FsFLD0SS,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc FsXORPSrr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C8r,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc SBB8rr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C16r,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc SBB16rr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C32r,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc SBB32rr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C64r,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc SBB64rr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc TEST8ri_NOREX}
-  = [[mi {msOpcode = mkMachineTargetOpc TEST8ri}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc V_SET0,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc VXORPSrr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc V_SETALLONES,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc PCMPEQDrr,
-          msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc mto,
-                                   msOperands = [lab,MachineImm off]}
-  | mto `elem` [TCRETURNdi, TCRETURNri, TCRETURNmi, TCRETURNdi64, TCRETURNri64, TCRETURNmi64]
-  = maybeAdjustSP off ++
-    [[mi {msOpcode = mkMachineTargetOpc (expandedTailJump mto),
-          msOperands = [lab]}]]
-
-expandPseudo _ mi = [[mi]]
-
-expandedTailJump TCRETURNdi = TAILJMPd
-expandedTailJump TCRETURNri = TAILJMPr
-expandedTailJump TCRETURNmi = TAILJMPm
-expandedTailJump TCRETURNdi64 = TAILJMPd64
-expandedTailJump TCRETURNri64 = TAILJMPr64
-expandedTailJump TCRETURNmi64 = TAILJMPm64
-
-maybeAdjustSP 0 = []
-maybeAdjustSP off
-  | off > 0
-  = let sp = mkMachineReg RSP
-    in [[mkMachineSingle (mkMachineTargetOpc ADD64ri32) [] [sp, sp, mkMachineImm off]]]
-maybeAdjustSP off
-  | off < 0
-  = let sp = mkMachineReg RSP
-    in [[mkMachineSingle (mkMachineTargetOpc SUB64ri32) [] [sp, sp, mkMachineImm (-off)]]]
+postProcess to = [expandPseudos to,
+                  mapToMachineInstruction demoteImplicitOperands,
+                  mapToMachineInstruction addImplicitRegs]
 
 -- | Gives a list of function transformers
 
 transforms ImportPreLift = [peephole extractReturnRegs,
                             liftStackArgSize,
-                            addPrologueEpilogue,
-                            addVzeroupper]
+                            addPrologueEpilogue]
 transforms ImportPostLift = [mapToOperation handlePromotedOperands,
                              generalizeRegisterDefines,
                              generalizeRegisterUses,
@@ -718,10 +495,15 @@ transforms ImportPostLift = [mapToOperation handlePromotedOperands,
 transforms ImportPostCC = [liftReturnAddress]
 transforms ExportPreOffs = [revertFixedFrame]
 transforms ExportPreLow = [myLowerFrameIndices]
+transforms AugmentPreRW = [suppressCombineCopies]
 transforms AugmentPostRW = [movePrologueEpilogue,
+                            addSpillIndicators,
+                            addVzeroupper,
                             mapToOperation addStackIndexReadsSP,
                             mapToOperation addFunWrites,
-                            peephole spillAfterAlign]
+                            removeDeadEflags
+                            -- moveOptWritesEflags
+                            ]
 transforms _ = []
 
 -- | Latency of read-write dependencies
@@ -747,10 +529,11 @@ expandCopy _ _ o = [o]
 -- | Custom processor constraints
 
 -- force VZEROUPPER operations to be scheduled exactly one cycle before their
--- corresponding call/tailcall/return operation
+-- corresponding call/tailcall/return/out operation
 
 constraints f =
-  fixVzeroupperConstraints f
+  fixVzeroupperConstraints f ++
+  prologueEpilogueConstraints f
 
 fixVzeroupperConstraints f =
   let fcode = flatCode f
@@ -759,16 +542,162 @@ fixVzeroupperConstraints f =
 
 fixVzeroupperConstraints' (o1 : o2 : rest)
   | isVzeroupper o1
-  = [AndExpr [DistanceExpr (oId o2) (oId o1) (-1),
-              DistanceExpr (oId o1) (oId o2) ( 1)]] ++
+  = [DistanceExpr (oId o2) (oId o1) (-1),
+     DistanceExpr (oId o1) (oId o2) ( 1)] ++
     fixVzeroupperConstraints' rest
 fixVzeroupperConstraints' (_ : rest)
   = fixVzeroupperConstraints' rest
 fixVzeroupperConstraints' [] = []
 
 isVzeroupperRelevant o =
-  isVzeroupper o || isBranch o || isCall o || isTailCall o
+  isVzeroupper o || isBranch o || isCall o || isTailCall o || isDelimiter o
 
 isVzeroupper o =
   (TargetInstruction VZEROUPPER) `elem` oInstructions o
+
+prologueEpilogueConstraints Function {fCode = blocks, fStackFrame = objs, fStackArgSize = sasize} =
+  let fcode = flatten blocks
+      align = maximum $ [0] ++ map foAlignment (objs)
+      mustFpush32 = (align == 32)
+      mustFpush = (align > 0 || sasize > 0)
+      mayFpush = any isCall fcode
+      blockInfo = concatMap proEpiInfo blocks
+      blockIns = map (oId . blockIn) blocks
+  in (concatMap indicatorConstraints $ zip blockIns blockInfo) ++
+     (concatMap (prologueConstraints mustFpush32 mustFpush mayFpush) blockInfo) ++
+     (concatMap (epilogueConstraints mustFpush32 mustFpush mayFpush) blockInfo)
+
+indicatorConstraints (_, (Nothing, Nothing, _, _, _, _)) = []
+
+indicatorConstraints (oin, (Nothing, Just osp, _, _, _, _))
+  = [DistanceExpr osp   oin (-1)]
+
+indicatorConstraints (oin, (Just osp32, Just osp, _, _, _, _))
+  = [DistanceExpr osp32 oin (-1),
+     DistanceExpr osp   oin (-1)]
+
+prologueConstraints _ _ _ (_, _, Nothing, _, _, _) = []
+
+prologueConstraints True _ _ (_, _, Just ofpush, _, _, _)
+  = [ImplementsExpr ofpush (TargetInstruction FPUSH32)]
+
+prologueConstraints _ True _ (Nothing, _, Just ofpush, _, _, _)
+  = [ImplementsExpr ofpush (TargetInstruction FPUSH)]
+
+prologueConstraints _ True _ (Just osp32, _, Just ofpush, _, _, _)
+  = [XorExpr (ActiveExpr osp32) (ImplementsExpr ofpush (TargetInstruction FPUSH))] ++
+    [NotExpr (ImplementsExpr ofpush (TargetInstruction NOFPUSH))]
+
+prologueConstraints _ _ True (Nothing, Just osp, Just ofpush, _, [p1,p2,p3,p4,p5,p6], _) =
+  let nofcond = AndExpr [NotExpr (ActiveExpr osp),
+                         XorExpr (XorExpr (XorExpr (ActiveExpr p1) (ActiveExpr p2))
+                                          (XorExpr (ActiveExpr p3) (ActiveExpr p4)))
+                                 (XorExpr (ActiveExpr p5) (ActiveExpr p6))]
+  in [NotExpr (ImplementsExpr ofpush (TargetInstruction FPUSH32))] ++
+     [XorExpr (NotExpr nofcond) (ImplementsExpr ofpush (TargetInstruction NOFPUSH))]
+
+prologueConstraints _ _ True (Just osp32, Just osp, Just ofpush, _, [p1,p2,p3,p4,p5,p6], _) =
+  let nofcond = AndExpr [NotExpr (ActiveExpr osp32),
+                         NotExpr (ActiveExpr osp),
+                         XorExpr (XorExpr (XorExpr (ActiveExpr p1) (ActiveExpr p2))
+                                          (XorExpr (ActiveExpr p3) (ActiveExpr p4)))
+                                 (XorExpr (ActiveExpr p5) (ActiveExpr p6))]
+  in [XorExpr (NotExpr (ActiveExpr osp32)) (ImplementsExpr ofpush (TargetInstruction FPUSH32))] ++
+     [XorExpr (NotExpr nofcond) (ImplementsExpr ofpush (TargetInstruction NOFPUSH))]
+
+prologueConstraints _ _ _ (Nothing, Just osp, Just ofpush, _, _, _) =
+  let fcond = ActiveExpr osp
+  in [NotExpr (ImplementsExpr ofpush (TargetInstruction FPUSH32))] ++
+     [XorExpr fcond (ImplementsExpr ofpush (TargetInstruction NOFPUSH))]
+
+prologueConstraints _ _ _ (Just osp32, Just osp, Just ofpush, _, _, _) =
+  let nofcond = AndExpr [NotExpr (ActiveExpr osp32),
+                         NotExpr (ActiveExpr osp)]
+  in [XorExpr (NotExpr (ActiveExpr osp32)) (ImplementsExpr ofpush (TargetInstruction FPUSH32))] ++
+     [XorExpr (NotExpr nofcond) (ImplementsExpr ofpush (TargetInstruction NOFPUSH))]
+
+epilogueConstraints _ _ _ (_, _, _, Nothing, _, _) = []
+
+epilogueConstraints True _ _ (_, _, _, Just ofpop, _, _)
+  = [ImplementsExpr ofpop (TargetInstruction FPOP32)]
+
+epilogueConstraints _ True _ (Nothing, _, _, Just ofpop, _, _)
+  = [ImplementsExpr ofpop (TargetInstruction FPOP)]
+
+epilogueConstraints _ True _ (Just osp32, _, _, Just ofpop, _, _)
+  = [XorExpr (ActiveExpr osp32) (ImplementsExpr ofpop (TargetInstruction FPOP))] ++
+    [NotExpr (ImplementsExpr ofpop (TargetInstruction NOFPOP))]
+
+epilogueConstraints _ _ True (Nothing, Just osp, _, Just ofpop, _, [p1,p2,p3,p4,p5,p6]) =
+  let nofcond = AndExpr [NotExpr (ActiveExpr osp),
+                         XorExpr (XorExpr (XorExpr (ActiveExpr p1) (ActiveExpr p2))
+                                          (XorExpr (ActiveExpr p3) (ActiveExpr p4)))
+                                 (XorExpr (ActiveExpr p5) (ActiveExpr p6))]
+  in [NotExpr (ImplementsExpr ofpop (TargetInstruction FPOP32))] ++
+     [XorExpr (NotExpr nofcond) (ImplementsExpr ofpop (TargetInstruction NOFPOP))]
+
+epilogueConstraints _ _ True (Just osp32, Just osp, _, Just ofpop, _, [p1,p2,p3,p4,p5,p6]) =
+  let nofcond = AndExpr [NotExpr (ActiveExpr osp32),
+                         NotExpr (ActiveExpr osp),
+                         XorExpr (XorExpr (XorExpr (ActiveExpr p1) (ActiveExpr p2))
+                                          (XorExpr (ActiveExpr p3) (ActiveExpr p4)))
+                                 (XorExpr (ActiveExpr p5) (ActiveExpr p6))]
+  in [XorExpr (NotExpr (ActiveExpr osp32)) (ImplementsExpr ofpop (TargetInstruction FPOP32))] ++
+     [XorExpr (NotExpr nofcond) (ImplementsExpr ofpop (TargetInstruction NOFPOP))]
+
+epilogueConstraints _ _ _ (Nothing, Just osp, _, Just ofpop, _, _) =
+  let fcond = ActiveExpr osp
+  in [NotExpr (ImplementsExpr ofpop (TargetInstruction FPOP32))] ++
+     [XorExpr fcond (ImplementsExpr ofpop (TargetInstruction NOFPOP))]
+
+epilogueConstraints _ _ _ (Just osp32, Just osp, _, Just ofpop, _, _) =
+  let nofcond = AndExpr [NotExpr (ActiveExpr osp32),
+                         NotExpr (ActiveExpr osp)]
+  in [XorExpr (NotExpr (ActiveExpr osp32)) (ImplementsExpr ofpop (TargetInstruction FPOP32))] ++
+     [XorExpr (NotExpr nofcond) (ImplementsExpr ofpop (TargetInstruction NOFPOP))]
+
+proEpiInfo b @ Block {bCode = code}
+  | isEntryBlock b || isExitBlock b
+  = [proEpiInfo' Nothing Nothing Nothing Nothing [] [] code]
+
+proEpiInfo _ = []
+
+proEpiInfo' osp32 osp ofpush ofpop opushl opopl []
+  = (osp32, osp, ofpush, ofpop, opushl, opopl)
+
+proEpiInfo' _ osp ofpush ofpop opushl opopl (o : code)
+  | (TargetInstruction SPILL32) `elem` oInstructions o
+  = proEpiInfo' (Just (oId o)) osp ofpush ofpop opushl opopl code
+
+proEpiInfo' osp32 _ ofpush ofpop opushl opopl (o : code)
+  | (TargetInstruction SPILL) `elem` oInstructions o
+  = proEpiInfo' osp32 (Just (oId o)) ofpush ofpop opushl opopl code
+
+proEpiInfo' osp32 osp _ ofpop opushl opopl (o : code)
+  | (TargetInstruction FPUSH) `elem` oInstructions o
+  = proEpiInfo' osp32 osp (Just (oId o)) ofpop opushl opopl code
+
+proEpiInfo' osp32 osp ofpush _ opushl opopl (o : code)
+  | (TargetInstruction FPOP) `elem` oInstructions o
+  = proEpiInfo' osp32 osp ofpush (Just (oId o)) opushl opopl code
+
+proEpiInfo' osp32 osp ofpush ofpop opushl opopl (o : code)
+  | (TargetInstruction PUSH_cst) `elem` oInstructions o
+  = proEpiInfo' osp32 osp ofpush ofpop ((oId o) : opushl) opopl code
+
+proEpiInfo' osp32 osp ofpush ofpop opushl opopl (o : code)
+  | (TargetInstruction POP_cst) `elem` oInstructions o
+  = proEpiInfo' osp32 osp ofpush ofpop opushl ((oId o) : opopl) code
+
+proEpiInfo' osp32 osp ofpush ofpop opushl opopl (_ : code)
+  = proEpiInfo' osp32 osp ofpush ofpop opushl opopl code
+
+-- slight adjustment of operandInfo
+
+operandInfo _ i
+  | i `elem` [NOFPUSH] =
+    let ([use], [def]) = SpecsGen.operandInfo i
+    in ([use], [def {oiLatency = 0}])
+  | otherwise =
+    SpecsGen.operandInfo i
 

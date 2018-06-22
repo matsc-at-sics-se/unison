@@ -31,8 +31,9 @@ lowerSubRegVirtual stf tid2rc (accIs, id) (mi @
   | isMachineExtractSubReg mi
   = let subreg = toSubRegIndex sr
         subops = stf (tid2rc M.! sid) subreg
-        (dids, sids, id') = planSubRegs subops did sid id
-        mis = map (lowerSubRegVirtual' mi) (zip3 subops dids sids)
+        subops' = reverse subops
+        (dids, sids, id') = planSubRegs subops' did sid id
+        mis = map (lowerSubRegVirtual' mi) (zip3 subops' dids sids)
     in lowerSubRegVirtual stf tid2rc (accIs ++ mis, id') is
 
 lowerSubRegVirtual stf tid2rc (accIs, id) (mi @

@@ -418,18 +418,17 @@ void InfeasiblePresolver::xchg_nogoods(vector<presolver_conj>& Nogoods) {
 }
 
 void InfeasiblePresolver::regdomain_nogoods(vector<presolver_conj>& Nogoods) {
-  map<vector<instruction>,vector<operation>> M;
+  map<vector<vector<register_class>>,vector<operation>> M;
   map<operand,vector<register_atom>> P2D;
   map<temporary,vector<register_atom>> T2D;
   // group operations by insn set and use, def counts
   for(operation o : input.O) {
-    vector<instruction> is(input.instructions[o]);
-    is.push_back(input.operands[o].size());
-    M[is].push_back(o);
+    vector<vector<register_class>> key(input.rclass[o]);
+    M[key].push_back(o);
   }
   // for each group, for each operand, compute its MGRD (most general reg domain) from atoms
   // for each temp, get its MGRD from its definer
-  for(const pair<vector<instruction>,vector<operation>> is_os : M) {
+  for(const pair<vector<vector<register_class>>,vector<operation>>& is_os : M) {
     map<unsigned int,vector<register_atom>> MGRD;
     // mgrd_per_operand(is_os.second[0], MGRD);
     operation o1 = is_os.second[0];
@@ -445,7 +444,6 @@ void InfeasiblePresolver::regdomain_nogoods(vector<presolver_conj>& Nogoods) {
       }
     }
     for(operation o : is_os.second) {
-      unsigned int nbopnd = input.operands[o1].size();
       for(unsigned int i=0; i<nbopnd; i++) {
 	operand p = input.operands[o][i];
 	if(input.use[p]) {
@@ -479,15 +477,39 @@ void InfeasiblePresolver::regdomain_nogoods(vector<presolver_conj>& Nogoods) {
   }
 }
 
+static void add_adhoc_constraint_instructions(UnisonConstraintExpr& e, vector<instruction>& A) {
+  switch (e.id) {
+  case OR_EXPR:
+  case AND_EXPR:
+  case XOR_EXPR:
+  case IMPLIES_EXPR:
+  case NOT_EXPR:
+    for (UnisonConstraintExpr& e0 : e.children)
+      add_adhoc_constraint_instructions(e0, A);
+    break;
+
+  case IMPLEMENTS_EXPR:
+    A.push_back(e.data[1]);
+    break;
+
+  default:
+    break;
+  }
+}
+
 void InfeasiblePresolver::dominsn_nogoods(vector<presolver_conj>& Nogoods) {
   // exclude instructions that imply alignment and the null instruction
-  vector<int> A;
+  vector<instruction> A;
   A.push_back(NULL_INSTRUCTION);
-  for(const vector<int>& tuple : input.aligned) {
+  for(const vector<instruction>& tuple : input.aligned) {
       instruction i = tuple[1], j = tuple[3];
       A.push_back(i);
       A.push_back(j);
   }
+  // exclude instructions that are mentioned in adhoc
+  for (UnisonConstraintExpr& e : input.E)
+    add_adhoc_constraint_instructions(e, A);
+  // set as ordered list
   sort(A.begin(), A.end());
   A.erase(unique(A.begin(), A.end()), A.end());
   // build M: potential alt. insns, their reg classes, and operations in which they occur
@@ -823,7 +845,7 @@ void InfeasiblePresolver::emit_nogood(const vector<vector<operand> >* R,
   if (R == nullptr) {
     Nogoods.push_back(Conj);
   } else {
-    // M <- P <- ø
+    // M <- P <- {}
     map<vector<temporary>, vector<operand> > M;
     vector<operand> P, Q;
 
@@ -903,7 +925,11 @@ void InfeasiblePresolver::emit_nogood(const vector<vector<operand> >* R,
 	       (even_operand[minPs1] && odd_operand[minPs2])) {
 	      Nogoods.push_back(Conj);
 	    }
-
+#if 0
+// [MC] June 11, 2018
+// This idea is probably not worth it, because operands like p3, p4 below
+// can have zero live ranges, and so the implied constraints would have to
+// carefully check that in OPERAND_OVERLAP_EXPR.
 	    else if(!exist_before(*R, Ps1, Ps2)) {
 	      operand p3 = min(minPs1, minPs2);
 	      operand p4 = max(minPs1, minPs2);
@@ -915,6 +941,7 @@ void InfeasiblePresolver::emit_nogood(const vector<vector<operand> >* R,
 	      vector_insert(C,l);
 	      Nogoods.push_back(C);
 	    }
+#endif
 	  }
 	}
       }
@@ -966,9 +993,9 @@ vector<vector<nogood_cand_set> > InfeasiblePresolver::gen_candidates(const vecto
   //
   // Psuedo code:
   //
-  // DCands <- ø
+  // DCands <- {}
   // For every d in D,
-  //   cands <- ø
+  //   cands <- {}
   //   for every x in d,
   //      if there exist a mapping from root(x) in M,
   //          cand.add(M[root(x)])
@@ -1115,7 +1142,7 @@ void InfeasiblePresolver::detect_cycles(void) {
   cutoff = (options.timeout() + timer.stop()) / 2;
 
   for(const UnisonConstraintExpr& prec : input.precedences) {
-    // T <- {<j,i,-n,d> | <i,j,n,d> in input.precedences && i < j & (d = {ø} || d = {{a(i)}})}
+    // T <- {<j,i,-n,d> | <i,j,n,d> in input.precedences && i < j && (d = {{}} || d = {{a(i)}})}
 
     UnisonConstraintExpr prec_c(AND_EXPR, {}, {});
     vector<int> data = prec.data;

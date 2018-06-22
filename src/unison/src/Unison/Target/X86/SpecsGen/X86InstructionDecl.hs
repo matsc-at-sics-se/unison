@@ -4218,15 +4218,18 @@ data X86Instruction = AAA
                     | MOVE64
                     | MOVE128
                     | MOVE256
-                    | SUBRSP_pseudo
-                    | ADDRSP_pseudo
+                    | FPUSH32
+                    | FPUSH
+                    | NOFPUSH
+                    | FPOP32
+                    | FPOP
+                    | NOFPOP
                     | PUSH_cst
                     | PUSH_fi
                     | POP_cst
                     | POP_fi
-                    | MOV_FROM_SP
-                    | MOV_TO_SP
-                    | ALIGN_SP_32
+                    | SPILL32
+                    | SPILL
                     | ADD32ri_LEA
                     | ADD32rr_LEA
                     | ADD64ri_LEA
@@ -5761,6 +5764,54 @@ data X86Instruction = AAA
                     | XOR8mr_unison
                     | XORPDrm_unison
                     | XORPSrm_unison
+                    | CMOVA16rr_swap
+                    | CMOVA32rr_swap
+                    | CMOVA64rr_swap
+                    | CMOVAE16rr_swap
+                    | CMOVAE32rr_swap
+                    | CMOVAE64rr_swap
+                    | CMOVB16rr_swap
+                    | CMOVB32rr_swap
+                    | CMOVB64rr_swap
+                    | CMOVBE16rr_swap
+                    | CMOVBE32rr_swap
+                    | CMOVBE64rr_swap
+                    | CMOVE16rr_swap
+                    | CMOVE32rr_swap
+                    | CMOVE64rr_swap
+                    | CMOVG16rr_swap
+                    | CMOVG32rr_swap
+                    | CMOVG64rr_swap
+                    | CMOVGE16rr_swap
+                    | CMOVGE32rr_swap
+                    | CMOVGE64rr_swap
+                    | CMOVL16rr_swap
+                    | CMOVL32rr_swap
+                    | CMOVL64rr_swap
+                    | CMOVLE16rr_swap
+                    | CMOVLE32rr_swap
+                    | CMOVLE64rr_swap
+                    | CMOVNE16rr_swap
+                    | CMOVNE32rr_swap
+                    | CMOVNE64rr_swap
+                    | CMOVNO16rr_swap
+                    | CMOVNO32rr_swap
+                    | CMOVNO64rr_swap
+                    | CMOVNP16rr_swap
+                    | CMOVNP32rr_swap
+                    | CMOVNP64rr_swap
+                    | CMOVNS16rr_swap
+                    | CMOVNS32rr_swap
+                    | CMOVNS64rr_swap
+                    | CMOVO16rr_swap
+                    | CMOVO32rr_swap
+                    | CMOVO64rr_swap
+                    | CMOVP16rr_swap
+                    | CMOVP32rr_swap
+                    | CMOVP64rr_swap
+                    | CMOVS16rr_swap
+                    | CMOVS32rr_swap
+                    | CMOVS64rr_swap
                     | MOV8ri_source
                     | MOV8ri_demat
                     | MOV8ri_remat
@@ -5818,5 +5869,8 @@ data X86Instruction = AAA
                     | FsFLD0SS_source
                     | FsFLD0SS_demat
                     | FsFLD0SS_remat
+                    | FsFLD0SD_source
+                    | FsFLD0SD_demat
+                    | FsFLD0SD_remat
                     deriving (Eq, Ord)
 

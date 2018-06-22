@@ -25,6 +25,7 @@ module MachineIR.Constructors
          mkMachineFunctionPropertyRemovedFreqs,
          mkMachineFunctionPropertyVersion,
          mkMachineFunctionPropertyRegisters,
+         mkMachineFunctionPropertyConstants,
          -- * MachineJumpTableEntry constructors
          mkMachineJumpTableEntry,
          -- * MachineBlock constructors
@@ -50,6 +51,7 @@ module MachineIR.Constructors
          mkMachineSubTemp,
          mkMachineSubRegIndex,
          mkMachineReg,
+         mkMachineCompleteReg,
          mkMachineImm,
          mkMachineFPImm,
          mkMachineRawFPImm,
@@ -74,6 +76,7 @@ module MachineIR.Constructors
          mkMachineCFIDefReg,
          mkMachineCFIOffset,
          mkMachineCFIAdjustCfaOffset,
+         mkMachineFreeReg,
          -- * MachineRegState constructors
          mkMachineRegImplicit,
          mkMachineRegImplicitDefine,
@@ -97,6 +100,7 @@ mkMachineFunctionPropertyJumpTable = MachineFunctionPropertyJumpTable
 mkMachineFunctionPropertyRemovedFreqs = MachineFunctionPropertyRemovedFreqs
 mkMachineFunctionPropertyVersion = MachineFunctionPropertyVersion
 mkMachineFunctionPropertyRegisters = MachineFunctionPropertyRegisters
+mkMachineFunctionPropertyConstants = MachineFunctionPropertyConstants
 
 mkMachineJumpTableEntry = MachineJumpTableEntry
 
@@ -123,6 +127,7 @@ mkSimpleMachineTemp id = mkMachineTemp id [] Nothing
 mkMachineSubTemp = MachineSubTemp
 mkMachineSubRegIndex = MachineSubRegIndex
 mkMachineReg name = MachineReg name []
+mkMachineCompleteReg name states = MachineReg name states
 mkMachineImm = MachineImm
 mkMachineFPImm = MachineFPImm
 mkMachineRawFPImm = MachineRawFPImm
@@ -147,6 +152,7 @@ mkMachineCFIDefOffset = MachineCFIDefOffset
 mkMachineCFIDefReg = MachineCFIDefReg
 mkMachineCFIOffset = MachineCFIOffset
 mkMachineCFIAdjustCfaOffset = MachineCFIAdjustCfaOffset
+mkMachineFreeReg = MachineFreeReg
 
 mkMachineRegImplicit = MachineRegImplicit
 mkMachineRegImplicitDefine = MachineRegImplicitDefine

@@ -174,11 +174,48 @@ instruction-set:
           parent:             VMOVAPSYrr
           type:               copy
 
-        - id:                 SUBRSP_pseudo
+        - id:                 FPUSH32
           parent:             SUB64ri8
           operands:
            - imm:             bound
+           - dst:             [register, def, AUXB]
           uses:               [imm]
+          defines:            [dst]
+          affects:
+           - EFLAGS:          register
+           - RSP:             register
+          affected-by:
+           - RSP:             register
+
+        - id:                 FPUSH
+          parent:             SUB64ri8
+          operands:
+           - imm:             bound
+           - dst:             [register, def, AUXE]
+          uses:               [imm]
+          defines:            [dst]
+          affects:
+           - EFLAGS:          register
+           - RSP:             register
+          affected-by:
+           - RSP:             register
+
+        - id:                 NOFPUSH
+          parent:             SUB64ri8
+          operands:
+           - imm:             bound
+           - dst:             [register, def, AUXE]
+          uses:               [imm]
+          defines:            [dst]
+          affects:
+          affected-by:
+
+        - id:                 FPOP32
+          parent:             SUB64ri8
+          operands:
+           - src:             [register, use, GR64]
+           - imm:             bound
+          uses:               [src,imm]
           defines:            []
           affects:
            - EFLAGS:          register
@@ -186,17 +223,28 @@ instruction-set:
           affected-by:
            - RSP:             register
 
-        - id:                 ADDRSP_pseudo
-          parent:             ADD64ri8
+        - id:                 FPOP
+          parent:             SUB64ri8
           operands:
+           - src:             [register, use, AUXE]
            - imm:             bound
-          uses:               [imm]
+          uses:               [src,imm]
           defines:            []
           affects:
            - EFLAGS:          register
            - RSP:             register
           affected-by:
            - RSP:             register
+
+        - id:                 NOFPOP
+          parent:             SUB64ri8
+          operands:
+           - src:             [register, use, AUXE]
+           - imm:             bound
+          uses:               [src,imm]
+          defines:            []
+          affects:
+          affected-by:
 
         - id:                 PUSH_cst
           type:               copy
@@ -254,36 +302,11 @@ instruction-set:
            - RSP:             register
           itinerary:          IIC_POP_REG
 
-        - id:                 MOV_FROM_SP
-          parent:             MOV64rr
-          operands:
-           - dst:             [register, def, GR64]
-          uses:               []
-          defines:            [dst]
-          affected-by:
-           - RSP:             register
+        - id:                 SPILL32
+          parent:             NOOP
 
-        - id:                 MOV_TO_SP
-          parent:             MOV64rr
-          operands:
-           - src:             [register, use, GR64]
-          uses:               [src]
-          defines:            []
-          affects:
-           - RSP:             register
-
-        - id:                 ALIGN_SP_32
-          parent:             AND64ri8
-          type:               linear
-          operands:
-          uses:               []
-          defines:            []
-          size:               0
-          affects:
-           - RSP:             register
-           - EFLAGS:          register
-          affected-by:
-           - RSP:             register
+        - id:                 SPILL
+          parent:             NOOP
 
         - id:                 ADD32ri_LEA
           parent:             ADD32ri
@@ -13276,4 +13299,196 @@ instruction-set:
            - src2:            [register, use, M128]
           uses:               [src1, src2]
           defines:            [src1]
+
+        - id:                 CMOVA16rr_swap
+          parent:             CMOVBE16rr
+          defines:            [src2]
+
+        - id:                 CMOVA32rr_swap
+          parent:             CMOVBE32rr
+          defines:            [src2]
+
+        - id:                 CMOVA64rr_swap
+          parent:             CMOVBE64rr
+          defines:            [src2]
+
+        - id:                 CMOVAE16rr_swap
+          parent:             CMOVB16rr
+          defines:            [src2]
+
+        - id:                 CMOVAE32rr_swap
+          parent:             CMOVB32rr
+          defines:            [src2]
+
+        - id:                 CMOVAE64rr_swap
+          parent:             CMOVB64rr
+          defines:            [src2]
+
+        - id:                 CMOVB16rr_swap
+          parent:             CMOVAE16rr
+          defines:            [src2]
+
+        - id:                 CMOVB32rr_swap
+          parent:             CMOVAE32rr
+          defines:            [src2]
+
+        - id:                 CMOVB64rr_swap
+          parent:             CMOVAE64rr
+          defines:            [src2]
+
+        - id:                 CMOVBE16rr_swap
+          parent:             CMOVA16rr
+          defines:            [src2]
+
+        - id:                 CMOVBE32rr_swap
+          parent:             CMOVA32rr
+          defines:            [src2]
+
+        - id:                 CMOVBE64rr_swap
+          parent:             CMOVA64rr
+          defines:            [src2]
+
+        - id:                 CMOVE16rr_swap
+          parent:             CMOVNE16rr
+          defines:            [src2]
+
+        - id:                 CMOVE32rr_swap
+          parent:             CMOVNE32rr
+          defines:            [src2]
+
+        - id:                 CMOVE64rr_swap
+          parent:             CMOVNE64rr
+          defines:            [src2]
+
+        - id:                 CMOVG16rr_swap
+          parent:             CMOVLE16rr
+          defines:            [src2]
+
+        - id:                 CMOVG32rr_swap
+          parent:             CMOVLE32rr
+          defines:            [src2]
+
+        - id:                 CMOVG64rr_swap
+          parent:             CMOVLE64rr
+          defines:            [src2]
+
+        - id:                 CMOVGE16rr_swap
+          parent:             CMOVL16rr
+          defines:            [src2]
+
+        - id:                 CMOVGE32rr_swap
+          parent:             CMOVL32rr
+          defines:            [src2]
+
+        - id:                 CMOVGE64rr_swap
+          parent:             CMOVL64rr
+          defines:            [src2]
+
+        - id:                 CMOVL16rr_swap
+          parent:             CMOVGE16rr
+          defines:            [src2]
+
+        - id:                 CMOVL32rr_swap
+          parent:             CMOVGE32rr
+          defines:            [src2]
+
+        - id:                 CMOVL64rr_swap
+          parent:             CMOVGE64rr
+          defines:            [src2]
+
+        - id:                 CMOVLE16rr_swap
+          parent:             CMOVG16rr
+          defines:            [src2]
+
+        - id:                 CMOVLE32rr_swap
+          parent:             CMOVG32rr
+          defines:            [src2]
+
+        - id:                 CMOVLE64rr_swap
+          parent:             CMOVG64rr
+          defines:            [src2]
+
+        - id:                 CMOVNE16rr_swap
+          parent:             CMOVE16rr
+          defines:            [src2]
+
+        - id:                 CMOVNE32rr_swap
+          parent:             CMOVE32rr
+          defines:            [src2]
+
+        - id:                 CMOVNE64rr_swap
+          parent:             CMOVE64rr
+          defines:            [src2]
+
+        - id:                 CMOVNO16rr_swap
+          parent:             CMOVO16rr
+          defines:            [src2]
+
+        - id:                 CMOVNO32rr_swap
+          parent:             CMOVO32rr
+          defines:            [src2]
+
+        - id:                 CMOVNO64rr_swap
+          parent:             CMOVO64rr
+          defines:            [src2]
+
+        - id:                 CMOVNP16rr_swap
+          parent:             CMOVP16rr
+          defines:            [src2]
+
+        - id:                 CMOVNP32rr_swap
+          parent:             CMOVP32rr
+          defines:            [src2]
+
+        - id:                 CMOVNP64rr_swap
+          parent:             CMOVP64rr
+          defines:            [src2]
+
+        - id:                 CMOVNS16rr_swap
+          parent:             CMOVS16rr
+          defines:            [src2]
+
+        - id:                 CMOVNS32rr_swap
+          parent:             CMOVS32rr
+          defines:            [src2]
+
+        - id:                 CMOVNS64rr_swap
+          parent:             CMOVS64rr
+          defines:            [src2]
+
+        - id:                 CMOVO16rr_swap
+          parent:             CMOVNO16rr
+          defines:            [src2]
+
+        - id:                 CMOVO32rr_swap
+          parent:             CMOVNO32rr
+          defines:            [src2]
+
+        - id:                 CMOVO64rr_swap
+          parent:             CMOVNO64rr
+          defines:            [src2]
+
+        - id:                 CMOVP16rr_swap
+          parent:             CMOVNP16rr
+          defines:            [src2]
+
+        - id:                 CMOVP32rr_swap
+          parent:             CMOVNP32rr
+          defines:            [src2]
+
+        - id:                 CMOVP64rr_swap
+          parent:             CMOVNP64rr
+          defines:            [src2]
+
+        - id:                 CMOVS16rr_swap
+          parent:             CMOVNS16rr
+          defines:            [src2]
+
+        - id:                 CMOVS32rr_swap
+          parent:             CMOVNS32rr
+          defines:            [src2]
+
+        - id:                 CMOVS64rr_swap
+          parent:             CMOVNS64rr
+          defines:            [src2]
 

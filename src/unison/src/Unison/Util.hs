@@ -52,6 +52,7 @@ module Unison.Util
         mapToAttrRemat,
         mapToAttrJTBlocks,
         mapToAttrRematOrigin,
+        mapToAttrSplitBarrier,
         isTailCallFun,
         isTerminator,
         callOf,
@@ -341,6 +342,12 @@ mapToAttrRematOrigin ::  (Maybe OperationId -> Maybe OperationId) ->
 mapToAttrRematOrigin f o @ SingleOperation {
   oAs = as @ Attributes {aRematOrigin = ro}} =
   o {oAs = as {aRematOrigin = f ro}}
+
+mapToAttrSplitBarrier :: (Bool -> Bool) -> BlockOperation i r ->
+                         BlockOperation i r
+mapToAttrSplitBarrier f o @ SingleOperation {
+  oAs = as @ Attributes {aSplitBarrier = sb}} =
+  o {oAs = as {aSplitBarrier = f sb}}
 
 isTailCallFun :: [BlockOperation i r] -> BlockOperation i r -> Bool
 isTailCallFun code i
@@ -1210,6 +1217,7 @@ fromMachineInstruction itf oif
                   RETURN           -> mkReturn id us'
                   EXIT             -> mkExit id
                   COMBINE          -> mkCombine id (us' !! 0) (us' !! 1) (head ds')
+                  FUN              -> mkFun id us' ds'
                   ADJCALLSTACKDOWN -> mkFrameSetup id (head us')
                   ADJCALLSTACKDOWN32 -> mkFrameSetup id (head us')
                   ADJCALLSTACKDOWN64 -> mkFrameSetup id (head us')
@@ -1264,6 +1272,10 @@ splitMachineVirtualOperands opcode operands
   | opcode `elem` [IMPLICIT_DEF] = ([], operands)
 splitMachineVirtualOperands opcode (operand:operands)
   | opcode `elem` [PHI, COMBINE] = (operands, [operand])
+splitMachineVirtualOperands opcode operands
+  | opcode `elem` [FUN] =
+    (filter isMachineRegImplicit operands,
+     filter isMachineRegImplicitDef operands)
 splitMachineVirtualOperands opcode (s:_)
   | opcode `elem` [ADJCALLSTACKDOWN, ADJCALLSTACKDOWN32, ADJCALLSTACKDOWN64,
                    ADJCALLSTACKUP, ADJCALLSTACKUP32, ADJCALLSTACKUP64] = ([s], [])
@@ -1285,13 +1297,15 @@ buildInstructionAttributes ips =
 toMachineFunction :: Show i => Show r => Function i r -> MachineFunction i r
 toMachineFunction
   Function {fName = name, fCode = code, fFixedStackFrame = ffs,
-            fStackFrame = fs, fJumpTable = jt, fSource = src} =
+            fStackFrame = fs, fConstants = cs, fJumpTable = jt, fSource = src} =
   let mff = toMachineFunctionPropertyFixedFrame ffs
       mf  = toMachineFunctionPropertyFrame fs
+      mcs = toMachineFunctionPropertyConstants cs
       mjt = toMachineFunctionPropertyJumpTable jt
       mbs = map toMachineBlock code
   in mkMachineFunction name
-         (maybeToList mff ++ maybeToList mf ++ maybeToList mjt) mbs src
+         (maybeToList mff ++ maybeToList mf ++ maybeToList mcs ++
+          maybeToList mjt) mbs src
 
 toMachineFunctionPropertyFixedFrame ::
     [FrameObject r] -> Maybe (MachineFunctionProperty r)
@@ -1309,6 +1323,12 @@ toMachineFrameObjectInfo :: FrameObject r -> MachineFrameObjectInfo r
 toMachineFrameObjectInfo fo = mkMachineFrameObjectInfo (foIndex fo)
                               (foOffset fo) (foSize fo) (foAlignment fo)
                               (foCSRegister fo)
+
+toMachineFunctionPropertyConstants ::
+  [(Integer, String, Integer)] -> Maybe (MachineFunctionProperty r)
+toMachineFunctionPropertyConstants [] = Nothing
+toMachineFunctionPropertyConstants cs =
+  Just $ mkMachineFunctionPropertyConstants cs
 
 toMachineFunctionPropertyJumpTable ::
   (String, [JumpTableEntry]) -> Maybe (MachineFunctionProperty r)

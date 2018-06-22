@@ -122,7 +122,8 @@ instance (Show i, Show r) => ShowSimple (Function i r) where
   showSimple f = show (f {fSource = ""})
 
 instance (Show i, Show r) => Show (Function i r) where
-    show (Function comments name code cs' rts ffobjs fobjs sp ss jt goal rfs src) =
+    show (Function comments name code cs' rts ffobjs fobjs sp ss consts jt goal
+          rfs src) =
       concatMap showComment comments ++
       showSectionName "function" ++ " " ++ name ++ newLine ++
       concatMap show code ++
@@ -136,6 +137,8 @@ instance (Show i, Show r) => Show (Function i r) where
       showFrameObjects False fobjs ++
       showSectionName "stack-pointer-offset" ++ " " ++ show sp ++ newLine ++
       showSectionName "stack-arg-size" ++ " " ++ show ss ++ newLine ++
+      showSectionName "constants" ++ newLine ++
+      showConstantObjects consts ++
       showSectionName "jump-table" ++ newLine ++
       showJumpTableEntries jt ++
       showSectionName "goal" ++ maybeShowGoal goal ++ newLine ++
@@ -238,14 +241,15 @@ instance (Show i, Show r) => Show (Attributes i r) where
     show (Attributes {aReads = reads, aWrites = writes, aCall = call,
                       aMem = mem, aActivators = act, aVirtualCopy = vc,
                       aRemat = rm, aJTBlocks = jtbs, aBranchTaken = bt,
-                      aPrescheduled = ps, aRematOrigin = rorig}) =
+                      aPrescheduled = ps, aRematOrigin = rorig,
+                      aSplitBarrier = sb}) =
         let attrs = catMaybes
                     [maybeShowReads reads, maybeShowWrites writes,
                      maybeShowCall call, maybeShowMem mem,
                      maybeShowActivators act, maybeShowVirtualCopy vc,
                      maybeShowRemat rm, maybeShowJTBlocks jtbs,
                      maybeShowBranchTaken bt, maybeShowPrescheduled ps,
-                     maybeShowRematOrigin rorig]
+                     maybeShowRematOrigin rorig, maybeShowSplitBarrier sb]
         in (if null attrs then ""
             else " (" ++ render (cs id attrs) ++ ")")
 
@@ -284,6 +288,9 @@ maybeShowPrescheduled (Just c) = Just $ showAttr "cycle" "" c
 
 maybeShowRematOrigin Nothing = Nothing
 maybeShowRematOrigin (Just oid) = Just $ showAttr "remat-origin" "o" oid
+
+maybeShowSplitBarrier False = Nothing
+maybeShowSplitBarrier True = Just $ "split-barrier"
 
 showAttr :: Show a => String -> String -> a -> String
 showAttr n p a = n ++ ": " ++ p ++ show a
@@ -353,6 +360,14 @@ showFrameObject fixed fo =
              Nothing -> [])))
 
 showFrameObjectProperty (p, v) = p ++ " = " ++ v
+
+showConstantObjects [] = ""
+showConstantObjects consts =
+  concat [wsString ++ showConstantObject c ++ newLine | c <- consts]
+
+showConstantObject (id, v, a) =
+  "%const." ++ show id ++ ": value = " ++ showConstantValue v ++ ", align = " ++
+  show a
 
 instance Show JumpTableEntry where
     show e = jumpTablePrefix ++ show (jtId e) ++ ": " ++

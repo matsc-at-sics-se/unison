@@ -161,6 +161,8 @@ data Function i r = Function {
       fStackPointerOffset :: Integer,
       -- | Argument-passing section size in the stack frame (default is 0)
       fStackArgSize :: Integer,
+      -- | Constant information (id, value, alignment)
+      fConstants :: [(Integer, String, Integer)],
       -- | Jump table kind and entries
       fJumpTable   :: (String, [JumpTableEntry]),
       -- | Goal(s) for which the function is to be optimized
@@ -488,7 +490,9 @@ data Attributes i r = Attributes {
   -- | Whether the operation is prescheduled and in what issue cycle
   aPrescheduled :: Maybe IssueCycle,
   -- | Identifier of the rematerialization copy's origin, if any
-  aRematOrigin  :: Maybe OperationId
+  aRematOrigin  :: Maybe OperationId,
+  -- | Whether block splitting is allowed after the operation
+  aSplitBarrier :: Bool
 } deriving (Eq)
 
 -- | Object representing the side-effect of an 'Operation'. Operations can write

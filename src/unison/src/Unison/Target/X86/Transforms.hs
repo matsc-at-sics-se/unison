@@ -10,7 +10,12 @@ Main authors:
 This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.X86.Transforms
-    (extractReturnRegs,
+    (cleanFunRegisters,
+     promoteImplicitOperands,
+     expandPseudos,
+     demoteImplicitOperands,
+     addImplicitRegs,
+     extractReturnRegs,
      handlePromotedOperands,
      generalizeRegisterDefines,
      generalizeRegisterUses,
@@ -19,16 +24,20 @@ module Unison.Target.X86.Transforms
      revertFixedFrame,
      liftStackArgSize,
      addPrologueEpilogue,
+     suppressCombineCopies,
      movePrologueEpilogue,
      myLowerFrameIndices,
      addStackIndexReadsSP,
      addFunWrites,
+     addSpillIndicators,
      addVzeroupper,
-     spillAfterAlign) where
+     -- moveOptWritesEflags,
+     removeDeadEflags) where
 
 import qualified Data.Map as M
 import Data.List
 import Data.List.Split
+import qualified Data.Set as S
 import qualified Data.Graph.Inductive as G
 import Data.Maybe
 
@@ -42,9 +51,285 @@ import Unison.Target.X86.Common
 import Unison.Target.X86.BranchInfo
 import Unison.Target.X86.X86RegisterDecl
 import Unison.Target.X86.X86RegisterClassDecl
-import Unison.Target.X86.Registers()
+import Unison.Target.X86.Registers
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
+
+-- This transformation hides the stack pointer as a use and definition of
+-- function calls.
+
+cleanFunRegisters
+ mi @ MachineSingle {msOpcode = MachineVirtualOpc FUN, msOperands = mos} =
+    let mos' = [mr | mr @ MachineReg {mrName = r} <- mos, r /= RSP]
+    in mi {msOperands = mos'}
+
+cleanFunRegisters mi = mi
+
+-- This transformation adds implicit uses and definitions that have been
+-- promoted with specsgen. The order of the operands is:
+-- 1. explicit defs
+-- 2. implicit defs
+-- 3. explicit uses
+-- 4. implicit uses
+-- 5. rest (for example, memory annotations to be lifted)
+-- The transformation relies on the register lifting functionality in 'uni
+-- import' to lift the added implicit uses and definitions to temporaries.
+
+promoteImplicitOperands
+  mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = mos} =
+    let mos' = promoteImplicitRegs i promotedRegs mos
+    in mi {msOperands = mos'}
+
+promoteImplicitOperands mi = mi
+
+promoteImplicitRegs i regs mos =
+  let oif = SpecsGen.operandInfo i
+      ws  = filter (writesSideEffect i) regs
+      firstImpDef = length (snd oif) - length ws
+      (eds, mos1) = splitAt firstImpDef mos
+      rs  = filter (readsSideEffect i) regs
+      firstImpUse = length (fst oif) - length rs
+      (eus, mos2) = splitAt firstImpUse mos1
+  in eds ++ map mkMachineReg ws ++ eus ++ map mkMachineReg rs ++ mos2
+
+-- This transformation removes operands that are explicit according to OperandInfo
+-- but in fact are implicit according to ReadWriteInfo.  It also sets MachineInstructionPropertyDefs
+-- to the number of truly explicit defs, because Prepareforemission would compute the wrong value
+-- otherwise.
+
+demoteImplicitOperands mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = mos, msProperties = props}
+  = let (uif,dif) = SpecsGen.operandInfo i
+        ws  = filter (writesSideEffect i) promotedRegs
+        rs  = filter (readsSideEffect i) promotedRegs
+        (eds, mos') = splitAt (length dif - length ws) mos
+        (_, mos'') = splitAt (length ws) mos'
+        (eus, _) = splitAt (length uif - length rs) mos''
+        props' = props ++ [mkMachineInstructionPropertyDefs (toInteger $ length eds)]
+  in mi {msOperands = eds++eus, msProperties = props'}
+
+-- This transformation replaces MachineIR.Transformations.AddImplicitRegs, which would otherwise
+-- for every write side-effect add both MachineRegImplicit and MachineRegImplicitDef.
+
+addImplicitRegs mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = mos} =
+  let (uif,dif) = SpecsGen.readWriteInfo i
+      imp   = [MachineReg d [mkMachineRegImplicitDefine] |
+               (OtherSideEffect d) <- dif] ++
+              [MachineReg u [mkMachineRegImplicit] |
+               (OtherSideEffect u) <- uif]
+      mos'  = mos ++ imp
+  in mi {msOperands = mos'}
+
+-- This transformation expands pseudo instructions to real instructions.
+
+expandPseudos to = mapToMachineBlock (expandBlockPseudos (expandPseudo to))
+
+expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc i})
+  | i `elem` [SPILL32, SPILL, NOFPUSH, NOFPOP]
+  = []
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPUSH,
+                                   msOperands = [_,off]}
+  | off == MachineImm 8
+  = let cx = mkMachineReg RCX
+    in [[mi {msOpcode = mkMachineTargetOpc PUSH64r,
+             msOperands = [cx]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPUSH,
+                                   msOperands = [_,off]}
+  = let sp = mkMachineReg RSP
+    in [[mi {msOpcode = mkMachineTargetOpc SUB64ri8,
+             msOperands = [sp, sp, off]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPUSH32,
+                                   msOperands = [dst,off]}
+  = let sp = mkMachineReg RSP
+        im32 = mkMachineImm (-32)
+    in [[mi {msOpcode = mkMachineTargetOpc MOV64rr,
+             msOperands = [dst, sp]}],
+        [mi {msOpcode = mkMachineTargetOpc AND64ri8,
+             msOperands = [sp, sp, im32]}],
+        [mi {msOpcode = mkMachineTargetOpc SUB64ri8,
+             msOperands = [sp, sp, off]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPOP,
+                                   msOperands = [_,off]}
+  | off == MachineImm 8
+  = let cx = mkMachineReg RCX
+    in [[mi {msOpcode = mkMachineTargetOpc POP64r,
+             msOperands = [cx]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPOP,
+                                   msOperands = [_,off]}
+  = let sp = mkMachineReg RSP
+    in [[mi {msOpcode = mkMachineTargetOpc ADD64ri8,
+             msOperands = [sp, sp, off]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPOP32,
+                                   msOperands = [src,_]}
+  = let sp = mkMachineReg RSP
+    in [[mi {msOpcode = mkMachineTargetOpc MOV64rr,
+             msOperands = [sp, src]}]]
+
+expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc PUSH_fi, msOperands = [_, s]})
+  = [[mkMachineSingle (MachineTargetOpc PUSH64r) [] [s]]]
+
+expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc POP_fi, msOperands = [d, _]})
+  = [[mkMachineSingle (MachineTargetOpc POP64r) [] [d]]]
+
+-- expand pseudos that stem from llvm; see X86ExpandPseudo.cpp
+
+-- could do it with XOR, which would clobber EFLAGS, when it is safe, FIXME
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r0,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc MOV64ri,
+          msOperands = [machineReg32ToReg64 dst,
+                        mkMachineImm 0]}]]
+  -- = [[mi {msOpcode = mkMachineTargetOpc XOR32rr,
+  --         msOperands = [dst, dst, dst]}]]
+
+-- could do it with XOR + INC, which would clobber EFLAGS, when it is safe, FIXME
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r1,
+                                   msOperands = [dst]}
+  = let imm = mkMachineImm 1
+  in [[mi {msOpcode = mkMachineTargetOpc MOV64ri,
+           msOperands = [machineReg32ToReg64 dst, imm]}]]
+
+-- could do it with XOR + DEC, which would clobber EFLAGS, when it is safe, FIXME
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r_1,
+                                   msOperands = [dst]}
+  = let imm = mkMachineImm (-1)
+  in [[mi {msOpcode = mkMachineTargetOpc MOV64ri,
+           msOperands = [machineReg32ToReg64 dst, imm]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32ri64}
+  = [[mi {msOpcode = mkMachineTargetOpc MOV32ri}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD16ri8_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD16ri8}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD16ri_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD16ri}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD16rr_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD16rr}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD32ri8_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD32ri8}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD32ri_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD32ri}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD32rr_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD32rr}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64ri8_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD64ri8}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64ri32_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD64ri32}]]
+
+-- candidate for LEA?
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64rr_DB}
+  = [[mi {msOpcode = mkMachineTargetOpc ADD64rr}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc AVX2_SETALLONES,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc VPCMPEQDrr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc AVX_SET0,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc VXORPSYrr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FsFLD0SD,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc FsXORPDrr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FsFLD0SS,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc FsXORPSrr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C8r,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc SBB8rr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C16r,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc SBB16rr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C32r,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc SBB32rr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C64r,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc SBB64rr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc TEST8ri_NOREX}
+  = [[mi {msOpcode = mkMachineTargetOpc TEST8ri}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc V_SET0,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc VXORPSrr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc V_SETALLONES,
+                                   msOperands = [dst]}
+  = [[mi {msOpcode = mkMachineTargetOpc PCMPEQDrr,
+          msOperands = [dst, dst, dst]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc mto,
+                                   msOperands = [lab,MachineImm off]}
+  | mto `elem` [TCRETURNdi, TCRETURNri, TCRETURNdi64, TCRETURNri64]
+  = maybeAdjustSP off ++
+    [[mi {msOpcode = mkMachineTargetOpc (expandedTailJump mto),
+          msOperands = [lab]}]]
+
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc mto,
+                                   msOperands = [a,b,c,d,e,MachineImm off]}
+  | mto `elem` [TCRETURNmi, TCRETURNmi64]
+  = maybeAdjustSP off ++
+    [[mi {msOpcode = mkMachineTargetOpc (expandedTailJump mto),
+          msOperands = [a,b,c,d,e]}]]
+
+-- FIXME: this gives way too many false warnings
+-- expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc i}
+--   | SpecsGen.itinerary i == NoItinerary
+--   = trace ("WARNING: missing expansion of instruction " ++ show i) [[mi]]
+
+expandPseudo _ mi = [[mi]]
+
+expandedTailJump TCRETURNdi = TAILJMPd
+expandedTailJump TCRETURNri = TAILJMPr
+expandedTailJump TCRETURNmi = TAILJMPm
+expandedTailJump TCRETURNdi64 = TAILJMPd64
+expandedTailJump TCRETURNri64 = TAILJMPr64
+expandedTailJump TCRETURNmi64 = TAILJMPm64
+
+maybeAdjustSP 0 = []
+maybeAdjustSP off
+  | off > 0
+  = let sp = mkMachineReg RSP
+    in [[mkMachineSingle (mkMachineTargetOpc ADD64ri32) [] [sp, sp, mkMachineImm off]]]
+maybeAdjustSP off
+  | off < 0
+  = let sp = mkMachineReg RSP
+    in [[mkMachineSingle (mkMachineTargetOpc SUB64ri32) [] [sp, sp, mkMachineImm (-off)]]]
 
 {-
     o12: [eax] <- (copy) [t4]
@@ -115,14 +400,6 @@ extractReturnRegs _ (
    )
 
 extractReturnRegs _ (o : rest) _ = (rest, [o])
-
-spillAfterAlign _ (o :
-                   p @ SingleOperation {oOpr = Natural (Linear {oIs = [TargetInstruction ALIGN_SP_32]})} :
-                   q @ SingleOperation {oOpr = Natural (Linear {oIs = [TargetInstruction SUBRSP_pseudo]})} :
-                   rest) _
-  | isCopy o
-  = (rest, [p,q,o])
-spillAfterAlign _ (o : rest) _ = (rest, [o])
 
 {-
     o10: [t14,t15] <- IMUL64m [%stack.0,1,_,8,_,t13] (mem: 1)
@@ -202,8 +479,8 @@ genRegUse (TargetInstruction i)
   = [TargetInstruction i, TargetInstruction (regMemInstr i)]
 genRegUse ti = [ti]
 
--- This transform adds LEA variants of various ADD and MUL instructions.
--- Beware! Currently unsound, because it assumes that the ADD or MUL defines dead EFLAGS.
+-- This transform adds LEA variants of various ADD and MUL instructions, which write eflags,
+-- except if there is some operation that reads those eflags.
 
 transAlternativeLEA f @ Function {fCode = code} =
   let icfg   = ICFG.fromBCFG $ BCFG.fromFunction branchInfo' f
@@ -240,6 +517,12 @@ alternativeLEA precious
     oOpr = Natural ni @ (Linear {oUs = ous, oIs = ois})}
   | (oId o) `notElem` precious
   = o {oOpr = Natural ni {oIs = concatMap (altLEA ous) ois}}
+
+alternativeLEA _
+  o @ SingleOperation {
+    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
+  | M.member ti condMoveAlts
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction (condMoveAlts M.! ti)]}}
 
 alternativeLEA _ o = o
 
@@ -307,28 +590,20 @@ rspCopy _ = []
 
 liftStackArgSize' rcs o
  | (length $ oUses o) == 6 && (head $ oUses o) `elem` rcs
- = let (ri, _) = SpecsGen.operandInfo (oTargetInstr $ head $ oInstructions o)
-       (_, [ui]) = splitAt 5 ri
-       w = temporaryInfoWidth ui
-       [_,_,_,offp,_,_] = oUses o
+ = let (SingleOperation {oOpr = Natural (Linear {oUs = us, oIs = [TargetInstruction ti]})}) = o
+       w = instructionMemWidth ti
+       [_,_,_,offp,_,_] = us
        (Bound (MachineImm off)) = offp
    in off + w
 liftStackArgSize' _ _ = 0
 
--- TODO: an alternative method to compute the width of rc is:
---   raRcUsage ra rc
---   where ra = mkRegisterArray target 0
--- (see Invariants.hs. line 165)
-
-temporaryInfoWidth TemporaryInfo {oiRegClass = RegisterClass rc}
-  | rc == GR32 = 4
-  | rc == GR64 = 8
-  | rc == FR32 = 4
-  | rc == FR64 = 8
-  | rc == FR128 = 16
-  | rc == VR128 = 16
-  | rc == VR256 = 32
-  | True = error ("unmatched: temporaryInfoWidth " ++ show rc)
+instructionMemWidth ti
+  | ti `elem` [MOV8mi, MOV8mr] = 1
+  | ti `elem` [MOV16mi, MOV16mr] = 2
+  | ti `elem` [MOV32mi, MOV32mr] = 4
+  | ti `elem` [MOV64mi32, MOV64mr] = 8
+  | ti `elem` [VMOVAPSYmr] = 32
+  | True = error ("unmatched: instructionMemWidth " ++ show ti)
 
 -- This transform inserts Prologue/Epilogue, either simple or complex,
 -- if alignment by more than 16 is required.
@@ -337,19 +612,14 @@ temporaryInfoWidth TemporaryInfo {oiRegClass = RegisterClass rc}
 -- Additionally, we need to ensure that SP is modulo 16 aligned at
 -- all recursive calls!  At any rate, the frame size needs to be a multiple of 8.
 
-addPrologueEpilogue f @ Function {fCode = code, fStackFrame = objs} =
+addPrologueEpilogue f @ Function {fCode = code} =
   let flatcode = flatten code
-      align    = if any isDirtyYMMOp flatcode then 32 else 8
-      align'   = maximum $ [align] ++ map foAlignment (objs)
-      (addPrf, addEpf) = if align' > 16
-                         then (addComplexPr, addComplexEp)
-                         else (addSimplePr, addSimpleEp)
       ids      = newIndexes flatcode
       tid      = case ids of
                   (tid', _, _) -> tid'
-      code'    = mapToEntryBlock (addPrf tid ids) code
+      code'    = mapToEntryBlock (addPrologue tid ids) code
       outBs    = returnBlockIds code'
-      code''   = foldl (addEpilogueInBlock (addEpf tid)) code' outBs
+      code''   = foldl (addEpilogueInBlock (addEpilogue tid)) code' outBs
   in f {fCode = code''}
 
 addEpilogueInBlock aef code l =
@@ -357,34 +627,52 @@ addEpilogueInBlock aef code l =
         code' = mapToBlock (aef ids) l code
     in code'
 
-mkSubSp oid =
-  mkLinear oid [TargetInstruction SUBRSP_pseudo] [Bound mkMachineFrameSize] []
+mkPush oid tid =
+  mkLinear oid [TargetInstruction FPUSH32, TargetInstruction FPUSH, TargetInstruction NOFPUSH]
+               [Bound mkMachineFrameSize]
+               [mkTemp tid]
+
+mkPop oid tid =
+  mkLinear oid [TargetInstruction FPOP32, TargetInstruction FPOP, TargetInstruction NOFPOP]
+               [mkTemp tid, Bound mkMachineFrameSize]
+               []
+
+addPrologue tid (_, oid, _) (e:code) =
+  let push = mkPush oid tid
+  in [e, push] ++ code
+
+addEpilogue tid (_, oid, _) code =
+  let pop  = mkPop oid tid
+      pop' = makeSplitBarrier pop
+      [code', tail] = splitEpilogue code
+  in code' ++ [pop'] ++ tail
 
 splitEpilogue code =
   split (keepDelimsL $ whenElt (\o -> isBranch o || isTailCall o)) code
 
-mkReg = mkRegister . mkTargetRegister
+makeSplitBarrier = mapToAttrSplitBarrier (const True)
 
-addSimplePr _ (_, oid, _) (e:code) = [e, mkSubSp oid] ++ code
+-- This transformation suppresses unsafe 32-bit copies in the first argument of (combine),
+-- because instructions with a 32-bit destination implicitly zeroes the upper 32 bits.
 
-addSimpleEp _ (_, oid, _) code =
-  let addSp = mkLinear oid [TargetInstruction ADDRSP_pseudo]
-              [Bound mkMachineFrameSize] []
-      [code', e] = splitEpilogue code
-  in code' ++ [addSp] ++ e
+suppressCombineCopies f @ Function {fCode = code} =
+  let t2h = M.fromList $ concatMap definerInsns (flatten code)
+      code' = mapToOperationInBlocks (suppressCombineCopies' t2h) code
+  in f {fCode = code'}
 
-addComplexPr tid (_, oid, _) (e:code) =
-  let mov64 = mkLinear oid       [TargetInstruction MOV_FROM_SP] [] [mkPreAssignedTemp tid (mkReg RBP)]
-      and64 = mkLinear (oid + 1) [TargetInstruction ALIGN_SP_32] [] []
-      subSp = mkSubSp  (oid + 2)
-  in [e, mov64, and64, subSp] ++ code
+definerInsns o =
+  let insns = oInstructions o
+      hazard = (TargetInstruction MOVE32) `elem` insns
+  in [(mkTemp t, hazard) | t <- defTemporaries [o]]
 
-addComplexEp tid (_, oid, _) code =
-  let mov64 = mkLinear oid [TargetInstruction MOV_TO_SP] [mkTemp tid] []
-      [code', e] = splitEpilogue code
-  in code' ++ [mov64] ++ e
+suppressCombineCopies' t2h o @ SingleOperation {oOpr = Virtual (co @ Combine {oCombineLowU = p @ MOperand {altTemps = alts}})}
+  = let alts' = [t | t <- alts, not (t2h M.! t)]
+    in o {oOpr = Virtual (co {oCombineLowU = p {altTemps = alts'}})}
+suppressCombineCopies' _ o = o
 
 -- This transform prevents any STORE* from occurring before the prologue and any LOAD* from occurring after the epilogue.
+-- Note that a LOAD* can have a _remat alternative, which could write dead eflags.
+-- Note that STORE* can be mixed with PUSH and LOAD* can be mixed with POP*.
 
 movePrologueEpilogue f @ Function {fCode = code} =
   let outBs    = returnBlockIds code
@@ -395,27 +683,37 @@ movePrologueEpilogue f @ Function {fCode = code} =
 moveEpilogueInBlock aef code l =
     mapToBlock aef l code
 
-movePrf buf (o:code)
+movePrf moves (o : code)
   | isCopy o && (oWriteObjects o) == []
-  = movePrf (buf ++ [o]) code
-movePrf buf (o @ SingleOperation {oOpr = Natural (Linear {oIs = [TargetInstruction SUBRSP_pseudo]})}
-             : code)
-  = [o] ++ buf ++ code
-movePrf buf (o:code)
-  = [o] ++ movePrf buf code
+  = movePrf (moves ++ [o]) code
+movePrf moves (o : code)
+  | isPro o
+  = [o] ++ moves ++ code
+movePrf moves (o:code)
+  = [o] ++ movePrf moves code
 
 moveEpf code =
   let [code', (epi : code'')] = split (keepDelimsL $ whenElt (\o -> isEpi o)) code
   in code' ++ moveEpf' [] epi code''
 
-moveEpf' buf epi (o:code)
+moveEpf' pops epi (o:code)
   | isCopy o && (oWriteObjects o) == []
-  = moveEpf' (buf ++ [o]) epi code
-moveEpf' buf epi code
-  = buf ++ [epi] ++ code
+  = [o] ++ moveEpf' pops epi code
+-- moveEpf' pops epi (o:code) -- was meaningful for reified MOV32r0 affecting eflags, FIXME
+--   | isCopy o && (oWriteObjects o) == [OtherSideEffect EFLAGS]
+--   = [o] ++ moveEpf' pops epi code
+moveEpf' pops epi (o:code)
+  | isCopy o
+  = moveEpf' (pops ++ [o]) epi code
+moveEpf' pops epi code
+  = [epi] ++ pops ++ code
 
-isEpi SingleOperation {oOpr = Natural (Linear {oIs = [TargetInstruction ti]})} =
-  ti `elem` [ADDRSP_pseudo, MOV_TO_SP]
+isPro SingleOperation {oOpr = Natural (Linear {oIs = is})} =
+  (TargetInstruction FPUSH) `elem` is
+isPro _ = False
+
+isEpi SingleOperation {oOpr = Natural (Linear {oIs = is})} =
+  (TargetInstruction FPOP) `elem` is
 isEpi _ = False
 
 -- This transform replaces stack frame object indices in the code by actual
@@ -442,7 +740,7 @@ myLowerFrameIndices' need done align f @ Function {fCode = code, fFixedStackFram
 myLowerFrameIndices' need done align f @ Function {fCode = code, fFixedStackFrame = fobjs,
                                                    fStackFrame = objs} =
   let need'    = ((((need-1) `div` align) + 1) * align)
-      code'    = replaceFIsByImms done  done  (mkTargetRegister RBP) True fobjs code
+      code'    = replaceFIsByImms done  done  (mkTargetRegister RBX) True fobjs code
       code''   = replaceFIsByImms need'    0  (mkTargetRegister RSP) False objs code'
   in f {fCode = code''}
 
@@ -456,9 +754,16 @@ liftFIif basereg fixed decr idxToOff (Bundle os) =
 
 liftFIif _ False decr _
   o @ SingleOperation {oOpr = Natural ni @ (Linear {oIs = [TargetInstruction i]})}
-  | i `elem` [SUBRSP_pseudo, ADDRSP_pseudo]
+  | i `elem` [FPUSH32, FPUSH, NOFPUSH]
   = let use1' = mkBound (mkMachineImm decr)
     in o {oOpr = Natural ni {oUs = [use1']}}
+
+liftFIif _ False decr _
+  o @ SingleOperation {oOpr = Natural ni @ (Linear {oIs = [TargetInstruction i], oUs = [use1,_]})}
+  | i `elem` [FPOP32, FPOP, NOFPOP]
+  = let use2' = mkBound (mkMachineImm decr)
+    in o {oOpr = Natural ni {oUs = [use1,use2']}}
+
 liftFIif basereg fixed _ idxToOff
   o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [(Bound (MachineFrameIndex idx fixed' off1)),
                                                            use2,
@@ -469,6 +774,7 @@ liftFIif basereg fixed _ idxToOff
   = let use1' = mkRegister basereg
         use4' = mkBound (mkMachineImm $ (idxToOff M.! idx) + off1 + off2)
     in o {oOpr = Natural ni {oUs = [use1',use2,use3,use4',use5]}}
+
 liftFIif basereg fixed _ idxToOff
   o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [(Bound (MachineFrameIndex idx fixed' off1)),
                                                            use2,
@@ -480,6 +786,7 @@ liftFIif basereg fixed _ idxToOff
   = let use1' = mkRegister basereg
         use4' = mkBound (mkMachineImm $ (idxToOff M.! idx) + off1 + off2)
     in o {oOpr = Natural ni {oUs = [use1',use2,use3,use4',use5,use6]}}
+
 liftFIif basereg fixed _ idxToOff
   o @ SingleOperation {oOpr = Natural ni @ (Linear {oUs = [use1,
                                                            (Bound (MachineFrameIndex idx fixed' off1)),
@@ -491,6 +798,7 @@ liftFIif basereg fixed _ idxToOff
   = let use2' = mkRegister basereg
         use5' = mkBound (mkMachineImm $ (idxToOff M.! idx) + off1 + off2)
     in o {oOpr = Natural ni {oUs = [use1,use2',use3,use4,use5',use6]}}
+
 liftFIif _ _ _ _ o = o
 
 addStackIndexReadsSP
@@ -512,19 +820,61 @@ addFunWrites o
   = mapToWrites (++ [OtherSideEffect EFLAGS]) o
 addFunWrites o = o
 
+-- This transformation adds SPILL32 and SPILL optional operations instructions
+-- in entry and exit blocks
+
+addSpillIndicators f @ Function {fCode = code} =
+  let fcode = flatten code
+      insts = S.fromList $ concatMap oInstructions fcode
+      act32 = intersectionWithList insts [TargetInstruction STORE256]
+      act   = intersectionWithList insts [TargetInstruction STORE8,
+                                          TargetInstruction STORE16,
+                                          TargetInstruction STORE32,
+                                          TargetInstruction STORE64,
+                                          TargetInstruction STORE128]
+      (_, oid, _) = newIndexes $ fcode 
+      (_, code') = mapAccumL (addSpillIndicatorsToBlock act32 act) oid code
+  in f {fCode = code'}
+
+intersectionWithList set = S.toList . S.intersection set . S.fromList
+
+addSpillIndicatorsToBlock [] act oid b @ Block {bCode = (e : code)}
+  | (isEntryBlock b || isExitBlock b)
+  = let spill    = mkSpillInd act (oid + 0) SPILL
+    in ((oid + 1), b {bCode = [e, spill] ++ code})
+
+addSpillIndicatorsToBlock act32 act oid b @ Block {bCode = (e : code)}
+  | (isEntryBlock b || isExitBlock b)
+  = let spill32  = mkSpillInd act32 (oid + 0) SPILL32
+        spill    = mkSpillInd act (oid + 1) SPILL
+    in ((oid + 2), b {bCode = [e, spill32, spill] ++ code})
+
+addSpillIndicatorsToBlock _ _ oid b = (oid, b)
+
+mkSpillInd act oid ti =
+  addActivators act $ makeOptional $ mkLinear oid [TargetInstruction ti] [] []
+
+addActivators = mapToActivators . (++)
+
+-- This transformation adds VZEROUPPER instructions right before calls and returns
+-- after stretches of code that touches any YMM register.
+
 addVzeroupper f @ Function {fCode = code} =
   let icfg   = ICFG.fromBCFG $ BCFG.fromFunction branchInfo' f
-      cnodes = [id | (id, (_, o)) <- G.labNodes icfg, isCall o]
-      rnodes = [id | (id, (_, o)) <- G.labNodes icfg,
-                (TargetInstruction RETQ) `elem` oInstructions o || isTailCall o]
+      cnodes = [id | (id, (_, o)) <- G.labNodes icfg, isCall o || isTailCall o || isRet o]
       cedges = concat [[(id, s) | s <- G.suc icfg id] | id <- cnodes]
       icfg'  = G.delEdges cedges icfg
       icfgr  = G.grev icfg'
-      creach = [(id, G.reachable id icfgr) | id <- cnodes ++ rnodes]
+      controlInsns = filter (\o -> isCall o || isTailCall o || isFun o || isRet o || isDelimiter o) (flatten code)
+      cnodes' = filter (insertCandidate icfg controlInsns) cnodes
+      creach = [(id, G.reachable id icfgr) | id <- cnodes']
       ymmreach = [snd (fromJust (G.lab icfg id)) | (id, reachers) <- creach,
                   any (isYMMDirtying icfg) reachers]
       code'  = foldl insertVzeroupper code ymmreach
   in f {fCode = code'}
+
+isRet o =
+  (TargetInstruction RETQ) `elem` oInstructions o
 
 isYMMDirtying icfg id =
   isDirtyYMMOp $ snd (fromJust (G.lab icfg id))
@@ -538,3 +888,117 @@ insertVzeroupper code o =
       vzu = mkLinear oid [TargetInstruction VZEROUPPER] [] []
       code' = map (insertOperationInBlock before (isIdOf o) vzu) code
    in code'
+
+insertCandidate icfg controlInsns id =
+  let o = snd (fromJust (G.lab icfg id))
+  in unusedYMMAfter controlInsns o
+
+unusedYMMAfter [] _ = True
+
+unusedYMMAfter (call : (SingleOperation {oOpr = Virtual (Fun {oFunctionUs = funuses})}) : _) o
+  | call == o
+  = not (any ymmPreassigned funuses)
+
+unusedYMMAfter (ret : out : _) o
+  | ret == o
+  = let (SingleOperation {oOpr = Virtual (Delimiter (Out {oOuts = outuses}))}) = out
+    in not (any ymmPreassigned outuses)
+
+unusedYMMAfter (_ : rest) o
+  = unusedYMMAfter rest o
+
+ymmPreassigned p =
+  case preAssignment p of
+    Nothing -> False
+    Just (Register (TargetRegister r)) -> r `elem` registers (RegisterClass VR256)
+
+-- In order to remove many false dependencies, this transform juggles EFLAGS side-effects:
+-- reads eflags -> writes eflags
+-- writes eflags, LIVE -> writes eflags
+-- writes eflags, DEAD -> reads eflags
+
+removeDeadEflags f @ Function {fCode = code} =
+  let icfg   = ICFG.fromBCFG $ BCFG.fromFunction branchInfo' f
+      srcids = [id | (id, (_, o)) <- G.labNodes icfg, isMandatory o, oWritesEflags o]
+      sinkids = [id | (id, (_, o)) <- G.labNodes icfg, oReadsEflags o]
+      srcedges = concat [[(p,id) | p <- G.pre icfg id] | id <- srcids, not (id `elem` sinkids)]
+      icfg'  = G.delEdges srcedges icfg
+      creach = [(id, G.reachable id icfg') | id <- srcids]
+      livesrcs = [oId $ snd (fromJust (G.lab icfg' id)) | (id, reachers) <- creach,
+                                                          any (nodeReadsEflags icfg') reachers]
+      code' = mapToOperationInBlocks (removeDeadEflags' livesrcs) code
+  in f {fCode = code'}
+
+removeDeadEflags' livesrcs o
+  | (oId o) `elem` livesrcs
+  = o
+
+removeDeadEflags' _ o
+  | oReadsEflags o
+  = oFlipReadEflags o
+
+removeDeadEflags' _ o
+  | oWritesEflags o
+  = oFlipWriteEflags o
+
+removeDeadEflags' _ o = o
+
+nodeReadsEflags icfg id =
+  oReadsEflags $ snd (fromJust (G.lab icfg id))
+
+oReadsEflags (SingleOperation {oAs = Attributes {aReads = rs}})
+  = (OtherSideEffect EFLAGS) `elem` rs
+
+oWritesEflags (SingleOperation {oAs = Attributes {aWrites = ws}})
+  = (OtherSideEffect EFLAGS) `elem` ws
+
+oFlipReadEflags o @ (SingleOperation {oAs = atts @ Attributes {aReads = rs, aWrites = ws}})
+  = let rs' = delete (OtherSideEffect EFLAGS) rs
+        ws' = [OtherSideEffect EFLAGS] ++ ws
+  in o {oAs = atts {aReads = rs', aWrites = ws'}}
+
+oFlipWriteEflags o @ (SingleOperation {oAs = atts @ Attributes {aReads = rs, aWrites = ws}})
+  = let ws' = delete (OtherSideEffect EFLAGS) ws
+        rs' = [OtherSideEffect EFLAGS] ++ rs
+  in o {oAs = atts {aReads = rs', aWrites = ws'}}
+
+-- If there is some static sequence:
+--   Mandatory writes eflags
+--   [...]
+--   Optional  writes eflags
+--   [...]
+--   Reads eflags
+-- then any such optional ops are made to precede the mandatory write
+-- Was meaningful for reified MOV32r0 affecting eflags.
+-- Now, there should be no optional operations writing eflags, FIXME.
+
+-- moveOptWritesEflags f @ Function {fCode = code} =
+--   let ls    = map bLab code
+--       code' = foldl (moveOptWritesEflags' moveOptW) code ls
+--   in f {fCode = code'}
+
+-- moveOptWritesEflags' aef code l =
+--     mapToBlock aef l code
+
+-- moveOptW [] = []
+
+-- moveOptW (o:code)
+--   | oWritesEflags o
+--   = moveOptW' [] [o] code
+
+-- moveOptW (o:code) =
+--   [o] ++ moveOptW code
+
+-- moveOptW' hazard others []
+--   = hazard ++ others
+
+-- moveOptW' hazard others (o:code)
+--   | oWritesEflags o || isDelimiter o
+--   = hazard ++ others ++ [o] ++ moveOptW code
+
+-- moveOptW' hazard others (o:code)
+--   | oReadsEflags o
+--   = moveOptW' (hazard ++ [o]) others code
+
+-- moveOptW' hazard others (o:code)
+--   = moveOptW' hazard (others ++ [o]) code

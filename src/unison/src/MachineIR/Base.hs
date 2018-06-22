@@ -85,8 +85,13 @@ data MachineFunctionProperty r =
   MachineFunctionPropertyVersion {
     mfPropertyVersion :: MachineIRVersion
     } |
+  -- | Register class of each temporary (id, class)
   MachineFunctionPropertyRegisters {
     mfPropertyRegisters :: [(Integer, String)]
+    } |
+  -- | Constant information (id, value, alignment)
+  MachineFunctionPropertyConstants {
+    mfPropertyConstants :: [(Integer, String, Integer)]
     }
   deriving (Eq, Ord)
 
@@ -185,6 +190,7 @@ data MachineVirtualOpcode =
   REG_SEQUENCE |
   SUBREG_TO_REG |
   COMBINE |
+  FUN |
   ADJCALLSTACKUP |
   ADJCALLSTACKUP32 |
   ADJCALLSTACKUP64 |
@@ -367,7 +373,8 @@ data MachineOperand r =
   -- | Free-form register (does not correspond to any LLVM operand, for
   -- temporary use only)
   MachineFreeReg {
-    mfrRegName :: String
+    mfrRegName  :: String,
+    mfrRegFlags :: [MachineRegState]
     }
   deriving (Eq, Ord)
 
