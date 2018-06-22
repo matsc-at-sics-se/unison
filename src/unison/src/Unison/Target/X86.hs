@@ -186,7 +186,7 @@ rematInstrs i
               SETAEr, SETAr, SETBEr, SETBr, SETEr, SETGEr, SETGr, SETLEr, SETLr,
               SETNEr, SETNOr, SETNPr, SETNSr, SETOr, SETPr, SETSr,
               SETB_C8r, SETB_C16r, SETB_C32r, SETB_C64r,
-	      MOV32mi_unison] = Nothing
+              MOV32mi_unison] = Nothing
   | otherwise = trace ("consider rematInstrs " ++ show i) Nothing
 
 -- | Transforms copy instructions into natural instructions
@@ -410,7 +410,7 @@ fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL64ri_LEA], oUs = [r,i], 
             oDs = [d]}
 fromCopy _ (Natural o @ Linear {oIs = [TargetInstruction ti], oUs = [src1,src2]})
   | ti `elem` condMoveInverses
-  = o {oIs = [TargetInstruction (fromCopyInstr ti)], oUs = [src2,src1]}
+  = o {oIs = [TargetInstruction (fromJust $ SpecsGen.parent ti)], oUs = [src2,src1]}
 
 fromCopy _ (Natural o) = o
 fromCopy _ o = error ("unmatched pattern: fromCopy " ++ show o)
@@ -425,7 +425,7 @@ mkBoundMachineFrameObject fixedSpill i (Register r) =
                 fixedSpill)
 
 nthUseIsInfinite n i =
-  let (use,_) = operandInfo i
+  let (use,_) = SpecsGen.operandInfo i
   in isInfiniteRegisterClass $ oiRegClass $ head $ drop (n-1) use
 
 -- | Declares target architecture resources

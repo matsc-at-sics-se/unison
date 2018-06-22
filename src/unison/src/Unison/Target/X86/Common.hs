@@ -172,6 +172,34 @@ isUseYMMInsn i
 temporaryInfoYMM TemporaryInfo {oiRegClass = (RegisterClass VR256)} = True
 temporaryInfoYMM _ = False
 
+reg32ToReg64 (Register (TargetRegister r)) =
+  let r' = reg32ToReg64' r
+  in (Register (TargetRegister r'))
+
+reg32ToReg64' EAX = RAX
+reg32ToReg64' ECX = RCX
+reg32ToReg64' EDX = RDX
+reg32ToReg64' EBX = RBX
+reg32ToReg64' ESI = RSI
+reg32ToReg64' EDI = RDI
+reg32ToReg64' ESP = RSP
+reg32ToReg64' EBP = RBP
+reg32ToReg64' R8D = R8
+reg32ToReg64' R9D = R9
+reg32ToReg64' R10D = R10
+reg32ToReg64' R11D = R11
+reg32ToReg64' R12D = R12
+reg32ToReg64' R13D = R13
+reg32ToReg64' R14D = R14
+reg32ToReg64' R15D = R15
+
+machineReg32ToReg64 MachineReg {mrName = r} =
+  mkMachineReg (reg32ToReg64' r)
+
+--
+-- Memory-operand versions of register-operand instructions 
+--
+
 data MemTempTuple = MemTempTuple {
   regMem  :: Maybe X86Instruction,
   memReg  :: Maybe X86Instruction}
@@ -1612,27 +1640,3 @@ memTempVersions = M.fromList
    (XOR8rr, MemTempTuple (Just XOR8rm_unison) (Just XOR8mr_unison) ),
    (XORPDrr, MemTempTuple (Just XORPDrm_unison) Nothing ),
    (XORPSrr, MemTempTuple (Just XORPSrm_unison) Nothing )]
-
-reg32ToReg64 (Register (TargetRegister r)) =
-  let r' = reg32ToReg64' r
-  in (Register (TargetRegister r'))
-
-reg32ToReg64' EAX = RAX
-reg32ToReg64' ECX = RCX
-reg32ToReg64' EDX = RDX
-reg32ToReg64' EBX = RBX
-reg32ToReg64' ESI = RSI
-reg32ToReg64' EDI = RDI
-reg32ToReg64' ESP = RSP
-reg32ToReg64' EBP = RBP
-reg32ToReg64' R8D = R8
-reg32ToReg64' R9D = R9
-reg32ToReg64' R10D = R10
-reg32ToReg64' R11D = R11
-reg32ToReg64' R12D = R12
-reg32ToReg64' R13D = R13
-reg32ToReg64' R14D = R14
-reg32ToReg64' R15D = R15
-
-machineReg32ToReg64 MachineReg {mrName = r} =
-  mkMachineReg (reg32ToReg64' r)
