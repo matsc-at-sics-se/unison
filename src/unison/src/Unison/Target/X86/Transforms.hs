@@ -566,9 +566,9 @@ alternativeLEA _
 
 alternativeLEA _
   o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
+    oOpr = Natural ni @ (Linear {oIs = (TargetInstruction ti : tis)})}
   | M.member ti condMoveAlts
-  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction (condMoveAlts M.! ti)]}}
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction (condMoveAlts M.! ti)] ++ tis}}
 
 alternativeLEA _ o = o
 
