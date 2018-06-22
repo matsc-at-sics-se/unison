@@ -16,10 +16,12 @@ module Unison.Target.X86.Common
      originalInstr, spillInstrs,
      condMoveInstrs, condMoveInverses, condMoveAlts,
      promotedRegs, readsSideEffect,
-     writesSideEffect, isDirtyYMMInsn, isDirtyYMMOp, isUseYMMInsn) where
+     writesSideEffect, isDirtyYMMInsn, isDirtyYMMOp, isUseYMMInsn,
+     reg32ToReg64, machineReg32ToReg64) where
 
 import qualified Data.Map as M
 
+import MachineIR
 import Unison
 import qualified Unison.Target.API as API
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
@@ -162,3 +164,28 @@ isUseYMMInsn i
 
 temporaryInfoYMM TemporaryInfo {oiRegClass = (RegisterClass VR256)} = True
 temporaryInfoYMM _ = False
+
+reg32ToReg64 (Register (TargetRegister r)) =
+  let r' = reg32ToReg64' r
+  in (Register (TargetRegister r'))
+
+reg32ToReg64' EAX = RAX
+reg32ToReg64' ECX = RCX
+reg32ToReg64' EDX = RDX
+reg32ToReg64' EBX = RBX
+reg32ToReg64' ESI = RSI
+reg32ToReg64' EDI = RDI
+reg32ToReg64' ESP = RSP
+reg32ToReg64' EBP = RBP
+reg32ToReg64' R8D = R8
+reg32ToReg64' R9D = R9
+reg32ToReg64' R10D = R10
+reg32ToReg64' R11D = R11
+reg32ToReg64' R12D = R12
+reg32ToReg64' R13D = R13
+reg32ToReg64' R14D = R14
+reg32ToReg64' R15D = R15
+
+machineReg32ToReg64 MachineReg {mrName = r} =
+  mkMachineReg (reg32ToReg64' r)
+

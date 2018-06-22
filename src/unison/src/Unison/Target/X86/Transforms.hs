@@ -29,8 +29,8 @@ module Unison.Target.X86.Transforms
      addFunWrites,
      addSpillIndicators,
      addVzeroupper,
-     removeDeadEflags,
-     moveOptWritesEflags) where
+     -- moveOptWritesEflags,
+     removeDeadEflags) where
 
 import qualified Data.Map as M
 import Data.List
@@ -52,8 +52,6 @@ import Unison.Target.X86.X86RegisterClassDecl
 import Unison.Target.X86.Registers
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
-import Unison.Target.X86.SpecsGen.X86ItineraryDecl
-import Debug.Trace
 
 -- This transformation hides the stack pointer as a use and definition of
 -- function calls.
@@ -178,25 +176,28 @@ expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc POP_fi, msOperands = 
 
 -- expand pseudos that stem from llvm; see X86ExpandPseudo.cpp
 
--- doing it with XOR, which clobbers EFLAGS
+-- could do it with XOR, which would clobber EFLAGS, when it is safe, FIXME
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r0,
                                    msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc XOR32rr,
-          msOperands = [dst, dst, dst]}]]
+  = [[mi {msOpcode = mkMachineTargetOpc MOV64ri,
+          msOperands = [machineReg32ToReg64 dst,
+                        mkMachineImm 0]}]]
+  -- = [[mi {msOpcode = mkMachineTargetOpc XOR32rr,
+  --         msOperands = [dst, dst, dst]}]]
 
--- could do it with XOR + INC, which clobbers EFLAGS
+-- could do it with XOR + INC, which would clobber EFLAGS, when it is safe, FIXME
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r1,
                                    msOperands = [dst]}
   = let imm = mkMachineImm 1
-  in [[mi {msOpcode = mkMachineTargetOpc MOV32ri,
-           msOperands = [dst, imm]}]]
+  in [[mi {msOpcode = mkMachineTargetOpc MOV64ri,
+           msOperands = [machineReg32ToReg64 dst, imm]}]]
 
--- could do it with XOR + DEC, which clobbers EFLAGS
+-- could do it with XOR + DEC, which would clobber EFLAGS, when it is safe, FIXME
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r_1,
                                    msOperands = [dst]}
   = let imm = mkMachineImm (-1)
-  in [[mi {msOpcode = mkMachineTargetOpc MOV32ri,
-           msOperands = [dst, imm]}]]
+  in [[mi {msOpcode = mkMachineTargetOpc MOV64ri,
+           msOperands = [machineReg32ToReg64 dst, imm]}]]
 
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32ri64}
   = [[mi {msOpcode = mkMachineTargetOpc MOV32ri}]]
@@ -304,9 +305,10 @@ expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc mto,
     [[mi {msOpcode = mkMachineTargetOpc (expandedTailJump mto),
           msOperands = [a,b,c,d,e]}]]
 
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc i}
-  | SpecsGen.itinerary i == NoItinerary
-  = trace ("WARNING: missing expansion of instruction " ++ show i) [[mi]]
+-- FIXME: this gives way too many false warnings
+-- expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc i}
+--   | SpecsGen.itinerary i == NoItinerary
+--   = trace ("WARNING: missing expansion of instruction " ++ show i) [[mi]]
 
 expandPseudo _ mi = [[mi]]
 
@@ -654,9 +656,9 @@ moveEpf code =
 moveEpf' pops epi (o:code)
   | isCopy o && (oWriteObjects o) == []
   = [o] ++ moveEpf' pops epi code
-moveEpf' pops epi (o:code)
-  | isCopy o && (oWriteObjects o) == [OtherSideEffect EFLAGS]
-  = [o] ++ moveEpf' pops epi code
+-- moveEpf' pops epi (o:code) -- was meaningful for reified MOV32r0 affecting eflags, FIXME
+--   | isCopy o && (oWriteObjects o) == [OtherSideEffect EFLAGS]
+--   = [o] ++ moveEpf' pops epi code
 moveEpf' pops epi (o:code)
   | isCopy o
   = moveEpf' (pops ++ [o]) epi code
@@ -877,8 +879,7 @@ removeDeadEflags f @ Function {fCode = code} =
       srcids = [id | (id, (_, o)) <- G.labNodes icfg, isMandatory o, oWritesEflags o]
       sinkids = [id | (id, (_, o)) <- G.labNodes icfg, oReadsEflags o]
       srcedges = concat [[(p,id) | p <- G.pre icfg id] | id <- srcids, not (id `elem` sinkids)]
-      sinkedges = concat [[(id,s) | s <- G.suc icfg id] | id <- sinkids, not (id `elem` srcids)]
-      icfg'  = G.delEdges (srcedges ++ sinkedges) icfg
+      icfg'  = G.delEdges srcedges icfg
       creach = [(id, G.reachable id icfg') | id <- srcids]
       livesrcs = [oId $ snd (fromJust (G.lab icfg' id)) | (id, reachers) <- creach,
                                                           any (nodeReadsEflags icfg') reachers]
@@ -925,34 +926,36 @@ oFlipWriteEflags o @ (SingleOperation {oAs = atts @ Attributes {aReads = rs, aWr
 --   [...]
 --   Reads eflags
 -- then any such optional ops are made to precede the mandatory write
+-- Was meaningful for reified MOV32r0 affecting eflags.
+-- Now, there should be no optional operations writing eflags, FIXME.
 
-moveOptWritesEflags f @ Function {fCode = code} =
-  let ls    = map bLab code
-      code' = foldl (moveOptWritesEflags' moveOptW) code ls
-  in f {fCode = code'}
+-- moveOptWritesEflags f @ Function {fCode = code} =
+--   let ls    = map bLab code
+--       code' = foldl (moveOptWritesEflags' moveOptW) code ls
+--   in f {fCode = code'}
 
-moveOptWritesEflags' aef code l =
-    mapToBlock aef l code
+-- moveOptWritesEflags' aef code l =
+--     mapToBlock aef l code
 
-moveOptW [] = []
+-- moveOptW [] = []
 
-moveOptW (o:code)
-  | oWritesEflags o
-  = moveOptW' [] [o] code
+-- moveOptW (o:code)
+--   | oWritesEflags o
+--   = moveOptW' [] [o] code
 
-moveOptW (o:code) =
-  [o] ++ moveOptW code
+-- moveOptW (o:code) =
+--   [o] ++ moveOptW code
 
-moveOptW' hazard others []
-  = hazard ++ others
+-- moveOptW' hazard others []
+--   = hazard ++ others
 
-moveOptW' hazard others (o:code)
-  | oWritesEflags o || isDelimiter o
-  = hazard ++ others ++ [o] ++ moveOptW code
+-- moveOptW' hazard others (o:code)
+--   | oWritesEflags o || isDelimiter o
+--   = hazard ++ others ++ [o] ++ moveOptW code
 
-moveOptW' hazard others (o:code)
-  | oReadsEflags o
-  = moveOptW' (hazard ++ [o]) others code
+-- moveOptW' hazard others (o:code)
+--   | oReadsEflags o
+--   = moveOptW' (hazard ++ [o]) others code
 
-moveOptW' hazard others (o:code)
-  = moveOptW' hazard (others ++ [o]) code
+-- moveOptW' hazard others (o:code)
+--   = moveOptW' hazard (others ++ [o]) code

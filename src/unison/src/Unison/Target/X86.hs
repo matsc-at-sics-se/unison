@@ -121,7 +121,6 @@ copies (f, _, _, _, _, _) False t [] d [u]
     ([], [[]])
 
 -- Do not extend rematerializable instructions used only once, locally
--- FIXME: review whether this is always safe
 copies (Function {fCode = code}, _, _, _, _, _) False t _ d [u]
   | isNatural d && (isNatural u || isFun u) &&
     (isRematerializable (targetInst (oInstructions d))) &&
@@ -316,27 +315,6 @@ logToMul (Bound (MachineImm 1)) = 2
 logToMul (Bound (MachineImm 2)) = 4
 logToMul (Bound (MachineImm 3)) = 8
 
-reg32ToReg64 (Register (TargetRegister r)) =
-  let r' = reg32ToReg64' r
-  in (Register (TargetRegister r'))
-
-reg32ToReg64' EAX = RAX
-reg32ToReg64' ECX = RCX
-reg32ToReg64' EDX = RDX
-reg32ToReg64' EBX = RBX
-reg32ToReg64' ESI = RSI
-reg32ToReg64' EDI = RDI
-reg32ToReg64' ESP = RSP
-reg32ToReg64' EBP = RBP
-reg32ToReg64' R8D = R8
-reg32ToReg64' R9D = R9
-reg32ToReg64' R10D = R10
-reg32ToReg64' R11D = R11
-reg32ToReg64' R12D = R12
-reg32ToReg64' R13D = R13
-reg32ToReg64' R14D = R14
-reg32ToReg64' R15D = R15
-
 mkBoundMachineFrameObject fixedSpill i (Register r) =
     let size = stackSize i
     in mkBound (mkMachineFrameObject (infRegPlace r) (Just size) size
@@ -369,6 +347,11 @@ resources =
 -- | No-operation instruction
 
 nop = Linear [TargetInstruction NOOP] [] []
+
+-- FIXME: revisit this clause if these instructions involve XOR
+readWriteInfo i
+  | i `elem` [MOV32r0, MOV32r0_remat, MOV32r1, MOV32r1_remat, MOV32r_1, MOV32r_1_remat]
+  = ([], [])
 
 readWriteInfo i
   = SpecsGen.readWriteInfo i
@@ -416,8 +399,9 @@ transforms AugmentPostRW = [movePrologueEpilogue,
                             addVzeroupper,
                             mapToOperation addStackIndexReadsSP,
                             mapToOperation addFunWrites,
-                            removeDeadEflags,
-                            moveOptWritesEflags]
+                            removeDeadEflags
+                            -- moveOptWritesEflags
+                            ]
 transforms _ = []
 
 -- | Latency of read-write dependencies
@@ -471,9 +455,9 @@ isVzeroupper o =
 
 prologueEpilogueConstraints Function {fCode = blocks, fStackFrame = objs, fStackArgSize = sasize} =
   let fcode = flatten blocks
-      align = maximum $ [8] ++ map foAlignment (objs)
+      align = maximum $ [0] ++ map foAlignment (objs)
       mustFpush32 = (align == 32)
-      mustFpush = (align == 16 || sasize > 0)
+      mustFpush = (align > 0 || sasize > 0)
       mayFpush = any isCall fcode
       blockInfo = concatMap proEpiInfo blocks
       blockIns = map (oId . blockIn) blocks
