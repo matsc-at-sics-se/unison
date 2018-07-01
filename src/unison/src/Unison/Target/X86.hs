@@ -12,6 +12,7 @@ This file is part of Unison, see http://unison-code.github.io
 module Unison.Target.X86 (target) where
 
 import Debug.Trace
+import Data.List
 import Data.Maybe
 import qualified Data.Set as S
 
@@ -287,6 +288,25 @@ fromCopy _ o @ (Natural Linear {oIs = [TargetInstruction i]})
 -- handle mem-reg variants of reg-reg instructions
 --
 
+fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [], oDs = [dst]})
+  | isMemRegInstr i
+  = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
+            oUs = [mkBoundMachineFrameObject False i dst,
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg],
+            oDs = []}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1], oDs = [dst]})
+  | isMemRegInstr i
+  = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
+            oUs = [mkBoundMachineFrameObject False i dst,
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg,
+                   src1],
+            oDs = []}
 fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1], oDs = []})
   | isMemRegInstr i && nthUseIsInfinite 1 i
   = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
@@ -453,8 +473,10 @@ readWriteInfo i
   | i `elem` [MOV32r0, MOV32r0_remat, MOV32r1, MOV32r1_remat, MOV32r_1, MOV32r_1_remat]
   = ([], [])
 
-readWriteInfo i
-  = SpecsGen.readWriteInfo i
+-- FIXME: this is too general, should only apply to pseudos that expand to stack slot accessing insns
+readWriteInfo i =
+  let (rd, wr) = SpecsGen.readWriteInfo i
+  in (delete (Memory "mem") rd, delete (Memory "mem") wr)
 
 -- | Implementation of frame setup and destroy operations. All functions
 -- observed so far have a reserved call frame (hasReservedCallFrame(MF)), which
@@ -502,7 +524,6 @@ transforms AugmentPostRW = [movePrologueEpilogue,
                             mapToOperation addStackIndexReadsSP,
                             mapToOperation addFunWrites,
                             removeDeadEflags
-                            -- moveOptWritesEflags
                             ]
 transforms _ = []
 
