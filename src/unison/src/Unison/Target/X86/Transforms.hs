@@ -31,7 +31,6 @@ module Unison.Target.X86.Transforms
      addFunWrites,
      addSpillIndicators,
      addVzeroupper,
-     -- moveOptWritesEflags,
      removeDeadEflags) where
 
 import qualified Data.Map as M
@@ -518,51 +517,51 @@ alternativeLEA precious o
 
 alternativeLEA _
   o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
+    oOpr = Natural ni @ (Linear {oIs = (TargetInstruction ti : tis)})}
   | ti `elem` [ADD32ri, ADD32ri8, ADD32ri8_DB, ADD32ri_DB]
-  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD32ri_LEA]}}
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD32ri_LEA] ++ tis}}
 
 alternativeLEA _
   o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
+    oOpr = Natural ni @ (Linear {oIs = (TargetInstruction ti : tis)})}
   | ti `elem` [ADD32rr, ADD32rr_DB, ADD32rr_REV]
-  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD32rr_LEA]}}
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD32rr_LEA] ++ tis}}
 
 alternativeLEA _
   o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
+    oOpr = Natural ni @ (Linear {oIs = (TargetInstruction ti : tis)})}
   | ti `elem` [ADD64ri8, ADD64ri8_DB, ADD64ri32, ADD64ri32_DB]
-  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD64ri_LEA]}}
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD64ri_LEA] ++ tis}}
 
 alternativeLEA _
   o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
+    oOpr = Natural ni @ (Linear {oIs = (TargetInstruction ti : tis)})}
   | ti `elem` [ADD64rr, ADD64rr_DB, ADD64rr_REV]
-  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD64rr_LEA]}}
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction ADD64rr_LEA] ++ tis}}
 
 alternativeLEA _
   o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
+    oOpr = Natural ni @ (Linear {oIs = (TargetInstruction ti : tis)})}
   | ti `elem` [SHL32r1]
-  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL32r1_LEA]}}
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL32r1_LEA] ++ tis}}
 
 alternativeLEA _
   o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti], oUs = [_,Bound (MachineImm sh)]})}
+    oOpr = Natural ni @ (Linear {oIs = (TargetInstruction ti : tis), oUs = [_,Bound (MachineImm sh)]})}
   | ti `elem` [SHL32ri] && 1 <= sh && sh <= 3
-  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL32ri_LEA]}}
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL32ri_LEA] ++ tis}}
 
 alternativeLEA _
   o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti]})}
+    oOpr = Natural ni @ (Linear {oIs = (TargetInstruction ti : tis)})}
   | ti `elem` [SHL64r1]
-  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL64r1_LEA]}}
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL64r1_LEA] ++ tis}}
 
 alternativeLEA _
   o @ SingleOperation {
-    oOpr = Natural ni @ (Linear {oIs = [TargetInstruction ti], oUs = [_,Bound (MachineImm sh)]})}
+    oOpr = Natural ni @ (Linear {oIs = (TargetInstruction ti : tis), oUs = [_,Bound (MachineImm sh)]})}
   | ti `elem` [SHL64ri] && 1 <= sh && sh <= 3
-  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL64ri_LEA]}}
+  = o {oOpr = Natural ni {oIs = [TargetInstruction ti, TargetInstruction SHL64ri_LEA] ++ tis}}
 
 alternativeLEA _
   o @ SingleOperation {
@@ -827,6 +826,9 @@ addStackIndexReadsSP
 
 addStackIndexReadsSP o = o
 
+-- This transformation adds "writes: eflags" to (fun) operations
+-- because eflags behaves as a caller-saved register
+
 addFunWrites o
   | isFun o
   = mapToWrites (++ [OtherSideEffect EFLAGS]) o
@@ -974,43 +976,3 @@ oFlipWriteEflags o @ (SingleOperation {oAs = atts @ Attributes {aReads = rs, aWr
         rs' = [OtherSideEffect EFLAGS] ++ rs
   in o {oAs = atts {aReads = rs', aWrites = ws'}}
 
--- If there is some static sequence:
---   Mandatory writes eflags
---   [...]
---   Optional  writes eflags
---   [...]
---   Reads eflags
--- then any such optional ops are made to precede the mandatory write
--- Was meaningful for reified MOV32r0 affecting eflags.
--- Now, there should be no optional operations writing eflags, FIXME.
-
--- moveOptWritesEflags f @ Function {fCode = code} =
---   let ls    = map bLab code
---       code' = foldl (moveOptWritesEflags' moveOptW) code ls
---   in f {fCode = code'}
-
--- moveOptWritesEflags' aef code l =
---     mapToBlock aef l code
-
--- moveOptW [] = []
-
--- moveOptW (o:code)
---   | oWritesEflags o
---   = moveOptW' [] [o] code
-
--- moveOptW (o:code) =
---   [o] ++ moveOptW code
-
--- moveOptW' hazard others []
---   = hazard ++ others
-
--- moveOptW' hazard others (o:code)
---   | oWritesEflags o || isDelimiter o
---   = hazard ++ others ++ [o] ++ moveOptW code
-
--- moveOptW' hazard others (o:code)
---   | oReadsEflags o
---   = moveOptW' (hazard ++ [o]) others code
-
--- moveOptW' hazard others (o:code)
---   = moveOptW' hazard (others ++ [o]) code
