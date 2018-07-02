@@ -3504,20 +3504,20 @@ instruction-set:
         - id:                 MULX32rm_unison
           parent:             MULX32rm
           operands:
-           - src1:            [register, def, GR32]
-           - src2:            [register, def, M32]
-           - src3:            [register, use, GR32]
-          uses:               [src2, src3]
-          defines:            [src1]
+           - dst1:            [register, def, GR32]
+           - dst2:            [register, def, GR32]
+           - src1:            [register, def, M32]
+          uses:               [src1]
+          defines:            [dst1, dst2]
 
         - id:                 MULX64rm_unison
           parent:             MULX64rm
           operands:
-           - src1:            [register, def, GR64]
-           - src2:            [register, def, M64]
-           - src3:            [register, use, GR64]
-          uses:               [src2, src3]
-          defines:            [src1]
+           - dst1:            [register, def, GR64]
+           - dst2:            [register, def, GR64]
+           - src1:            [register, def, M64]
+          uses:               [src1]
+          defines:            [dst1, dst2]
 
         - id:                 NEG16m_unison
           parent:             NEG16m

@@ -1568,7 +1568,7 @@ operandInfo i
     ([TemporaryInfo (InfiniteRegisterClass M32) 0 False,
       TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [IMUL32m_unison, MUL32m_unison] =
+  | i `elem` [IMUL32m_unison, MUL32m_unison, MULX32rm_unison] =
     ([TemporaryInfo (InfiniteRegisterClass M32) 0 False,
       TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass GR32) 1 False,
@@ -1581,11 +1581,6 @@ operandInfo i
     ([TemporaryInfo (InfiniteRegisterClass M32) 0 False,
       TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (InfiniteRegisterClass M32) 1 False])
-  | i `elem` [MULX32rm_unison] =
-    ([TemporaryInfo (InfiniteRegisterClass M32) 0 False,
-      TemporaryInfo (RegisterClass GR32) 0 False,
-      TemporaryInfo (RegisterClass GR32) 0 False],
-     [TemporaryInfo (RegisterClass GR32) 1 False])
   | i `elem` [DIV32m_unison, IDIV32m_unison] =
     ([TemporaryInfo (InfiniteRegisterClass M32) 0 False,
       TemporaryInfo (RegisterClass GR32) 0 False,
@@ -1734,7 +1729,7 @@ operandInfo i
     ([TemporaryInfo (InfiniteRegisterClass M64) 0 False,
       TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
-  | i `elem` [IMUL64m_unison, MUL64m_unison] =
+  | i `elem` [IMUL64m_unison, MUL64m_unison, MULX64rm_unison] =
     ([TemporaryInfo (InfiniteRegisterClass M64) 0 False,
       TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False,
@@ -1747,11 +1742,6 @@ operandInfo i
     ([TemporaryInfo (InfiniteRegisterClass M64) 0 False,
       TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (InfiniteRegisterClass M64) 1 False])
-  | i `elem` [MULX64rm_unison] =
-    ([TemporaryInfo (InfiniteRegisterClass M64) 0 False,
-      TemporaryInfo (RegisterClass GR64) 0 False,
-      TemporaryInfo (RegisterClass GR64) 0 False],
-     [TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem` [DIV64m_unison, IDIV64m_unison] =
     ([TemporaryInfo (InfiniteRegisterClass M64) 0 False,
       TemporaryInfo (RegisterClass GR64) 0 False,

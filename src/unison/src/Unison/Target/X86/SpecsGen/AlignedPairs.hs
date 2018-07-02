@@ -559,10 +559,12 @@ alignedPairs i ([_, _], [_, _])
   | i `elem` [IMUL32m_unison, MUL32m_unison] = []
 alignedPairs i ([_, _, _], [_, _])
   | i `elem` [DIV32m_unison, IDIV32m_unison] = []
+alignedPairs i ([_, _], [_, _]) | i `elem` [MULX32rm_unison] = []
 alignedPairs i ([_, _], [_, _])
   | i `elem` [IMUL64m_unison, MUL64m_unison] = []
 alignedPairs i ([_, _, _], [_, _])
   | i `elem` [DIV64m_unison, IDIV64m_unison] = []
+alignedPairs i ([_, _], [_, _]) | i `elem` [MULX64rm_unison] = []
 alignedPairs i ([src1, _], [src1'])
   | i `elem`
       [RCL16ri, RCL32ri, RCL64ri, RCL8ri, RCR16ri, RCR32ri, RCR64ri,
@@ -1690,8 +1692,6 @@ alignedPairs i ([_, _], [_])
        VUNPCKLPSYrm_unison, VUNPCKLPSrm_unison, VXORPDYrm_unison,
        VXORPDrm_unison, VXORPSYrm_unison, VXORPSrm_unison]
     = []
-alignedPairs i ([_, _, _], [_]) | i `elem` [MULX32rm_unison] = []
-alignedPairs i ([_, _, _], [_]) | i `elem` [MULX64rm_unison] = []
 alignedPairs i ([_, _, _], [_])
   | i `elem`
       [VBLENDPDYrmi_unison, VBLENDPDrmi_unison, VBLENDPSYrmi_unison,
