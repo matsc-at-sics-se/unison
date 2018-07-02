@@ -141,27 +141,65 @@ registerAtoms R13 = (R150, R157)
 registerAtoms R14 = (R160, R167)
 registerAtoms R15 = (R170, R177)
 
--- | Register atoms of 16-byte floating-point registers (XMM)
+-- | Register atoms of 32-bit floating-point registers (XMM)
 
-registerAtoms XMM0  = (R200, R217)
-registerAtoms XMM0_HI  = (R220, R237)
-registerAtoms XMM1  = (R240, R257)
-registerAtoms XMM2  = (R300, R317)
-registerAtoms XMM3  = (R340, R357)
-registerAtoms XMM4  = (R400, R417)
-registerAtoms XMM5  = (R440, R457)
-registerAtoms XMM6  = (R500, R517)
-registerAtoms XMM7  = (R540, R557)
-registerAtoms XMM8  = (R600, R617)
-registerAtoms XMM9  = (R640, R657)
-registerAtoms XMM10 = (R700, R717)
-registerAtoms XMM11 = (R740, R757)
-registerAtoms XMM12 = (R1000, R1017)
-registerAtoms XMM13 = (R1040, R1057)
-registerAtoms XMM14 = (R1100, R1117)
-registerAtoms XMM15 = (R1140, R1157)
+registerAtoms XMM0_32  = (R200, R203)
+registerAtoms XMM1_32  = (R240, R243)
+registerAtoms XMM2_32  = (R300, R303)
+registerAtoms XMM3_32  = (R340, R343)
+registerAtoms XMM4_32  = (R400, R403)
+registerAtoms XMM5_32  = (R440, R443)
+registerAtoms XMM6_32  = (R500, R503)
+registerAtoms XMM7_32  = (R540, R543)
+registerAtoms XMM8_32  = (R600, R603)
+registerAtoms XMM9_32  = (R640, R643)
+registerAtoms XMM10_32 = (R700, R703)
+registerAtoms XMM11_32 = (R740, R743)
+registerAtoms XMM12_32 = (R1000, R1003)
+registerAtoms XMM13_32 = (R1040, R1043)
+registerAtoms XMM14_32 = (R1100, R1103)
+registerAtoms XMM15_32 = (R1140, R1143)
 
--- | Register atoms of 32-byte floating-point registers (YMM)
+-- | Register atoms of 64-bit floating-point registers (XMM)
+
+registerAtoms XMM0_64  = (R200, R207)
+registerAtoms XMM1_64  = (R240, R247)
+registerAtoms XMM2_64  = (R300, R307)
+registerAtoms XMM3_64  = (R340, R347)
+registerAtoms XMM4_64  = (R400, R407)
+registerAtoms XMM5_64  = (R440, R447)
+registerAtoms XMM6_64  = (R500, R507)
+registerAtoms XMM7_64  = (R540, R547)
+registerAtoms XMM8_64  = (R600, R607)
+registerAtoms XMM9_64  = (R640, R647)
+registerAtoms XMM10_64 = (R700, R707)
+registerAtoms XMM11_64 = (R740, R747)
+registerAtoms XMM12_64 = (R1000, R1007)
+registerAtoms XMM13_64 = (R1040, R1047)
+registerAtoms XMM14_64 = (R1100, R1107)
+registerAtoms XMM15_64 = (R1140, R1147)
+
+-- | Register atoms of 128-bit floating-point registers (XMM)
+
+registerAtoms XMM0_128  = (R200, R217)
+registerAtoms XMM0_HI_128  = (R220, R237)
+registerAtoms XMM1_128  = (R240, R257)
+registerAtoms XMM2_128  = (R300, R317)
+registerAtoms XMM3_128  = (R340, R357)
+registerAtoms XMM4_128  = (R400, R417)
+registerAtoms XMM5_128  = (R440, R457)
+registerAtoms XMM6_128  = (R500, R517)
+registerAtoms XMM7_128  = (R540, R557)
+registerAtoms XMM8_128  = (R600, R617)
+registerAtoms XMM9_128  = (R640, R657)
+registerAtoms XMM10_128 = (R700, R717)
+registerAtoms XMM11_128 = (R740, R757)
+registerAtoms XMM12_128 = (R1000, R1017)
+registerAtoms XMM13_128 = (R1040, R1057)
+registerAtoms XMM14_128 = (R1100, R1117)
+registerAtoms XMM15_128 = (R1140, R1157)
+
+-- | Register atoms of 256-bit floating-point registers (YMM)
 
 registerAtoms YMM0  = (R200, R237)
 registerAtoms YMM1  = (R240, R277)
@@ -203,7 +241,7 @@ regClasses =
                        GR128_AUX,
                        Ptr_rc, Ptr_rc_nosp, Ptr_rc_norex, Ptr_rc_norex_nosp, Ptr_rc_tailcall,
                        FR32, FR64, FR128, VR128, VR256,
-                       FR32_AUX,
+                       FR128_AUX,
                        VR2048_AUX,
                        AUXE, AUXR, AUXB] ++
     map InfiniteRegisterClass [M8, M16, M32, M64, M128, M256, RM8, RM16, RM32, RM64, RM128, RM256]
@@ -355,19 +393,23 @@ registers (RegisterClass Ptr_rc_tailcall) =
     [RAX, RCX, RDX,      RSI, RDI,           R8, R9, R11, RIP                    ]
 
 registers (RegisterClass FR32) =
-    [XMM0, XMM1, XMM2, XMM3, XMM4, XMM5, XMM6, XMM7, XMM8, XMM9, XMM10, XMM11, XMM12, XMM13, XMM14, XMM15]
-
-registers (RegisterClass FR32_AUX) =
-    [XMM0_HI]
+    [XMM0_32, XMM1_32, XMM2_32, XMM3_32, XMM4_32, XMM5_32, XMM6_32, XMM7_32,
+     XMM8_32, XMM9_32, XMM10_32, XMM11_32, XMM12_32, XMM13_32, XMM14_32, XMM15_32]
 
 registers (RegisterClass FR64) =
-    registers (RegisterClass FR32)
+    [XMM0_64, XMM1_64, XMM2_64, XMM3_64, XMM4_64, XMM5_64, XMM6_64, XMM7_64,
+     XMM8_64, XMM9_64, XMM10_64, XMM11_64, XMM12_64, XMM13_64, XMM14_64, XMM15_64]
 
 registers (RegisterClass FR128) =
-    registers (RegisterClass FR32)
+    [XMM0_128, XMM1_128, XMM2_128, XMM3_128, XMM4_128, XMM5_128, XMM6_128, XMM7_128,
+     XMM8_128, XMM9_128, XMM10_128, XMM11_128, XMM12_128, XMM13_128, XMM14_128, XMM15_128]
+
+registers (RegisterClass FR128_AUX) =
+    [XMM0_HI_128]
 
 registers (RegisterClass VR128) =
-    registers (RegisterClass FR32)
+    [XMM0_128, XMM1_128, XMM2_128, XMM3_128, XMM4_128, XMM5_128, XMM6_128, XMM7_128,
+     XMM8_128, XMM9_128, XMM10_128, XMM11_128, XMM12_128, XMM13_128, XMM14_128, XMM15_128]
 
 registers (RegisterClass VR256) =
     [YMM0, YMM1, YMM2, YMM3, YMM4, YMM5, YMM6, YMM7, YMM8, YMM9, YMM10, YMM11, YMM12, YMM13, YMM14, YMM15]
@@ -479,6 +521,7 @@ calleeSaved = [RBX, RBP, R12, R13, R14, R15]
 instance Read X86Register where
   readsPrec _ s = [(readReg s, "")]
 
+readReg "xmm0" = XMM0_128
 readReg s = case M.lookup s (inverseMap regStrings) of
               (Just r) -> r
               Nothing -> error $ "unmatched: readReg " ++ s
@@ -1247,23 +1290,55 @@ regStrings = M.fromList $
    (R13, "r13"),
    (R14, "r14"),
    (R15, "r15"),
-   (XMM0, "xmm0"),
-   (XMM0_HI, "xmm0_hi"),
-   (XMM1, "xmm1"),
-   (XMM2, "xmm2"),
-   (XMM3, "xmm3"),
-   (XMM4, "xmm4"),
-   (XMM5, "xmm5"),
-   (XMM6, "xmm6"),
-   (XMM7, "xmm7"),
-   (XMM8, "xmm8"),
-   (XMM9, "xmm9"),
-   (XMM10, "xmm10"),
-   (XMM11, "xmm11"),
-   (XMM12, "xmm12"),
-   (XMM13, "xmm13"),
-   (XMM14, "xmm14"),
-   (XMM15, "xmm15"),
+   (XMM0_32, "xmm0_32"),
+   (XMM1_32, "xmm1_32"),
+   (XMM2_32, "xmm2_32"),
+   (XMM3_32, "xmm3_32"),
+   (XMM4_32, "xmm4_32"),
+   (XMM5_32, "xmm5_32"),
+   (XMM6_32, "xmm6_32"),
+   (XMM7_32, "xmm7_32"),
+   (XMM8_32, "xmm8_32"),
+   (XMM9_32, "xmm9_32"),
+   (XMM10_32, "xmm10_32"),
+   (XMM11_32, "xmm11_32"),
+   (XMM12_32, "xmm12_32"),
+   (XMM13_32, "xmm13_32"),
+   (XMM14_32, "xmm14_32"),
+   (XMM15_32, "xmm15_32"),
+   (XMM0_64, "xmm0_64"),
+   (XMM1_64, "xmm1_64"),
+   (XMM2_64, "xmm2_64"),
+   (XMM3_64, "xmm3_64"),
+   (XMM4_64, "xmm4_64"),
+   (XMM5_64, "xmm5_64"),
+   (XMM6_64, "xmm6_64"),
+   (XMM7_64, "xmm7_64"),
+   (XMM8_64, "xmm8_64"),
+   (XMM9_64, "xmm9_64"),
+   (XMM10_64, "xmm10_64"),
+   (XMM11_64, "xmm11_64"),
+   (XMM12_64, "xmm12_64"),
+   (XMM13_64, "xmm13_64"),
+   (XMM14_64, "xmm14_64"),
+   (XMM15_64, "xmm15_64"),
+   (XMM0_128, "xmm0_128"),
+   (XMM0_HI_128, "xmm0_hi_128"),
+   (XMM1_128, "xmm1_128"),
+   (XMM2_128, "xmm2_128"),
+   (XMM3_128, "xmm3_128"),
+   (XMM4_128, "xmm4_128"),
+   (XMM5_128, "xmm5_128"),
+   (XMM6_128, "xmm6_128"),
+   (XMM7_128, "xmm7_128"),
+   (XMM8_128, "xmm8_128"),
+   (XMM9_128, "xmm9_128"),
+   (XMM10_128, "xmm10_128"),
+   (XMM11_128, "xmm11_128"),
+   (XMM12_128, "xmm12_128"),
+   (XMM13_128, "xmm13_128"),
+   (XMM14_128, "xmm14_128"),
+   (XMM15_128, "xmm15_128"),
    (YMM0, "ymm0"),
    (YMM1, "ymm1"),
    (YMM2, "ymm2"),

@@ -770,23 +770,55 @@ data X86Register =
     R13 |
     R14 |
     R15 |
-    XMM0 |
-    XMM0_HI |
-    XMM1 |
-    XMM2 |
-    XMM3 |
-    XMM4 |
-    XMM5 |
-    XMM6 |
-    XMM7 |
-    XMM8 |
-    XMM9 |
-    XMM10 |
-    XMM11 |
-    XMM12 |
-    XMM13 |
-    XMM14 |
-    XMM15 |
+    XMM0_32 |
+    XMM1_32 |
+    XMM2_32 |
+    XMM3_32 |
+    XMM4_32 |
+    XMM5_32 |
+    XMM6_32 |
+    XMM7_32 |
+    XMM8_32 |
+    XMM9_32 |
+    XMM10_32 |
+    XMM11_32 |
+    XMM12_32 |
+    XMM13_32 |
+    XMM14_32 |
+    XMM15_32 |
+    XMM0_64 |
+    XMM1_64 |
+    XMM2_64 |
+    XMM3_64 |
+    XMM4_64 |
+    XMM5_64 |
+    XMM6_64 |
+    XMM7_64 |
+    XMM8_64 |
+    XMM9_64 |
+    XMM10_64 |
+    XMM11_64 |
+    XMM12_64 |
+    XMM13_64 |
+    XMM14_64 |
+    XMM15_64 |
+    XMM0_128 |
+    XMM0_HI_128 |
+    XMM1_128 |
+    XMM2_128 |
+    XMM3_128 |
+    XMM4_128 |
+    XMM5_128 |
+    XMM6_128 |
+    XMM7_128 |
+    XMM8_128 |
+    XMM9_128 |
+    XMM10_128 |
+    XMM11_128 |
+    XMM12_128 |
+    XMM13_128 |
+    XMM14_128 |
+    XMM15_128 |
     YMM0 |
     YMM1 |
     YMM2 |

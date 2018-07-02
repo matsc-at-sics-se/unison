@@ -171,7 +171,7 @@ condMoveInstrs =
 
 -- This list should contain exactly the registers that are promoted by
 -- 'specsgen' (see 'run-specsgen-x86' recipe in Makefile).
-promotedRegs = [AL, AH, AX, EAX, RAX, EBX, RBX, CL, CX, ECX, RCX, DX, EDX, RDX, EBP, RBP, EDI, RDI, ESI, RSI]
+promotedRegs = [AL, AH, AX, EAX, RAX, EBX, RBX, CL, CX, ECX, RCX, DX, EDX, RDX, EBP, RBP, EDI, RDI, ESI, RSI, XMM0_128]
 
 readsSideEffect i eff =
   (OtherSideEffect eff) `elem` (fst $ SpecsGen.readWriteInfo i)

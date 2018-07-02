@@ -521,7 +521,8 @@ stackDirection = API.StackGrowsDown
 
 -- | Target dependent pre-processing functions
 
-preProcess _ = [mapToMachineInstruction cleanFunRegisters,
+preProcess _ = [disambiguateLiveInOut,
+                mapToMachineInstruction cleanFunRegisters,
                 mapToMachineInstruction promoteImplicitOperands]
 
 -- | Target dependent post-processing functions

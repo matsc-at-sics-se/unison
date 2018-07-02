@@ -412,7 +412,7 @@ readWriteInfo i
   | i `elem` [RDTSC] =
     ([], [OtherSideEffect RAX, OtherSideEffect RDX])
   | i `elem` [PCMPISTRM128rr, VPCMPISTRM128rr] =
-    ([], [OtherSideEffect XMM0, OtherSideEffect EFLAGS])
+    ([], [OtherSideEffect XMM0_128, OtherSideEffect EFLAGS])
   | i `elem` [VZEROALL, VZEROUPPER] =
     ([],
      [OtherSideEffect YMM0, OtherSideEffect YMM1, OtherSideEffect YMM2,
@@ -1189,7 +1189,9 @@ readWriteInfo i
   | i `elem`
       [PCMPISTRM128rm, PCMPISTRM128rm_unison, VPCMPISTRM128rm,
        VPCMPISTRM128rm_unison]
-    = ([Memory "mem"], [OtherSideEffect XMM0, OtherSideEffect EFLAGS])
+    =
+    ([Memory "mem"],
+     [OtherSideEffect XMM0_128, OtherSideEffect EFLAGS])
   | i `elem` [LCMPXCHG8] =
     ([Memory "mem", OtherSideEffect AL],
      [Memory "mem", OtherSideEffect AL, OtherSideEffect EFLAGS])
@@ -1267,7 +1269,7 @@ readWriteInfo i
        VPCMPESTRM128rm_unison]
     =
     ([Memory "mem", OtherSideEffect EAX, OtherSideEffect EDX],
-     [OtherSideEffect XMM0, OtherSideEffect EFLAGS])
+     [OtherSideEffect XMM0_128, OtherSideEffect EFLAGS])
   | i `elem` [LEAVE] =
     ([Memory "mem", OtherSideEffect EBP, OtherSideEffect ESP],
      [OtherSideEffect EBP, OtherSideEffect ESP])
@@ -1404,7 +1406,7 @@ readWriteInfo i
       [BLENDVPDrm0, BLENDVPDrm0_unison, BLENDVPSrm0, BLENDVPSrm0_unison,
        PBLENDVBrm0, PBLENDVBrm0_unison, SHA256RNDS2rm,
        SHA256RNDS2rm_unison]
-    = ([Memory "mem", OtherSideEffect XMM0], [])
+    = ([Memory "mem", OtherSideEffect XMM0_128], [])
   | i `elem` [SAHF] =
     ([OtherSideEffect AH], [OtherSideEffect EFLAGS])
   | i `elem` [OUT8ir] = ([OtherSideEffect AL], [])
@@ -1553,7 +1555,7 @@ readWriteInfo i
      [OtherSideEffect EFLAGS])
   | i `elem` [PCMPESTRM128rr, VPCMPESTRM128rr] =
     ([OtherSideEffect EAX, OtherSideEffect EDX],
-     [OtherSideEffect XMM0, OtherSideEffect EFLAGS])
+     [OtherSideEffect XMM0_128, OtherSideEffect EFLAGS])
   | i `elem` [ADC32i32, SBB32i32] =
     ([OtherSideEffect EAX, OtherSideEffect EFLAGS],
      [OtherSideEffect EAX, OtherSideEffect EFLAGS])
@@ -1758,5 +1760,5 @@ readWriteInfo i
     ([OtherSideEffect RSP, OtherSideEffect EFLAGS],
      [Memory "mem", OtherSideEffect RSP])
   | i `elem` [BLENDVPDrr0, BLENDVPSrr0, PBLENDVBrr0, SHA256RNDS2rr] =
-    ([OtherSideEffect XMM0], [])
+    ([OtherSideEffect XMM0_128], [])
 

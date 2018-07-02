@@ -10,7 +10,8 @@ Main authors:
 This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.X86.Transforms
-    (cleanFunRegisters,
+    (disambiguateLiveInOut,
+     cleanFunRegisters,
      promoteImplicitOperands,
      expandPseudos,
      demoteImplicitOperands,
@@ -52,6 +53,66 @@ import Unison.Target.X86.X86RegisterClassDecl
 import Unison.Target.X86.Registers
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
+
+-- This transformation disambiguates a livein %xmm0 as _32, _64, or _128
+
+disambiguateLiveInOut mf =
+  let flatcode = flattenMachineFunction mf
+      tid2rc = registerClassMap mf
+      (win,wout) = foldl (liveInOutWidths tid2rc) (16,16) flatcode
+      (xmm0in,xmm0out) = (w2xmm0 win,w2xmm0 wout)
+      mf' = mapToMachineInstruction (substituteXmm0 (xmm0in,xmm0out)) mf
+  in mf'
+
+liveInOutWidths tid2rc (_,wout)
+                MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COPY,
+                               msOperands = [MachineTemp {mtId = did}, MachineReg {mrName = XMM0_128}]} =
+  case (tid2rc M.! did) of 
+    "fr32"     -> (4,wout)
+    "fr64"     -> (8,wout)
+    "fr128"    -> (16,wout)
+    "vr128"    -> (16,wout)
+    _          -> error ("liveInOutWidths: missing register class " ++ show (tid2rc M.! did))
+
+liveInOutWidths tid2rc (win,_)
+                MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COPY,
+                               msOperands = [MachineReg {mrName = XMM0_128}, MachineTemp {mtId = did}]} =
+  case (tid2rc M.! did) of 
+    "fr32"     -> (win,4)
+    "fr64"     -> (win,8)
+    "fr128"    -> (win,16)
+    "vr128"    -> (win,16)
+    _          -> error ("liveInOutWidths: missing register class " ++ show (tid2rc M.! did))
+
+liveInOutWidths _ ww _ = ww
+
+w2xmm0 4 = XMM0_32
+w2xmm0 8 = XMM0_64
+w2xmm0 16 = XMM0_128
+
+substituteXmm0 (rin,_) o @ MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COPY,
+                                          msOperands = [p, MachineReg {mrName = XMM0_128}]} =
+  o {msOperands = [p, mkMachineReg rin]}
+
+substituteXmm0 (_,rout) o @ MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COPY,
+                                           msOperands = [MachineReg {mrName = XMM0_128}, p]} =
+  o {msOperands = [mkMachineReg rout, p]}
+
+substituteXmm0 (rin,_) o @ MachineSingle {msOpcode = MachineVirtualOpc MachineIR.ENTRY,
+                                          msOperands = ps} =
+  let ps' = map (substXmm0 rin) ps
+  in o {msOperands = ps'}
+
+substituteXmm0 (_,rout) o @ MachineSingle {msOpcode = MachineTargetOpc RETQ,
+                                           msOperands = [MachineReg {mrName = XMM0_128}]} =
+  o {msOperands = [mkMachineReg rout]}
+
+substituteXmm0 _ o = o
+
+substXmm0 r p @ MachineReg {mrName = XMM0_128} =
+  p {mrName = r}
+
+substXmm0 _ p = p
 
 -- This transformation hides the stack pointer as a use and definition of
 -- function calls.

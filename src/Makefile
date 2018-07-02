@@ -192,4 +192,5 @@ run-specsgen-x86:
 		 --promoteeffect RDI:GR64 \
 		 --promoteeffect ESI:GR32 \
 		 --promoteeffect RSI:GR64 \
+		 --promoteeffect XMM0_128:VR128 \
 	         --rematfile=$(SGX86REMATYAML)

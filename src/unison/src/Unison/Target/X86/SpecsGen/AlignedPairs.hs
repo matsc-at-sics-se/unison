@@ -742,36 +742,35 @@ alignedPairs i ([src1, _], [src1'])
        AND8mi8_unison, AND8mi_unison, AND8mr_unison, AND8ri, AND8ri8,
        AND8rm_unison, AND8rr, AND8rr_REV, ANDNPDrm_unison, ANDNPDrr,
        ANDNPSrm_unison, ANDNPSrr, ANDPDrm_unison, ANDPDrr, ANDPSrm_unison,
-       ANDPSrr, BLENDVPDrm0_unison, BLENDVPDrr0, BLENDVPSrm0_unison,
-       BLENDVPSrr0, CMOVA16rm_unison, CMOVA16rr, CMOVA32rm_unison,
-       CMOVA32rr, CMOVA64rm_unison, CMOVA64rr, CMOVAE16rm_unison,
-       CMOVAE16rr, CMOVAE32rm_unison, CMOVAE32rr, CMOVAE64rm_unison,
-       CMOVAE64rr, CMOVB16rm_unison, CMOVB16rr, CMOVB32rm_unison,
-       CMOVB32rr, CMOVB64rm_unison, CMOVB64rr, CMOVBE16rm_unison,
-       CMOVBE16rr, CMOVBE32rm_unison, CMOVBE32rr, CMOVBE64rm_unison,
-       CMOVBE64rr, CMOVE16rm_unison, CMOVE16rr, CMOVE32rm_unison,
-       CMOVE32rr, CMOVE64rm_unison, CMOVE64rr, CMOVG16rm_unison,
-       CMOVG16rr, CMOVG32rm_unison, CMOVG32rr, CMOVG64rm_unison,
-       CMOVG64rr, CMOVGE16rm_unison, CMOVGE16rr, CMOVGE32rm_unison,
-       CMOVGE32rr, CMOVGE64rm_unison, CMOVGE64rr, CMOVL16rm_unison,
-       CMOVL16rr, CMOVL32rm_unison, CMOVL32rr, CMOVL64rm_unison,
-       CMOVL64rr, CMOVLE16rm_unison, CMOVLE16rr, CMOVLE32rm_unison,
-       CMOVLE32rr, CMOVLE64rm_unison, CMOVLE64rr, CMOVNE16rm_unison,
-       CMOVNE16rr, CMOVNE32rm_unison, CMOVNE32rr, CMOVNE64rm_unison,
-       CMOVNE64rr, CMOVNO16rm_unison, CMOVNO16rr, CMOVNO32rm_unison,
-       CMOVNO32rr, CMOVNO64rm_unison, CMOVNO64rr, CMOVNP16rm_unison,
-       CMOVNP16rr, CMOVNP32rm_unison, CMOVNP32rr, CMOVNP64rm_unison,
-       CMOVNP64rr, CMOVNS16rm_unison, CMOVNS16rr, CMOVNS32rm_unison,
-       CMOVNS32rr, CMOVNS64rm_unison, CMOVNS64rr, CMOVO16rm_unison,
-       CMOVO16rr, CMOVO32rm_unison, CMOVO32rr, CMOVO64rm_unison,
-       CMOVO64rr, CMOVP16rm_unison, CMOVP16rr, CMOVP32rm_unison,
-       CMOVP32rr, CMOVP64rm_unison, CMOVP64rr, CMOVS16rm_unison,
-       CMOVS16rr, CMOVS32rm_unison, CMOVS32rr, CMOVS64rm_unison,
-       CMOVS64rr, CRC32r32m16_unison, CRC32r32m32_unison,
-       CRC32r32m8_unison, CRC32r32r16, CRC32r32r32, CRC32r32r8,
-       CRC32r64m64_unison, CRC32r64m8_unison, CRC32r64r64, CRC32r64r8,
-       DIVPDrm_unison, DIVPDrr, DIVPSrm_unison, DIVPSrr, DIVSDrm_unison,
-       DIVSDrr, DIVSDrr_Int, DIVSSrm_unison, DIVSSrr, DIVSSrr_Int,
+       ANDPSrr, CMOVA16rm_unison, CMOVA16rr, CMOVA32rm_unison, CMOVA32rr,
+       CMOVA64rm_unison, CMOVA64rr, CMOVAE16rm_unison, CMOVAE16rr,
+       CMOVAE32rm_unison, CMOVAE32rr, CMOVAE64rm_unison, CMOVAE64rr,
+       CMOVB16rm_unison, CMOVB16rr, CMOVB32rm_unison, CMOVB32rr,
+       CMOVB64rm_unison, CMOVB64rr, CMOVBE16rm_unison, CMOVBE16rr,
+       CMOVBE32rm_unison, CMOVBE32rr, CMOVBE64rm_unison, CMOVBE64rr,
+       CMOVE16rm_unison, CMOVE16rr, CMOVE32rm_unison, CMOVE32rr,
+       CMOVE64rm_unison, CMOVE64rr, CMOVG16rm_unison, CMOVG16rr,
+       CMOVG32rm_unison, CMOVG32rr, CMOVG64rm_unison, CMOVG64rr,
+       CMOVGE16rm_unison, CMOVGE16rr, CMOVGE32rm_unison, CMOVGE32rr,
+       CMOVGE64rm_unison, CMOVGE64rr, CMOVL16rm_unison, CMOVL16rr,
+       CMOVL32rm_unison, CMOVL32rr, CMOVL64rm_unison, CMOVL64rr,
+       CMOVLE16rm_unison, CMOVLE16rr, CMOVLE32rm_unison, CMOVLE32rr,
+       CMOVLE64rm_unison, CMOVLE64rr, CMOVNE16rm_unison, CMOVNE16rr,
+       CMOVNE32rm_unison, CMOVNE32rr, CMOVNE64rm_unison, CMOVNE64rr,
+       CMOVNO16rm_unison, CMOVNO16rr, CMOVNO32rm_unison, CMOVNO32rr,
+       CMOVNO64rm_unison, CMOVNO64rr, CMOVNP16rm_unison, CMOVNP16rr,
+       CMOVNP32rm_unison, CMOVNP32rr, CMOVNP64rm_unison, CMOVNP64rr,
+       CMOVNS16rm_unison, CMOVNS16rr, CMOVNS32rm_unison, CMOVNS32rr,
+       CMOVNS64rm_unison, CMOVNS64rr, CMOVO16rm_unison, CMOVO16rr,
+       CMOVO32rm_unison, CMOVO32rr, CMOVO64rm_unison, CMOVO64rr,
+       CMOVP16rm_unison, CMOVP16rr, CMOVP32rm_unison, CMOVP32rr,
+       CMOVP64rm_unison, CMOVP64rr, CMOVS16rm_unison, CMOVS16rr,
+       CMOVS32rm_unison, CMOVS32rr, CMOVS64rm_unison, CMOVS64rr,
+       CRC32r32m16_unison, CRC32r32m32_unison, CRC32r32m8_unison,
+       CRC32r32r16, CRC32r32r32, CRC32r32r8, CRC32r64m64_unison,
+       CRC32r64m8_unison, CRC32r64r64, CRC32r64r8, DIVPDrm_unison,
+       DIVPDrr, DIVPSrm_unison, DIVPSrr, DIVSDrm_unison, DIVSDrr,
+       DIVSDrr_Int, DIVSSrm_unison, DIVSSrr, DIVSSrr_Int,
        FsANDNPDrm_unison, FsANDNPDrr, FsANDNPSrm_unison, FsANDNPSrr,
        FsANDPDrm_unison, FsANDPDrr, FsANDPSrm_unison, FsANDPSrr,
        FsORPDrm_unison, FsORPDrr, FsORPSrm_unison, FsORPSrr,
@@ -810,66 +809,65 @@ alignedPairs i ([src1, _], [src1'])
        PADDSBrr, PADDSWrm_unison, PADDSWrr, PADDUSBrm_unison, PADDUSBrr,
        PADDUSWrm_unison, PADDUSWrr, PADDWrm_unison, PADDWrr,
        PANDNrm_unison, PANDNrr, PANDrm_unison, PANDrr, PAVGBrm_unison,
-       PAVGBrr, PAVGWrm_unison, PAVGWrr, PBLENDVBrm0_unison, PBLENDVBrr0,
-       PCMPEQBrm_unison, PCMPEQBrr, PCMPEQDrm_unison, PCMPEQDrr,
-       PCMPEQQrm_unison, PCMPEQQrr, PCMPEQWrm_unison, PCMPEQWrr,
-       PCMPGTBrm_unison, PCMPGTBrr, PCMPGTDrm_unison, PCMPGTDrr,
-       PCMPGTQrm_unison, PCMPGTQrr, PCMPGTWrm_unison, PCMPGTWrr,
-       PHADDDrm_unison, PHADDDrr, PHADDSWrm128_unison, PHADDSWrr128,
-       PHADDWrm_unison, PHADDWrr, PHSUBDrm_unison, PHSUBDrr,
-       PHSUBSWrm128_unison, PHSUBSWrr128, PHSUBWrm_unison, PHSUBWrr,
-       PMADDUBSWrm128_unison, PMADDUBSWrr128, PMADDWDrm_unison, PMADDWDrr,
-       PMAXSBrm_unison, PMAXSBrr, PMAXSDrm_unison, PMAXSDrr,
-       PMAXSWrm_unison, PMAXSWrr, PMAXUBrm_unison, PMAXUBrr,
-       PMAXUDrm_unison, PMAXUDrr, PMAXUWrm_unison, PMAXUWrr,
-       PMINSBrm_unison, PMINSBrr, PMINSDrm_unison, PMINSDrr,
-       PMINSWrm_unison, PMINSWrr, PMINUBrm_unison, PMINUBrr,
-       PMINUDrm_unison, PMINUDrr, PMINUWrm_unison, PMINUWrr,
-       PMULDQrm_unison, PMULDQrr, PMULHRSWrm128_unison, PMULHRSWrr128,
-       PMULHUWrm_unison, PMULHUWrr, PMULHWrm_unison, PMULHWrr,
-       PMULLDrm_unison, PMULLDrr, PMULLWrm_unison, PMULLWrr,
-       PMULUDQrm_unison, PMULUDQrr, PORrm_unison, PORrr, PSADBWrm_unison,
-       PSADBWrr, PSHUFBrm_unison, PSHUFBrr, PSIGNBrm_unison, PSIGNBrr,
-       PSIGNDrm_unison, PSIGNDrr, PSIGNWrm_unison, PSIGNWrr, PSLLDQri,
-       PSLLDri, PSLLDrm_unison, PSLLDrr, PSLLQri, PSLLQrm_unison, PSLLQrr,
-       PSLLWri, PSLLWrm_unison, PSLLWrr, PSRADri, PSRADrm_unison, PSRADrr,
-       PSRAWri, PSRAWrm_unison, PSRAWrr, PSRLDQri, PSRLDri,
-       PSRLDrm_unison, PSRLDrr, PSRLQri, PSRLQrm_unison, PSRLQrr, PSRLWri,
-       PSRLWrm_unison, PSRLWrr, PSUBBrm_unison, PSUBBrr, PSUBDrm_unison,
-       PSUBDrr, PSUBQrm_unison, PSUBQrr, PSUBSBrm_unison, PSUBSBrr,
-       PSUBSWrm_unison, PSUBSWrr, PSUBUSBrm_unison, PSUBUSBrr,
-       PSUBUSWrm_unison, PSUBUSWrr, PSUBWrm_unison, PSUBWrr,
-       PUNPCKHBWrm_unison, PUNPCKHBWrr, PUNPCKHDQrm_unison, PUNPCKHDQrr,
-       PUNPCKHQDQrm_unison, PUNPCKHQDQrr, PUNPCKHWDrm_unison, PUNPCKHWDrr,
-       PUNPCKLBWrm_unison, PUNPCKLBWrr, PUNPCKLDQrm_unison, PUNPCKLDQrr,
-       PUNPCKLQDQrm_unison, PUNPCKLQDQrr, PUNPCKLWDrm_unison, PUNPCKLWDrr,
-       PXORrm_unison, PXORrr, RCL16mi_unison, RCL32mi_unison,
-       RCL64mi_unison, RCL8mi_unison, RCPSSr_Int, RCR16mi_unison,
-       RCR32mi_unison, RCR64mi_unison, RCR8mi_unison, ROL16mi_unison,
-       ROL16ri, ROL32mi_unison, ROL32ri, ROL64mi_unison, ROL64ri,
-       ROL8mi_unison, ROL8ri, ROR16mi_unison, ROR16ri, ROR32mi_unison,
-       ROR32ri, ROR64mi_unison, ROR64ri, ROR8mi_unison, ROR8ri,
-       RSQRTSSr_Int, SAR16mi_unison, SAR16ri, SAR32mi_unison, SAR32ri,
-       SAR64mi_unison, SAR64ri, SAR8mi_unison, SAR8ri, SBB16mi8_unison,
-       SBB16mi_unison, SBB16mr_unison, SBB16ri, SBB16ri8, SBB16rm_unison,
-       SBB16rr, SBB16rr_REV, SBB32mi8_unison, SBB32mi_unison,
-       SBB32mr_unison, SBB32ri, SBB32ri8, SBB32rm_unison, SBB32rr,
-       SBB32rr_REV, SBB64mi32_unison, SBB64mi8_unison, SBB64mr_unison,
-       SBB64ri32, SBB64ri8, SBB64rm_unison, SBB64rr, SBB64rr_REV,
-       SBB8mi8_unison, SBB8mi_unison, SBB8mr_unison, SBB8ri, SBB8ri8,
-       SBB8rm_unison, SBB8rr, SBB8rr_REV, SHA1MSG1rm_unison, SHA1MSG1rr,
-       SHA1MSG2rm_unison, SHA1MSG2rr, SHA1NEXTErm_unison, SHA1NEXTErr,
-       SHA256MSG1rm_unison, SHA256MSG1rr, SHA256MSG2rm_unison,
-       SHA256MSG2rr, SHA256RNDS2rm_unison, SHA256RNDS2rr, SHL16mi_unison,
-       SHL16ri, SHL32mi_unison, SHL32ri, SHL64mi_unison, SHL64ri,
-       SHL8mi_unison, SHL8ri, SHR16mi_unison, SHR16ri, SHR32mi_unison,
-       SHR32ri, SHR64mi_unison, SHR64ri, SHR8mi_unison, SHR8ri,
-       SQRTSDr_Int, SQRTSSr_Int, SUB16mi8_unison, SUB16mi_unison,
-       SUB16mr_unison, SUB16ri, SUB16ri8, SUB16rm_unison, SUB16rr,
-       SUB16rr_REV, SUB32mi8_unison, SUB32mi_unison, SUB32mr_unison,
-       SUB32ri, SUB32ri8, SUB32rm_unison, SUB32rr, SUB32rr_REV,
-       SUB64mi32_unison, SUB64mi8_unison, SUB64mr_unison, SUB64ri32,
-       SUB64ri8, SUB64rm_unison, SUB64rr, SUB64rr_REV, SUB8mi8_unison,
+       PAVGBrr, PAVGWrm_unison, PAVGWrr, PCMPEQBrm_unison, PCMPEQBrr,
+       PCMPEQDrm_unison, PCMPEQDrr, PCMPEQQrm_unison, PCMPEQQrr,
+       PCMPEQWrm_unison, PCMPEQWrr, PCMPGTBrm_unison, PCMPGTBrr,
+       PCMPGTDrm_unison, PCMPGTDrr, PCMPGTQrm_unison, PCMPGTQrr,
+       PCMPGTWrm_unison, PCMPGTWrr, PHADDDrm_unison, PHADDDrr,
+       PHADDSWrm128_unison, PHADDSWrr128, PHADDWrm_unison, PHADDWrr,
+       PHSUBDrm_unison, PHSUBDrr, PHSUBSWrm128_unison, PHSUBSWrr128,
+       PHSUBWrm_unison, PHSUBWrr, PMADDUBSWrm128_unison, PMADDUBSWrr128,
+       PMADDWDrm_unison, PMADDWDrr, PMAXSBrm_unison, PMAXSBrr,
+       PMAXSDrm_unison, PMAXSDrr, PMAXSWrm_unison, PMAXSWrr,
+       PMAXUBrm_unison, PMAXUBrr, PMAXUDrm_unison, PMAXUDrr,
+       PMAXUWrm_unison, PMAXUWrr, PMINSBrm_unison, PMINSBrr,
+       PMINSDrm_unison, PMINSDrr, PMINSWrm_unison, PMINSWrr,
+       PMINUBrm_unison, PMINUBrr, PMINUDrm_unison, PMINUDrr,
+       PMINUWrm_unison, PMINUWrr, PMULDQrm_unison, PMULDQrr,
+       PMULHRSWrm128_unison, PMULHRSWrr128, PMULHUWrm_unison, PMULHUWrr,
+       PMULHWrm_unison, PMULHWrr, PMULLDrm_unison, PMULLDrr,
+       PMULLWrm_unison, PMULLWrr, PMULUDQrm_unison, PMULUDQrr,
+       PORrm_unison, PORrr, PSADBWrm_unison, PSADBWrr, PSHUFBrm_unison,
+       PSHUFBrr, PSIGNBrm_unison, PSIGNBrr, PSIGNDrm_unison, PSIGNDrr,
+       PSIGNWrm_unison, PSIGNWrr, PSLLDQri, PSLLDri, PSLLDrm_unison,
+       PSLLDrr, PSLLQri, PSLLQrm_unison, PSLLQrr, PSLLWri, PSLLWrm_unison,
+       PSLLWrr, PSRADri, PSRADrm_unison, PSRADrr, PSRAWri, PSRAWrm_unison,
+       PSRAWrr, PSRLDQri, PSRLDri, PSRLDrm_unison, PSRLDrr, PSRLQri,
+       PSRLQrm_unison, PSRLQrr, PSRLWri, PSRLWrm_unison, PSRLWrr,
+       PSUBBrm_unison, PSUBBrr, PSUBDrm_unison, PSUBDrr, PSUBQrm_unison,
+       PSUBQrr, PSUBSBrm_unison, PSUBSBrr, PSUBSWrm_unison, PSUBSWrr,
+       PSUBUSBrm_unison, PSUBUSBrr, PSUBUSWrm_unison, PSUBUSWrr,
+       PSUBWrm_unison, PSUBWrr, PUNPCKHBWrm_unison, PUNPCKHBWrr,
+       PUNPCKHDQrm_unison, PUNPCKHDQrr, PUNPCKHQDQrm_unison, PUNPCKHQDQrr,
+       PUNPCKHWDrm_unison, PUNPCKHWDrr, PUNPCKLBWrm_unison, PUNPCKLBWrr,
+       PUNPCKLDQrm_unison, PUNPCKLDQrr, PUNPCKLQDQrm_unison, PUNPCKLQDQrr,
+       PUNPCKLWDrm_unison, PUNPCKLWDrr, PXORrm_unison, PXORrr,
+       RCL16mi_unison, RCL32mi_unison, RCL64mi_unison, RCL8mi_unison,
+       RCPSSr_Int, RCR16mi_unison, RCR32mi_unison, RCR64mi_unison,
+       RCR8mi_unison, ROL16mi_unison, ROL16ri, ROL32mi_unison, ROL32ri,
+       ROL64mi_unison, ROL64ri, ROL8mi_unison, ROL8ri, ROR16mi_unison,
+       ROR16ri, ROR32mi_unison, ROR32ri, ROR64mi_unison, ROR64ri,
+       ROR8mi_unison, ROR8ri, RSQRTSSr_Int, SAR16mi_unison, SAR16ri,
+       SAR32mi_unison, SAR32ri, SAR64mi_unison, SAR64ri, SAR8mi_unison,
+       SAR8ri, SBB16mi8_unison, SBB16mi_unison, SBB16mr_unison, SBB16ri,
+       SBB16ri8, SBB16rm_unison, SBB16rr, SBB16rr_REV, SBB32mi8_unison,
+       SBB32mi_unison, SBB32mr_unison, SBB32ri, SBB32ri8, SBB32rm_unison,
+       SBB32rr, SBB32rr_REV, SBB64mi32_unison, SBB64mi8_unison,
+       SBB64mr_unison, SBB64ri32, SBB64ri8, SBB64rm_unison, SBB64rr,
+       SBB64rr_REV, SBB8mi8_unison, SBB8mi_unison, SBB8mr_unison, SBB8ri,
+       SBB8ri8, SBB8rm_unison, SBB8rr, SBB8rr_REV, SHA1MSG1rm_unison,
+       SHA1MSG1rr, SHA1MSG2rm_unison, SHA1MSG2rr, SHA1NEXTErm_unison,
+       SHA1NEXTErr, SHA256MSG1rm_unison, SHA256MSG1rr,
+       SHA256MSG2rm_unison, SHA256MSG2rr, SHL16mi_unison, SHL16ri,
+       SHL32mi_unison, SHL32ri, SHL64mi_unison, SHL64ri, SHL8mi_unison,
+       SHL8ri, SHR16mi_unison, SHR16ri, SHR32mi_unison, SHR32ri,
+       SHR64mi_unison, SHR64ri, SHR8mi_unison, SHR8ri, SQRTSDr_Int,
+       SQRTSSr_Int, SUB16mi8_unison, SUB16mi_unison, SUB16mr_unison,
+       SUB16ri, SUB16ri8, SUB16rm_unison, SUB16rr, SUB16rr_REV,
+       SUB32mi8_unison, SUB32mi_unison, SUB32mr_unison, SUB32ri, SUB32ri8,
+       SUB32rm_unison, SUB32rr, SUB32rr_REV, SUB64mi32_unison,
+       SUB64mi8_unison, SUB64mr_unison, SUB64ri32, SUB64ri8,
+       SUB64rm_unison, SUB64rr, SUB64rr_REV, SUB8mi8_unison,
        SUB8mi_unison, SUB8mr_unison, SUB8ri, SUB8ri8, SUB8rm_unison,
        SUB8rr, SUB8rr_REV, SUBPDrm_unison, SUBPDrr, SUBPSrm_unison,
        SUBPSrr, SUBSDrm_unison, SUBSDrr, SUBSDrr_Int, SUBSSrm_unison,
@@ -915,6 +913,12 @@ alignedPairs i ([_, _, _], [_, _]) | i `elem` [LODSB] = []
 alignedPairs i ([_, _, _], [_, _]) | i `elem` [LODSW] = []
 alignedPairs i ([_, _, _], [_, _]) | i `elem` [LODSL] = []
 alignedPairs i ([_, _, _], [_, _]) | i `elem` [LODSQ] = []
+alignedPairs i ([src1, _, _], [src1'])
+  | i `elem`
+      [BLENDVPDrm0_unison, BLENDVPDrr0, BLENDVPSrm0_unison, BLENDVPSrr0,
+       PBLENDVBrm0_unison, PBLENDVBrr0, SHA256RNDS2rm_unison,
+       SHA256RNDS2rr]
+    = [(src1, src1')]
 alignedPairs i ([_, _, _], [_])
   | i `elem`
       [VCMPPDYrri, VCMPPDYrri_alt, VCMPPDrri, VCMPPDrri_alt, VCMPPSYrri,
@@ -927,15 +931,15 @@ alignedPairs i ([src1, _, _], [src1'])
       [CMPPDrri, CMPPDrri_alt, CMPPSrri, CMPPSrri_alt, CMPSDrr,
        CMPSDrr_alt, CMPSSrr, CMPSSrr_alt]
     = [(src1, src1')]
-alignedPairs i ([_, _, _], [])
-  | i `elem`
-      [PCMPISTRM128rm_unison, PCMPISTRM128rr, VPCMPISTRM128rm_unison,
-       VPCMPISTRM128rr]
-    = []
 alignedPairs i ([_, _, _], [_])
   | i `elem`
       [PCMPISTRIrm_unison, PCMPISTRIrr, VPCMPISTRIrm_unison,
        VPCMPISTRIrr]
+    = []
+alignedPairs i ([_, _, _], [_])
+  | i `elem`
+      [PCMPISTRM128rm_unison, PCMPISTRM128rr, VPCMPISTRM128rm_unison,
+       VPCMPISTRM128rr]
     = []
 alignedPairs i ([_, _, _], [_])
   | i `elem`
@@ -1065,10 +1069,10 @@ alignedPairs i ([src1, _, _], [src1'])
        VFNMSUBSSr213r_Int, VFNMSUBSSr231m_unison, VFNMSUBSSr231r,
        VFNMSUBSSr231r_Int]
     = [(src1, src1')]
-alignedPairs i ([_, _, _, _, _], [])
-  | i `elem` [PCMPESTRM128rm_unison, VPCMPESTRM128rm_unison] = []
 alignedPairs i ([_, _, _, _, _], [_])
   | i `elem` [PCMPESTRIrm_unison, VPCMPESTRIrm_unison] = []
+alignedPairs i ([_, _, _, _, _], [_])
+  | i `elem` [PCMPESTRM128rm_unison, VPCMPESTRM128rm_unison] = []
 alignedPairs i ([_, _, _, _], [_])
   | i `elem`
       [VPERMIL2PDrr, VPERMIL2PDrrY, VPERMIL2PSrr, VPERMIL2PSrrY]
@@ -1313,25 +1317,24 @@ alignedPairs i ([src1, _, _, _, _, _], [src1'])
        ADD8rm, ADDPDrm, ADDPSrm, ADDSDrm, ADDSDrm_Int, ADDSSrm,
        ADDSSrm_Int, ADDSUBPDrm, ADDSUBPSrm, AESDECLASTrm, AESDECrm,
        AESENCLASTrm, AESENCrm, AND16rm, AND32rm, AND64rm, AND8rm,
-       ANDNPDrm, ANDNPSrm, ANDPDrm, ANDPSrm, BLENDVPDrm0, BLENDVPSrm0,
-       CMOVA16rm, CMOVA32rm, CMOVA64rm, CMOVAE16rm, CMOVAE32rm,
-       CMOVAE64rm, CMOVB16rm, CMOVB32rm, CMOVB64rm, CMOVBE16rm,
-       CMOVBE32rm, CMOVBE64rm, CMOVE16rm, CMOVE32rm, CMOVE64rm, CMOVG16rm,
-       CMOVG32rm, CMOVG64rm, CMOVGE16rm, CMOVGE32rm, CMOVGE64rm,
-       CMOVL16rm, CMOVL32rm, CMOVL64rm, CMOVLE16rm, CMOVLE32rm,
-       CMOVLE64rm, CMOVNE16rm, CMOVNE32rm, CMOVNE64rm, CMOVNO16rm,
-       CMOVNO32rm, CMOVNO64rm, CMOVNP16rm, CMOVNP32rm, CMOVNP64rm,
-       CMOVNS16rm, CMOVNS32rm, CMOVNS64rm, CMOVO16rm, CMOVO32rm,
-       CMOVO64rm, CMOVP16rm, CMOVP32rm, CMOVP64rm, CMOVS16rm, CMOVS32rm,
-       CMOVS64rm, CRC32r32m16, CRC32r32m32, CRC32r32m8, CRC32r64m64,
-       CRC32r64m8, DIVPDrm, DIVPSrm, DIVSDrm, DIVSDrm_Int, DIVSSrm,
-       DIVSSrm_Int, FsANDNPDrm, FsANDNPSrm, FsANDPDrm, FsANDPSrm,
-       FsORPDrm, FsORPSrm, FsXORPDrm, FsXORPSrm, FvANDNPDrm, FvANDNPSrm,
-       FvANDPDrm, FvANDPSrm, FvORPDrm, FvORPSrm, FvXORPDrm, FvXORPSrm,
-       HADDPDrm, HADDPSrm, HSUBPDrm, HSUBPSrm, IMUL16rm, IMUL32rm,
-       IMUL64rm, Int_CVTSD2SSrm, Int_CVTSI2SD64rm, Int_CVTSI2SDrm,
-       Int_CVTSI2SS64rm, Int_CVTSI2SSrm, Int_CVTSS2SDrm, MAXCPDrm,
-       MAXCPSrm, MAXCSDrm, MAXCSSrm, MAXPDrm, MAXPSrm, MAXSDrm,
+       ANDNPDrm, ANDNPSrm, ANDPDrm, ANDPSrm, CMOVA16rm, CMOVA32rm,
+       CMOVA64rm, CMOVAE16rm, CMOVAE32rm, CMOVAE64rm, CMOVB16rm,
+       CMOVB32rm, CMOVB64rm, CMOVBE16rm, CMOVBE32rm, CMOVBE64rm,
+       CMOVE16rm, CMOVE32rm, CMOVE64rm, CMOVG16rm, CMOVG32rm, CMOVG64rm,
+       CMOVGE16rm, CMOVGE32rm, CMOVGE64rm, CMOVL16rm, CMOVL32rm,
+       CMOVL64rm, CMOVLE16rm, CMOVLE32rm, CMOVLE64rm, CMOVNE16rm,
+       CMOVNE32rm, CMOVNE64rm, CMOVNO16rm, CMOVNO32rm, CMOVNO64rm,
+       CMOVNP16rm, CMOVNP32rm, CMOVNP64rm, CMOVNS16rm, CMOVNS32rm,
+       CMOVNS64rm, CMOVO16rm, CMOVO32rm, CMOVO64rm, CMOVP16rm, CMOVP32rm,
+       CMOVP64rm, CMOVS16rm, CMOVS32rm, CMOVS64rm, CRC32r32m16,
+       CRC32r32m32, CRC32r32m8, CRC32r64m64, CRC32r64m8, DIVPDrm, DIVPSrm,
+       DIVSDrm, DIVSDrm_Int, DIVSSrm, DIVSSrm_Int, FsANDNPDrm, FsANDNPSrm,
+       FsANDPDrm, FsANDPSrm, FsORPDrm, FsORPSrm, FsXORPDrm, FsXORPSrm,
+       FvANDNPDrm, FvANDNPSrm, FvANDPDrm, FvANDPSrm, FvORPDrm, FvORPSrm,
+       FvXORPDrm, FvXORPSrm, HADDPDrm, HADDPSrm, HSUBPDrm, HSUBPSrm,
+       IMUL16rm, IMUL32rm, IMUL64rm, Int_CVTSD2SSrm, Int_CVTSI2SD64rm,
+       Int_CVTSI2SDrm, Int_CVTSI2SS64rm, Int_CVTSI2SSrm, Int_CVTSS2SDrm,
+       MAXCPDrm, MAXCPSrm, MAXCSDrm, MAXCSSrm, MAXPDrm, MAXPSrm, MAXSDrm,
        MAXSDrm_Int, MAXSSrm, MAXSSrm_Int, MINCPDrm, MINCPSrm, MINCSDrm,
        MINCSSrm, MINPDrm, MINPSrm, MINSDrm, MINSDrm_Int, MINSSrm,
        MINSSrm_Int, MMX_CVTPI2PSirm, MOVHPDrm, MOVHPSrm, MOVLPDrm,
@@ -1339,25 +1342,27 @@ alignedPairs i ([src1, _, _, _, _, _], [src1'])
        MULSSrm_Int, OR16rm, OR32rm, OR64rm, OR8rm, ORPDrm, ORPSrm,
        PACKSSDWrm, PACKSSWBrm, PACKUSDWrm, PACKUSWBrm, PADDBrm, PADDDrm,
        PADDQrm, PADDSBrm, PADDSWrm, PADDUSBrm, PADDUSWrm, PADDWrm,
-       PANDNrm, PANDrm, PAVGBrm, PAVGWrm, PBLENDVBrm0, PCMPEQBrm,
-       PCMPEQDrm, PCMPEQQrm, PCMPEQWrm, PCMPGTBrm, PCMPGTDrm, PCMPGTQrm,
-       PCMPGTWrm, PHADDDrm, PHADDSWrm128, PHADDWrm, PHSUBDrm,
-       PHSUBSWrm128, PHSUBWrm, PMADDUBSWrm128, PMADDWDrm, PMAXSBrm,
-       PMAXSDrm, PMAXSWrm, PMAXUBrm, PMAXUDrm, PMAXUWrm, PMINSBrm,
-       PMINSDrm, PMINSWrm, PMINUBrm, PMINUDrm, PMINUWrm, PMULDQrm,
-       PMULHRSWrm128, PMULHUWrm, PMULHWrm, PMULLDrm, PMULLWrm, PMULUDQrm,
-       PORrm, PSADBWrm, PSHUFBrm, PSIGNBrm, PSIGNDrm, PSIGNWrm, PSLLDrm,
-       PSLLQrm, PSLLWrm, PSRADrm, PSRAWrm, PSRLDrm, PSRLQrm, PSRLWrm,
-       PSUBBrm, PSUBDrm, PSUBQrm, PSUBSBrm, PSUBSWrm, PSUBUSBrm,
-       PSUBUSWrm, PSUBWrm, PUNPCKHBWrm, PUNPCKHDQrm, PUNPCKHQDQrm,
-       PUNPCKHWDrm, PUNPCKLBWrm, PUNPCKLDQrm, PUNPCKLQDQrm, PUNPCKLWDrm,
-       PXORrm, RCPSSm_Int, RSQRTSSm_Int, SBB16rm, SBB32rm, SBB64rm,
-       SBB8rm, SHA1MSG1rm, SHA1MSG2rm, SHA1NEXTErm, SHA256MSG1rm,
-       SHA256MSG2rm, SHA256RNDS2rm, SQRTSDm_Int, SQRTSSm_Int, SUB16rm,
-       SUB32rm, SUB64rm, SUB8rm, SUBPDrm, SUBPSrm, SUBSDrm, SUBSDrm_Int,
-       SUBSSrm, SUBSSrm_Int, UNPCKHPDrm, UNPCKHPSrm, UNPCKLPDrm,
-       UNPCKLPSrm, XOR16rm, XOR32rm, XOR64rm, XOR8rm, XORPDrm, XORPSrm]
+       PANDNrm, PANDrm, PAVGBrm, PAVGWrm, PCMPEQBrm, PCMPEQDrm, PCMPEQQrm,
+       PCMPEQWrm, PCMPGTBrm, PCMPGTDrm, PCMPGTQrm, PCMPGTWrm, PHADDDrm,
+       PHADDSWrm128, PHADDWrm, PHSUBDrm, PHSUBSWrm128, PHSUBWrm,
+       PMADDUBSWrm128, PMADDWDrm, PMAXSBrm, PMAXSDrm, PMAXSWrm, PMAXUBrm,
+       PMAXUDrm, PMAXUWrm, PMINSBrm, PMINSDrm, PMINSWrm, PMINUBrm,
+       PMINUDrm, PMINUWrm, PMULDQrm, PMULHRSWrm128, PMULHUWrm, PMULHWrm,
+       PMULLDrm, PMULLWrm, PMULUDQrm, PORrm, PSADBWrm, PSHUFBrm, PSIGNBrm,
+       PSIGNDrm, PSIGNWrm, PSLLDrm, PSLLQrm, PSLLWrm, PSRADrm, PSRAWrm,
+       PSRLDrm, PSRLQrm, PSRLWrm, PSUBBrm, PSUBDrm, PSUBQrm, PSUBSBrm,
+       PSUBSWrm, PSUBUSBrm, PSUBUSWrm, PSUBWrm, PUNPCKHBWrm, PUNPCKHDQrm,
+       PUNPCKHQDQrm, PUNPCKHWDrm, PUNPCKLBWrm, PUNPCKLDQrm, PUNPCKLQDQrm,
+       PUNPCKLWDrm, PXORrm, RCPSSm_Int, RSQRTSSm_Int, SBB16rm, SBB32rm,
+       SBB64rm, SBB8rm, SHA1MSG1rm, SHA1MSG2rm, SHA1NEXTErm, SHA256MSG1rm,
+       SHA256MSG2rm, SQRTSDm_Int, SQRTSSm_Int, SUB16rm, SUB32rm, SUB64rm,
+       SUB8rm, SUBPDrm, SUBPSrm, SUBSDrm, SUBSDrm_Int, SUBSSrm,
+       SUBSSrm_Int, UNPCKHPDrm, UNPCKHPSrm, UNPCKLPDrm, UNPCKLPSrm,
+       XOR16rm, XOR32rm, XOR64rm, XOR8rm, XORPDrm, XORPSrm]
     = [(src1, src1')]
+alignedPairs i ([src1, _, _, _, _, _, _], [src1'])
+  | i `elem` [BLENDVPDrm0, BLENDVPSrm0, PBLENDVBrm0, SHA256RNDS2rm] =
+    [(src1, src1')]
 alignedPairs i ([_, _, _, _, _, _, _], [_])
   | i `elem`
       [VCMPPDYrmi, VCMPPDYrmi_alt, VCMPPDrmi, VCMPPDrmi_alt, VCMPPSYrmi,
@@ -1377,10 +1382,10 @@ alignedPairs i ([src1, _, _, _, _, _, mask], [src1', mask'])
        VPGATHERDDYrm, VPGATHERDDrm, VPGATHERDQYrm, VPGATHERDQrm,
        VPGATHERQDYrm, VPGATHERQDrm, VPGATHERQQYrm, VPGATHERQQrm]
     = [(src1, src1'), (mask, mask')]
-alignedPairs i ([_, _, _, _, _, _, _], [])
-  | i `elem` [PCMPISTRM128rm, VPCMPISTRM128rm] = []
 alignedPairs i ([_, _, _, _, _, _, _], [_])
   | i `elem` [PCMPISTRIrm, VPCMPISTRIrm] = []
+alignedPairs i ([_, _, _, _, _, _, _], [_])
+  | i `elem` [PCMPISTRM128rm, VPCMPISTRM128rm] = []
 alignedPairs i ([_, _, _, _, _, _, _], [_])
   | i `elem`
       [PCMPISTRIMEM, PCMPISTRM128MEM, VBLENDPDYrmi, VBLENDPDrmi,
@@ -1419,18 +1424,18 @@ alignedPairs i ([_, _, _, _, _, _, _, _], [_])
   | i `elem`
       [VPERMIL2PDmr, VPERMIL2PDmrY, VPERMIL2PSmr, VPERMIL2PSmrY]
     = []
-alignedPairs i ([_, _, _, _, _], [])
-  | i `elem` [PCMPESTRM128rr, VPCMPESTRM128rr] = []
 alignedPairs i ([_, _, _, _, _], [_])
   | i `elem` [PCMPESTRIrr, VPCMPESTRIrr] = []
+alignedPairs i ([_, _, _, _, _], [_])
+  | i `elem` [PCMPESTRM128rr, VPCMPESTRM128rr] = []
 alignedPairs i ([_, _, _, _, _], [_])
   | i `elem`
       [PCMPESTRIREG, PCMPESTRM128REG, VPCMPESTRIREG, VPCMPESTRM128REG]
     = []
-alignedPairs i ([_, _, _, _, _, _, _, _, _], [])
-  | i `elem` [PCMPESTRM128rm, VPCMPESTRM128rm] = []
 alignedPairs i ([_, _, _, _, _, _, _, _, _], [_])
   | i `elem` [PCMPESTRIrm, VPCMPESTRIrm] = []
+alignedPairs i ([_, _, _, _, _, _, _, _, _], [_])
+  | i `elem` [PCMPESTRM128rm, VPCMPESTRM128rm] = []
 alignedPairs i ([_, _, _, _, _, _, _, _, _], [_])
   | i `elem`
       [PCMPESTRIMEM, PCMPESTRM128MEM, VPCMPESTRIMEM, VPCMPESTRM128MEM]

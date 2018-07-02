@@ -34,9 +34,9 @@ data X86RegisterClass =
     Ptr_rc_norex_nosp |
     Ptr_rc_tailcall |
     FR32 |
-    FR32_AUX |
     FR64 |
     FR128 |
+    FR128_AUX |
     VR128 |
     VR256 |
     VR2048_AUX |
