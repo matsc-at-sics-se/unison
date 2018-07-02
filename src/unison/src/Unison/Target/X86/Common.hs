@@ -11,6 +11,7 @@ This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.X86.Common
     (unitLatency, align, instrInfiniteUsage,
+     isMoveInstr, isStoreInstr, isLoadInstr,
      isRematerializable, isSourceInstr,
      isDematInstr, isRematInstr, sourceInstr, dematInstr, rematInstr, originalInstr,
      hasRegMemInstr, hasMemRegInstr, isRegMemInstr, isMemRegInstr, regMemInstr, memRegInstr, 
@@ -32,12 +33,22 @@ import Unison.Target.X86.X86RegisterDecl
 import Unison.Target.X86.Registers
 
 unitLatency to = API.isBoolOption "unit-latency" to
+
 align to = API.isBoolOption "align" to
 
 instrInfiniteUsage i =
   let (use,def) = SpecsGen.operandInfo i
       usages = [infRegClassUsage (InfiniteRegisterClass rc) | TemporaryInfo {oiRegClass = InfiniteRegisterClass rc} <- use++def]
   in maximum (usages ++ [0])
+
+isMoveInstr i =
+  i `elem` [MOVE8, MOVE16, MOVE32, MOVE64, MOVE128, MOVE256]
+
+isStoreInstr i =
+  i `elem` [STORE8, STORE16, STORE32, STORE64, STORE128, STORE256]
+
+isLoadInstr i =
+  i `elem` [LOAD8, LOAD16, LOAD32, LOAD64, LOAD128, LOAD256]
 
 data RematTriple = RematTriple {
   source :: X86Instruction,

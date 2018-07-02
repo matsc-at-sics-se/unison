@@ -180,14 +180,18 @@ rematInstrs i
       Just (sourceInstr i, dematInstr i, rematInstr i)
   | i `elem` [FPUSH32, FPUSH, NOFPUSH,
               MOV8rm, MOV16rm, MOV32rm, MOV64rm,
-              IMUL64rmi32,
               MOVSX16rm8, MOVSX32rm8, MOVSX32_NOREXrm8, MOVSX32rm16, MOVSX64rm8, MOVSX64rm16, MOVSX64rm32, 
               MOVZX16rm8, MOVZX32rm8, MOVZX32_NOREXrm8, MOVZX32rm16, MOVZX64rm8, MOVZX64rm16,
+              IMUL64rmi32,
               VMOVAPSrm, VMOVUPSrm, VMOVSDrm, VMOVAPSYrm,
               SETAEr, SETAr, SETBEr, SETBr, SETEr, SETGEr, SETGr, SETLEr, SETLr,
               SETNEr, SETNOr, SETNPr, SETNSr, SETOr, SETPr, SETSr,
               SETB_C8r, SETB_C16r, SETB_C32r, SETB_C64r,
-              MOV32mi_unison] = Nothing
+              MOV16mi_unison, MOV32mi_unison, MOV8mi_unison, MOV64mi32_unison,
+              SETAEm_unison, SETAm_unison, SETBEm_unison, SETBm_unison,
+              SETEm_unison, SETGEm_unison, SETGm_unison, SETLEm_unison,
+              SETLm_unison, SETNEm_unison, SETNOm_unison, SETNPm_unison,
+              SETNSm_unison, SETOm_unison, SETPm_unison, SETSm_unison] = Nothing
   | otherwise = trace ("consider rematInstrs " ++ show i) Nothing
 
 -- | Transforms copy instructions into natural instructions
@@ -205,11 +209,11 @@ fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
     Linear {oIs = [TargetInstruction POP_fi],
             oUs = [mkBoundMachineFrameObject True i s],
             oDs = [d]}
-  | i `elem` [MOVE8, MOVE16, MOVE32, MOVE64, MOVE128, MOVE256] =
+  | isMoveInstr i =
     Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
             oUs = [s],
             oDs = [d]}
-  | i `elem` [STORE8, STORE16, STORE32, STORE64, STORE128, STORE256] =
+  | isStoreInstr i =
     Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
             oUs = [mkBoundMachineFrameObject False i d,
                    mkBound (mkMachineImm 1),
@@ -218,7 +222,7 @@ fromCopy _ Copy {oCopyIs = [TargetInstruction i], oCopyS = s, oCopyD = d}
                    mkBound MachineNullReg,
                    s],
             oDs = []}
-  | i `elem` [LOAD8, LOAD16, LOAD32, LOAD64, LOAD128, LOAD256] =
+  | isLoadInstr i =
     Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
             oUs = [mkBoundMachineFrameObject False i s,
                    mkBound (mkMachineImm 1),
@@ -297,6 +301,15 @@ fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [], oDs = [dst]})
                    mkBound (mkMachineImm 0),
                    mkBound MachineNullReg],
             oDs = []}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1], oDs = [src1']})
+  | isMemRegInstr i && SpecsGen.alignedPairs i ([src1], [src1']) == [(src1,src1')]
+  = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
+            oUs = [mkBoundMachineFrameObject False i src1',
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg],
+            oDs = []}
 fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1], oDs = [dst]})
   | isMemRegInstr i
   = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
@@ -326,8 +339,8 @@ fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1,src2], oDs 
                    mkBound MachineNullReg,
                    src2],
             oDs = []}
-fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1,src2], oDs = [dst]})
-  | isMemRegInstr i && nthUseIsInfinite 1 i && SpecsGen.alignedPairs i ([src1,src2], [dst]) == [(src1,dst)]
+fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1,src2], oDs = [src1']})
+  | isMemRegInstr i && nthUseIsInfinite 1 i && SpecsGen.alignedPairs i ([src1,src2], [src1']) == [(src1,src1')]
   = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
             oUs = [mkBoundMachineFrameObject False i src1,
                    mkBound (mkMachineImm 1),
@@ -336,6 +349,15 @@ fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1,src2], oDs 
                    mkBound MachineNullReg,
                    src2],
             oDs = []}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction i], oUs = [src1,src2,src3], oDs = [src2',src3']})
+  | isMemRegInstr i && nthUseIsInfinite 1 i && src2 == src2' && src3 == src3'
+  = Linear {oIs = [TargetInstruction (fromJust $ SpecsGen.parent i)],
+            oUs = [mkBoundMachineFrameObject False i src1,
+                   mkBound (mkMachineImm 1),
+                   mkBound MachineNullReg,
+                   mkBound (mkMachineImm 0),
+                   mkBound MachineNullReg],
+            oDs = [src2,src3]}
 fromCopy _ o @ (Natural Linear {oIs = [TargetInstruction i]})
   | isMemRegInstr i
   = error ("unmatched pattern: fromCopy " ++ show o)
@@ -473,10 +495,13 @@ readWriteInfo i
   | i `elem` [MOV32r0, MOV32r0_remat, MOV32r1, MOV32r1_remat, MOV32r_1, MOV32r_1_remat]
   = ([], [])
 
--- FIXME: this is too general, should only apply to pseudos that expand to stack slot accessing insns
-readWriteInfo i =
+readWriteInfo i
+  | isStoreInstr i || isLoadInstr i || isRegMemInstr i || isMemRegInstr i =
   let (rd, wr) = SpecsGen.readWriteInfo i
   in (delete (Memory "mem") rd, delete (Memory "mem") wr)
+
+readWriteInfo i =
+  SpecsGen.readWriteInfo i
 
 -- | Implementation of frame setup and destroy operations. All functions
 -- observed so far have a reserved call frame (hasReservedCallFrame(MF)), which
