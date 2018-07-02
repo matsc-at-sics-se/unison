@@ -36,7 +36,6 @@ module Unison.Target.X86.Transforms
 import qualified Data.Map as M
 import Data.List
 import Data.List.Split
-import qualified Data.Set as S
 import qualified Data.Graph.Inductive as G
 import Data.Maybe
 
@@ -839,18 +838,12 @@ addFunWrites o = o
 
 addSpillIndicators f @ Function {fCode = code} =
   let fcode = flatten code
-      insts = S.fromList $ concatMap oInstructions fcode
-      act32 = intersectionWithList insts [TargetInstruction STORE256]
-      act   = intersectionWithList insts [TargetInstruction STORE8,
-                                          TargetInstruction STORE16,
-                                          TargetInstruction STORE32,
-                                          TargetInstruction STORE64,
-                                          TargetInstruction STORE128]
+      instl = concatMap oInstructions fcode
+      act   = nub $ sort [TargetInstruction i | (TargetInstruction i) <- instl, i /= STORE256, (isStoreInstr i || isMemRegInstr i)]
+      act32 = nub [TargetInstruction i | (TargetInstruction i) <- instl, i == STORE256]
       (_, oid, _) = newIndexes $ fcode 
       (_, code') = mapAccumL (addSpillIndicatorsToBlock act32 act) oid code
   in f {fCode = code'}
-
-intersectionWithList set = S.toList . S.intersection set . S.fromList
 
 addSpillIndicatorsToBlock [] act oid b @ Block {bCode = (e : code)}
   | (isEntryBlock b || isExitBlock b)
