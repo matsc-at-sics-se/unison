@@ -14,7 +14,7 @@ module Unison.Target.X86.Common
      isMoveInstr, isStoreInstr, isLoadInstr,
      isRematerializable, isSourceInstr,
      isDematInstr, isRematInstr, sourceInstr, dematInstr, rematInstr, originalInstr,
-     hasRegMemInstr, hasMemRegInstr, isRegMemInstr, isMemRegInstr, regMemInstr, memRegInstr, 
+     hasRegMemInstr, hasMemRegInstr, isRegMemInstr, isMemRegInstr, regMemInstr, memRegInstr,
      spillInstrs, condMoveInstrs, condMoveInverses, condMoveAlts,
      promotedRegs, readsSideEffect,
      writesSideEffect, isDirtyYMMInsn, isDirtyYMMOp, isUseYMMInsn,
@@ -56,12 +56,19 @@ data RematTriple = RematTriple {
   remat  :: X86Instruction}
 
 isRematerializable i = M.member i rematVersions
+
 isSourceInstr = isRInstrOf source
+
 isDematInstr = isRInstrOf demat
+
 isRematInstr = isRInstrOf remat
+
 isRInstrOf f i = i `elem` [f t | t <- M.elems rematVersions]
+
 sourceInstr i = source $ rematVersions M.! i
+
 dematInstr  i = demat $ rematVersions M.! i
+
 rematInstr  i = remat $ rematVersions M.! i
 
 originalInstr i =
@@ -224,9 +231,13 @@ hasMemRegInstr i =
   in  isJust val && isJust (memReg $ fromJust val)
 
 isRegMemInstr = isGInstrOf regMem
+
 isMemRegInstr = isGInstrOf memReg
+
 isGInstrOf f i = i `elem` [fromJust (f t) | t <- M.elems memTempVersions, isJust (f t)]
+
 regMemInstr  i = fromJust $ regMem $ memTempVersions M.! i
+
 memRegInstr  i = fromJust $ memReg $ memTempVersions M.! i
 
 memTempVersions :: M.Map X86Instruction MemTempTuple
