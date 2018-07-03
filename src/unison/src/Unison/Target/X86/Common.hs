@@ -11,7 +11,8 @@ This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.X86.Common
     (unitLatency, align, instrInfiniteUsage,
-     isAmbigReg, disAmbigReg,
+     isFloatClass, isFloatRegIR, isFloatReg,
+     isAmbigReg, disAmbigReg, ambiguateReg,
      isMoveInstr, isStoreInstr, isLoadInstr,
      isRematerializable, isSourceInstr,
      isDematInstr, isRematInstr, sourceInstr, dematInstr, rematInstr, originalInstr,
@@ -43,6 +44,16 @@ instrInfiniteUsage i =
       usages = [infRegClassUsage (InfiniteRegisterClass rc) | TemporaryInfo {oiRegClass = InfiniteRegisterClass rc} <- use++def]
   in maximum (usages ++ [0])
 
+isFloatClass rc = rc `elem` map RegisterClass [FR32, FR64, FR128, VR128, VR256, FR128_AUX, VR2048_AUX]
+
+isFloatRegIR r = any (regInClassIR r) $ map RegisterClass [FR32, FR64, FR128, VR128, VR256, FR128_AUX, VR2048_AUX]
+
+regInClassIR r rc = (rTargetReg $ regId r) `elem` registers rc
+
+isFloatReg r = any (regInClass r) $ map RegisterClass [FR32, FR64, FR128, VR128, VR256, FR128_AUX, VR2048_AUX]
+
+regInClass r rc = r `elem` registers rc
+
 isAmbigReg r =
   r `elem` (registers (RegisterClass AMBIG))
 
@@ -57,6 +68,21 @@ disAmbigReg 8 r =
 disAmbigReg 16 r =
   let i = fromJust $ L.elemIndex r $ registers (RegisterClass AMBIG)
   in (registers (RegisterClass FR128)) !! i
+
+ambiguateReg r
+  | r `elem` registers (RegisterClass FR32) =
+  let i = fromJust $ L.elemIndex r $ registers (RegisterClass FR32)
+  in (registers (RegisterClass AMBIG)) !! i
+
+ambiguateReg r
+  | r `elem` registers (RegisterClass FR64) =
+  let i = fromJust $ L.elemIndex r $ registers (RegisterClass FR64)
+  in (registers (RegisterClass AMBIG)) !! i
+
+ambiguateReg r
+  | r `elem` registers (RegisterClass FR128) =
+  let i = fromJust $ L.elemIndex r $ registers (RegisterClass FR128)
+  in (registers (RegisterClass AMBIG)) !! i
 
 isMoveInstr i =
   i `elem` [IMOVE8, IMOVE16, IMOVE32, IMOVE64,

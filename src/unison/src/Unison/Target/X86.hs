@@ -31,7 +31,6 @@ import Unison.Target.X86.Registers
 import Unison.Target.X86.Transforms
 import Unison.Target.X86.Usages
 import Unison.Target.X86.BranchInfo
-import Unison.Target.X86.X86RegisterClassDecl
 import Unison.Target.X86.X86RegisterDecl
 import Unison.Target.X86.X86ResourceDecl
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
@@ -153,7 +152,7 @@ copies (f, _, cg, ra, bcfg, sg) _ t _ d us =
       uors = transitivePreAssignments bcfg sg Reachable f t
       rcType rcs ors
         | null rcs && null ors = AnyRegClass
-        | any isFloatClass rcs || any isFloatReg ors = FloatRegClass
+        | any isFloatClass rcs || any isFloatRegIR ors = FloatRegClass
         | otherwise = IntRegClass
       (drc, urc) = (rcType drcs dors, rcType urcs uors)
   in if w == 4 && all isCombine us
@@ -197,12 +196,6 @@ useCopies AnyRegClass 4 = [mkNullInstruction] ++ map TargetInstruction [IMOVE32,
 useCopies AnyRegClass 8 = [mkNullInstruction] ++ map TargetInstruction [IMOVE64, ILOAD64, FMOVE64, FLOAD64]
 useCopies AnyRegClass 16 = [mkNullInstruction] ++ map TargetInstruction [FMOVE128, FLOAD128]
 useCopies AnyRegClass 32 = [mkNullInstruction] ++ map TargetInstruction [FMOVE256, FLOAD256]
-
-isFloatClass rc = rc `elem` map RegisterClass [FR32, FR64, FR128, VR128, VR256, FR128_AUX, VR2048_AUX]
-
-isFloatReg r = any (regInClass r) $ map RegisterClass [FR32, FR64, FR128, VR128, VR256, FR128_AUX, VR2048_AUX]
-
-regInClass r rc = (rTargetReg $ regId r) `elem` registers rc
 
 classOfTemp = classOf (target, [])
 
@@ -570,7 +563,8 @@ preProcess _ = [disambiguateFunction,
 
 postProcess to = [expandPseudos to,
                   mapToMachineInstruction demoteImplicitOperands,
-                  mapToMachineInstruction addImplicitRegs]
+                  mapToMachineInstruction addImplicitRegs,
+                  mapToMachineInstruction ambiguateRegs]
 
 -- | Gives a list of function transformers
 

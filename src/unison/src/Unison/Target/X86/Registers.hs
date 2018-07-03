@@ -10,7 +10,7 @@ Main authors:
 This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.X86.Registers
-    (registerArray, registerAtoms, regClasses, canonicalRegClass, registers,
+    (registerArray, registerAtoms, regClasses, registers,
      subRegIndexType, infRegClassUsage, infRegClassBound,
      reserved, callerSaved, calleeSaved) where
 
@@ -144,6 +144,7 @@ registerAtoms R15 = (R170, R177)
 -- | Register atoms of 32-bit floating-point registers (UMM*, syntax %xmm*)
 
 registerAtoms UMM0  = (R200, R203)
+registerAtoms UMM0_HI  = (R204, R207)
 registerAtoms UMM1  = (R240, R243)
 registerAtoms UMM2  = (R300, R303)
 registerAtoms UMM3  = (R340, R343)
@@ -163,6 +164,7 @@ registerAtoms UMM15 = (R1140, R1143)
 -- | Register atoms of 64-bit floating-point registers (VMM*, syntax %xmm*)
 
 registerAtoms VMM0  = (R200, R207)
+registerAtoms VMM0_HI  = (R210, R217)
 registerAtoms VMM1  = (R240, R247)
 registerAtoms VMM2  = (R300, R307)
 registerAtoms VMM3  = (R340, R347)
@@ -259,37 +261,11 @@ regClasses =
     map RegisterClass [CCR, GR8, GR8_NOREX, GR16, GR16_AUX, GR32, GR32_NOREX, GR32_NOAX, GR32_AUX, GR64, GR64_NOSP, GR32orGR64,
                        GR128_AUX,
                        Ptr_rc, Ptr_rc_nosp, Ptr_rc_norex, Ptr_rc_norex_nosp, Ptr_rc_tailcall,
-                       FR32, FR64, FR128, VR128, VR256, FR128_AUX, VR2048_AUX, AMBIG,
+                       FR32, FR64, FR128, VR128, VR256, FR32_AUX, FR64_AUX, FR128_AUX, VR2048_AUX, AMBIG,
                        AUXE, AUXR, AUXB] ++
     map InfiniteRegisterClass [M8, M16, M32, M64, M128, M256, RM8, RM16, RM32, RM64, RM128, RM256]
 
 -- | Individual registers of each register class (octal, internal names)
-
-canonicalRegClass rc =
-  case M.lookup rc canonicalRegClasses of
-              (Just v) -> v
-              Nothing -> error $ "unmatched: canonicalRegClasses " ++ show rc
-
-canonicalRegClasses = M.fromList
-  [(GR8, GR8),
-   (GR8_NOREX, GR8),
-   (GR16, GR16),
-   (GR32, GR32),
-   (GR32_NOREX, GR32),
-   (GR32_NOAX, GR32),
-   (GR64, GR64),
-   (GR64_NOSP, GR64),
-   (Ptr_rc, GR64),
-   (Ptr_rc_nosp, GR64),
-   (Ptr_rc_norex, GR64),
-   (Ptr_rc_norex_nosp, GR64),
-   (Ptr_rc_tailcall, GR64),
-   (AUXB, GR64),
-   (FR32, FR32),
-   (FR64, FR64),
-   (FR128, FR128),
-   (VR128, FR128),
-   (VR256, VR256)]
 
 registers (RegisterClass GPR) =
     [R000, R001, R002, R003, R004, R005, R006, R007,
@@ -439,9 +415,15 @@ registers (RegisterClass FR32) =
     [UMM0, UMM1, UMM2, UMM3, UMM4, UMM5, UMM6, UMM7,
      UMM8, UMM9, UMM10, UMM11, UMM12, UMM13, UMM14, UMM15]
 
+registers (RegisterClass FR32_AUX) =
+    [UMM0_HI]
+
 registers (RegisterClass FR64) =
     [VMM0, VMM1, VMM2, VMM3, VMM4, VMM5, VMM6, VMM7,
      VMM8, VMM9, VMM10, VMM11, VMM12, VMM13, VMM14, VMM15]
+
+registers (RegisterClass FR64_AUX) =
+    [VMM0_HI]
 
 registers (RegisterClass FR128) =
     [WMM0, WMM1, WMM2, WMM3, WMM4, WMM5, WMM6, WMM7,
@@ -1384,7 +1366,6 @@ regStrings = M.fromList $
    (VMM14, "vmm14"),
    (VMM15, "vmm15"),
    (WMM0, "wmm0"),
-   (WMM0_HI, "wmm0_hi"),
    (WMM1, "wmm1"),
    (WMM2, "wmm2"),
    (WMM3, "wmm3"),
@@ -1416,6 +1397,9 @@ regStrings = M.fromList $
    (YMM13, "ymm13"),
    (YMM14, "ymm14"),
    (YMM15, "ymm15"),
+   (UMM0_HI, "umm0_hi"),
+   (VMM0_HI, "vmm0_hi"),
+   (WMM0_HI, "wmm0_hi"),
    (RCX_RDX, "rcx_rdx"),
    (RSI_RDI, "rsi_rdi"),
    (R8_R9, "r8_r9"),

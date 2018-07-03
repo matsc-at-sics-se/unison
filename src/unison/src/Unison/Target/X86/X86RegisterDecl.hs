@@ -819,7 +819,6 @@ data X86Register =
     VMM14 |
     VMM15 |
     WMM0 |
-    WMM0_HI |
     WMM1 |
     WMM2 |
     WMM3 |
@@ -851,6 +850,9 @@ data X86Register =
     YMM13 |
     YMM14 |
     YMM15 |
+    UMM0_HI |
+    VMM0_HI |
+    WMM0_HI |
     RCX_RDX |
     RSI_RDI |
     R8_R9 |

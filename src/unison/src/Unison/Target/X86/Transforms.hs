@@ -16,6 +16,7 @@ module Unison.Target.X86.Transforms
      expandPseudos,
      demoteImplicitOperands,
      addImplicitRegs,
+     ambiguateRegs,
      extractReturnRegs,
      handlePromotedOperands,
      generalizeRegisterDefines,
@@ -93,6 +94,12 @@ disambiguateBwd _ amb2det mi @ MachineSingle {msOpcode = MachineVirtualOpc Machi
       mi' = mi {msOperands = ps'}
   in (amb2det, mi')
 
+disambiguateBwd _ amb2det mi @ MachineSingle {msOpcode = MachineVirtualOpc FUN,
+                                              msOperands = ps} =
+  let ps' = map (disambiguateFunOperand amb2det MachineRegImplicitDefine) ps
+      mi' = mi {msOperands = ps'}
+  in (amb2det, mi')
+
 disambiguateBwd _ amb2det mi = (amb2det, mi)
 
 disambiguateBlockFwd tid2rc insns =
@@ -116,6 +123,12 @@ disambiguateFwd tid2rc amb2det mi @ MachineSingle {msOpcode = MachineVirtualOpc 
 
 disambiguateFwd _ amb2det mi @ MachineSingle {msOpcode = MachineVirtualOpc FUN,
                                               msOperands = ps} =
+  let ps' = map (disambiguateFunOperand amb2det MachineRegImplicit) ps
+      mi' = mi {msOperands = ps'}
+  in (amb2det, mi')
+
+disambiguateFwd _ amb2det mi @ MachineSingle {msOpcode = MachineVirtualOpc RETURN,
+                                              msOperands = ps} =
   let ps' = map (disambiguateOperand amb2det) ps
       mi' = mi {msOperands = ps'}
   in (amb2det, mi')
@@ -133,6 +146,12 @@ disambiguateOperand amb2det p @ MachineReg {mrName = r}
   p {mrName = amb2det M.! r}
 
 disambiguateOperand _ p = p
+
+disambiguateFunOperand amb2det f p @ MachineReg {mrName = r, mrFlags = fs}
+  | M.member r amb2det && f `elem` fs =
+  p {mrName = amb2det M.! r}
+
+disambiguateFunOperand _ _ p = p
 
 
 
@@ -199,6 +218,18 @@ addImplicitRegs mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = 
                (OtherSideEffect u) <- uif]
       mos'  = mos ++ imp
   in mi {msOperands = mos'}
+
+-- This transformation turns floating-point register names back to the size-ambiguous %xmm* notation
+
+ambiguateRegs mi @ MachineSingle {msOperands = ps} =
+  let ps' = map ambiguateOperand ps
+  in mi {msOperands = ps'}
+
+ambiguateOperand p @ MachineReg {mrName = r}
+  | isFloatReg r =
+  p {mrName = ambiguateReg r}
+
+ambiguateOperand p = p
 
 -- This transformation expands pseudo instructions to real instructions.
 

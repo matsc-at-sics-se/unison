@@ -36,9 +36,11 @@ data X86RegisterClass =
     FR32 |
     FR64 |
     FR128 |
-    FR128_AUX |
     VR128 |
     VR256 |
+    FR32_AUX |
+    FR64_AUX |
+    FR128_AUX |
     VR2048_AUX |
     AMBIG |
     AUXE |
