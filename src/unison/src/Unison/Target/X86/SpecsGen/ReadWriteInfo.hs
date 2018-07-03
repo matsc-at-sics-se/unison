@@ -30,21 +30,23 @@ readWriteInfo i
        EH_RETURN64, EH_SjLj_Setup, ENCLS, ENCLU, ENTER, ES_PREFIX,
        EXTRACTPSrr, EXTRACT_SUBREG, EXTRQ, EXTRQI, F2XM1, FARJMP16i,
        FARJMP32i, FCOMPP, FDECSTP, FEMMS, FINCSTP, FLDL2E, FLDL2T, FLDLG2,
-       FLDLN2, FLDPI, FNOP, FPATAN, FPREM, FPREM1, FPTAN, FRNDINT, FSCALE,
-       FSINCOS, FS_PREFIX, FXAM, FXTRACT, FYL2X, FYL2XP1, FsANDNPDrr,
-       FsANDNPSrr, FsANDPDrr, FsANDPSrr, FsFLD0SD, FsFLD0SD_demat,
-       FsFLD0SD_remat, FsFLD0SD_source, FsFLD0SS, FsFLD0SS_demat,
-       FsFLD0SS_remat, FsFLD0SS_source, FsORPDrr, FsORPSrr, FsXORPDrr,
-       FsXORPSrr, FvANDNPDrr, FvANDNPSrr, FvANDPDrr, FvANDPSrr, FvORPDrr,
-       FvORPSrr, FvXORPDrr, FvXORPSrr, GC_LABEL, GS_PREFIX, HADDPDrr,
-       HADDPSrr, HLT, HSUBPDrr, HSUBPSrr, IMPLICIT_DEF, INLINEASM,
-       INSERTPSrr, INSERTQ, INSERTQI, INSERT_SUBREG, INT, INT3, INVD,
-       INVEPT32, INVEPT64, INVLPG, INVPCID32, INVPCID64, INVVPID32,
-       INVVPID64, IRET, IRET16, IRET32, IRET64, Int_CMPSDrr, Int_CMPSSrr,
-       Int_CVTSD2SSrr, Int_CVTSI2SD64rr, Int_CVTSI2SDrr, Int_CVTSI2SS64rr,
-       Int_CVTSI2SSrr, Int_CVTSS2SDrr, Int_CVTTSD2SI64rr, Int_CVTTSD2SIrr,
-       Int_CVTTSS2SI64rr, Int_CVTTSS2SIrr, Int_MemBarrier, Int_VCMPSDrr,
-       Int_VCMPSSrr, Int_VCVTSD2SSrr, Int_VCVTSI2SD64rr, Int_VCVTSI2SDrr,
+       FLDLN2, FLDPI, FMOVE128, FMOVE256, FMOVE32, FMOVE64, FNOP, FPATAN,
+       FPREM, FPREM1, FPTAN, FRNDINT, FSCALE, FSINCOS, FS_PREFIX, FXAM,
+       FXTRACT, FYL2X, FYL2XP1, FsANDNPDrr, FsANDNPSrr, FsANDPDrr,
+       FsANDPSrr, FsFLD0SD, FsFLD0SD_demat, FsFLD0SD_remat,
+       FsFLD0SD_source, FsFLD0SS, FsFLD0SS_demat, FsFLD0SS_remat,
+       FsFLD0SS_source, FsORPDrr, FsORPSrr, FsXORPDrr, FsXORPSrr,
+       FvANDNPDrr, FvANDNPSrr, FvANDPDrr, FvANDPSrr, FvORPDrr, FvORPSrr,
+       FvXORPDrr, FvXORPSrr, GC_LABEL, GS_PREFIX, HADDPDrr, HADDPSrr, HLT,
+       HSUBPDrr, HSUBPSrr, IMOVE16, IMOVE32, IMOVE64, IMOVE8,
+       IMPLICIT_DEF, INLINEASM, INSERTPSrr, INSERTQ, INSERTQI,
+       INSERT_SUBREG, INT, INT3, INVD, INVEPT32, INVEPT64, INVLPG,
+       INVPCID32, INVPCID64, INVVPID32, INVVPID64, IRET, IRET16, IRET32,
+       IRET64, Int_CMPSDrr, Int_CMPSSrr, Int_CVTSD2SSrr, Int_CVTSI2SD64rr,
+       Int_CVTSI2SDrr, Int_CVTSI2SS64rr, Int_CVTSI2SSrr, Int_CVTSS2SDrr,
+       Int_CVTTSD2SI64rr, Int_CVTTSD2SIrr, Int_CVTTSS2SI64rr,
+       Int_CVTTSS2SIrr, Int_MemBarrier, Int_VCMPSDrr, Int_VCMPSSrr,
+       Int_VCVTSD2SSrr, Int_VCVTSI2SD64rr, Int_VCVTSI2SDrr,
        Int_VCVTSI2SS64rr, Int_VCVTSI2SSrr, Int_VCVTSS2SDrr,
        Int_VCVTTSD2SI64rr, Int_VCVTTSD2SIrr, Int_VCVTTSS2SI64rr,
        Int_VCVTTSS2SIrr, JMP16r, JMP32r, JMP64r, JMP_1, JMP_2, JMP_4,
@@ -72,25 +74,24 @@ readWriteInfo i
        MOV8ri_alt, MOV8ri_demat, MOV8ri_remat, MOV8ri_source, MOV8rr,
        MOV8rr_NOREX, MOV8rr_REV, MOVAPDrr, MOVAPDrr_REV, MOVAPSrr,
        MOVAPSrr_REV, MOVDDUPrr, MOVDI2PDIrr, MOVDI2SSrr, MOVDQArr,
-       MOVDQArr_REV, MOVDQUrr, MOVDQUrr_REV, MOVE128, MOVE16, MOVE256,
-       MOVE32, MOVE64, MOVE8, MOVHLPSrr, MOVLHPSrr, MOVMSKPDrr,
-       MOVMSKPSrr, MOVPDI2DIrr, MOVPQI2QIrr, MOVPQIto64rr, MOVSDrr,
-       MOVSDrr_REV, MOVSDto64rr, MOVSHDUPrr, MOVSLDUPrr, MOVSS2DIrr,
-       MOVSSrr, MOVSSrr_REV, MOVSX16rr8, MOVSX32_NOREXrr8, MOVSX32rr16,
-       MOVSX32rr8, MOVSX64rr16, MOVSX64rr32, MOVSX64rr8, MOVUPDrr,
-       MOVUPDrr_REV, MOVUPSrr, MOVUPSrr_REV, MOVZPQILo2PQIrr, MOVZX16rr8,
-       MOVZX32_NOREXrr8, MOVZX32rr16, MOVZX32rr8, MOVZX64rr16, MOVZX64rr8,
-       MPSADBWrri, MULPDrr, MULPSrr, MULSDrr, MULSDrr_Int, MULSSrr,
-       MULSSrr_Int, NOFPOP, NOFPUSH, NOOP, NOOPL, NOOPW, NOT16r, NOT32r,
-       NOT64r, NOT8r, ORPDrr, ORPSrr, PABSBrr128, PABSDrr128, PABSWrr128,
-       PACKSSDWrr, PACKSSWBrr, PACKUSDWrr, PACKUSWBrr, PADDBrr, PADDDrr,
-       PADDQrr, PADDSBrr, PADDSWrr, PADDUSBrr, PADDUSWrr, PADDWrr,
-       PALIGNR128rr, PANDNrr, PANDrr, PAUSE, PAVGBrr, PAVGWrr, PBLENDWrri,
-       PCLMULQDQrr, PCMPEQBrr, PCMPEQDrr, PCMPEQQrr, PCMPEQWrr, PCMPGTBrr,
-       PCMPGTDrr, PCMPGTQrr, PCMPGTWrr, PCOMMIT, PDEP32rr, PDEP64rr,
-       PEXT32rr, PEXT64rr, PEXTRBrr, PEXTRDrr, PEXTRQrr, PEXTRWri,
-       PEXTRWrr_REV, PHADDDrr, PHADDSWrr128, PHADDWrr, PHI,
-       PHMINPOSUWrr128, PHSUBDrr, PHSUBSWrr128, PHSUBWrr, PINSRBrr,
+       MOVDQArr_REV, MOVDQUrr, MOVDQUrr_REV, MOVHLPSrr, MOVLHPSrr,
+       MOVMSKPDrr, MOVMSKPSrr, MOVPDI2DIrr, MOVPQI2QIrr, MOVPQIto64rr,
+       MOVSDrr, MOVSDrr_REV, MOVSDto64rr, MOVSHDUPrr, MOVSLDUPrr,
+       MOVSS2DIrr, MOVSSrr, MOVSSrr_REV, MOVSX16rr8, MOVSX32_NOREXrr8,
+       MOVSX32rr16, MOVSX32rr8, MOVSX64rr16, MOVSX64rr32, MOVSX64rr8,
+       MOVUPDrr, MOVUPDrr_REV, MOVUPSrr, MOVUPSrr_REV, MOVZPQILo2PQIrr,
+       MOVZX16rr8, MOVZX32_NOREXrr8, MOVZX32rr16, MOVZX32rr8, MOVZX64rr16,
+       MOVZX64rr8, MPSADBWrri, MULPDrr, MULPSrr, MULSDrr, MULSDrr_Int,
+       MULSSrr, MULSSrr_Int, NOFPOP, NOFPUSH, NOOP, NOOPL, NOOPW, NOT16r,
+       NOT32r, NOT64r, NOT8r, ORPDrr, ORPSrr, PABSBrr128, PABSDrr128,
+       PABSWrr128, PACKSSDWrr, PACKSSWBrr, PACKUSDWrr, PACKUSWBrr,
+       PADDBrr, PADDDrr, PADDQrr, PADDSBrr, PADDSWrr, PADDUSBrr,
+       PADDUSWrr, PADDWrr, PALIGNR128rr, PANDNrr, PANDrr, PAUSE, PAVGBrr,
+       PAVGWrr, PBLENDWrri, PCLMULQDQrr, PCMPEQBrr, PCMPEQDrr, PCMPEQQrr,
+       PCMPEQWrr, PCMPGTBrr, PCMPGTDrr, PCMPGTQrr, PCMPGTWrr, PCOMMIT,
+       PDEP32rr, PDEP64rr, PEXT32rr, PEXT64rr, PEXTRBrr, PEXTRDrr,
+       PEXTRQrr, PEXTRWri, PEXTRWrr_REV, PHADDDrr, PHADDSWrr128, PHADDWrr,
+       PHI, PHMINPOSUWrr128, PHSUBDrr, PHSUBSWrr128, PHSUBWrr, PINSRBrr,
        PINSRDrr, PINSRQrr, PINSRWrri, PMADDUBSWrr128, PMADDWDrr, PMAXSBrr,
        PMAXSDrr, PMAXSWrr, PMAXUBrr, PMAXUDrr, PMAXUWrr, PMINSBrr,
        PMINSDrr, PMINSWrr, PMINUBrr, PMINUDrr, PMINUWrr, PMOVMSKBrr,
@@ -412,7 +413,7 @@ readWriteInfo i
   | i `elem` [RDTSC] =
     ([], [OtherSideEffect RAX, OtherSideEffect RDX])
   | i `elem` [PCMPISTRM128rr, VPCMPISTRM128rr] =
-    ([], [OtherSideEffect XMM0_128, OtherSideEffect EFLAGS])
+    ([], [OtherSideEffect WMM0, OtherSideEffect EFLAGS])
   | i `elem` [VZEROALL, VZEROUPPER] =
     ([],
      [OtherSideEffect YMM0, OtherSideEffect YMM1, OtherSideEffect YMM2,
@@ -1189,9 +1190,7 @@ readWriteInfo i
   | i `elem`
       [PCMPISTRM128rm, PCMPISTRM128rm_unison, VPCMPISTRM128rm,
        VPCMPISTRM128rm_unison]
-    =
-    ([Memory "mem"],
-     [OtherSideEffect XMM0_128, OtherSideEffect EFLAGS])
+    = ([Memory "mem"], [OtherSideEffect WMM0, OtherSideEffect EFLAGS])
   | i `elem` [LCMPXCHG8] =
     ([Memory "mem", OtherSideEffect AL],
      [Memory "mem", OtherSideEffect AL, OtherSideEffect EFLAGS])
@@ -1269,7 +1268,7 @@ readWriteInfo i
        VPCMPESTRM128rm_unison]
     =
     ([Memory "mem", OtherSideEffect EAX, OtherSideEffect EDX],
-     [OtherSideEffect XMM0_128, OtherSideEffect EFLAGS])
+     [OtherSideEffect WMM0, OtherSideEffect EFLAGS])
   | i `elem` [LEAVE] =
     ([Memory "mem", OtherSideEffect EBP, OtherSideEffect ESP],
      [OtherSideEffect EBP, OtherSideEffect ESP])
@@ -1406,7 +1405,7 @@ readWriteInfo i
       [BLENDVPDrm0, BLENDVPDrm0_unison, BLENDVPSrm0, BLENDVPSrm0_unison,
        PBLENDVBrm0, PBLENDVBrm0_unison, SHA256RNDS2rm,
        SHA256RNDS2rm_unison]
-    = ([Memory "mem", OtherSideEffect XMM0_128], [])
+    = ([Memory "mem", OtherSideEffect WMM0], [])
   | i `elem` [SAHF] =
     ([OtherSideEffect AH], [OtherSideEffect EFLAGS])
   | i `elem` [OUT8ir] = ([OtherSideEffect AL], [])
@@ -1555,7 +1554,7 @@ readWriteInfo i
      [OtherSideEffect EFLAGS])
   | i `elem` [PCMPESTRM128rr, VPCMPESTRM128rr] =
     ([OtherSideEffect EAX, OtherSideEffect EDX],
-     [OtherSideEffect XMM0_128, OtherSideEffect EFLAGS])
+     [OtherSideEffect WMM0, OtherSideEffect EFLAGS])
   | i `elem` [ADC32i32, SBB32i32] =
     ([OtherSideEffect EAX, OtherSideEffect EFLAGS],
      [OtherSideEffect EAX, OtherSideEffect EFLAGS])
@@ -1741,10 +1740,11 @@ readWriteInfo i
     ([OtherSideEffect RDX, OtherSideEffect RDI],
      [OtherSideEffect RAX, OtherSideEffect RDI])
   | i `elem`
-      [CALL64pcrel32, CALL64r, LOAD128, LOAD16, LOAD256, LOAD32, LOAD64,
-       LOAD8, STORE128, STORE16, STORE256, STORE32, STORE64, STORE8,
-       TAILJMPd64, TAILJMPd64_REX, TAILJMPr64, TAILJMPr64_REX,
-       TCRETURNdi64, TCRETURNri64]
+      [CALL64pcrel32, CALL64r, FLOAD128, FLOAD256, FLOAD32, FLOAD64,
+       FSTORE128, FSTORE256, FSTORE32, FSTORE64, ILOAD16, ILOAD32,
+       ILOAD64, ILOAD8, ISTORE16, ISTORE32, ISTORE64, ISTORE8, TAILJMPd64,
+       TAILJMPd64_REX, TAILJMPr64, TAILJMPr64_REX, TCRETURNdi64,
+       TCRETURNri64]
     = ([OtherSideEffect RSP], [])
   | i `elem` [PUSH64i32, PUSH64i8, PUSH64r, PUSH64rmr] =
     ([OtherSideEffect RSP], [Memory "mem", OtherSideEffect RSP])
@@ -1760,5 +1760,5 @@ readWriteInfo i
     ([OtherSideEffect RSP, OtherSideEffect EFLAGS],
      [Memory "mem", OtherSideEffect RSP])
   | i `elem` [BLENDVPDrr0, BLENDVPSrr0, PBLENDVBrr0, SHA256RNDS2rr] =
-    ([OtherSideEffect XMM0_128], [])
+    ([OtherSideEffect WMM0], [])
 

@@ -6,7 +6,7 @@ instruction-set:
   - group: MANUAL
     instructions:
 
-        - id:                 STORE8
+        - id:                 ISTORE8
           parent:             MOV8mr
           type:               copy
           operands:
@@ -18,7 +18,7 @@ instruction-set:
           affected-by:
            - RSP:             register
 
-        - id:                 STORE16
+        - id:                 ISTORE16
           parent:             MOV16mr
           type:               copy
           operands:
@@ -30,7 +30,7 @@ instruction-set:
           affected-by:
            - RSP:             register
 
-        - id:                 STORE32
+        - id:                 ISTORE32
           parent:             MOV32mr
           type:               copy
           operands:
@@ -42,7 +42,7 @@ instruction-set:
           affected-by:
            - RSP:             register
 
-        - id:                 STORE64
+        - id:                 ISTORE64
           parent:             MOV64mr
           type:               copy
           operands:
@@ -54,7 +54,31 @@ instruction-set:
           affected-by:
            - RSP:             register
 
-        - id:                 STORE128
+        - id:                 FSTORE32
+          parent:             VMOVSSmr
+          type:               copy
+          operands:
+           - rd:              [register, def, M32]
+           - rt:              [register, use, FR32]
+          uses:               [rt]
+          defines:            [rd]
+          affects:
+          affected-by:
+           - RSP:             register
+
+        - id:                 FSTORE64
+          parent:             VMOVSDmr
+          type:               copy
+          operands:
+           - rd:              [register, def, M64]
+           - rt:              [register, use, FR64]
+          uses:               [rt]
+          defines:            [rd]
+          affects:
+          affected-by:
+           - RSP:             register
+
+        - id:                 FSTORE128
           parent:             MOVAPSmr
           type:               copy
           operands:
@@ -66,7 +90,7 @@ instruction-set:
           affected-by:
            - RSP:             register
 
-        - id:                 STORE256
+        - id:                 FSTORE256
           parent:             VMOVAPSYmr
           type:               copy
           operands:
@@ -78,7 +102,7 @@ instruction-set:
           affected-by:
            - RSP:             register
 
-        - id:                 LOAD8
+        - id:                 ILOAD8
           parent:             MOV8rm
           type:               copy
           operands:
@@ -90,7 +114,7 @@ instruction-set:
           affected-by:
            - RSP:             register
 
-        - id:                 LOAD16
+        - id:                 ILOAD16
           parent:             MOV16rm
           type:               copy
           operands:
@@ -102,7 +126,7 @@ instruction-set:
           affected-by:
            - RSP:             register
 
-        - id:                 LOAD32
+        - id:                 ILOAD32
           parent:             MOV32rm
           type:               copy
           operands:
@@ -114,7 +138,7 @@ instruction-set:
           affected-by:
            - RSP:             register
 
-        - id:                 LOAD64
+        - id:                 ILOAD64
           parent:             MOV64rm
           type:               copy
           operands:
@@ -126,7 +150,31 @@ instruction-set:
           affected-by:
            - RSP:             register
 
-        - id:                 LOAD128
+        - id:                 FLOAD32
+          parent:             VMOVSSrm
+          type:               copy
+          operands:
+           - rd:              [register, def, FR32]
+           - rt:              [register, use, M32]
+          uses:               [rt]
+          defines:            [rd]
+          affects:
+          affected-by:
+           - RSP:             register
+
+        - id:                 FLOAD64
+          parent:             VMOVSDrm
+          type:               copy
+          operands:
+           - rd:              [register, def, FR64]
+           - rt:              [register, use, M64]
+          uses:               [rt]
+          defines:            [rd]
+          affects:
+          affected-by:
+           - RSP:             register
+
+        - id:                 FLOAD128
           parent:             MOVAPSrm
           type:               copy
           operands:
@@ -138,7 +186,7 @@ instruction-set:
           affected-by:
            - RSP:             register
 
-        - id:                 LOAD256
+        - id:                 FLOAD256
           parent:             VMOVAPSYrm
           type:               copy
           operands:
@@ -150,27 +198,45 @@ instruction-set:
           affected-by:
            - RSP:             register
 
-        - id:                 MOVE8
+        - id:                 IMOVE8
           parent:             MOV8rr
           type:               copy
 
-        - id:                 MOVE16
+        - id:                 IMOVE16
           parent:             MOV16rr
           type:               copy
 
-        - id:                 MOVE32
+        - id:                 IMOVE32
           parent:             MOV32rr
           type:               copy
 
-        - id:                 MOVE64
+        - id:                 IMOVE64
           parent:             MOV64rr
           type:               copy
 
-        - id:                 MOVE128
+        - id:                 FMOVE32
+          parent:             MOVAPSrr
+          operands:
+           - dst:             [register, def, FR32]
+           - src:             [register, use, FR32]
+          uses:               [src]
+          defines:            [dst]
+          type:               copy
+
+        - id:                 FMOVE64
+          parent:             MOVAPSrr
+          operands:
+           - dst:             [register, def, FR64]
+           - src:             [register, use, FR64]
+          uses:               [src]
+          defines:            [dst]
+          type:               copy
+
+        - id:                 FMOVE128
           parent:             MOVAPSrr
           type:               copy
 
-        - id:                 MOVE256
+        - id:                 FMOVE256
           parent:             VMOVAPSYrr
           type:               copy
 

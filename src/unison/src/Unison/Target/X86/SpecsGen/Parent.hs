@@ -1189,16 +1189,16 @@ parent i
   | i `elem` [MINSDrm_unison] = Just MINSDrm
   | i `elem` [MINSSrm_unison] = Just MINSSrm
   | i `elem` [MOV16mi_unison] = Just MOV16mi
-  | i `elem` [MOV16mr_unison, STORE16] = Just MOV16mr
+  | i `elem` [ISTORE16, MOV16mr_unison] = Just MOV16mr
   | i `elem` [MOV16ri_demat, MOV16ri_remat, MOV16ri_source] =
     Just MOV16ri
   | i `elem`
       [MOV16ri_alt_demat, MOV16ri_alt_remat, MOV16ri_alt_source]
     = Just MOV16ri_alt
-  | i `elem` [LOAD16, MOV16rm_unison] = Just MOV16rm
-  | i `elem` [MOVE16] = Just MOV16rr
+  | i `elem` [ILOAD16, MOV16rm_unison] = Just MOV16rm
+  | i `elem` [IMOVE16] = Just MOV16rr
   | i `elem` [MOV32mi_unison] = Just MOV32mi
-  | i `elem` [MOV32mr_unison, STORE32] = Just MOV32mr
+  | i `elem` [ISTORE32, MOV32mr_unison] = Just MOV32mr
   | i `elem` [MOV32r0_demat, MOV32r0_remat, MOV32r0_source] =
     Just MOV32r0
   | i `elem` [MOV32r1_demat, MOV32r1_remat, MOV32r1_source] =
@@ -1212,31 +1212,31 @@ parent i
   | i `elem`
       [MOV32ri_alt_demat, MOV32ri_alt_remat, MOV32ri_alt_source]
     = Just MOV32ri_alt
-  | i `elem` [LOAD32, MOV32rm_unison] = Just MOV32rm
-  | i `elem` [MOVE32] = Just MOV32rr
+  | i `elem` [ILOAD32, MOV32rm_unison] = Just MOV32rm
+  | i `elem` [IMOVE32] = Just MOV32rr
   | i `elem` [MOV64mi32_unison] = Just MOV64mi32
-  | i `elem` [MOV64mr_unison, STORE64] = Just MOV64mr
+  | i `elem` [ISTORE64, MOV64mr_unison] = Just MOV64mr
   | i `elem` [MOV64ri_demat, MOV64ri_remat, MOV64ri_source] =
     Just MOV64ri
   | i `elem` [MOV64ri32_demat, MOV64ri32_remat, MOV64ri32_source] =
     Just MOV64ri32
-  | i `elem` [LOAD64, MOV64rm_unison] = Just MOV64rm
-  | i `elem` [MOVE64] = Just MOV64rr
+  | i `elem` [ILOAD64, MOV64rm_unison] = Just MOV64rm
+  | i `elem` [IMOVE64] = Just MOV64rr
   | i `elem` [MOV64toPQIrm_unison] = Just MOV64toPQIrm
   | i `elem` [MOV64toSDrm_unison] = Just MOV64toSDrm
   | i `elem` [MOV8mi_unison] = Just MOV8mi
-  | i `elem` [MOV8mr_unison, STORE8] = Just MOV8mr
+  | i `elem` [ISTORE8, MOV8mr_unison] = Just MOV8mr
   | i `elem` [MOV8mr_NOREX_unison] = Just MOV8mr_NOREX
   | i `elem` [MOV8ri_demat, MOV8ri_remat, MOV8ri_source] =
     Just MOV8ri
-  | i `elem` [LOAD8, MOV8rm_unison] = Just MOV8rm
+  | i `elem` [ILOAD8, MOV8rm_unison] = Just MOV8rm
   | i `elem` [MOV8rm_NOREX_unison] = Just MOV8rm_NOREX
-  | i `elem` [MOVE8] = Just MOV8rr
+  | i `elem` [IMOVE8] = Just MOV8rr
   | i `elem` [MOVAPDmr_unison] = Just MOVAPDmr
   | i `elem` [MOVAPDrm_unison] = Just MOVAPDrm
-  | i `elem` [MOVAPSmr_unison, STORE128] = Just MOVAPSmr
-  | i `elem` [LOAD128, MOVAPSrm_unison] = Just MOVAPSrm
-  | i `elem` [MOVE128] = Just MOVAPSrr
+  | i `elem` [FSTORE128, MOVAPSmr_unison] = Just MOVAPSmr
+  | i `elem` [FLOAD128, MOVAPSrm_unison] = Just MOVAPSrm
+  | i `elem` [FMOVE128, FMOVE32, FMOVE64] = Just MOVAPSrr
   | i `elem` [MOVDDUPrm_unison] = Just MOVDDUPrm
   | i `elem` [MOVDI2PDIrm_unison] = Just MOVDI2PDIrm
   | i `elem` [MOVDI2SSrm_unison] = Just MOVDI2SSrm
@@ -1973,9 +1973,9 @@ parent i
   | i `elem` [VMOVAPDYrm_unison] = Just VMOVAPDYrm
   | i `elem` [VMOVAPDmr_unison] = Just VMOVAPDmr
   | i `elem` [VMOVAPDrm_unison] = Just VMOVAPDrm
-  | i `elem` [STORE256, VMOVAPSYmr_unison] = Just VMOVAPSYmr
-  | i `elem` [LOAD256, VMOVAPSYrm_unison] = Just VMOVAPSYrm
-  | i `elem` [MOVE256] = Just VMOVAPSYrr
+  | i `elem` [FSTORE256, VMOVAPSYmr_unison] = Just VMOVAPSYmr
+  | i `elem` [FLOAD256, VMOVAPSYrm_unison] = Just VMOVAPSYrm
+  | i `elem` [FMOVE256] = Just VMOVAPSYrr
   | i `elem` [VMOVAPSmr_unison] = Just VMOVAPSmr
   | i `elem` [VMOVAPSrm_unison] = Just VMOVAPSrm
   | i `elem` [VMOVDDUPYrm_unison] = Just VMOVDDUPYrm
@@ -1993,16 +1993,16 @@ parent i
   | i `elem` [VMOVPDI2DImr_unison] = Just VMOVPDI2DImr
   | i `elem` [VMOVPQI2QImr_unison] = Just VMOVPQI2QImr
   | i `elem` [VMOVPQIto64rm_unison] = Just VMOVPQIto64rm
-  | i `elem` [VMOVSDmr_unison] = Just VMOVSDmr
-  | i `elem` [VMOVSDrm_unison] = Just VMOVSDrm
+  | i `elem` [FSTORE64, VMOVSDmr_unison] = Just VMOVSDmr
+  | i `elem` [FLOAD64, VMOVSDrm_unison] = Just VMOVSDrm
   | i `elem` [VMOVSDto64mr_unison] = Just VMOVSDto64mr
   | i `elem` [VMOVSHDUPYrm_unison] = Just VMOVSHDUPYrm
   | i `elem` [VMOVSHDUPrm_unison] = Just VMOVSHDUPrm
   | i `elem` [VMOVSLDUPYrm_unison] = Just VMOVSLDUPYrm
   | i `elem` [VMOVSLDUPrm_unison] = Just VMOVSLDUPrm
   | i `elem` [VMOVSS2DImr_unison] = Just VMOVSS2DImr
-  | i `elem` [VMOVSSmr_unison] = Just VMOVSSmr
-  | i `elem` [VMOVSSrm_unison] = Just VMOVSSrm
+  | i `elem` [FSTORE32, VMOVSSmr_unison] = Just VMOVSSmr
+  | i `elem` [FLOAD32, VMOVSSrm_unison] = Just VMOVSSrm
   | i `elem` [VMOVUPDYmr_unison] = Just VMOVUPDYmr
   | i `elem` [VMOVUPDYrm_unison] = Just VMOVUPDYrm
   | i `elem` [VMOVUPDmr_unison] = Just VMOVUPDmr

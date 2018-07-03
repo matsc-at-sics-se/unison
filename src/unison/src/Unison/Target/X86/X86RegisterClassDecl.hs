@@ -40,6 +40,7 @@ data X86RegisterClass =
     VR128 |
     VR256 |
     VR2048_AUX |
+    AMBIG |
     AUXE |
     AUXR |
     AUXB |

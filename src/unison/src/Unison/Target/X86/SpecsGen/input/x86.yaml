@@ -3267,7 +3267,7 @@ instruction-set:
           affects:
           affected-by:
            - mem:             memory
-           - XMM0_128:        register
+           - WMM0:            register
           itinerary:          IIC_ALU_MEM
 
         - id:                 BLENDVPDrr0
@@ -3280,7 +3280,7 @@ instruction-set:
           size:               0
           affects:
           affected-by:
-           - XMM0_128:        register
+           - WMM0:            register
           itinerary:          IIC_ALU_NONMEM
 
         - id:                 BLENDVPSrm0
@@ -3298,7 +3298,7 @@ instruction-set:
           affects:
           affected-by:
            - mem:             memory
-           - XMM0_128:        register
+           - WMM0:            register
           itinerary:          IIC_ALU_MEM
 
         - id:                 BLENDVPSrr0
@@ -3311,7 +3311,7 @@ instruction-set:
           size:               0
           affects:
           affected-by:
-           - XMM0_128:        register
+           - WMM0:            register
           itinerary:          IIC_ALU_NONMEM
 
         - id:                 BLSFILL32rm
@@ -21636,7 +21636,7 @@ instruction-set:
           affects:
           affected-by:
            - mem:             memory
-           - XMM0_128:        register
+           - WMM0:            register
           itinerary:          IIC_ALU_MEM
 
         - id:                 PBLENDVBrr0
@@ -21649,7 +21649,7 @@ instruction-set:
           size:               0
           affects:
           affected-by:
-           - XMM0_128:        register
+           - WMM0:            register
           itinerary:          IIC_ALU_NONMEM
 
         - id:                 PBLENDWrmi
@@ -21961,7 +21961,7 @@ instruction-set:
           defines:            []
           size:               0
           affects:
-           - XMM0_128:        register
+           - WMM0:            register
            - EFLAGS:          register
           affected-by:
            - mem:             memory
@@ -21979,7 +21979,7 @@ instruction-set:
           defines:            []
           size:               0
           affects:
-           - XMM0_128:        register
+           - WMM0:            register
            - EFLAGS:          register
           affected-by:
            - EAX:             register
@@ -22221,7 +22221,7 @@ instruction-set:
           defines:            []
           size:               0
           affects:
-           - XMM0_128:        register
+           - WMM0:            register
            - EFLAGS:          register
           affected-by:
            - mem:             memory
@@ -22237,7 +22237,7 @@ instruction-set:
           defines:            []
           size:               0
           affects:
-           - XMM0_128:        register
+           - WMM0:            register
            - EFLAGS:          register
           affected-by:
           itinerary:          NoItinerary
@@ -31170,7 +31170,7 @@ instruction-set:
           affects:
           affected-by:
            - mem:             memory
-           - XMM0_128:        register
+           - WMM0:            register
           itinerary:          NoItinerary
 
         - id:                 SHA256RNDS2rr
@@ -31183,7 +31183,7 @@ instruction-set:
           size:               0
           affects:
           affected-by:
-           - XMM0_128:        register
+           - WMM0:            register
           itinerary:          NoItinerary
 
         - id:                 SHL16m1
@@ -51803,7 +51803,7 @@ instruction-set:
           defines:            []
           size:               0
           affects:
-           - XMM0_128:        register
+           - WMM0:            register
            - EFLAGS:          register
           affected-by:
            - mem:             memory
@@ -51821,7 +51821,7 @@ instruction-set:
           defines:            []
           size:               0
           affects:
-           - XMM0_128:        register
+           - WMM0:            register
            - EFLAGS:          register
           affected-by:
            - EAX:             register
@@ -52195,7 +52195,7 @@ instruction-set:
           defines:            []
           size:               0
           affects:
-           - XMM0_128:        register
+           - WMM0:            register
            - EFLAGS:          register
           affected-by:
            - mem:             memory
@@ -52211,7 +52211,7 @@ instruction-set:
           defines:            []
           size:               0
           affects:
-           - XMM0_128:        register
+           - WMM0:            register
            - EFLAGS:          register
           affected-by:
           itinerary:          NoItinerary

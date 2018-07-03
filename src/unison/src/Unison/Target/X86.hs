@@ -30,6 +30,7 @@ import Unison.Target.X86.Registers
 import Unison.Target.X86.Transforms
 import Unison.Target.X86.Usages
 import Unison.Target.X86.BranchInfo
+import Unison.Target.X86.X86RegisterClassDecl
 import Unison.Target.X86.X86RegisterDecl
 import Unison.Target.X86.X86ResourceDecl
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
@@ -141,31 +142,37 @@ copies (Function {fFixedStackFrame = fobjs}, _, _cg, _ra, _, _) _
 -- If 32-bit temp is used by some (combine), then prevent spilling,
 -- because the upper 32 bits could be assumed to be zero later.
 -- Otherwise, extend def and uses.
-copies (f, _, cg, ra, _, _) _ t _ d us =
-  let w = widthOfTemp ra cg f t (d:us)
-  in if w == 4 && all isCombine us
+copies _ _ t _ d us
+  | trace ("copies t d us = " ++ show t ++ " " ++ show d ++ " " ++ show us) False = undefined
+
+copies _ _ t _ d us =
+  let (RegisterClass rc) = fromJust $ classOfTemp t d
+      rc' = canonicalRegClass rc
+  in if rc' == GR32 && all isCombine us
      then ([], [[]])
-  else if w == 4 && any isCombine us
-     then (defCopies w, [useCopies 4 u | u <- us, not $ isCombine u])
-     else (defCopies w, map (useCopies w) us)
+  else if rc' == GR32 && any isCombine us
+     then (defCopies rc', [useCopies rc' u | u <- us, not $ isCombine u])
+     else (defCopies rc', map (useCopies rc') us)
 
-defCopies 1 = [mkNullInstruction, TargetInstruction MOVE8, TargetInstruction STORE8]
-defCopies 2 = [mkNullInstruction, TargetInstruction MOVE16, TargetInstruction STORE16]
-defCopies 4 = [mkNullInstruction, TargetInstruction MOVE32, TargetInstruction STORE32]
-defCopies 8 = [mkNullInstruction, TargetInstruction MOVE64, TargetInstruction STORE64]
-defCopies 16 = [mkNullInstruction, TargetInstruction MOVE128, TargetInstruction STORE128]
-defCopies 32 = [mkNullInstruction, TargetInstruction MOVE256, TargetInstruction STORE256]
+defCopies GR8 = [mkNullInstruction, TargetInstruction IMOVE8, TargetInstruction ISTORE8]
+defCopies GR16 = [mkNullInstruction, TargetInstruction IMOVE16, TargetInstruction ISTORE16]
+defCopies GR32 = [mkNullInstruction, TargetInstruction IMOVE32, TargetInstruction ISTORE32]
+defCopies GR64 = [mkNullInstruction, TargetInstruction IMOVE64, TargetInstruction ISTORE64]
+defCopies FR32 = [mkNullInstruction, TargetInstruction FMOVE32, TargetInstruction FSTORE32]
+defCopies FR64 = [mkNullInstruction, TargetInstruction FMOVE64, TargetInstruction FSTORE64]
+defCopies FR128 = [mkNullInstruction, TargetInstruction FMOVE128, TargetInstruction FSTORE128]
+defCopies VR256 = [mkNullInstruction, TargetInstruction FMOVE256, TargetInstruction FSTORE256]
 
-useCopies 1 _ = [mkNullInstruction, TargetInstruction MOVE8, TargetInstruction LOAD8]
-useCopies 2 _ = [mkNullInstruction, TargetInstruction MOVE16, TargetInstruction LOAD16]
-useCopies 4 _ = [mkNullInstruction, TargetInstruction MOVE32, TargetInstruction LOAD32]
-useCopies 8 _ = [mkNullInstruction, TargetInstruction MOVE64, TargetInstruction LOAD64]
-useCopies 16 _ = [mkNullInstruction, TargetInstruction MOVE128, TargetInstruction LOAD128]
-useCopies 32 _ = [mkNullInstruction, TargetInstruction MOVE256, TargetInstruction LOAD256]
+useCopies GR8 _ = [mkNullInstruction, TargetInstruction IMOVE8, TargetInstruction ILOAD8]
+useCopies GR16 _ = [mkNullInstruction, TargetInstruction IMOVE16, TargetInstruction ILOAD16]
+useCopies GR32 _ = [mkNullInstruction, TargetInstruction IMOVE32, TargetInstruction ILOAD32]
+useCopies GR64 _ = [mkNullInstruction, TargetInstruction IMOVE64, TargetInstruction ILOAD64]
+useCopies FR32 _ = [mkNullInstruction, TargetInstruction FMOVE32, TargetInstruction FLOAD32]
+useCopies FR64 _ = [mkNullInstruction, TargetInstruction FMOVE64, TargetInstruction FLOAD64]
+useCopies FR128 _ = [mkNullInstruction, TargetInstruction FMOVE128, TargetInstruction FLOAD128]
+useCopies VR256 _ = [mkNullInstruction, TargetInstruction FMOVE256, TargetInstruction FLOAD256]
 
 classOfTemp = classOf (target, [])
-
-widthOfTemp = widthOf (target, [])
 
 compatibleClassesForTemp t os =
   let regs = [S.fromList $ registers $ fromJust (classOfTemp t o) | o <- os]
@@ -521,7 +528,7 @@ stackDirection = API.StackGrowsDown
 
 -- | Target dependent pre-processing functions
 
-preProcess _ = [disambiguateLiveInOut,
+preProcess _ = [disambiguateFunction,
                 mapToMachineInstruction cleanFunRegisters,
                 mapToMachineInstruction promoteImplicitOperands]
 

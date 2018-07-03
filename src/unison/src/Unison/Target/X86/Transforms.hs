@@ -10,7 +10,7 @@ Main authors:
 This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.X86.Transforms
-    (disambiguateLiveInOut,
+    (disambiguateFunction,
      cleanFunRegisters,
      promoteImplicitOperands,
      expandPseudos,
@@ -54,65 +54,87 @@ import Unison.Target.X86.Registers
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
 
--- This transformation disambiguates a livein %xmm0 as _32, _64, or _128
 
-disambiguateLiveInOut mf =
-  let flatcode = flattenMachineFunction mf
-      tid2rc = registerClassMap mf
-      (win,wout) = foldl (liveInOutWidths tid2rc) (16,16) flatcode
-      (xmm0in,xmm0out) = (w2xmm0 win,w2xmm0 wout)
-      mf' = mapToMachineInstruction (substituteXmm0 (xmm0in,xmm0out)) mf
-  in mf'
 
-liveInOutWidths tid2rc (_,wout)
-                MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COPY,
-                               msOperands = [MachineTemp {mtId = did}, MachineReg {mrName = XMM0_128}]} =
-  case (tid2rc M.! did) of 
-    "fr32"     -> (4,wout)
-    "fr64"     -> (8,wout)
-    "fr128"    -> (16,wout)
-    "vr128"    -> (16,wout)
-    _          -> error ("liveInOutWidths: missing register class " ++ show (tid2rc M.! did))
+-- This transformation disambiguates XMM* (%xmm*) regs as UMM*, VMM*, or WMM*
 
-liveInOutWidths tid2rc (win,_)
-                MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COPY,
-                               msOperands = [MachineReg {mrName = XMM0_128}, MachineTemp {mtId = did}]} =
-  case (tid2rc M.! did) of 
-    "fr32"     -> (win,4)
-    "fr64"     -> (win,8)
-    "fr128"    -> (win,16)
-    "vr128"    -> (win,16)
-    _          -> error ("liveInOutWidths: missing register class " ++ show (tid2rc M.! did))
+disambiguateFunction mf @ MachineFunction {mfBlocks = blocks} =
+  let tid2rc = registerClassMap mf
+      blocks' = map (disambiguateBlock tid2rc) blocks
+  in mf {mfBlocks = blocks'}
 
-liveInOutWidths _ ww _ = ww
+disambiguateBlock tid2rc b @ MachineBlock {mbInstructions = insns} =
+  let insns'  = disambiguateBlockBwd tid2rc (reverse insns)
+      insns'' = disambiguateBlockFwd tid2rc (reverse insns')
+  in b {mbInstructions = insns''}
 
-w2xmm0 4 = XMM0_32
-w2xmm0 8 = XMM0_64
-w2xmm0 16 = XMM0_128
+disambiguateBlockBwd tid2rc insns =
+  let (_, insns') = mapAccumL (disambiguateBwd tid2rc) M.empty insns
+  in insns'
 
-substituteXmm0 (rin,_) o @ MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COPY,
-                                          msOperands = [p, MachineReg {mrName = XMM0_128}]} =
-  o {msOperands = [p, mkMachineReg rin]}
+disambiguateBwd tid2rc amb2det mi @ MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COPY,
+                                                   msOperands = [p @ MachineTemp {mtId = did}, MachineReg {mrName = r}]}
+  | isAmbigReg r =
+  let w =
+        case (tid2rc M.! did) of 
+          "fr32"     -> 4
+          "fr64"     -> 8
+          "fr128"    -> 16
+          "vr128"    -> 16
+          _          -> error ("disambiguateBwd: missing register class " ++ show (tid2rc M.! did))
+      r' = disAmbigReg w r
+      mi' = mi {msOperands = [p, mkMachineReg r']}
+      amb2det' = M.insert r r' amb2det
+  in (amb2det', mi')
 
-substituteXmm0 (_,rout) o @ MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COPY,
-                                           msOperands = [MachineReg {mrName = XMM0_128}, p]} =
-  o {msOperands = [mkMachineReg rout, p]}
+disambiguateBwd _ amb2det mi @ MachineSingle {msOpcode = MachineVirtualOpc MachineIR.ENTRY,
+                                              msOperands = ps} =
+  let ps' = map (disambiguateOperand amb2det) ps
+      mi' = mi {msOperands = ps'}
+  in (amb2det, mi')
 
-substituteXmm0 (rin,_) o @ MachineSingle {msOpcode = MachineVirtualOpc MachineIR.ENTRY,
-                                          msOperands = ps} =
-  let ps' = map (substXmm0 rin) ps
-  in o {msOperands = ps'}
+disambiguateBwd _ amb2det mi = (amb2det, mi)
 
-substituteXmm0 (_,rout) o @ MachineSingle {msOpcode = MachineTargetOpc RETQ,
-                                           msOperands = [MachineReg {mrName = XMM0_128}]} =
-  o {msOperands = [mkMachineReg rout]}
+disambiguateBlockFwd tid2rc insns =
+  let (_, insns') = mapAccumL (disambiguateFwd tid2rc) M.empty insns
+  in insns'
 
-substituteXmm0 _ o = o
+disambiguateFwd tid2rc amb2det mi @ MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COPY,
+                                                   msOperands = [MachineReg {mrName = r}, p @ MachineTemp {mtId = did}]}
+  | isAmbigReg r =
+  let w =
+        case (tid2rc M.! did) of 
+          "fr32"     -> 4
+          "fr64"     -> 8
+          "fr128"    -> 16
+          "vr128"    -> 16
+          _          -> error ("disambiguateFwd: missing register class " ++ show (tid2rc M.! did))
+      r' = disAmbigReg w r
+      mi' = mi {msOperands = [mkMachineReg r', p]}
+      amb2det' = M.insert r r' amb2det
+  in (amb2det', mi')
 
-substXmm0 r p @ MachineReg {mrName = XMM0_128} =
-  p {mrName = r}
+disambiguateFwd _ amb2det mi @ MachineSingle {msOpcode = MachineVirtualOpc FUN,
+                                              msOperands = ps} =
+  let ps' = map (disambiguateOperand amb2det) ps
+      mi' = mi {msOperands = ps'}
+  in (amb2det, mi')
 
-substXmm0 _ p = p
+disambiguateFwd _ amb2det mi @ MachineSingle {msOpcode = MachineTargetOpc RETQ,
+                                              msOperands = ps} =
+  let ps' = map (disambiguateOperand amb2det) ps
+      mi' = mi {msOperands = ps'}
+  in (amb2det, mi')
+
+disambiguateFwd _ amb2det mi = (amb2det, mi)
+
+disambiguateOperand amb2det p @ MachineReg {mrName = r}
+  | M.member r amb2det =
+  p {mrName = amb2det M.! r}
+
+disambiguateOperand _ p = p
+
+
 
 -- This transformation hides the stack pointer as a use and definition of
 -- function calls.
@@ -733,7 +755,7 @@ suppressCombineCopies f @ Function {fCode = code} =
 
 definerInsns o =
   let insns = oInstructions o
-      hazard = (TargetInstruction MOVE32) `elem` insns
+      hazard = (TargetInstruction IMOVE32) `elem` insns
   in [(mkTemp t, hazard) | t <- defTemporaries [o]]
 
 suppressCombineCopies' t2h o @ SingleOperation {oOpr = Virtual (co @ Combine {oCombineLowU = p @ MOperand {altTemps = alts}})}
@@ -900,8 +922,8 @@ addFunWrites o = o
 addSpillIndicators f @ Function {fCode = code} =
   let fcode = flatten code
       instl = concatMap oInstructions fcode
-      act   = nub $ sort [TargetInstruction i | (TargetInstruction i) <- instl, i /= STORE256, (isStoreInstr i || isMemRegInstr i)]
-      act32 = nub [TargetInstruction i | (TargetInstruction i) <- instl, i == STORE256]
+      act   = nub $ sort [TargetInstruction i | (TargetInstruction i) <- instl, i /= FSTORE256, (isStoreInstr i || isMemRegInstr i)]
+      act32 = nub [TargetInstruction i | (TargetInstruction i) <- instl, i == FSTORE256]
       (_, oid, _) = newIndexes $ fcode 
       (_, code') = mapAccumL (addSpillIndicatorsToBlock act32 act) oid code
   in f {fCode = code'}

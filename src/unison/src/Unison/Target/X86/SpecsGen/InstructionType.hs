@@ -31,19 +31,20 @@ instructionType i
     = CallInstructionType
   | i `elem`
       [AVX2_SETALLONES_demat, AVX2_SETALLONES_remat, AVX_SET0_demat,
-       AVX_SET0_remat, FsFLD0SD_demat, FsFLD0SD_remat, FsFLD0SS_demat,
-       FsFLD0SS_remat, LEA16r_demat, LEA16r_remat, LEA32r_demat,
-       LEA32r_remat, LEA64r_demat, LEA64r_remat, LOAD128, LOAD16, LOAD256,
-       LOAD32, LOAD64, LOAD8, MOV16ri_alt_demat, MOV16ri_alt_remat,
+       AVX_SET0_remat, FLOAD128, FLOAD256, FLOAD32, FLOAD64, FMOVE128,
+       FMOVE256, FMOVE32, FMOVE64, FSTORE128, FSTORE256, FSTORE32,
+       FSTORE64, FsFLD0SD_demat, FsFLD0SD_remat, FsFLD0SS_demat,
+       FsFLD0SS_remat, ILOAD16, ILOAD32, ILOAD64, ILOAD8, IMOVE16,
+       IMOVE32, IMOVE64, IMOVE8, ISTORE16, ISTORE32, ISTORE64, ISTORE8,
+       LEA16r_demat, LEA16r_remat, LEA32r_demat, LEA32r_remat,
+       LEA64r_demat, LEA64r_remat, MOV16ri_alt_demat, MOV16ri_alt_remat,
        MOV16ri_demat, MOV16ri_remat, MOV32r0_demat, MOV32r0_remat,
        MOV32r1_demat, MOV32r1_remat, MOV32r_1_demat, MOV32r_1_remat,
        MOV32ri64_demat, MOV32ri64_remat, MOV32ri_alt_demat,
        MOV32ri_alt_remat, MOV32ri_demat, MOV32ri_remat, MOV64ri32_demat,
        MOV64ri32_remat, MOV64ri_demat, MOV64ri_remat, MOV8ri_demat,
-       MOV8ri_remat, MOVE128, MOVE16, MOVE256, MOVE32, MOVE64, MOVE8,
-       POP_cst, POP_fi, PUSH_cst, STORE128, STORE16, STORE256, STORE32,
-       STORE64, STORE8, V_SET0_demat, V_SET0_remat, V_SETALLONES_demat,
-       V_SETALLONES_remat]
+       MOV8ri_remat, POP_cst, POP_fi, PUSH_cst, V_SET0_demat,
+       V_SET0_remat, V_SETALLONES_demat, V_SETALLONES_remat]
     = CopyInstructionType
   | i `elem`
       [AAA, AAD8i8, AAM8i8, AAS, ACQUIRE_MOV16rm, ACQUIRE_MOV32rm,

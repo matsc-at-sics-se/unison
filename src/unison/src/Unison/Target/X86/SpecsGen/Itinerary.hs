@@ -417,12 +417,12 @@ itinerary i
   | i `elem` [MMX_CVTPI2PDirm] = IIC_MMX_CVT_PD_RM
   | i `elem` [MMX_EMMS] = IIC_MMX_EMMS
   | i `elem`
-      [MOV16ri, MOV16ri_alt, MOV16ri_alt_remat, MOV16ri_remat, MOV16rr,
-       MOV16rr_REV, MOV32ri, MOV32ri_alt, MOV32ri_alt_remat,
-       MOV32ri_remat, MOV32rr, MOV32rr_REV, MOV64ri, MOV64ri32,
-       MOV64ri32_remat, MOV64ri_remat, MOV64rr, MOV64rr_REV, MOV8ri,
-       MOV8ri_alt, MOV8ri_remat, MOV8rr, MOV8rr_NOREX, MOV8rr_REV, MOVE16,
-       MOVE32, MOVE64, MOVE8]
+      [IMOVE16, IMOVE32, IMOVE64, IMOVE8, MOV16ri, MOV16ri_alt,
+       MOV16ri_alt_remat, MOV16ri_remat, MOV16rr, MOV16rr_REV, MOV32ri,
+       MOV32ri_alt, MOV32ri_alt_remat, MOV32ri_remat, MOV32rr,
+       MOV32rr_REV, MOV64ri, MOV64ri32, MOV64ri32_remat, MOV64ri_remat,
+       MOV64rr, MOV64rr_REV, MOV8ri, MOV8ri_alt, MOV8ri_remat, MOV8rr,
+       MOV8rr_NOREX, MOV8rr_REV]
     = IIC_MOV
   | i `elem`
       [MOVBE16mr, MOVBE16rm, MOVBE32mr, MOVBE32rm, MOVBE64mr, MOVBE64rm]
@@ -446,16 +446,16 @@ itinerary i
   | i `elem` [MOVZX16rm8, MOVZX16rm8_unison] = IIC_MOVZX_R16_M8
   | i `elem` [MOVZX16rr8] = IIC_MOVZX_R16_R8
   | i `elem`
-      [LOAD16, LOAD32, LOAD64, LOAD8, MOV16ao16, MOV16ao32, MOV16mi,
-       MOV16mi_unison, MOV16mr, MOV16mr_unison, MOV16o16a, MOV16o32a,
-       MOV16rm, MOV16rm_unison, MOV32ao16, MOV32ao32, MOV32mi,
-       MOV32mi_unison, MOV32mr, MOV32mr_unison, MOV32o16a, MOV32o32a,
-       MOV32rm, MOV32rm_unison, MOV64ao32, MOV64mi32, MOV64mi32_unison,
-       MOV64mr, MOV64mr_unison, MOV64o32a, MOV64rm, MOV64rm_unison,
-       MOV8ao16, MOV8ao32, MOV8mi, MOV8mi_unison, MOV8mr, MOV8mr_NOREX,
-       MOV8mr_NOREX_unison, MOV8mr_unison, MOV8o16a, MOV8o32a, MOV8rm,
-       MOV8rm_NOREX, MOV8rm_NOREX_unison, MOV8rm_unison, STORE16, STORE32,
-       STORE64, STORE8]
+      [ILOAD16, ILOAD32, ILOAD64, ILOAD8, ISTORE16, ISTORE32, ISTORE64,
+       ISTORE8, MOV16ao16, MOV16ao32, MOV16mi, MOV16mi_unison, MOV16mr,
+       MOV16mr_unison, MOV16o16a, MOV16o32a, MOV16rm, MOV16rm_unison,
+       MOV32ao16, MOV32ao32, MOV32mi, MOV32mi_unison, MOV32mr,
+       MOV32mr_unison, MOV32o16a, MOV32o32a, MOV32rm, MOV32rm_unison,
+       MOV64ao32, MOV64mi32, MOV64mi32_unison, MOV64mr, MOV64mr_unison,
+       MOV64o32a, MOV64rm, MOV64rm_unison, MOV8ao16, MOV8ao32, MOV8mi,
+       MOV8mi_unison, MOV8mr, MOV8mr_NOREX, MOV8mr_NOREX_unison,
+       MOV8mr_unison, MOV8o16a, MOV8o32a, MOV8rm, MOV8rm_NOREX,
+       MOV8rm_NOREX_unison, MOV8rm_unison]
     = IIC_MOV_MEM
   | i `elem` [MUL16m, MUL16m_unison] = IIC_MUL16_MEM
   | i `elem` [MUL16r] = IIC_MUL16_REG
@@ -990,26 +990,26 @@ itinerary i
   | i `elem` [MFENCE] = IIC_SSE_MFENCE
   | i `elem` [MONITORXrrr, MONITORrrr] = IIC_SSE_MONITOR
   | i `elem`
-      [MOVAPDmr, MOVAPDmr_unison, MOVAPSmr, MOVAPSmr_unison, MOVDQAmr,
-       MOVDQAmr_unison, STORE128, STORE256, VMOVAPDYmr, VMOVAPDYmr_unison,
-       VMOVAPDmr, VMOVAPDmr_unison, VMOVAPSYmr, VMOVAPSYmr_unison,
-       VMOVAPSmr, VMOVAPSmr_unison, VMOVDQAYmr, VMOVDQAYmr_unison,
-       VMOVDQAmr, VMOVDQAmr_unison]
+      [FSTORE128, FSTORE256, MOVAPDmr, MOVAPDmr_unison, MOVAPSmr,
+       MOVAPSmr_unison, MOVDQAmr, MOVDQAmr_unison, VMOVAPDYmr,
+       VMOVAPDYmr_unison, VMOVAPDmr, VMOVAPDmr_unison, VMOVAPSYmr,
+       VMOVAPSYmr_unison, VMOVAPSmr, VMOVAPSmr_unison, VMOVDQAYmr,
+       VMOVDQAYmr_unison, VMOVDQAmr, VMOVDQAmr_unison]
     = IIC_SSE_MOVA_P_MR
   | i `elem`
-      [FsMOVAPDrm, FsMOVAPSrm, FsVMOVAPDrm, FsVMOVAPSrm, LOAD128,
-       LOAD256, MOVAPDrm, MOVAPDrm_unison, MOVAPSrm, MOVAPSrm_unison,
+      [FLOAD128, FLOAD256, FsMOVAPDrm, FsMOVAPSrm, FsVMOVAPDrm,
+       FsVMOVAPSrm, MOVAPDrm, MOVAPDrm_unison, MOVAPSrm, MOVAPSrm_unison,
        MOVDQArm, MOVDQArm_unison, VMOVAPDYrm, VMOVAPDYrm_unison,
        VMOVAPDrm, VMOVAPDrm_unison, VMOVAPSYrm, VMOVAPSYrm_unison,
        VMOVAPSrm, VMOVAPSrm_unison, VMOVDQAYrm, VMOVDQAYrm_unison,
        VMOVDQArm, VMOVDQArm_unison]
     = IIC_SSE_MOVA_P_RM
   | i `elem`
-      [MOVAPDrr, MOVAPDrr_REV, MOVAPSrr, MOVAPSrr_REV, MOVDQArr,
-       MOVDQArr_REV, MOVE128, MOVE256, VMOVAPDYrr, VMOVAPDYrr_REV,
-       VMOVAPDrr, VMOVAPDrr_REV, VMOVAPSYrr, VMOVAPSYrr_REV, VMOVAPSrr,
-       VMOVAPSrr_REV, VMOVDQAYrr, VMOVDQAYrr_REV, VMOVDQArr,
-       VMOVDQArr_REV]
+      [FMOVE128, FMOVE256, FMOVE32, FMOVE64, MOVAPDrr, MOVAPDrr_REV,
+       MOVAPSrr, MOVAPSrr_REV, MOVDQArr, MOVDQArr_REV, VMOVAPDYrr,
+       VMOVAPDYrr_REV, VMOVAPDrr, VMOVAPDrr_REV, VMOVAPSYrr,
+       VMOVAPSYrr_REV, VMOVAPSrr, VMOVAPSrr_REV, VMOVDQAYrr,
+       VMOVDQAYrr_REV, VMOVDQArr, VMOVDQArr_REV]
     = IIC_SSE_MOVA_P_RR
   | i `elem`
       [MOV64toPQIrm, MOV64toPQIrm_unison, MOV64toPQIrr, MOV64toSDrm,
@@ -1076,12 +1076,14 @@ itinerary i
        VMOVSLDUPrr]
     = IIC_SSE_MOV_LH
   | i `elem`
-      [MOVSDmr, MOVSDmr_unison, MOVSSmr, MOVSSmr_unison, VMOVSDmr,
-       VMOVSDmr_unison, VMOVSSmr, VMOVSSmr_unison]
+      [FSTORE32, FSTORE64, MOVSDmr, MOVSDmr_unison, MOVSSmr,
+       MOVSSmr_unison, VMOVSDmr, VMOVSDmr_unison, VMOVSSmr,
+       VMOVSSmr_unison]
     = IIC_SSE_MOV_S_MR
   | i `elem`
-      [MOVSDrm, MOVSDrm_unison, MOVSSrm, MOVSSrm_unison, VMOVSDrm,
-       VMOVSDrm_unison, VMOVSSrm, VMOVSSrm_unison]
+      [FLOAD32, FLOAD64, MOVSDrm, MOVSDrm_unison, MOVSSrm,
+       MOVSSrm_unison, VMOVSDrm, VMOVSDrm_unison, VMOVSSrm,
+       VMOVSSrm_unison]
     = IIC_SSE_MOV_S_RM
   | i `elem`
       [MOVSDrr, MOVSDrr_REV, MOVSSrr, MOVSSrr_REV, VMOVSDrr,

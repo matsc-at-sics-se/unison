@@ -11,6 +11,7 @@ This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.X86.Common
     (unitLatency, align, instrInfiniteUsage,
+     isAmbigReg, disAmbigReg,
      isMoveInstr, isStoreInstr, isLoadInstr,
      isRematerializable, isSourceInstr,
      isDematInstr, isRematInstr, sourceInstr, dematInstr, rematInstr, originalInstr,
@@ -21,6 +22,7 @@ module Unison.Target.X86.Common
      reg32ToReg64, machineReg32ToReg64) where
 
 import qualified Data.Map as M
+import qualified Data.List as L
 import Data.Maybe
 
 import MachineIR
@@ -41,14 +43,32 @@ instrInfiniteUsage i =
       usages = [infRegClassUsage (InfiniteRegisterClass rc) | TemporaryInfo {oiRegClass = InfiniteRegisterClass rc} <- use++def]
   in maximum (usages ++ [0])
 
+isAmbigReg r =
+  r `elem` (registers (RegisterClass AMBIG))
+
+disAmbigReg 4 r =
+  let i = fromJust $ L.elemIndex r $ registers (RegisterClass AMBIG)
+  in (registers (RegisterClass FR32)) !! i
+
+disAmbigReg 8 r =
+  let i = fromJust $ L.elemIndex r $ registers (RegisterClass AMBIG)
+  in (registers (RegisterClass FR64)) !! i
+
+disAmbigReg 16 r =
+  let i = fromJust $ L.elemIndex r $ registers (RegisterClass AMBIG)
+  in (registers (RegisterClass FR128)) !! i
+
 isMoveInstr i =
-  i `elem` [MOVE8, MOVE16, MOVE32, MOVE64, MOVE128, MOVE256]
+  i `elem` [IMOVE8, IMOVE16, IMOVE32, IMOVE64,
+            FMOVE32, FMOVE64, FMOVE128, FMOVE256]
 
 isStoreInstr i =
-  i `elem` [STORE8, STORE16, STORE32, STORE64, STORE128, STORE256]
+  i `elem` [ISTORE8, ISTORE16, ISTORE32, ISTORE64,
+            FSTORE32, FSTORE64, FSTORE128, FSTORE256]
 
 isLoadInstr i =
-  i `elem` [LOAD8, LOAD16, LOAD32, LOAD64, LOAD128, LOAD256]
+  i `elem` [ILOAD8, ILOAD16, ILOAD32, ILOAD64,
+            FLOAD32, FLOAD64, FLOAD128, FLOAD256]
 
 data RematTriple = RematTriple {
   source :: X86Instruction,
@@ -171,7 +191,7 @@ condMoveInstrs =
 
 -- This list should contain exactly the registers that are promoted by
 -- 'specsgen' (see 'run-specsgen-x86' recipe in Makefile).
-promotedRegs = [AL, AH, AX, EAX, RAX, EBX, RBX, CL, CX, ECX, RCX, DX, EDX, RDX, EBP, RBP, EDI, RDI, ESI, RSI, XMM0_128]
+promotedRegs = [AL, AH, AX, EAX, RAX, EBX, RBX, CL, CX, ECX, RCX, DX, EDX, RDX, EBP, RBP, EDI, RDI, ESI, RSI, WMM0]
 
 readsSideEffect i eff =
   (OtherSideEffect eff) `elem` (fst $ SpecsGen.readWriteInfo i)

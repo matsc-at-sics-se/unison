@@ -4200,24 +4200,30 @@ data X86Instruction = AAA
                     | XSHA256
                     | XSTORE
                     | XTEST
-                    | STORE8
-                    | STORE16
-                    | STORE32
-                    | STORE64
-                    | STORE128
-                    | STORE256
-                    | LOAD8
-                    | LOAD16
-                    | LOAD32
-                    | LOAD64
-                    | LOAD128
-                    | LOAD256
-                    | MOVE8
-                    | MOVE16
-                    | MOVE32
-                    | MOVE64
-                    | MOVE128
-                    | MOVE256
+                    | ISTORE8
+                    | ISTORE16
+                    | ISTORE32
+                    | ISTORE64
+                    | FSTORE32
+                    | FSTORE64
+                    | FSTORE128
+                    | FSTORE256
+                    | ILOAD8
+                    | ILOAD16
+                    | ILOAD32
+                    | ILOAD64
+                    | FLOAD32
+                    | FLOAD64
+                    | FLOAD128
+                    | FLOAD256
+                    | IMOVE8
+                    | IMOVE16
+                    | IMOVE32
+                    | IMOVE64
+                    | FMOVE32
+                    | FMOVE64
+                    | FMOVE128
+                    | FMOVE256
                     | FPUSH32
                     | FPUSH
                     | NOFPUSH
