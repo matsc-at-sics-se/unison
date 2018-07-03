@@ -25,6 +25,7 @@ import qualified Unison.Target.API as API
 import Unison.Target.RegisterArray
 import Unison.Target.Query
 import Unison.Analysis.TemporaryType
+import Unison.Analysis.TransitiveOperations
 import Unison.Target.X86.Common
 import Unison.Target.X86.Registers
 import Unison.Target.X86.Transforms
@@ -142,37 +143,70 @@ copies (Function {fFixedStackFrame = fobjs}, _, _cg, _ra, _, _) _
 -- If 32-bit temp is used by some (combine), then prevent spilling,
 -- because the upper 32 bits could be assumed to be zero later.
 -- Otherwise, extend def and uses.
-copies _ _ t _ d us
-  | trace ("copies t d us = " ++ show t ++ " " ++ show d ++ " " ++ show us) False = undefined
+copies (f, _, cg, ra, bcfg, sg) _ t _ d us =
+  let is = d:us
+      w  = widthOfTemp ra cg f t is
+      -- This below is just to distinguish floating-point from integer
+      drcs = transitiveRegClasses (operandInfo []) bcfg sg Reaching f t
+      dors = transitivePreAssignments bcfg sg Reaching f t
+      urcs = transitiveRegClasses (operandInfo []) bcfg sg Reachable f t
+      uors = transitivePreAssignments bcfg sg Reachable f t
+      rcType rcs ors
+        | null rcs && null ors = AnyRegClass
+        | any isFloatClass rcs || any isFloatReg ors = FloatRegClass
+        | otherwise = IntRegClass
+      (drc, urc) = (rcType drcs dors, rcType urcs uors)
+  in if w == 4 && all isCombine us
+         then ([], [[]])
+     else if w == 4 && any isCombine us
+         then (defCopies drc w, [useCopies urc w | u <- us, not $ isCombine u])
+         else (defCopies drc w, [useCopies urc w | _ <- us])
 
-copies _ _ t _ d us =
-  let (RegisterClass rc) = fromJust $ classOfTemp t d
-      rc' = canonicalRegClass rc
-  in if rc' == GR32 && all isCombine us
-     then ([], [[]])
-  else if rc' == GR32 && any isCombine us
-     then (defCopies rc', [useCopies rc' u | u <- us, not $ isCombine u])
-     else (defCopies rc', map (useCopies rc') us)
+data RegClassType =
+  AnyRegClass |
+  IntRegClass |
+  FloatRegClass
+  deriving Show
 
-defCopies GR8 = [mkNullInstruction, TargetInstruction IMOVE8, TargetInstruction ISTORE8]
-defCopies GR16 = [mkNullInstruction, TargetInstruction IMOVE16, TargetInstruction ISTORE16]
-defCopies GR32 = [mkNullInstruction, TargetInstruction IMOVE32, TargetInstruction ISTORE32]
-defCopies GR64 = [mkNullInstruction, TargetInstruction IMOVE64, TargetInstruction ISTORE64]
-defCopies FR32 = [mkNullInstruction, TargetInstruction FMOVE32, TargetInstruction FSTORE32]
-defCopies FR64 = [mkNullInstruction, TargetInstruction FMOVE64, TargetInstruction FSTORE64]
-defCopies FR128 = [mkNullInstruction, TargetInstruction FMOVE128, TargetInstruction FSTORE128]
-defCopies VR256 = [mkNullInstruction, TargetInstruction FMOVE256, TargetInstruction FSTORE256]
+defCopies IntRegClass 1 = [mkNullInstruction] ++ map TargetInstruction [IMOVE8, ISTORE8]
+defCopies IntRegClass 2 = [mkNullInstruction] ++ map TargetInstruction [IMOVE16, ISTORE16]
+defCopies IntRegClass 4 = [mkNullInstruction] ++ map TargetInstruction [IMOVE32, ISTORE32]
+defCopies IntRegClass 8 = [mkNullInstruction] ++ map TargetInstruction [IMOVE64, ISTORE64]
+defCopies FloatRegClass 4 = [mkNullInstruction] ++ map TargetInstruction [FMOVE32, FSTORE32]
+defCopies FloatRegClass 8 = [mkNullInstruction] ++ map TargetInstruction [FMOVE64, FSTORE64]
+defCopies FloatRegClass 16 = [mkNullInstruction] ++ map TargetInstruction [FMOVE128, FSTORE128]
+defCopies FloatRegClass 32 = [mkNullInstruction] ++ map TargetInstruction [FMOVE256, FSTORE256]
+defCopies AnyRegClass 1 = [mkNullInstruction] ++ map TargetInstruction [IMOVE8, ISTORE8]
+defCopies AnyRegClass 2 = [mkNullInstruction] ++ map TargetInstruction [IMOVE16, ISTORE16]
+defCopies AnyRegClass 4 = [mkNullInstruction] ++ map TargetInstruction [IMOVE32, ISTORE32, FMOVE32, FSTORE32]
+defCopies AnyRegClass 8 = [mkNullInstruction] ++ map TargetInstruction [IMOVE64, ISTORE64, FMOVE64, FSTORE64]
+defCopies AnyRegClass 16 = [mkNullInstruction] ++ map TargetInstruction [FMOVE128, FSTORE128]
+defCopies AnyRegClass 32 = [mkNullInstruction] ++ map TargetInstruction [FMOVE256, FSTORE256]
 
-useCopies GR8 _ = [mkNullInstruction, TargetInstruction IMOVE8, TargetInstruction ILOAD8]
-useCopies GR16 _ = [mkNullInstruction, TargetInstruction IMOVE16, TargetInstruction ILOAD16]
-useCopies GR32 _ = [mkNullInstruction, TargetInstruction IMOVE32, TargetInstruction ILOAD32]
-useCopies GR64 _ = [mkNullInstruction, TargetInstruction IMOVE64, TargetInstruction ILOAD64]
-useCopies FR32 _ = [mkNullInstruction, TargetInstruction FMOVE32, TargetInstruction FLOAD32]
-useCopies FR64 _ = [mkNullInstruction, TargetInstruction FMOVE64, TargetInstruction FLOAD64]
-useCopies FR128 _ = [mkNullInstruction, TargetInstruction FMOVE128, TargetInstruction FLOAD128]
-useCopies VR256 _ = [mkNullInstruction, TargetInstruction FMOVE256, TargetInstruction FLOAD256]
+useCopies IntRegClass 1 = [mkNullInstruction] ++ map TargetInstruction [IMOVE8, ILOAD8]
+useCopies IntRegClass 2 = [mkNullInstruction] ++ map TargetInstruction [IMOVE16, ILOAD16]
+useCopies IntRegClass 4 = [mkNullInstruction] ++ map TargetInstruction [IMOVE32, ILOAD32]
+useCopies IntRegClass 8 = [mkNullInstruction] ++ map TargetInstruction [IMOVE64, ILOAD64]
+useCopies FloatRegClass 4 = [mkNullInstruction] ++ map TargetInstruction [FMOVE32, FLOAD32]
+useCopies FloatRegClass 8 = [mkNullInstruction] ++ map TargetInstruction [FMOVE64, FLOAD64]
+useCopies FloatRegClass 16 = [mkNullInstruction] ++ map TargetInstruction [FMOVE128, FLOAD128]
+useCopies FloatRegClass 32 = [mkNullInstruction] ++ map TargetInstruction [FMOVE256, FLOAD256]
+useCopies AnyRegClass 1 = [mkNullInstruction] ++ map TargetInstruction [IMOVE8, ILOAD8]
+useCopies AnyRegClass 2 = [mkNullInstruction] ++ map TargetInstruction [IMOVE16, ILOAD16]
+useCopies AnyRegClass 4 = [mkNullInstruction] ++ map TargetInstruction [IMOVE32, ILOAD32, FMOVE32, FLOAD32]
+useCopies AnyRegClass 8 = [mkNullInstruction] ++ map TargetInstruction [IMOVE64, ILOAD64, FMOVE64, FLOAD64]
+useCopies AnyRegClass 16 = [mkNullInstruction] ++ map TargetInstruction [FMOVE128, FLOAD128]
+useCopies AnyRegClass 32 = [mkNullInstruction] ++ map TargetInstruction [FMOVE256, FLOAD256]
+
+isFloatClass rc = rc `elem` map RegisterClass [FR32, FR64, FR128, VR128, VR256, FR128_AUX, VR2048_AUX]
+
+isFloatReg r = any (regInClass r) $ map RegisterClass [FR32, FR64, FR128, VR128, VR256, FR128_AUX, VR2048_AUX]
+
+regInClass r rc = (rTargetReg $ regId r) `elem` registers rc
 
 classOfTemp = classOf (target, [])
+
+widthOfTemp = widthOf (target, [])
 
 compatibleClassesForTemp t os =
   let regs = [S.fromList $ registers $ fromJust (classOfTemp t o) | o <- os]
