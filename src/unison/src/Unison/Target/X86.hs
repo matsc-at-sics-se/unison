@@ -670,6 +670,9 @@ prologueConstraints _ True _ (Just osp32, _, Just ofpush, _, _, _)
   = [XorExpr (ActiveExpr osp32) (ImplementsExpr ofpush (TargetInstruction FPUSH))] ++
     [NotExpr (ImplementsExpr ofpush (TargetInstruction NOFPUSH))]
 
+prologueConstraints _ _ True (Nothing, Just _, Just ofpush, _, [], _)
+  = [ImplementsExpr ofpush (TargetInstruction FPUSH)]
+
 prologueConstraints _ _ True (Nothing, Just osp, Just ofpush, _, [p1,p2,p3,p4,p5,p6], _) =
   let nofcond = AndExpr [NotExpr (ActiveExpr osp),
                          XorExpr (XorExpr (XorExpr (ActiveExpr p1) (ActiveExpr p2))
@@ -677,6 +680,10 @@ prologueConstraints _ _ True (Nothing, Just osp, Just ofpush, _, [p1,p2,p3,p4,p5
                                  (XorExpr (ActiveExpr p5) (ActiveExpr p6))]
   in [NotExpr (ImplementsExpr ofpush (TargetInstruction FPUSH32))] ++
      [XorExpr (NotExpr nofcond) (ImplementsExpr ofpush (TargetInstruction NOFPUSH))]
+
+prologueConstraints _ _ True (Just osp32, Just _, Just ofpush, _, [], _)
+  = [XorExpr (NotExpr (ActiveExpr osp32)) (ImplementsExpr ofpush (TargetInstruction FPUSH32))] ++
+    [NotExpr (ImplementsExpr ofpush (TargetInstruction NOFPUSH))]
 
 prologueConstraints _ _ True (Just osp32, Just osp, Just ofpush, _, [p1,p2,p3,p4,p5,p6], _) =
   let nofcond = AndExpr [NotExpr (ActiveExpr osp32),
@@ -710,6 +717,9 @@ epilogueConstraints _ True _ (Just osp32, _, _, Just ofpop, _, _)
   = [XorExpr (ActiveExpr osp32) (ImplementsExpr ofpop (TargetInstruction FPOP))] ++
     [NotExpr (ImplementsExpr ofpop (TargetInstruction NOFPOP))]
 
+epilogueConstraints _ _ True (Nothing, Just _, _, Just ofpop, _, [])
+  = [ImplementsExpr ofpop (TargetInstruction FPOP)]
+
 epilogueConstraints _ _ True (Nothing, Just osp, _, Just ofpop, _, [p1,p2,p3,p4,p5,p6]) =
   let nofcond = AndExpr [NotExpr (ActiveExpr osp),
                          XorExpr (XorExpr (XorExpr (ActiveExpr p1) (ActiveExpr p2))
@@ -717,6 +727,10 @@ epilogueConstraints _ _ True (Nothing, Just osp, _, Just ofpop, _, [p1,p2,p3,p4,
                                  (XorExpr (ActiveExpr p5) (ActiveExpr p6))]
   in [NotExpr (ImplementsExpr ofpop (TargetInstruction FPOP32))] ++
      [XorExpr (NotExpr nofcond) (ImplementsExpr ofpop (TargetInstruction NOFPOP))]
+
+epilogueConstraints _ _ True (Just osp32, Just _, _, Just ofpop, _, [])
+  = [XorExpr (NotExpr (ActiveExpr osp32)) (ImplementsExpr ofpop (TargetInstruction FPOP32))] ++
+    [NotExpr (ImplementsExpr ofpop (TargetInstruction NOFPOP))]
 
 epilogueConstraints _ _ True (Just osp32, Just osp, _, Just ofpop, _, [p1,p2,p3,p4,p5,p6]) =
   let nofcond = AndExpr [NotExpr (ActiveExpr osp32),
