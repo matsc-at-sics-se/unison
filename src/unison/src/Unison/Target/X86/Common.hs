@@ -84,6 +84,9 @@ ambiguateReg r
   let i = fromJust $ L.elemIndex r $ registers (RegisterClass FR128)
   in (registers (RegisterClass AMBIG)) !! i
 
+ambiguateReg r
+  | r `elem` registers (RegisterClass VR256) = r
+
 isMoveInstr i =
   i `elem` [IMOVE8, IMOVE16, IMOVE32, IMOVE64,
             FMOVE32, FMOVE64, FMOVE128, FMOVE256]
