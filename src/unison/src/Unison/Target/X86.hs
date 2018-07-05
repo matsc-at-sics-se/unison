@@ -217,7 +217,7 @@ rematInstrs i
               MOVSX16rm8, MOVSX32rm8, MOVSX32_NOREXrm8, MOVSX32rm16, MOVSX64rm8, MOVSX64rm16, MOVSX64rm32, 
               MOVZX16rm8, MOVZX32rm8, MOVZX32_NOREXrm8, MOVZX32rm16, MOVZX64rm8, MOVZX64rm16,
               IMUL64rmi32,
-              VMOVAPSrm, VMOVUPSrm, VMOVSDrm, VMOVAPSYrm,
+              VMOVSDrm, VMOVAPSrm, VMOVUPSrm, VMOVAPSYrm, VMOVUPSYrm,
               SETAEr, SETAr, SETBEr, SETBr, SETEr, SETGEr, SETGr, SETLEr, SETLr,
               SETNEr, SETNOr, SETNPr, SETNSr, SETOr, SETPr, SETSr,
               SETB_C8r, SETB_C16r, SETB_C32r, SETB_C64r,
@@ -226,7 +226,7 @@ rematInstrs i
               SETEm_unison, SETGEm_unison, SETGm_unison, SETLEm_unison,
               SETLm_unison, SETNEm_unison, SETNOm_unison, SETNPm_unison,
               SETNSm_unison, SETOm_unison, SETPm_unison, SETSm_unison] = Nothing
-  | otherwise = trace ("consider rematInstrs " ++ show i) Nothing
+  | otherwise = trace ("uni: consider rematInstrs " ++ show i) Nothing
 
 -- | Transforms copy instructions into natural instructions
 
