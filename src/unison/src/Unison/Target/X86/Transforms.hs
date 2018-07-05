@@ -726,7 +726,8 @@ instructionMemWidth ti
   | ti `elem` [MOV16mi, MOV16mr] = 2
   | ti `elem` [MOV32mi, MOV32mr] = 4
   | ti `elem` [MOV64mi32, MOV64mr] = 8
-  | ti `elem` [VMOVAPSYmr] = 32
+  | ti `elem` [VMOVAPSmr, VMOVUPSmr] = 16
+  | ti `elem` [VMOVAPSYmr, VMOVUPSYmr] = 32
   | True = error ("unmatched: instructionMemWidth " ++ show ti)
 
 -- This transform inserts Prologue/Epilogue, either simple or complex,
