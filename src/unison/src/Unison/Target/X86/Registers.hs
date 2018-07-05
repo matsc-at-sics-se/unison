@@ -30,116 +30,116 @@ registerArray = [RegisterClass GPR,
 
 -- | Register atoms of 1-byte registers
 
-registerAtoms AL = (R000, R000)
-registerAtoms CL = (R010, R010)
-registerAtoms DL = (R020, R020)
-registerAtoms BL = (R030, R030)
-registerAtoms SIL = (R040, R040)
-registerAtoms DIL = (R050, R050)
-registerAtoms SPL = (R060, R060)
-registerAtoms BPL = (R070, R070)
-registerAtoms R8B = (R100, R100)
-registerAtoms R9B = (R110, R110)
-registerAtoms R10B = (R120, R120)
-registerAtoms R11B = (R130, R130)
-registerAtoms R12B = (R140, R140)
-registerAtoms R13B = (R150, R150)
-registerAtoms R14B = (R160, R160)
-registerAtoms R15B = (R170, R170)
+registerAtoms AL = (AL, AL)
+registerAtoms CL = (CL, CL)
+registerAtoms DL = (DL, DL)
+registerAtoms BL = (BL, BL)
+registerAtoms SIL = (SIL, SIL)
+registerAtoms DIL = (DIL, DIL)
+registerAtoms SPL = (SPL, SPL)
+registerAtoms BPL = (BPL, BPL)
+registerAtoms R8B = (R8B, R8B)
+registerAtoms R9B = (R9B, R9B)
+registerAtoms R10B = (R10B, R10B)
+registerAtoms R11B = (R11B, R11B)
+registerAtoms R12B = (R12B, R12B)
+registerAtoms R13B = (R13B, R13B)
+registerAtoms R14B = (R14B, R14B)
+registerAtoms R15B = (R15B, R15B)
 
-registerAtoms AH = (R001, R001)
-registerAtoms CH = (R011, R011)
-registerAtoms DH = (R021, R021)
-registerAtoms BH = (R031, R031)
+registerAtoms AH = (AH, AH)
+registerAtoms CH = (CH, CH)
+registerAtoms DH = (DH, DH)
+registerAtoms BH = (BH, BH)
 
 -- | Register atoms of 2-byte registers
 
-registerAtoms AX = (R000, R001)
+registerAtoms AX = (AL, AH)
 registerAtoms AX_HI = (R002, R003)
-registerAtoms CX = (R010, R011)
+registerAtoms CX = (CL, CH)
 registerAtoms CX_HI = (R012, R013)
-registerAtoms DX = (R020, R021)
+registerAtoms DX = (DL, DH)
 registerAtoms DX_HI = (R022, R023)
-registerAtoms BX = (R030, R031)
+registerAtoms BX = (BL, BH)
 registerAtoms BX_HI = (R032, R033)
-registerAtoms SI = (R040, R041)
+registerAtoms SI = (SIL, R041)
 registerAtoms SI_HI = (R042, R043)
-registerAtoms DI = (R050, R051)
+registerAtoms DI = (DIL, R051)
 registerAtoms DI_HI = (R052, R053)
-registerAtoms SP = (R060, R061)
+registerAtoms SP = (SPL, R061)
 registerAtoms SP_HI = (R062, R063)
-registerAtoms BP = (R070, R071)
+registerAtoms BP = (BPL, R071)
 registerAtoms BP_HI = (R072, R073)
-registerAtoms R8W = (R100, R101)
+registerAtoms R8W = (R8B, R101)
 registerAtoms R8W_HI = (R102, R103)
-registerAtoms R9W = (R110, R111)
+registerAtoms R9W = (R9B, R111)
 registerAtoms R9W_HI = (R112, R113)
-registerAtoms R10W = (R120, R121)
+registerAtoms R10W = (R10B, R121)
 registerAtoms R10W_HI = (R122, R123)
-registerAtoms R11W = (R130, R131)
+registerAtoms R11W = (R11B, R131)
 registerAtoms R11W_HI = (R132, R133)
-registerAtoms R12W = (R140, R141)
+registerAtoms R12W = (R12B, R141)
 registerAtoms R12W_HI = (R142, R143)
-registerAtoms R13W = (R150, R151)
+registerAtoms R13W = (R13B, R151)
 registerAtoms R13W_HI = (R152, R153)
-registerAtoms R14W = (R160, R161)
+registerAtoms R14W = (R14B, R161)
 registerAtoms R14W_HI = (R162, R163)
-registerAtoms R15W = (R170, R171)
+registerAtoms R15W = (R15B, R171)
 registerAtoms R15W_HI = (R172, R173)
 
 -- | Register atoms of 4-byte registers
 
-registerAtoms EAX = (R000, R003)
+registerAtoms EAX = (AL, R003)
 registerAtoms EAX_HI = (R004, R007) {- handy shorthand in function calls -}
-registerAtoms ECX = (R010, R013)
+registerAtoms ECX = (CL, R013)
 registerAtoms ECX_HI = (R014, R017)
-registerAtoms EDX = (R020, R023)
+registerAtoms EDX = (DL, R023)
 registerAtoms EDX_HI = (R024, R027)
-registerAtoms EBX = (R030, R033)
+registerAtoms EBX = (BL, R033)
 registerAtoms EBX_HI = (R034, R037)
-registerAtoms ESI = (R040, R043)
+registerAtoms ESI = (SIL, R043)
 registerAtoms ESI_HI = (R044, R047)
-registerAtoms EDI = (R050, R053)
+registerAtoms EDI = (DIL, R053)
 registerAtoms EDI_HI = (R054, R057)
-registerAtoms ESP = (R060, R063)
+registerAtoms ESP = (SPL, R063)
 registerAtoms ESP_HI = (R064, R067)
-registerAtoms EBP = (R070, R073)
+registerAtoms EBP = (BPL, R073)
 registerAtoms EBP_HI = (R074, R077)
-registerAtoms R8D = (R100, R103)
+registerAtoms R8D = (R8B, R103)
 registerAtoms R8D_HI = (R104, R107)
-registerAtoms R9D = (R110, R113)
+registerAtoms R9D = (R9B, R113)
 registerAtoms R9D_HI = (R114, R117)
-registerAtoms R10D = (R120, R123)
+registerAtoms R10D = (R10B, R123)
 registerAtoms R10D_HI = (R124, R127)
-registerAtoms R11D = (R130, R133)
+registerAtoms R11D = (R11B, R133)
 registerAtoms R11D_HI = (R134, R137)
-registerAtoms R12D = (R140, R143)
+registerAtoms R12D = (R12B, R143)
 registerAtoms R12D_HI = (R144, R147)
-registerAtoms R13D = (R150, R153)
+registerAtoms R13D = (R13B, R153)
 registerAtoms R13D_HI = (R154, R157)
-registerAtoms R14D = (R160, R163)
+registerAtoms R14D = (R14B, R163)
 registerAtoms R14D_HI = (R164, R167)
-registerAtoms R15D = (R170, R173)
+registerAtoms R15D = (R15B, R173)
 registerAtoms R15D_HI = (R174, R177)
 
 -- | Register atoms of 8-byte registers
 
-registerAtoms RAX = (R000, R007)
-registerAtoms RCX = (R010, R017)
-registerAtoms RDX = (R020, R027)
-registerAtoms RBX = (R030, R037)
-registerAtoms RSI = (R040, R047)
-registerAtoms RDI = (R050, R057)
-registerAtoms RSP = (R060, R067)
-registerAtoms RBP = (R070, R077)
-registerAtoms R8 = (R100, R107)
-registerAtoms R9 = (R110, R117)
-registerAtoms R10 = (R120, R127)
-registerAtoms R11 = (R130, R137)
-registerAtoms R12 = (R140, R147)
-registerAtoms R13 = (R150, R157)
-registerAtoms R14 = (R160, R167)
-registerAtoms R15 = (R170, R177)
+registerAtoms RAX = (AL, R007)
+registerAtoms RCX = (CL, R017)
+registerAtoms RDX = (DL, R027)
+registerAtoms RBX = (BL, R037)
+registerAtoms RSI = (SIL, R047)
+registerAtoms RDI = (DIL, R057)
+registerAtoms RSP = (SPL, R067)
+registerAtoms RBP = (BPL, R077)
+registerAtoms R8 = (R8B, R107)
+registerAtoms R9 = (R9B, R117)
+registerAtoms R10 = (R10B, R127)
+registerAtoms R11 = (R11B, R137)
+registerAtoms R12 = (R12B, R147)
+registerAtoms R13 = (R13B, R157)
+registerAtoms R14 = (R14B, R167)
+registerAtoms R15 = (R15B, R177)
 
 -- | Register atoms of 32-bit floating-point registers (UMM*, syntax %xmm*)
 
@@ -241,10 +241,10 @@ registerAtoms YMM15 = (R1140, R1177)
 
 -- | Register atoms of 16-byte caller-saved "registers"
 
-registerAtoms RCX_RDX = (R010, R027)
-registerAtoms RSI_RDI = (R040, R057)
-registerAtoms R8_R9 = (R100, R117)
-registerAtoms R10_R11 = (R120, R137)
+registerAtoms RCX_RDX = (CL, R027)
+registerAtoms RSI_RDI = (SIL, R057)
+registerAtoms R8_R9 = (R8B, R117)
+registerAtoms R10_R11 = (R10B, R137)
 
 -- | Giant caller-saved XMM register atom
 
@@ -268,22 +268,22 @@ regClasses =
 -- | Individual registers of each register class (octal, internal names)
 
 registers (RegisterClass GPR) =
-    [R000, R001, R002, R003, R004, R005, R006, R007,
-     R010, R011, R012, R013, R014, R015, R016, R017,
-     R020, R021, R022, R023, R024, R025, R026, R027,
-     R030, R031, R032, R033, R034, R035, R036, R037,
-     R040, R041, R042, R043, R044, R045, R046, R047,
-     R050, R051, R052, R053, R054, R055, R056, R057,
-     R060, R061, R062, R063, R064, R065, R066, R067,
-     R070, R071, R072, R073, R074, R075, R076, R077,
-     R100, R101, R102, R103, R104, R105, R106, R107,
-     R110, R111, R112, R113, R114, R115, R116, R117,
-     R120, R121, R122, R123, R124, R125, R126, R127,
-     R130, R131, R132, R133, R134, R135, R136, R137,
-     R140, R141, R142, R143, R144, R145, R146, R147,
-     R150, R151, R152, R153, R154, R155, R156, R157,
-     R160, R161, R162, R163, R164, R165, R166, R167,
-     R170, R171, R172, R173, R174, R175, R176, R177]
+    [AL, AH, R002, R003, R004, R005, R006, R007,
+     CL, CH, R012, R013, R014, R015, R016, R017,
+     DL, DH, R022, R023, R024, R025, R026, R027,
+     BL, BH, R032, R033, R034, R035, R036, R037,
+     SIL, R041, R042, R043, R044, R045, R046, R047,
+     DIL, R051, R052, R053, R054, R055, R056, R057,
+     SPL, R061, R062, R063, R064, R065, R066, R067,
+     BPL, R071, R072, R073, R074, R075, R076, R077,
+     R8B, R101, R102, R103, R104, R105, R106, R107,
+     R9B, R111, R112, R113, R114, R115, R116, R117,
+     R10B, R121, R122, R123, R124, R125, R126, R127,
+     R11B, R131, R132, R133, R134, R135, R136, R137,
+     R12B, R141, R142, R143, R144, R145, R146, R147,
+     R13B, R151, R152, R153, R154, R155, R156, R157,
+     R14B, R161, R162, R163, R164, R165, R166, R167,
+     R15B, R171, R172, R173, R174, R175, R176, R177]
 
 registers (RegisterClass FPR) =
     [R200, R201, R202, R203, R204, R205, R206, R207,
@@ -561,39 +561,39 @@ instance Show X86Register where
 regStrings = M.fromList $
   [(EFLAGS, "eflags"),
    (RIP, "rip"),
-   (R000, "al"),
-   (R001, "ah"),
+   (AL, "al"),
+   (AH, "ah"),
    (R002, "r002"),
    (R003, "r003"),
    (R004, "r004"),
    (R005, "r005"),
    (R006, "r006"),
    (R007, "r007"),
-   (R010, "cl"),
-   (R011, "ch"),
+   (CL, "cl"),
+   (CH, "ch"),
    (R012, "r012"),
    (R013, "r013"),
    (R014, "r014"),
    (R015, "r015"),
    (R016, "r016"),
    (R017, "r017"),
-   (R020, "dl"),
-   (R021, "dh"),
+   (DL, "dl"),
+   (DH, "dh"),
    (R022, "r022"),
    (R023, "r023"),
    (R024, "r024"),
    (R025, "r025"),
    (R026, "r026"),
    (R027, "r027"),
-   (R030, "bl"),
-   (R031, "bh"),
+   (BL, "bl"),
+   (BH, "bh"),
    (R032, "r032"),
    (R033, "r033"),
    (R034, "r034"),
    (R035, "r035"),
    (R036, "r036"),
    (R037, "r037"),
-   (R040, "sil"),
+   (SIL, "sil"),
    (R041, "r041"),
    (R042, "r042"),
    (R043, "r043"),
@@ -601,7 +601,7 @@ regStrings = M.fromList $
    (R045, "r045"),
    (R046, "r046"),
    (R047, "r047"),
-   (R050, "dil"),
+   (DIL, "dil"),
    (R051, "r051"),
    (R052, "r052"),
    (R053, "r053"),
@@ -609,7 +609,7 @@ regStrings = M.fromList $
    (R055, "r055"),
    (R056, "r056"),
    (R057, "r057"),
-   (R060, "spl"),
+   (SPL, "spl"),
    (R061, "r061"),
    (R062, "r062"),
    (R063, "r063"),
@@ -617,7 +617,7 @@ regStrings = M.fromList $
    (R065, "r065"),
    (R066, "r066"),
    (R067, "r067"),
-   (R070, "bpl"),
+   (BPL, "bpl"),
    (R071, "r071"),
    (R072, "r072"),
    (R073, "r073"),
@@ -625,7 +625,7 @@ regStrings = M.fromList $
    (R075, "r075"),
    (R076, "r076"),
    (R077, "r077"),
-   (R100, "r8b"),
+   (R8B, "r8b"),
    (R101, "r101"),
    (R102, "r102"),
    (R103, "r103"),
@@ -633,7 +633,7 @@ regStrings = M.fromList $
    (R105, "r105"),
    (R106, "r106"),
    (R107, "r107"),
-   (R110, "r9b"),
+   (R9B, "r9b"),
    (R111, "r111"),
    (R112, "r112"),
    (R113, "r113"),
@@ -641,7 +641,7 @@ regStrings = M.fromList $
    (R115, "r115"),
    (R116, "r116"),
    (R117, "r117"),
-   (R120, "r10b"),
+   (R10B, "r10b"),
    (R121, "r121"),
    (R122, "r122"),
    (R123, "r123"),
@@ -649,7 +649,7 @@ regStrings = M.fromList $
    (R125, "r125"),
    (R126, "r126"),
    (R127, "r127"),
-   (R130, "r11b"),
+   (R11B, "r11b"),
    (R131, "r131"),
    (R132, "r132"),
    (R133, "r133"),
@@ -657,7 +657,7 @@ regStrings = M.fromList $
    (R135, "r135"),
    (R136, "r136"),
    (R137, "r137"),
-   (R140, "t12b"),
+   (R12B, "t12b"),
    (R141, "r141"),
    (R142, "r142"),
    (R143, "r143"),
@@ -665,7 +665,7 @@ regStrings = M.fromList $
    (R145, "r145"),
    (R146, "r146"),
    (R147, "r147"),
-   (R150, "r13b"),
+   (R13B, "r13b"),
    (R151, "r151"),
    (R152, "r152"),
    (R153, "r153"),
@@ -673,7 +673,7 @@ regStrings = M.fromList $
    (R155, "r155"),
    (R156, "r156"),
    (R157, "r157"),
-   (R160, "r14b"),
+   (R14B, "r14b"),
    (R161, "r161"),
    (R162, "r162"),
    (R163, "r163"),
@@ -681,7 +681,7 @@ regStrings = M.fromList $
    (R165, "r165"),
    (R166, "r166"),
    (R167, "r167"),
-   (R170, "r15b"),
+   (R15B, "r15b"),
    (R171, "r171"),
    (R172, "r172"),
    (R173, "r173"),
@@ -1217,26 +1217,6 @@ regStrings = M.fromList $
    (R1215, "r1215"),
    (R1216, "r1216"),
    (R1217, "r1217"),
-   (AL, "al"),
-   (CL, "cl"),
-   (DL, "dl"),
-   (BL, "bl"),
-   (SIL, "sil"),
-   (DIL, "dil"),
-   (SPL, "spl"),
-   (BPL, "bpl"),
-   (R8B, "r8b"),
-   (R9B, "r9b"),
-   (R10B, "r10b"),
-   (R11B, "r11b"),
-   (R12B, "r12b"),
-   (R13B, "r13b"),
-   (R14B, "r14b"),
-   (R15B, "r15b"),
-   (AH, "ah"),
-   (CH, "ch"),
-   (DH, "dh"),
-   (BH, "bh"),
    (AX, "ax"),
    (CX, "cx"),
    (DX, "dx"),

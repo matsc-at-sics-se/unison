@@ -14,39 +14,30 @@ module Unison.Target.X86.X86RegisterDecl (X86Register (..)) where
 data X86Register =
     EFLAGS |
     RIP |
-    R000 |
-    R001 |
     R002 |
     R003 |
     R004 |
     R005 |
     R006 |
     R007 | 
-    R010 |
-    R011 |
     R012 |
     R013 |
     R014 |
     R015 |
     R016 |
     R017 | 
-    R020 |
-    R021 |
     R022 |
     R023 |
     R024 |
     R025 |
     R026 |
     R027 | 
-    R030 |
-    R031 |
     R032 |
     R033 |
     R034 |
     R035 |
     R036 |
     R037 | 
-    R040 |
     R041 |
     R042 |
     R043 |
@@ -54,7 +45,6 @@ data X86Register =
     R045 |
     R046 |
     R047 | 
-    R050 |
     R051 |
     R052 |
     R053 |
@@ -62,7 +52,6 @@ data X86Register =
     R055 |
     R056 |
     R057 | 
-    R060 |
     R061 |
     R062 |
     R063 |
@@ -70,7 +59,6 @@ data X86Register =
     R065 |
     R066 |
     R067 | 
-    R070 |
     R071 |
     R072 |
     R073 |
@@ -78,7 +66,6 @@ data X86Register =
     R075 |
     R076 |
     R077 | 
-    R100 |
     R101 |
     R102 |
     R103 |
@@ -86,7 +73,6 @@ data X86Register =
     R105 |
     R106 |
     R107 | 
-    R110 |
     R111 |
     R112 |
     R113 |
@@ -94,7 +80,6 @@ data X86Register =
     R115 |
     R116 |
     R117 | 
-    R120 |
     R121 |
     R122 |
     R123 |
@@ -102,7 +87,6 @@ data X86Register =
     R125 |
     R126 |
     R127 | 
-    R130 |
     R131 |
     R132 |
     R133 |
@@ -110,7 +94,6 @@ data X86Register =
     R135 |
     R136 |
     R137 | 
-    R140 |
     R141 |
     R142 |
     R143 |
@@ -118,7 +101,6 @@ data X86Register =
     R145 |
     R146 |
     R147 | 
-    R150 |
     R151 |
     R152 |
     R153 |
@@ -126,7 +108,6 @@ data X86Register =
     R155 |
     R156 |
     R157 | 
-    R160 |
     R161 |
     R162 |
     R163 |
@@ -134,7 +115,6 @@ data X86Register =
     R165 |
     R166 |
     R167 | 
-    R170 |
     R171 |
     R172 |
     R173 |
