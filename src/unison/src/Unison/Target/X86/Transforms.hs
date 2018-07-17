@@ -796,6 +796,7 @@ suppressCombineCopies' t2h o @ SingleOperation {oOpr = Virtual (co @ Combine {oC
 suppressCombineCopies' _ o = o
 
 -- This transform prevents any STORE* from occurring before the prologue and any LOAD* from occurring after the epilogue.
+-- Also, it puts POP_cst sequences in reverse order wrt. the PUSH_cst sequence.
 -- Note that a LOAD* can have a _remat alternative, which could write dead eflags.
 -- Note that STORE* can be mixed with PUSH and LOAD* can be mixed with POP*.
 
@@ -829,7 +830,7 @@ moveEpf' pops epi (o:code)
 --   = [o] ++ moveEpf' pops epi code
 moveEpf' pops epi (o:code)
   | isCopy o
-  = moveEpf' (pops ++ [o]) epi code
+  = moveEpf' (o:pops) epi code
 moveEpf' pops epi code
   = [epi] ++ pops ++ code
 
