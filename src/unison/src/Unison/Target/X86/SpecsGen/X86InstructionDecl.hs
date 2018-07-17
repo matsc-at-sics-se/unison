@@ -4200,6 +4200,8 @@ data X86Instruction = AAA
                     | XSHA256
                     | XSTORE
                     | XTEST
+                    | MOV64ri64
+                    | MOV64r0
                     | ISTORE8
                     | ISTORE16
                     | ISTORE32
@@ -5851,6 +5853,12 @@ data X86Instruction = AAA
                     | MOV64ri32_source
                     | MOV64ri32_demat
                     | MOV64ri32_remat
+                    | MOV64ri64_source
+                    | MOV64ri64_demat
+                    | MOV64ri64_remat
+                    | MOV64r0_source
+                    | MOV64r0_demat
+                    | MOV64r0_remat
                     | LEA16r_source
                     | LEA16r_demat
                     | LEA16r_remat

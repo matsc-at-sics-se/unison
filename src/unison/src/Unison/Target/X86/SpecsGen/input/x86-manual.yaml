@@ -6,6 +6,21 @@ instruction-set:
   - group: MANUAL
     instructions:
 
+        - id:                 MOV64ri64
+          parent:             MOV32ri64
+          operands:
+           - dst:             [register, def, GR64]
+           - src:             bound
+          uses:               [src]
+          defines:            [dst]
+
+        - id:                 MOV64r0
+          parent:             MOV32r0
+          operands:
+           - dst:             [register, def, GR64]
+          uses:               []
+          defines:            [dst]
+
         - id:                 ISTORE8
           parent:             MOV8mr
           type:               copy

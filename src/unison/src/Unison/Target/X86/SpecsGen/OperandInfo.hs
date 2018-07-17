@@ -48,8 +48,8 @@ operandInfo i
       TemporaryInfo (RegisterClass GR32) 1 False,
       TemporaryInfo (RegisterClass GR32) 1 False])
   | i `elem`
-      [POP64r, POP64rmr, RDFLAGS64, RDFSBASE64, RDGSBASE64, RDRAND64r,
-       RDSEED64r, SETB_C64r, SLDT64r, SMSW64r, STR64r]
+      [MOV64r0, POP64r, POP64rmr, RDFLAGS64, RDFSBASE64, RDGSBASE64,
+       RDRAND64r, RDSEED64r, SETB_C64r, SLDT64r, SMSW64r, STR64r]
     = ([], [TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem` [RDTSC] =
     ([],
@@ -84,7 +84,7 @@ operandInfo i
   | i `elem`
       [FsFLD0SS_source, MOV32r0_source, MOV32r1_source, MOV32r_1_source]
     = ([], [TemporaryInfo (InfiniteRegisterClass RM32) 0 False])
-  | i `elem` [FsFLD0SD_source] =
+  | i `elem` [FsFLD0SD_source, MOV64r0_source] =
     ([], [TemporaryInfo (InfiniteRegisterClass RM64) 0 False])
   | i `elem` [V_SET0, V_SETALLONES] =
     ([], [TemporaryInfo (RegisterClass VR128) 1 False])
@@ -797,7 +797,10 @@ operandInfo i
   | i `elem` [ISTORE64, MOV64mr_unison, PUSH_cst] =
     ([TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (InfiniteRegisterClass M64) 1 False])
-  | i `elem` [LEA64r_demat, MOV64ri32_demat, MOV64ri_demat] =
+  | i `elem`
+      [LEA64r_demat, MOV64r0_demat, MOV64ri32_demat, MOV64ri64_demat,
+       MOV64ri_demat]
+    =
     ([TemporaryInfo (RegisterClass GR64) 0 False],
      [TemporaryInfo (InfiniteRegisterClass RM64) 0 False])
   | i `elem` [MOV64toPQIrr, VMOV64toPQIrr] =
@@ -1870,7 +1873,10 @@ operandInfo i
   | i `elem` [FsFLD0SD_remat] =
     ([TemporaryInfo (InfiniteRegisterClass RM64) 0 False],
      [TemporaryInfo (RegisterClass FR64) 1 False])
-  | i `elem` [LEA64r_remat, MOV64ri32_remat, MOV64ri_remat] =
+  | i `elem`
+      [LEA64r_remat, MOV64r0_remat, MOV64ri32_remat, MOV64ri64_remat,
+       MOV64ri_remat]
+    =
     ([TemporaryInfo (InfiniteRegisterClass RM64) 0 False],
      [TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem` [MOV8ri_remat] =
@@ -3449,7 +3455,7 @@ operandInfo i
     ([BoundInfo], [TemporaryInfo (RegisterClass GR16) 1 False])
   | i `elem` [IN32ri, MOV32ri, MOV32ri64, MOV32ri_alt, MOVPC32r] =
     ([BoundInfo], [TemporaryInfo (RegisterClass GR32) 1 False])
-  | i `elem` [MOV64ri, MOV64ri32, POP_fi] =
+  | i `elem` [MOV64ri, MOV64ri32, MOV64ri64, POP_fi] =
     ([BoundInfo], [TemporaryInfo (RegisterClass GR64) 1 False])
   | i `elem` [IN8ri, MOV8ri, MOV8ri_alt] =
     ([BoundInfo], [TemporaryInfo (RegisterClass GR8) 1 False])
@@ -3465,7 +3471,7 @@ operandInfo i
     ([BoundInfo], [TemporaryInfo (InfiniteRegisterClass RM16) 0 False])
   | i `elem` [MOV32ri64_source, MOV32ri_alt_source, MOV32ri_source] =
     ([BoundInfo], [TemporaryInfo (InfiniteRegisterClass RM32) 0 False])
-  | i `elem` [MOV64ri32_source, MOV64ri_source] =
+  | i `elem` [MOV64ri32_source, MOV64ri64_source, MOV64ri_source] =
     ([BoundInfo], [TemporaryInfo (InfiniteRegisterClass RM64) 0 False])
   | i `elem` [MOV8ri_source] =
     ([BoundInfo], [TemporaryInfo (InfiniteRegisterClass RM8) 0 False])

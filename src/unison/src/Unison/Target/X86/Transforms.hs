@@ -11,6 +11,7 @@ This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.X86.Transforms
     (disambiguateFunction,
+     addRemat64bit,
      cleanFunRegisters,
      promoteImplicitOperands,
      expandPseudos,
@@ -54,7 +55,6 @@ import Unison.Target.X86.X86RegisterClassDecl
 import Unison.Target.X86.Registers
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
-
 
 
 -- This transformation disambiguates XMM* (%xmm*) regs as UMM*, VMM*, or WMM*
@@ -152,6 +152,50 @@ disambiguateFunOperand amb2det f p @ MachineReg {mrName = r, mrFlags = fs}
   p {mrName = amb2det M.! r}
 
 disambiguateFunOperand _ _ p = p
+
+
+-- This transformation finds opportunities to use a rematerializable zero-extended-to-64-bits load immediate
+
+addRemat64bit mf @ MachineFunction {mfBlocks = blocks} =
+  let tempOccs = group $ sort $ funTempOccs mf
+      blocks' = map (addRemat64bitBlock tempOccs) blocks
+  in mf {mfBlocks = blocks'}
+
+addRemat64bitBlock tempOccs b @ MachineBlock {mbInstructions = insns} =
+  let insns'  = addRemat64bitScan tempOccs insns
+  in b {mbInstructions = insns'}
+
+addRemat64bitScan tempOccs ( mi1 @ MachineSingle {msOpcode = MachineTargetOpc MOV32ri64,
+                                                  msOperands = [t1,con]}
+                           : MachineSingle {msOpcode = MachineVirtualOpc MachineIR.IMPLICIT_DEF}
+                           : MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COMBINE,
+                                            msOperands = [t2,_,_]}
+                           : rest
+                           ) | length (tempOccs !! (fromInteger (mtId t1))) == 2 =
+  let mi1' = mi1 {msOpcode = MachineTargetOpc MOV64ri64,
+                  msOperands = [t2,con]}
+  in (mi1' : addRemat64bitScan tempOccs rest)
+
+addRemat64bitScan tempOccs ( mi1 @ MachineSingle {msOpcode = MachineTargetOpc MOV32r0,
+                                                  msOperands = (t1 : _)}
+                           : MachineSingle {msOpcode = MachineVirtualOpc MachineIR.IMPLICIT_DEF}
+                           : MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COMBINE,
+                                            msOperands = [t2,_,_]}
+                           : rest
+                           ) | length (tempOccs !! (fromInteger (mtId t1))) == 2 =
+  let mi1' = mi1 {msOpcode = MachineTargetOpc MOV64r0,
+                  msOperands = [t2]}
+  in (mi1' : addRemat64bitScan tempOccs rest)
+
+addRemat64bitScan tempOccs (mi : rest) =
+  mi : addRemat64bitScan tempOccs rest
+
+addRemat64bitScan _ [] = []
+
+
+funTempOccs mf = concat [miTempOccs mi | mi <- flattenMachineFunction mf]
+
+miTempOccs mi = [id | MachineTemp {mtId = id} <- msOperands mi]
 
 
 

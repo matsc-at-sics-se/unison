@@ -1199,16 +1199,17 @@ parent i
   | i `elem` [IMOVE16] = Just MOV16rr
   | i `elem` [MOV32mi_unison] = Just MOV32mi
   | i `elem` [ISTORE32, MOV32mr_unison] = Just MOV32mr
-  | i `elem` [MOV32r0_demat, MOV32r0_remat, MOV32r0_source] =
-    Just MOV32r0
+  | i `elem` [MOV32r0_demat, MOV32r0_remat, MOV32r0_source, MOV64r0]
+    = Just MOV32r0
   | i `elem` [MOV32r1_demat, MOV32r1_remat, MOV32r1_source] =
     Just MOV32r1
   | i `elem` [MOV32r_1_demat, MOV32r_1_remat, MOV32r_1_source] =
     Just MOV32r_1
   | i `elem` [MOV32ri_demat, MOV32ri_remat, MOV32ri_source] =
     Just MOV32ri
-  | i `elem` [MOV32ri64_demat, MOV32ri64_remat, MOV32ri64_source] =
-    Just MOV32ri64
+  | i `elem`
+      [MOV32ri64_demat, MOV32ri64_remat, MOV32ri64_source, MOV64ri64]
+    = Just MOV32ri64
   | i `elem`
       [MOV32ri_alt_demat, MOV32ri_alt_remat, MOV32ri_alt_source]
     = Just MOV32ri_alt
@@ -1216,10 +1217,14 @@ parent i
   | i `elem` [IMOVE32] = Just MOV32rr
   | i `elem` [MOV64mi32_unison] = Just MOV64mi32
   | i `elem` [ISTORE64, MOV64mr_unison] = Just MOV64mr
+  | i `elem` [MOV64r0_demat, MOV64r0_remat, MOV64r0_source] =
+    Just MOV64r0
   | i `elem` [MOV64ri_demat, MOV64ri_remat, MOV64ri_source] =
     Just MOV64ri
   | i `elem` [MOV64ri32_demat, MOV64ri32_remat, MOV64ri32_source] =
     Just MOV64ri32
+  | i `elem` [MOV64ri64_demat, MOV64ri64_remat, MOV64ri64_source] =
+    Just MOV64ri64
   | i `elem` [ILOAD64, MOV64rm_unison] = Just MOV64rm
   | i `elem` [IMOVE64] = Just MOV64rr
   | i `elem` [MOV64toPQIrm_unison] = Just MOV64toPQIrm

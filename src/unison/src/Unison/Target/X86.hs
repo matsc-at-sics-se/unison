@@ -405,7 +405,7 @@ fromCopy (Just (Linear {oUs = us}))
   | isDematInstr i =
     Linear {oIs = [mkNullInstruction], oUs = [s], oDs = [d]}
   | isRematInstr i =
-    Linear {oIs = [TargetInstruction (originalInstr i)], oUs = us, oDs = [d]}
+    fromCopy Nothing (Natural Linear {oIs = [TargetInstruction (originalInstr i)], oUs = us, oDs = [d]})
   | True =
     Linear {oIs = [TargetInstruction i], oUs = [s], oDs = [d]}
 
@@ -420,6 +420,10 @@ fromCopy _ (Natural o @ Linear {oIs = [TargetInstruction i]})
 -- handle reselected instructions
 --
 
+fromCopy _ (Natural Linear {oIs = [TargetInstruction MOV64ri64], oUs = us, oDs = [d]})
+  = Linear {oIs = [TargetInstruction MOV32ri64], oUs = us, oDs = [reg64ToReg32 d]}
+fromCopy _ (Natural Linear {oIs = [TargetInstruction MOV64r0], oUs = us, oDs = [d]})
+  = Linear {oIs = [TargetInstruction MOV32r0], oUs = us, oDs = [reg64ToReg32 d]}
 fromCopy _ (Natural Linear {oIs = [TargetInstruction ADD32ri_LEA], oUs = [r,i], oDs = [d]})
   = Linear {oIs = [TargetInstruction LEA64_32r],
             oUs = [mkBound (toMachineOperand (reg32ToReg64 r)),
@@ -526,7 +530,7 @@ nop = Linear [TargetInstruction NOOP] [] []
 
 -- FIXME: revisit this clause if these instructions involve XOR
 readWriteInfo i
-  | i `elem` [MOV32r0, MOV32r0_remat, MOV32r1, MOV32r1_remat, MOV32r_1, MOV32r_1_remat]
+  | i `elem` [MOV64r0, MOV64r0_remat, MOV32r0, MOV32r0_remat, MOV32r1, MOV32r1_remat, MOV32r_1, MOV32r_1_remat]
   = ([], [])
 
 readWriteInfo i
@@ -556,6 +560,7 @@ stackDirection = API.StackGrowsDown
 -- | Target dependent pre-processing functions
 
 preProcess _ = [disambiguateFunction,
+                addRemat64bit,
                 mapToMachineInstruction cleanFunRegisters,
                 mapToMachineInstruction promoteImplicitOperands]
 

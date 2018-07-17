@@ -20,7 +20,7 @@ module Unison.Target.X86.Common
      spillInstrs, condMoveInstrs, condMoveInverses, condMoveAlts,
      promotedRegs, readsSideEffect,
      writesSideEffect, isDirtyYMMInsn, isDirtyYMMOp, isUseYMMInsn,
-     reg32ToReg64, machineReg32ToReg64) where
+     reg32ToReg64, machineReg32ToReg64, reg64ToReg32) where
 
 import qualified Data.Map as M
 import qualified Data.List as L
@@ -137,6 +137,8 @@ rematVersions = M.fromList
    (MOV32ri_alt, RematTriple MOV32ri_alt_source MOV32ri_alt_demat MOV32ri_alt_remat),
    (MOV64ri, RematTriple MOV64ri_source MOV64ri_demat MOV64ri_remat),
    (MOV64ri32, RematTriple MOV64ri32_source MOV64ri32_demat MOV64ri32_remat),
+   (MOV64ri64, RematTriple MOV64ri64_source MOV64ri64_demat MOV64ri64_remat),
+   (MOV64r0, RematTriple MOV64r0_source MOV64r0_demat MOV64r0_remat),
    (LEA16r, RematTriple LEA16r_source LEA16r_demat LEA16r_remat),
    (LEA32r, RematTriple LEA32r_source LEA32r_demat LEA32r_remat),
    (LEA64r, RematTriple LEA64r_source LEA64r_demat LEA64r_remat),
@@ -243,6 +245,9 @@ reg32ToReg64 (Register (TargetRegister r)) =
   let r' = reg32ToReg64' r
   in (Register (TargetRegister r'))
 
+machineReg32ToReg64 MachineReg {mrName = r} =
+  mkMachineReg (reg32ToReg64' r)
+
 reg32ToReg64' EAX = RAX
 reg32ToReg64' ECX = RCX
 reg32ToReg64' EDX = RDX
@@ -260,8 +265,26 @@ reg32ToReg64' R13D = R13
 reg32ToReg64' R14D = R14
 reg32ToReg64' R15D = R15
 
-machineReg32ToReg64 MachineReg {mrName = r} =
-  mkMachineReg (reg32ToReg64' r)
+reg64ToReg32 (Register (TargetRegister r)) =
+  let r' = reg64ToReg32' r
+  in (Register (TargetRegister r'))
+
+reg64ToReg32' RAX = EAX
+reg64ToReg32' RCX = ECX
+reg64ToReg32' RDX = EDX
+reg64ToReg32' RBX = EBX
+reg64ToReg32' RSI = ESI
+reg64ToReg32' RDI = EDI
+reg64ToReg32' RSP = ESP
+reg64ToReg32' RBP = EBP
+reg64ToReg32' R8 = R8D
+reg64ToReg32' R9 = R9D
+reg64ToReg32' R10 = R10D
+reg64ToReg32' R11 = R11D
+reg64ToReg32' R12 = R12D
+reg64ToReg32' R13 = R13D
+reg64ToReg32' R14 = R14D
+reg64ToReg32' R15 = R15D
 
 --
 -- Memory-operand versions of register-operand instructions 
