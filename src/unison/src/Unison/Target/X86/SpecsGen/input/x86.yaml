@@ -12544,13 +12544,14 @@ instruction-set:
           type:               linear
           operands:
            - dst:             [register, def, VR128]
-           - src1:            [register, use, VR128]
+           - src0:            [register, use, VR128]
+           - src1:            [register, use, ptr_rc]
            - src2:            bound
            - src3:            [register, use, ptr_rc_nosp]
            - src4:            bound
            - src5:            bound
            - cc:              bound
-          uses:               [src1, src1, src2, src3, src4, src5, cc]
+          uses:               [src0, src1, src2, src3, src4, src5, cc]
           defines:            [dst]
           size:               0
           affects:
@@ -12576,13 +12577,14 @@ instruction-set:
           type:               linear
           operands:
            - dst:             [register, def, VR128]
-           - src1:            [register, use, VR128]
+           - src0:            [register, use, VR128]
+           - src1:            [register, use, ptr_rc]
            - src2:            bound
            - src3:            [register, use, ptr_rc_nosp]
            - src4:            bound
            - src5:            bound
            - cc:              bound
-          uses:               [src1, src1, src2, src3, src4, src5, cc]
+          uses:               [src0, src1, src2, src3, src4, src5, cc]
           defines:            [dst]
           size:               0
           affects:
@@ -37203,12 +37205,13 @@ instruction-set:
           type:               linear
           operands:
            - dst:             [register, def, FR64]
-           - src1:            [register, use, FR64]
+           - src0:            [register, use, FR64]
+           - src1:            [register, use, ptr_rc]
            - src2:            bound
            - src3:            [register, use, ptr_rc_nosp]
            - src4:            bound
            - src5:            bound
-          uses:               [src1, src1, src2, src3, src4, src5]
+          uses:               [src0, src1, src2, src3, src4, src5]
           defines:            [dst]
           size:               0
           affects:
@@ -37233,12 +37236,13 @@ instruction-set:
           type:               linear
           operands:
            - dst:             [register, def, FR64]
-           - src1:            [register, use, FR64]
+           - src0:            [register, use, FR64]
+           - src1:            [register, use, ptr_rc]
            - src2:            bound
            - src3:            [register, use, ptr_rc_nosp]
            - src4:            bound
            - src5:            bound
-          uses:               [src1, src1, src2, src3, src4, src5]
+          uses:               [src0, src1, src2, src3, src4, src5]
           defines:            [dst]
           size:               0
           affects:
@@ -37263,12 +37267,13 @@ instruction-set:
           type:               linear
           operands:
            - dst:             [register, def, FR32]
-           - src1:            [register, use, FR32]
+           - src0:            [register, use, FR32]
+           - src1:            [register, use, ptr_rc]
            - src2:            bound
            - src3:            [register, use, ptr_rc_nosp]
            - src4:            bound
            - src5:            bound
-          uses:               [src1, src1, src2, src3, src4, src5]
+          uses:               [src0, src1, src2, src3, src4, src5]
           defines:            [dst]
           size:               0
           affects:
@@ -37293,12 +37298,13 @@ instruction-set:
           type:               linear
           operands:
            - dst:             [register, def, FR32]
-           - src1:            [register, use, FR32]
+           - src0:            [register, use, FR32]
+           - src1:            [register, use, ptr_rc]
            - src2:            bound
            - src3:            [register, use, ptr_rc_nosp]
            - src4:            bound
            - src5:            bound
-          uses:               [src1, src1, src2, src3, src4, src5]
+          uses:               [src0, src1, src2, src3, src4, src5]
           defines:            [dst]
           size:               0
           affects:

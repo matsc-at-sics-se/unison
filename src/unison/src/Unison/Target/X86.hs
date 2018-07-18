@@ -560,6 +560,7 @@ stackDirection = API.StackGrowsDown
 -- | Target dependent pre-processing functions
 
 preProcess _ = [disambiguateFunction,
+                mkConsistentFunction,
                 addRemat64bit,
                 mapToMachineInstruction cleanFunRegisters,
                 mapToMachineInstruction promoteImplicitOperands]

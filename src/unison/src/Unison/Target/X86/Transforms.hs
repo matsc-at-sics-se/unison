@@ -11,6 +11,7 @@ This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.X86.Transforms
     (disambiguateFunction,
+     mkConsistentFunction,
      addRemat64bit,
      cleanFunRegisters,
      promoteImplicitOperands,
@@ -152,6 +153,68 @@ disambiguateFunOperand amb2det f p @ MachineReg {mrName = r, mrFlags = fs}
   p {mrName = amb2det M.! r}
 
 disambiguateFunOperand _ _ p = p
+
+-- This transformation barfs on inconsistent float arguments, eventually modifying the opcode
+
+mkConsistentFunction mf @ MachineFunction {mfBlocks = blocks} =
+  let tid2rc   = registerClassMap mf
+      blocks' = map (mkConsistentBlock tid2rc) blocks
+  in mf {mfBlocks = blocks'}
+
+
+mkConsistentBlock tid2rc b @ MachineBlock {mbInstructions = insns} =
+  let insns'  = map (mkConsistentMI tid2rc) insns
+  in b {mbInstructions = insns'}
+
+mkConsistentMI _ mi @ MachineSingle {msOpcode = MachineTargetOpc i}
+  | i `elem` [RETQ, TAILJMPr64] = mi
+
+mkConsistentMI tid2rc mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = ps} =
+  let (uif,dif) = SpecsGen.operandInfo i
+      duif = dif ++ uif
+      ps' = [p | p <- ps, explicitOperand p]
+  in if (length ps') /= (length duif)
+     then error ("wrong number of operands: " ++ show mi) mi
+     else mkConsistentMI' tid2rc mi i (zip duif ps')
+
+mkConsistentMI _ mi = mi
+
+mkConsistentMI' tid2rc mi i formalActual =
+  let ok = foldl (operandTypeCheck tid2rc) True formalActual
+  in if ok
+     then mi
+     else let signature = ["_" ++ (tid2rc M.! id) | (_,MachineTemp {mtId = id}) <- formalActual]
+              i' = SpecsGen.readOp (show i ++ concat signature)
+          in mi {msOpcode = MachineTargetOpc i'}
+
+operandTypeCheck tid2rc True (TemporaryInfo {oiRegClass = (RegisterClass frc)}, MachineTemp {mtId = id}) =
+  let arc = (tid2rc M.! id)
+  in regClassTypeCheck frc arc
+
+operandTypeCheck _ ok _ = ok
+
+regClassTypeCheck Ptr_rc _ = True
+regClassTypeCheck Ptr_rc_norex _ = True
+regClassTypeCheck Ptr_rc_nosp _ = True
+regClassTypeCheck Ptr_rc_norex_nosp _ = True
+regClassTypeCheck Ptr_rc_tailcall _ = True
+regClassTypeCheck GR8 _ = True
+regClassTypeCheck GR8_NOREX _ = True
+regClassTypeCheck GR16 _ = True
+regClassTypeCheck GR32 _ = True
+regClassTypeCheck GR32_NOAX _ = True
+regClassTypeCheck GR32_NOREX _ = True
+regClassTypeCheck GR64 _ = True
+regClassTypeCheck GR64_NOSP _ = True
+regClassTypeCheck FR32 "fr32" = True
+regClassTypeCheck FR64 "fr64" = True
+regClassTypeCheck VR128 "fr128" = True
+regClassTypeCheck VR128 "vr128" = True
+regClassTypeCheck VR256 "vr256" = True
+regClassTypeCheck _ _ = False
+
+explicitOperand MachineReg {mrName = r, mrFlags = (_ : _)} = not (r `elem` [EFLAGS, RSP])
+explicitOperand _ = True
 
 
 -- This transformation finds opportunities to use a rematerializable zero-extended-to-64-bits load immediate
@@ -468,7 +531,10 @@ expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc mto,
 --   | SpecsGen.itinerary i == NoItinerary
 --   = trace ("WARNING: missing expansion of instruction " ++ show i) [[mi]]
 
-expandPseudo _ mi = [[mi]]
+expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc i} =
+  case (SpecsGen.parent i) of
+  Nothing -> [[mi]]
+  Just i' -> [[mi {msOpcode = MachineTargetOpc i'}]]
 
 expandedTailJump TCRETURNdi = TAILJMPd
 expandedTailJump TCRETURNri = TAILJMPr

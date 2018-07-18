@@ -4199,6 +4199,13 @@ readOp "XSHA1" = XSHA1
 readOp "XSHA256" = XSHA256
 readOp "XSTORE" = XSTORE
 readOp "XTEST" = XTEST
+readOp "VCMPSDrr_fr128_fr128_fr64" = VCMPSDrr_fr128_fr128_fr64
+readOp "VUCOMISDrr_fr64_fr128" = VUCOMISDrr_fr64_fr128
+readOp "VCVTSD2SSrr_fr32_fr128_fr128"
+  = VCVTSD2SSrr_fr32_fr128_fr128
+readOp "VSUBSDrm_fr128_fr64_gr64" = VSUBSDrm_fr128_fr64_gr64
+readOp "VMOVSSrm_fr128" = VMOVSSrm_fr128
+readOp "VDIVSSrr_fr32_fr32_fr128" = VDIVSSrr_fr32_fr32_fr128
 readOp "MOV64ri64" = MOV64ri64
 readOp "MOV64r0" = MOV64r0
 readOp "ISTORE8" = ISTORE8

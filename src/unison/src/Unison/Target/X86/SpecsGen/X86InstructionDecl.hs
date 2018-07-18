@@ -4200,6 +4200,12 @@ data X86Instruction = AAA
                     | XSHA256
                     | XSTORE
                     | XTEST
+                    | VCMPSDrr_fr128_fr128_fr64
+                    | VUCOMISDrr_fr64_fr128
+                    | VCVTSD2SSrr_fr32_fr128_fr128
+                    | VSUBSDrm_fr128_fr64_gr64
+                    | VMOVSSrm_fr128
+                    | VDIVSSrr_fr32_fr32_fr128
                     | MOV64ri64
                     | MOV64r0
                     | ISTORE8

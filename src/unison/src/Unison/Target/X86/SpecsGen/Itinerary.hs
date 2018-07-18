@@ -661,9 +661,10 @@ itinerary i
       [ADDSSrr, ADDSSrr_Int, CMPSDrr_alt, CMPSSrr, CMPSSrr_alt,
        Int_CMPSSrr, Int_VCMPSDrr, Int_VCMPSSrr, MAXCSSrr, MAXSSrr,
        MAXSSrr_Int, MINCSSrr, MINSSrr, MINSSrr_Int, SUBSSrr, SUBSSrr_Int,
-       VADDSSrr, VADDSSrr_Int, VCMPSDrr, VCMPSDrr_alt, VCMPSSrr,
-       VCMPSSrr_alt, VMAXCSSrr, VMAXSSrr, VMAXSSrr_Int, VMINCSSrr,
-       VMINSSrr, VMINSSrr_Int, VSUBSSrr, VSUBSSrr_Int]
+       VADDSSrr, VADDSSrr_Int, VCMPSDrr, VCMPSDrr_alt,
+       VCMPSDrr_fr128_fr128_fr64, VCMPSSrr, VCMPSSrr_alt, VMAXCSSrr,
+       VMAXSSrr, VMAXSSrr_Int, VMINCSSrr, VMINSSrr, VMINSSrr_Int,
+       VSUBSSrr, VSUBSSrr_Int]
     = IIC_SSE_ALU_F32S_RR
   | i `elem`
       [ADDPDrm, ADDPDrm_unison, CMPPDrmi, CMPPDrmi_alt,
@@ -693,7 +694,7 @@ itinerary i
        VADDSDrm_unison, VMAXCSDrm, VMAXCSDrm_unison, VMAXSDrm,
        VMAXSDrm_Int, VMAXSDrm_unison, VMINCSDrm, VMINCSDrm_unison,
        VMINSDrm, VMINSDrm_Int, VMINSDrm_unison, VSUBSDrm, VSUBSDrm_Int,
-       VSUBSDrm_unison]
+       VSUBSDrm_fr128_fr64_gr64, VSUBSDrm_unison]
     = IIC_SSE_ALU_F64S_RM
   | i `elem`
       [ADDSDrr, ADDSDrr_Int, CMPSDrr, Int_CMPSDrr, MAXCSDrr, MAXSDrr,
@@ -752,7 +753,7 @@ itinerary i
       [COMISDrr, COMISSrr, Int_COMISDrr, Int_COMISSrr, Int_UCOMISDrr,
        Int_UCOMISSrr, Int_VCOMISDrr, Int_VCOMISSrr, Int_VUCOMISDrr,
        Int_VUCOMISSrr, UCOMISDrr, UCOMISSrr, VCOMISDrr, VCOMISSrr,
-       VUCOMISDrr, VUCOMISSrr]
+       VUCOMISDrr, VUCOMISDrr_fr64_fr128, VUCOMISSrr]
     = IIC_SSE_COMIS_RR
   | i `elem`
       [CVTDQ2PDrr, CVTPD2DQrm, CVTPD2DQrm_unison, CVTPD2PSrm,
@@ -827,11 +828,14 @@ itinerary i
        CVTSS2SDrr, Int_CVTSD2SSrr, Int_CVTSI2SD64rr, Int_CVTSI2SDrr,
        Int_CVTSI2SS64rr, Int_CVTSI2SSrr, Int_CVTSS2SDrr, Int_VCVTSD2SSrr,
        Int_VCVTSI2SD64rr, Int_VCVTSI2SDrr, Int_VCVTSI2SS64rr,
-       Int_VCVTSI2SSrr, Int_VCVTSS2SDrr, VCVTSD2SSrr, VCVTSS2SDrr]
+       Int_VCVTSI2SSrr, Int_VCVTSS2SDrr, VCVTSD2SSrr,
+       VCVTSD2SSrr_fr32_fr128_fr128, VCVTSS2SDrr]
     = IIC_SSE_CVT_Scalar_RR
   | i `elem` [DIVPSrr, VDIVPSYrr, VDIVPSrr] = IIC_SSE_DIV_F32P_RR
-  | i `elem` [DIVSSrr, DIVSSrr_Int, VDIVSSrr, VDIVSSrr_Int] =
-    IIC_SSE_DIV_F32S_RR
+  | i `elem`
+      [DIVSSrr, DIVSSrr_Int, VDIVSSrr, VDIVSSrr_Int,
+       VDIVSSrr_fr32_fr32_fr128]
+    = IIC_SSE_DIV_F32S_RR
   | i `elem`
       [DIVPDrm, DIVPDrm_unison, DIVPSrm, DIVPSrm_unison, VDIVPDYrm,
        VDIVPDYrm_unison, VDIVPDrm, VDIVPDrm_unison, VDIVPSYrm,
@@ -1083,7 +1087,7 @@ itinerary i
   | i `elem`
       [FLOAD32, FLOAD64, MOVSDrm, MOVSDrm_unison, MOVSSrm,
        MOVSSrm_unison, VMOVSDrm, VMOVSDrm_unison, VMOVSSrm,
-       VMOVSSrm_unison]
+       VMOVSSrm_fr128, VMOVSSrm_unison]
     = IIC_SSE_MOV_S_RM
   | i `elem`
       [MOVSDrr, MOVSDrr_REV, MOVSSrr, MOVSSrr_REV, VMOVSDrr,
