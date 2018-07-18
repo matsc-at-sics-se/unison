@@ -12,7 +12,7 @@ This file is part of Unison, see http://unison-code.github.io
 module Unison.Target.X86.Registers
     (registerArray, registerAtoms, regClasses, registers,
      subRegIndexType, infRegClassUsage, infRegClassBound,
-     reserved, callerSaved, calleeSaved) where
+     reserved, callerSaved, calleeSaved, regClassStringCanon) where
 
 import qualified Data.Map as M
 
@@ -1385,4 +1385,15 @@ regStrings = M.fromList $
    (R8_R9, "r8_r9"),
    (R10_R11, "r10_r11"),
    (YMM1_15, "ymm1_15")]
+
+regClassStringCanon = M.fromList $
+  [("gr8", GR8),
+   ("gr8_norex", GR8),
+   ("gr16", GR16),
+   ("gr32", GR32),
+   ("gr32_abcd", GR32),
+   ("gr32_norex", GR32),
+   ("gr32_noax", GR32),
+   ("gr64", GR64),
+   ("gr64_nosp", GR64)]
 

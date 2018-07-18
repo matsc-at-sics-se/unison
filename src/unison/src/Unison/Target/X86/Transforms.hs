@@ -158,26 +158,77 @@ disambiguateFunOperand _ _ p = p
 
 mkConsistentFunction mf @ MachineFunction {mfBlocks = blocks} =
   let tid2rc   = registerClassMap mf
-      blocks' = map (mkConsistentBlock tid2rc) blocks
+      newId    = newMachineTempId mf
+      (_, blocks') = mapAccumL (mkConsistentBlock tid2rc) newId blocks
   in mf {mfBlocks = blocks'}
 
 
-mkConsistentBlock tid2rc b @ MachineBlock {mbInstructions = insns} =
-  let insns'  = map (mkConsistentMI tid2rc) insns
-  in b {mbInstructions = insns'}
+mkConsistentBlock tid2rc newId b @ MachineBlock {mbInstructions = insns} =
+  let (newId', insns')  = mapAccumL (mkConsistentMI tid2rc) newId insns
+      insns'' = concat insns'
+  in (newId', b {mbInstructions = insns''})
 
-mkConsistentMI _ mi @ MachineSingle {msOpcode = MachineTargetOpc i}
-  | i `elem` [RETQ, TAILJMPr64] = mi
+mkConsistentMI tid2rc newId mi @ MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COPY,
+                                                msOperands = [MachineTemp {mtId = did}, MachineTemp {mtId = uid}]}
+  | M.member did tid2rc && M.member uid tid2rc =
+  let drc = tid2rc M.! did
+      urc = tid2rc M.! uid
+  in if drc == urc
+     then (newId, [mi])
+     else castCopy newId drc did urc uid mi
 
-mkConsistentMI tid2rc mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = ps} =
+mkConsistentMI tid2rc newId mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = ps}
+  | not (i `elem` [RETQ, TAILJMPr64]) = 
   let (uif,dif) = SpecsGen.operandInfo i
       duif = dif ++ uif
       ps' = [p | p <- ps, explicitOperand p]
   in if (length ps') /= (length duif)
-     then error ("wrong number of operands: " ++ show mi) mi
-     else mkConsistentMI' tid2rc mi i (zip duif ps')
+     then error ("wrong number of operands: " ++ show mi) (newId, [mi])
+     else (newId, [mkConsistentMI' tid2rc mi i (zip duif ps')])
 
-mkConsistentMI _ mi = mi
+mkConsistentMI _ newId mi = (newId, [mi])
+
+castCopy newId drc _ urc _ mi
+  | M.member drc regClassStringCanon && M.member urc regClassStringCanon &&
+    regClassStringCanon M.! drc == regClassStringCanon M.! urc =
+  (newId, [mi])
+
+castCopy newId "fr64" did "vr128" uid _ =
+  castCopyLow newId did uid
+
+castCopy newId "vr128" did "fr64" uid _ =
+  castCopyCombine newId did uid
+
+castCopy newId "fr32" did "fr128" uid _ =
+  castCopyLowLow newId did uid
+
+castCopy newId drc did urc uid _ =
+  error ("missing cast from %" ++ show uid ++ ":" ++ urc ++ " to %" ++ show did ++ ":" ++ drc) (newId, [])
+
+castCopyLow newId did uid =
+  let mi1 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.LOW,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp did, mkSimpleMachineTemp uid]}
+  in (newId, [mi1])
+
+castCopyCombine newId did uid =
+  let mi1 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.IMPLICIT_DEF,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp newId]}
+      mi2 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COMBINE,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp did, mkSimpleMachineTemp uid, mkSimpleMachineTemp newId]}
+  in (newId+1, [mi1, mi2])
+
+castCopyLowLow newId did uid =
+  let mi1 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.LOW,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp newId, mkSimpleMachineTemp uid]}
+      mi2 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.LOW,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp did, mkSimpleMachineTemp newId]}
+  in (newId+1, [mi1, mi2])
+
 
 mkConsistentMI' tid2rc mi i formalActual =
   let ok = foldl (operandTypeCheck tid2rc) True formalActual
@@ -221,7 +272,8 @@ explicitOperand _ = True
 
 addRemat64bit mf @ MachineFunction {mfBlocks = blocks} =
   let tempOccs = group $ sort $ funTempOccs mf
-      blocks' = map (addRemat64bitBlock tempOccs) blocks
+      tempOccs' = M.fromList [(head g, length g) | g <- tempOccs]
+      blocks' = map (addRemat64bitBlock tempOccs') blocks
   in mf {mfBlocks = blocks'}
 
 addRemat64bitBlock tempOccs b @ MachineBlock {mbInstructions = insns} =
@@ -234,7 +286,8 @@ addRemat64bitScan tempOccs ( mi1 @ MachineSingle {msOpcode = MachineTargetOpc MO
                            : MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COMBINE,
                                             msOperands = [t2,_,_]}
                            : rest
-                           ) | length (tempOccs !! (fromInteger (mtId t1))) == 2 =
+                           )
+  | tempOccs M.! (fromInteger (mtId t1)) == 2 =
   let mi1' = mi1 {msOpcode = MachineTargetOpc MOV64ri64,
                   msOperands = [t2,con]}
   in (mi1' : addRemat64bitScan tempOccs rest)
@@ -245,7 +298,8 @@ addRemat64bitScan tempOccs ( mi1 @ MachineSingle {msOpcode = MachineTargetOpc MO
                            : MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COMBINE,
                                             msOperands = [t2,_,_]}
                            : rest
-                           ) | length (tempOccs !! (fromInteger (mtId t1))) == 2 =
+                           ) 
+  | tempOccs M.! (fromInteger (mtId t1)) == 2 =
   let mi1' = mi1 {msOpcode = MachineTargetOpc MOV64r0,
                   msOperands = [t2]}
   in (mi1' : addRemat64bitScan tempOccs rest)
