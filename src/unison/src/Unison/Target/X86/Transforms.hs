@@ -178,7 +178,7 @@ mkConsistentMI tid2rc id MachineSingle {msOpcode = MachineVirtualOpc MachineIR.C
   in castCopy (dsz - usz) id did uid
 
 mkConsistentMI tid2rc id mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = ps}
-  | not (i `elem` [RETQ, TAILJMPr64]) =
+  | not (i `elem` [RETQ, TAILJMPr64]) && any isMachineTemp ps =
   let (uif,dif) = SpecsGen.operandInfo i
       nbImp    = length $ filter promotedImplicit    ps
       nbImpDef = length $ filter promotedImplicitDef ps
@@ -192,6 +192,9 @@ mkConsistentMI tid2rc id mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOp
      else mkConsistentMI' tid2rc id dif' da uif' ua mi
 
 mkConsistentMI _ id mi = (id, [mi])
+
+isMachineTemp MachineTemp {} = True
+isMachineTemp _ = False
 
 promotedImplicitDef MachineReg {mrName = r, mrFlags = [MachineRegImplicitDefine]} = not (r `elem` [EFLAGS, RSP])
 promotedImplicitDef _ = False
