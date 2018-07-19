@@ -158,114 +158,173 @@ disambiguateFunOperand _ _ p = p
 
 mkConsistentFunction mf @ MachineFunction {mfBlocks = blocks} =
   let tid2rc   = registerClassMap mf
-      newId    = newMachineTempId mf
-      (_, blocks') = mapAccumL (mkConsistentBlock tid2rc) newId blocks
+      id    = newMachineTempId mf
+      (_, blocks') = mapAccumL (mkConsistentBlock tid2rc) id blocks
   in mf {mfBlocks = blocks'}
 
 
-mkConsistentBlock tid2rc newId b @ MachineBlock {mbInstructions = insns} =
-  let (newId', insns')  = mapAccumL (mkConsistentMI tid2rc) newId insns
+mkConsistentBlock tid2rc id b @ MachineBlock {mbInstructions = insns} =
+  let (id', insns')  = mapAccumL (mkConsistentMI tid2rc) id insns
       insns'' = concat insns'
-  in (newId', b {mbInstructions = insns''})
+  in (id', b {mbInstructions = insns''})
 
-mkConsistentMI tid2rc newId mi @ MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COPY,
-                                                msOperands = [MachineTemp {mtId = did}, MachineTemp {mtId = uid}]}
+mkConsistentMI tid2rc id MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COPY,
+                                           msOperands = [MachineTemp {mtId = did}, MachineTemp {mtId = uid}]}
   | M.member did tid2rc && M.member uid tid2rc =
   let drc = tid2rc M.! did
       urc = tid2rc M.! uid
-  in if drc == urc
-     then (newId, [mi])
-     else castCopy newId drc did urc uid mi
+      dsz = safeGet "regClassStringToLogSize" regClassStringToLogSize drc
+      usz = safeGet "regClassStringToLogSize" regClassStringToLogSize urc
+  in castCopy (dsz - usz) id did uid
 
-mkConsistentMI tid2rc newId mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = ps}
-  | not (i `elem` [RETQ, TAILJMPr64]) = 
+mkConsistentMI tid2rc id mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOperands = ps}
+  | not (i `elem` [RETQ, TAILJMPr64]) =
   let (uif,dif) = SpecsGen.operandInfo i
-      duif = dif ++ uif
-      ps' = [p | p <- ps, explicitOperand p]
-  in if (length ps') /= (length duif)
-     then error ("wrong number of operands: " ++ show mi) (newId, [mi])
-     else (newId, [mkConsistentMI' tid2rc mi i (zip duif ps')])
+      nbImp    = length $ filter promotedImplicit    ps
+      nbImpDef = length $ filter promotedImplicitDef ps
+      nbUif    = length uif
+      nbDif    = length dif
+      uif'     = take (nbUif - nbImp) uif
+      dif'     = take (nbDif - nbImpDef) dif
+      (da,ua) = splitAt (length dif') [p | p <- ps, explicitOperand p]
+  in if (length da) /= (length dif') || (length ua) /= (length uif')
+     then error ("wrong number of operands: " ++ show mi) (id, [mi])
+     else mkConsistentMI' tid2rc id dif' da uif' ua mi
 
-mkConsistentMI _ newId mi = (newId, [mi])
+mkConsistentMI _ id mi = (id, [mi])
 
-castCopy newId drc _ urc _ mi
-  | M.member drc regClassStringCanon && M.member urc regClassStringCanon &&
-    regClassStringCanon M.! drc == regClassStringCanon M.! urc =
-  (newId, [mi])
+promotedImplicitDef MachineReg {mrName = r, mrFlags = [MachineRegImplicitDefine]} = not (r `elem` [EFLAGS, RSP])
+promotedImplicitDef _ = False
 
-castCopy newId "fr64" did "vr128" uid _ =
-  castCopyLow newId did uid
+promotedImplicit MachineReg {mrName = r, mrFlags = [MachineRegImplicit]} = not (r `elem` [EFLAGS, RSP])
+promotedImplicit _ = False
 
-castCopy newId "vr128" did "fr64" uid _ =
-  castCopyCombine newId did uid
+explicitOperand MachineReg {mrFlags = [f]} = not (f `elem` [MachineRegImplicit, MachineRegImplicitDefine])
+explicitOperand _ = True
 
-castCopy newId "fr32" did "fr128" uid _ =
-  castCopyLowLow newId did uid
+mkConsistentMI' tid2rc id dif da uif ua mi @ MachineSingle {msOperands = ps} =
+  let dplan = map (planCast tid2rc False) (zip dif da)
+      uplan = map (planCast tid2rc True) (zip uif ua)
+      ((id',trans'), post) = mapAccumL (applyCast False) (id, M.empty) dplan
+      ((id'',trans''), pre) = mapAccumL (applyCast True) (id', trans') uplan
+      ps' = map (applyTrans trans'') ps
+  in (id'', (concat pre) ++ [mi {msOperands = ps'}] ++ (concat post))
 
-castCopy newId drc did urc uid _ =
-  error ("missing cast from %" ++ show uid ++ ":" ++ urc ++ " to %" ++ show did ++ ":" ++ drc) (newId, [])
+planCast tid2rc isUse (TemporaryInfo {oiRegClass = (RegisterClass frc)}, MachineTemp {mtId = tid}) =
+  let arc = (tid2rc M.! tid)
+      fsz = safeGet "regClassToLogSize" regClassToLogSize frc
+      asz = safeGet "regClassStringToLogSize" regClassStringToLogSize arc
+      dif = if isUse then fsz-asz else asz-fsz
+  in (tid,dif)
 
-castCopyLow newId did uid =
+planCast _ _ _ = (0,0)
+
+applyCast _ (id,trans) (_, 0) = ((id,trans), [])
+
+-- given a use operand %tid
+-- generate cast code from %tid to %id
+-- change the operand to %id
+applyCast isUse (id, trans) (tid, dif) | isUse =
+  let (id', code) = castCopy dif (id+1) id tid
+      trans' = M.insert tid id trans
+  in ((id', trans'), code)
+
+-- given a def operand %tid
+-- generate cast code from %id to %tid
+-- change the operand to %id
+applyCast isUse (id, trans) (tid, dif) | not isUse =
+  let (id', code) = castCopy dif (id+1) tid id
+      trans' = M.insert tid id trans
+  in ((id', trans'), code)
+
+applyTrans trans MachineTemp {mtId = tid}
+  | M.member tid trans =
+  mkSimpleMachineTemp (trans M.! tid)
+
+applyTrans _ p = p
+
+safeGet label m key =
+  case M.lookup key m of
+  Just v -> v
+  Nothing -> error ("missing key " ++ show key ++ " in map " ++ label)
+
+castCopy (-3) id did uid =
+  let mi1 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.LOW,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp id, mkSimpleMachineTemp uid]}
+      mi2 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.LOW,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp (id+1), mkSimpleMachineTemp id]}
+      mi3 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.LOW,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp did, mkSimpleMachineTemp (id+1)]}
+  in (id+2, [mi1, mi2, mi3])
+
+castCopy (-2) id did uid =
+  let mi1 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.LOW,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp id, mkSimpleMachineTemp uid]}
+      mi2 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.LOW,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp did, mkSimpleMachineTemp id]}
+  in (id+1, [mi1, mi2])
+
+castCopy (-1) id did uid =
   let mi1 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.LOW,
                            msProperties = [],
                            msOperands = [mkSimpleMachineTemp did, mkSimpleMachineTemp uid]}
-  in (newId, [mi1])
+  in (id, [mi1])
 
-castCopyCombine newId did uid =
+castCopy (0) id did uid =
+  let mi1 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COPY,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp did, mkSimpleMachineTemp uid]}
+  in (id, [mi1])
+
+castCopy 1 id did uid =
   let mi1 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.IMPLICIT_DEF,
                            msProperties = [],
-                           msOperands = [mkSimpleMachineTemp newId]}
+                           msOperands = [mkSimpleMachineTemp id]}
       mi2 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COMBINE,
                            msProperties = [],
-                           msOperands = [mkSimpleMachineTemp did, mkSimpleMachineTemp uid, mkSimpleMachineTemp newId]}
-  in (newId+1, [mi1, mi2])
+                           msOperands = [mkSimpleMachineTemp did, mkSimpleMachineTemp uid, mkSimpleMachineTemp id]}
+  in (id+1, [mi1, mi2])
 
-castCopyLowLow newId did uid =
-  let mi1 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.LOW,
+castCopy 2 id did uid =
+  let mi1 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.IMPLICIT_DEF,
                            msProperties = [],
-                           msOperands = [mkSimpleMachineTemp newId, mkSimpleMachineTemp uid]}
-      mi2 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.LOW,
+                           msOperands = [mkSimpleMachineTemp id]}
+      mi2 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COMBINE,
                            msProperties = [],
-                           msOperands = [mkSimpleMachineTemp did, mkSimpleMachineTemp newId]}
-  in (newId+1, [mi1, mi2])
+                           msOperands = [mkSimpleMachineTemp (id+1), mkSimpleMachineTemp uid, mkSimpleMachineTemp id]}
+      mi3 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.IMPLICIT_DEF,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp (id+2)]}
+      mi4 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COMBINE,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp did, mkSimpleMachineTemp (id+1), mkSimpleMachineTemp (id+2)]}
+  in (id+3, [mi1, mi2, mi3, mi4])
 
-
-mkConsistentMI' tid2rc mi i formalActual =
-  let ok = foldl (operandTypeCheck tid2rc) True formalActual
-  in if ok
-     then mi
-     else let signature = ["_" ++ (tid2rc M.! id) | (_,MachineTemp {mtId = id}) <- formalActual]
-              i' = SpecsGen.readOp (show i ++ concat signature)
-          in mi {msOpcode = MachineTargetOpc i'}
-
-operandTypeCheck tid2rc True (TemporaryInfo {oiRegClass = (RegisterClass frc)}, MachineTemp {mtId = id}) =
-  let arc = (tid2rc M.! id)
-  in regClassTypeCheck frc arc
-
-operandTypeCheck _ ok _ = ok
-
-regClassTypeCheck Ptr_rc _ = True
-regClassTypeCheck Ptr_rc_norex _ = True
-regClassTypeCheck Ptr_rc_nosp _ = True
-regClassTypeCheck Ptr_rc_norex_nosp _ = True
-regClassTypeCheck Ptr_rc_tailcall _ = True
-regClassTypeCheck GR8 _ = True
-regClassTypeCheck GR8_NOREX _ = True
-regClassTypeCheck GR16 _ = True
-regClassTypeCheck GR32 _ = True
-regClassTypeCheck GR32_NOAX _ = True
-regClassTypeCheck GR32_NOREX _ = True
-regClassTypeCheck GR64 _ = True
-regClassTypeCheck GR64_NOSP _ = True
-regClassTypeCheck FR32 "fr32" = True
-regClassTypeCheck FR64 "fr64" = True
-regClassTypeCheck VR128 "fr128" = True
-regClassTypeCheck VR128 "vr128" = True
-regClassTypeCheck VR256 "vr256" = True
-regClassTypeCheck _ _ = False
-
-explicitOperand MachineReg {mrName = r, mrFlags = (_ : _)} = not (r `elem` [EFLAGS, RSP])
-explicitOperand _ = True
+castCopy 3 id did uid =
+  let mi1 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.IMPLICIT_DEF,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp id]}
+      mi2 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COMBINE,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp (id+1), mkSimpleMachineTemp uid, mkSimpleMachineTemp id]}
+      mi3 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.IMPLICIT_DEF,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp (id+2)]}
+      mi4 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COMBINE,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp (id+3), mkSimpleMachineTemp (id+1), mkSimpleMachineTemp (id+2)]}
+      mi5 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.IMPLICIT_DEF,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp (id+4)]}
+      mi6 = MachineSingle {msOpcode = MachineVirtualOpc MachineIR.COMBINE,
+                           msProperties = [],
+                           msOperands = [mkSimpleMachineTemp did, mkSimpleMachineTemp (id+3), mkSimpleMachineTemp (id+4)]}
+  in (id+5, [mi1, mi2, mi3, mi4, mi5, mi6])
 
 
 -- This transformation finds opportunities to use a rematerializable zero-extended-to-64-bits load immediate

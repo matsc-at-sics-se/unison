@@ -12,9 +12,11 @@ This file is part of Unison, see http://unison-code.github.io
 module Unison.Target.X86.Registers
     (registerArray, registerAtoms, regClasses, registers,
      subRegIndexType, infRegClassUsage, infRegClassBound,
-     reserved, callerSaved, calleeSaved, regClassStringCanon) where
+     reserved, callerSaved, calleeSaved,
+     regClassTable, regClassStringToLogSize, regClassToLogSize) where
 
 import qualified Data.Map as M
+import Data.List
 
 import Unison
 import Unison.Target.X86.X86RegisterDecl
@@ -166,20 +168,35 @@ registerAtoms UMM15 = (R1140, R1143)
 registerAtoms VMM0  = (R200, R207)
 registerAtoms VMM0_HI  = (R210, R217)
 registerAtoms VMM1  = (R240, R247)
+registerAtoms VMM1_HI  = (R250, R257)
 registerAtoms VMM2  = (R300, R307)
+registerAtoms VMM2_HI  = (R310, R317)
 registerAtoms VMM3  = (R340, R347)
+registerAtoms VMM3_HI  = (R350, R357)
 registerAtoms VMM4  = (R400, R407)
+registerAtoms VMM4_HI  = (R410, R417)
 registerAtoms VMM5  = (R440, R447)
+registerAtoms VMM5_HI  = (R450, R457)
 registerAtoms VMM6  = (R500, R507)
+registerAtoms VMM6_HI  = (R510, R517)
 registerAtoms VMM7  = (R540, R547)
+registerAtoms VMM7_HI  = (R550, R557)
 registerAtoms VMM8  = (R600, R607)
+registerAtoms VMM8_HI  = (R610, R617)
 registerAtoms VMM9  = (R640, R647)
+registerAtoms VMM9_HI  = (R650, R657)
 registerAtoms VMM10 = (R700, R707)
+registerAtoms VMM10_HI = (R710, R717)
 registerAtoms VMM11 = (R740, R747)
+registerAtoms VMM11_HI = (R750, R757)
 registerAtoms VMM12 = (R1000, R1007)
+registerAtoms VMM12_HI = (R1010, R1017)
 registerAtoms VMM13 = (R1040, R1047)
+registerAtoms VMM13_HI = (R1050, R1057)
 registerAtoms VMM14 = (R1100, R1107)
+registerAtoms VMM14_HI = (R1110, R1117)
 registerAtoms VMM15 = (R1140, R1147)
+registerAtoms VMM15_HI = (R1150, R1157)
 
 -- | Register atoms of 128-bit floating-point registers (WMM*, syntax %xmm*)
 
@@ -423,7 +440,8 @@ registers (RegisterClass FR64) =
      VMM8, VMM9, VMM10, VMM11, VMM12, VMM13, VMM14, VMM15]
 
 registers (RegisterClass FR64_AUX) =
-    [VMM0_HI]
+    [VMM0_HI, VMM1_HI, VMM2_HI, VMM3_HI, VMM4_HI, VMM5_HI, VMM6_HI, VMM7_HI,
+     VMM8_HI, VMM9_HI, VMM10_HI, VMM11_HI, VMM12_HI, VMM13_HI, VMM14_HI, VMM15_HI]
 
 registers (RegisterClass FR128) =
     [WMM0, WMM1, WMM2, WMM3, WMM4, WMM5, WMM6, WMM7,
@@ -1379,6 +1397,21 @@ regStrings = M.fromList $
    (YMM15, "ymm15"),
    (UMM0_HI, "umm0_hi"),
    (VMM0_HI, "vmm0_hi"),
+   (VMM1_HI, "vmm1_hi"),
+   (VMM2_HI, "vmm2_hi"),
+   (VMM3_HI, "vmm3_hi"),
+   (VMM4_HI, "vmm4_hi"),
+   (VMM5_HI, "vmm5_hi"),
+   (VMM6_HI, "vmm6_hi"),
+   (VMM7_HI, "vmm7_hi"),
+   (VMM8_HI, "vmm8_hi"),
+   (VMM9_HI, "vmm9_hi"),
+   (VMM10_HI, "vmm10_hi"),
+   (VMM11_HI, "vmm11_hi"),
+   (VMM12_HI, "vmm12_hi"),
+   (VMM13_HI, "vmm13_hi"),
+   (VMM14_HI, "vmm14_hi"),
+   (VMM15_HI, "vmm15_hi"),
    (WMM0_HI, "wmm0_hi"),
    (RCX_RDX, "rcx_rdx"),
    (RSI_RDI, "rsi_rdi"),
@@ -1386,14 +1419,36 @@ regStrings = M.fromList $
    (R10_R11, "r10_r11"),
    (YMM1_15, "ymm1_15")]
 
-regClassStringCanon = M.fromList $
-  [("gr8", GR8),
-   ("gr8_norex", GR8),
-   ("gr16", GR16),
-   ("gr32", GR32),
-   ("gr32_abcd", GR32),
-   ("gr32_norex", GR32),
-   ("gr32_noax", GR32),
-   ("gr64", GR64),
-   ("gr64_nosp", GR64)]
+data RegClassTriple = RegClassTriple {
+  string   :: [Char],
+  rc       :: X86RegisterClass,
+  logSize  :: Int}
+
+regClassTable =
+  [RegClassTriple "gr8" GR8 1,
+   RegClassTriple "gr8_norex" GR8_NOREX 1,
+   RegClassTriple "gr16" GR16 2,
+   RegClassTriple "gr32" GR32 3,
+   RegClassTriple "gr32_norex" GR32_NOREX 3,
+   RegClassTriple "gr32_NOAX" GR32_NOAX 3,
+   RegClassTriple "gr32_abcd" GR32 3,
+   RegClassTriple "gr64" GR64 4,
+   RegClassTriple "gr64_nosp" GR64_NOSP 4,
+   RegClassTriple "gr64" Ptr_rc 4,
+   RegClassTriple "gr64_nosp" Ptr_rc_nosp 4,
+   RegClassTriple "gr64" Ptr_rc_norex 4,
+   RegClassTriple "gr64_nosp" Ptr_rc_norex_nosp 4,
+   RegClassTriple "gr64_tc" Ptr_rc_tailcall 4,
+   RegClassTriple "gr64_with_sub_8bit" GR64 4,
+   RegClassTriple "fr32" FR32 3,
+   RegClassTriple "fr64" FR64 4,
+   RegClassTriple "fr128" FR128 5,
+   RegClassTriple "vr128" VR128 5,
+   RegClassTriple "vr256" VR256 6]
+
+regClassStringToLogSize = M.fromList $ nub $ sort $
+  [(string r, logSize r) | r <- regClassTable]
+
+regClassToLogSize = M.fromList $ nub $ sort $
+  [(rc r, logSize r) | r <- regClassTable]
 

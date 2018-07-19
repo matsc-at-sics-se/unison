@@ -832,6 +832,21 @@ data X86Register =
     YMM15 |
     UMM0_HI |
     VMM0_HI |
+    VMM1_HI |
+    VMM2_HI |
+    VMM3_HI |
+    VMM4_HI |
+    VMM5_HI |
+    VMM6_HI |
+    VMM7_HI |
+    VMM8_HI |
+    VMM9_HI |
+    VMM10_HI |
+    VMM11_HI |
+    VMM12_HI |
+    VMM13_HI |
+    VMM14_HI |
+    VMM15_HI |
     WMM0_HI |
     RCX_RDX |
     RSI_RDI |
