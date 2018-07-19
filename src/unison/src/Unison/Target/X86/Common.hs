@@ -10,7 +10,7 @@ Main authors:
 This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.X86.Common
-    (unitLatency, align, instrInfiniteUsage,
+    (unitLatency, align, instructionType, instrInfiniteUsage,
      isFloatClass, isFloatRegIR, isFloatReg,
      isAmbigReg, disAmbigReg, ambiguateReg,
      isMoveInstr, isStoreInstr, isLoadInstr,
@@ -38,6 +38,18 @@ import Unison.Target.X86.Registers
 unitLatency to = API.isBoolOption "unit-latency" to
 
 align to = API.isBoolOption "align" to
+
+-- | Gives the type of natural operation according to the instruction
+
+instructionType i
+    | i `elem` [TCRETURNdi, TCRETURNdi64,
+                TCRETURNmi, TCRETURNmi64,
+                TCRETURNri, TCRETURNri64,
+                TAILJMPd, TAILJMPd64, TAILJMPd64_REX,
+                TAILJMPm, TAILJMPm64, TAILJMPm64_REX,
+                TAILJMPr, TAILJMPr64, TAILJMPr64_REX
+                ] = TailCallInstructionType
+    | otherwise = SpecsGen.instructionType i
 
 instrInfiniteUsage i =
   let (use,def) = SpecsGen.operandInfo i

@@ -77,18 +77,6 @@ target =
 instance Read X86Instruction where
   readsPrec _ strOp = [(SpecsGen.readOp strOp, "")]
 
--- | Gives the type of natural operation according to the instruction
-
-instructionType i
-    | i `elem` [TCRETURNdi, TCRETURNdi64,
-                TCRETURNmi, TCRETURNmi64,
-                TCRETURNri, TCRETURNri64,
-                TAILJMPd, TAILJMPd64, TAILJMPd64_REX,
-                TAILJMPm, TAILJMPm64, TAILJMPm64_REX,
-                TAILJMPr, TAILJMPr64, TAILJMPr64_REX
-                ] = TailCallInstructionType
-    | otherwise = SpecsGen.instructionType i
-
 -- | Gives a set of def copies and a list of sets of use copies to extend the
 -- given temporary
 
