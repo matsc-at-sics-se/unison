@@ -1252,14 +1252,10 @@ parent i
   | i `elem` [MOVPDI2DImr_unison] = Just MOVPDI2DImr
   | i `elem` [MOVPQI2QImr_unison] = Just MOVPQI2QImr
   | i `elem` [MOVPQIto64rm_unison] = Just MOVPQIto64rm
-  | i `elem` [MOVSDmr_unison] = Just MOVSDmr
-  | i `elem` [MOVSDrm_unison] = Just MOVSDrm
   | i `elem` [MOVSDto64mr_unison] = Just MOVSDto64mr
   | i `elem` [MOVSHDUPrm_unison] = Just MOVSHDUPrm
   | i `elem` [MOVSLDUPrm_unison] = Just MOVSLDUPrm
   | i `elem` [MOVSS2DImr_unison] = Just MOVSS2DImr
-  | i `elem` [MOVSSmr_unison] = Just MOVSSmr
-  | i `elem` [MOVSSrm_unison] = Just MOVSSrm
   | i `elem` [MOVSX16rm8_unison] = Just MOVSX16rm8
   | i `elem` [MOVSX32_NOREXrm8_unison] = Just MOVSX32_NOREXrm8
   | i `elem` [MOVSX32rm16_unison] = Just MOVSX32rm16
@@ -1701,7 +1697,6 @@ parent i
   | i `elem` [VCMPPSrmi_alt_unison] = Just VCMPPSrmi_alt
   | i `elem` [VCMPSDrm_unison] = Just VCMPSDrm
   | i `elem` [VCMPSDrm_alt_unison] = Just VCMPSDrm_alt
-  | i `elem` [VCMPSDrr_fr128_fr128_fr64] = Just VCMPSDrr
   | i `elem` [VCMPSSrm_unison] = Just VCMPSSrm
   | i `elem` [VCMPSSrm_alt_unison] = Just VCMPSSrm_alt
   | i `elem` [VCOMISDrm_unison] = Just VCOMISDrm
@@ -1722,7 +1717,6 @@ parent i
   | i `elem` [VCVTSD2SI64rm_unison] = Just VCVTSD2SI64rm
   | i `elem` [VCVTSD2SIrm_unison] = Just VCVTSD2SIrm
   | i `elem` [VCVTSD2SSrm_unison] = Just VCVTSD2SSrm
-  | i `elem` [VCVTSD2SSrr_fr32_fr128_fr128] = Just VCVTSD2SSrr
   | i `elem` [VCVTSI2SD64rm_unison] = Just VCVTSI2SD64rm
   | i `elem` [VCVTSI2SDrm_unison] = Just VCVTSI2SDrm
   | i `elem` [VCVTSI2SS64rm_unison] = Just VCVTSI2SS64rm
@@ -1743,7 +1737,6 @@ parent i
   | i `elem` [VDIVPSrm_unison] = Just VDIVPSrm
   | i `elem` [VDIVSDrm_unison] = Just VDIVSDrm
   | i `elem` [VDIVSSrm_unison] = Just VDIVSSrm
-  | i `elem` [VDIVSSrr_fr32_fr32_fr128] = Just VDIVSSrr
   | i `elem` [VDPPDrmi_unison] = Just VDPPDrmi
   | i `elem` [VDPPSYrmi_unison] = Just VDPPSYrmi
   | i `elem` [VDPPSrmi_unison] = Just VDPPSrmi
@@ -2001,17 +1994,16 @@ parent i
   | i `elem` [VMOVPDI2DImr_unison] = Just VMOVPDI2DImr
   | i `elem` [VMOVPQI2QImr_unison] = Just VMOVPQI2QImr
   | i `elem` [VMOVPQIto64rm_unison] = Just VMOVPQIto64rm
-  | i `elem` [FSTORE64, VMOVSDmr_unison] = Just VMOVSDmr
-  | i `elem` [FLOAD64, VMOVSDrm_unison] = Just VMOVSDrm
+  | i `elem` [FSTORE64] = Just VMOVSDmr
+  | i `elem` [FLOAD64] = Just VMOVSDrm
   | i `elem` [VMOVSDto64mr_unison] = Just VMOVSDto64mr
   | i `elem` [VMOVSHDUPYrm_unison] = Just VMOVSHDUPYrm
   | i `elem` [VMOVSHDUPrm_unison] = Just VMOVSHDUPrm
   | i `elem` [VMOVSLDUPYrm_unison] = Just VMOVSLDUPYrm
   | i `elem` [VMOVSLDUPrm_unison] = Just VMOVSLDUPrm
   | i `elem` [VMOVSS2DImr_unison] = Just VMOVSS2DImr
-  | i `elem` [FSTORE32, VMOVSSmr_unison] = Just VMOVSSmr
-  | i `elem` [FLOAD32, VMOVSSrm_fr128, VMOVSSrm_unison] =
-    Just VMOVSSrm
+  | i `elem` [FSTORE32] = Just VMOVSSmr
+  | i `elem` [FLOAD32] = Just VMOVSSrm
   | i `elem` [VMOVUPDYmr_unison] = Just VMOVUPDYmr
   | i `elem` [VMOVUPDYrm_unison] = Just VMOVUPDYrm
   | i `elem` [VMOVUPDmr_unison] = Just VMOVUPDmr
@@ -2392,15 +2384,13 @@ parent i
   | i `elem` [VSUBPDrm_unison] = Just VSUBPDrm
   | i `elem` [VSUBPSYrm_unison] = Just VSUBPSYrm
   | i `elem` [VSUBPSrm_unison] = Just VSUBPSrm
-  | i `elem` [VSUBSDrm_fr128_fr64_gr64, VSUBSDrm_unison] =
-    Just VSUBSDrm
+  | i `elem` [VSUBSDrm_unison] = Just VSUBSDrm
   | i `elem` [VSUBSSrm_unison] = Just VSUBSSrm
   | i `elem` [VTESTPDYrm_unison] = Just VTESTPDYrm
   | i `elem` [VTESTPDrm_unison] = Just VTESTPDrm
   | i `elem` [VTESTPSYrm_unison] = Just VTESTPSYrm
   | i `elem` [VTESTPSrm_unison] = Just VTESTPSrm
   | i `elem` [VUCOMISDrm_unison] = Just VUCOMISDrm
-  | i `elem` [VUCOMISDrr_fr64_fr128] = Just VUCOMISDrr
   | i `elem` [VUCOMISSrm_unison] = Just VUCOMISSrm
   | i `elem` [VUNPCKHPDYrm_unison] = Just VUNPCKHPDYrm
   | i `elem` [VUNPCKHPDrm_unison] = Just VUNPCKHPDrm

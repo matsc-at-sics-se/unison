@@ -4200,12 +4200,6 @@ data X86Instruction = AAA
                     | XSHA256
                     | XSTORE
                     | XTEST
-                    | VCMPSDrr_fr128_fr128_fr64
-                    | VUCOMISDrr_fr64_fr128
-                    | VCVTSD2SSrr_fr32_fr128_fr128
-                    | VSUBSDrm_fr128_fr64_gr64
-                    | VMOVSSrm_fr128
-                    | VDIVSSrr_fr32_fr32_fr128
                     | MOV64ri64
                     | MOV64r0
                     | ISTORE8
@@ -4605,14 +4599,10 @@ data X86Instruction = AAA
                     | MOVPDI2DImr_unison
                     | MOVPQI2QImr_unison
                     | MOVPQIto64rm_unison
-                    | MOVSDrm_unison
-                    | MOVSDmr_unison
                     | MOVSDto64mr_unison
                     | MOVSHDUPrm_unison
                     | MOVSLDUPrm_unison
                     | MOVSS2DImr_unison
-                    | MOVSSrm_unison
-                    | MOVSSmr_unison
                     | MOVSX16rm8_unison
                     | MOVSX32_NOREXrm8_unison
                     | MOVSX32rm16_unison
@@ -5342,16 +5332,12 @@ data X86Instruction = AAA
                     | VMOVPDI2DImr_unison
                     | VMOVPQI2QImr_unison
                     | VMOVPQIto64rm_unison
-                    | VMOVSDrm_unison
-                    | VMOVSDmr_unison
                     | VMOVSDto64mr_unison
                     | VMOVSHDUPYrm_unison
                     | VMOVSHDUPrm_unison
                     | VMOVSLDUPYrm_unison
                     | VMOVSLDUPrm_unison
                     | VMOVSS2DImr_unison
-                    | VMOVSSrm_unison
-                    | VMOVSSmr_unison
                     | VMOVUPDYrm_unison
                     | VMOVUPDYmr_unison
                     | VMOVUPDrm_unison
