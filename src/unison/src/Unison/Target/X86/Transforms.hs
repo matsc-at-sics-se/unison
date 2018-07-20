@@ -516,9 +516,9 @@ expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc POP_fi, msOperands = 
 -- could do it with XOR, which would clobber EFLAGS, when it is safe, FIXME
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r0,
                                    msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc MOV64ri,
-          msOperands = [machineReg32ToReg64 dst,
-                        mkMachineImm 0]}]]
+  = let imm = mkMachineImm 0
+  in [[mi {msOpcode = mkMachineTargetOpc MOV32ri,
+           msOperands = [dst, imm]}]]
   -- = [[mi {msOpcode = mkMachineTargetOpc XOR32rr,
   --         msOperands = [dst, dst, dst]}]]
 
@@ -526,14 +526,14 @@ expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r0,
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r1,
                                    msOperands = [dst]}
   = let imm = mkMachineImm 1
-  in [[mi {msOpcode = mkMachineTargetOpc MOV64ri,
-           msOperands = [machineReg32ToReg64 dst, imm]}]]
+  in [[mi {msOpcode = mkMachineTargetOpc MOV32ri,
+           msOperands = [dst, imm]}]]
 
 -- could do it with XOR + DEC, which would clobber EFLAGS, when it is safe, FIXME
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32r_1,
                                    msOperands = [dst]}
   = let imm = mkMachineImm (-1)
-  in [[mi {msOpcode = mkMachineTargetOpc MOV64ri,
+  in [[mi {msOpcode = mkMachineTargetOpc MOV64ri32,
            msOperands = [machineReg32ToReg64 dst, imm]}]]
 
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32ri64}
@@ -541,39 +541,39 @@ expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc MOV32ri64}
 
 -- candidate for LEA?
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD16ri8_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD16ri8}]]
+  = [[mi {msOpcode = mkMachineTargetOpc OR16ri8}]]
 
 -- candidate for LEA?
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD16ri_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD16ri}]]
+  = [[mi {msOpcode = mkMachineTargetOpc OR16ri}]]
 
 -- candidate for LEA?
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD16rr_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD16rr}]]
+  = [[mi {msOpcode = mkMachineTargetOpc OR16rr}]]
 
 -- candidate for LEA?
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD32ri8_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD32ri8}]]
+  = [[mi {msOpcode = mkMachineTargetOpc OR32ri8}]]
 
 -- candidate for LEA?
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD32ri_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD32ri}]]
+  = [[mi {msOpcode = mkMachineTargetOpc OR32ri}]]
 
 -- candidate for LEA?
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD32rr_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD32rr}]]
+  = [[mi {msOpcode = mkMachineTargetOpc OR32rr}]]
 
 -- candidate for LEA?
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64ri8_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD64ri8}]]
+  = [[mi {msOpcode = mkMachineTargetOpc OR64ri8}]]
 
 -- candidate for LEA?
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64ri32_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD64ri32}]]
+  = [[mi {msOpcode = mkMachineTargetOpc OR64ri32}]]
 
 -- candidate for LEA?
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64rr_DB}
-  = [[mi {msOpcode = mkMachineTargetOpc ADD64rr}]]
+  = [[mi {msOpcode = mkMachineTargetOpc OR64rr}]]
 
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc AVX2_SETALLONES,
                                    msOperands = [dst]}
