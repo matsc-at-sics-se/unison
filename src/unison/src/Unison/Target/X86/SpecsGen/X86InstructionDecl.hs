@@ -4839,8 +4839,6 @@ data X86Instruction = AAA
                     | RORX64mi_unison
                     | ROUNDPDm_unison
                     | ROUNDPSm_unison
-                    | ROUNDSDm_unison
-                    | ROUNDSSm_unison
                     | RSQRTPSm_unison
                     | RSQRTSSm_unison
                     | SAR16m1_unison
@@ -5697,8 +5695,6 @@ data X86Instruction = AAA
                     | VRCPSSm_unison
                     | VROUNDPDm_unison
                     | VROUNDPSm_unison
-                    | VROUNDSDm_unison
-                    | VROUNDSSm_unison
                     | VROUNDYPDm_unison
                     | VROUNDYPSm_unison
                     | VRSQRTPSYm_unison

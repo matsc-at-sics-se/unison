@@ -5200,24 +5200,6 @@ instruction-set:
           uses:               [src2, src3]
           defines:            [src1]
 
-        - id:                 ROUNDSDm_unison
-          parent:             ROUNDSDm
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, M64]
-           - src3:            bound
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 ROUNDSSm_unison
-          parent:             ROUNDSSm
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, M32]
-           - src3:            bound
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
         - id:                 RSQRTPSm_unison
           parent:             RSQRTPSm
           operands:
@@ -12740,26 +12722,6 @@ instruction-set:
            - src2:            [register, use, M128]
            - src3:            bound
           uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VROUNDSDm_unison
-          parent:             VROUNDSDm
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M64]
-           - src4:            bound
-          uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VROUNDSSm_unison
-          parent:             VROUNDSSm
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M32]
-           - src4:            bound
-          uses:               [src2, src3, src4]
           defines:            [src1]
 
         - id:                 VROUNDYPDm_unison

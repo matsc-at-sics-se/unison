@@ -1493,8 +1493,6 @@ parent i
   | i `elem` [RORX64mi_unison] = Just RORX64mi
   | i `elem` [ROUNDPDm_unison] = Just ROUNDPDm
   | i `elem` [ROUNDPSm_unison] = Just ROUNDPSm
-  | i `elem` [ROUNDSDm_unison] = Just ROUNDSDm
-  | i `elem` [ROUNDSSm_unison] = Just ROUNDSSm
   | i `elem` [RSQRTPSm_unison] = Just RSQRTPSm
   | i `elem` [RSQRTSSm_unison] = Just RSQRTSSm
   | i `elem` [SAR16m1_unison] = Just SAR16m1
@@ -2363,8 +2361,6 @@ parent i
   | i `elem` [VRCPSSm_unison] = Just VRCPSSm
   | i `elem` [VROUNDPDm_unison] = Just VROUNDPDm
   | i `elem` [VROUNDPSm_unison] = Just VROUNDPSm
-  | i `elem` [VROUNDSDm_unison] = Just VROUNDSDm
-  | i `elem` [VROUNDSSm_unison] = Just VROUNDSSm
   | i `elem` [VROUNDYPDm_unison] = Just VROUNDYPDm
   | i `elem` [VROUNDYPSm_unison] = Just VROUNDYPSm
   | i `elem` [VRSQRTPSYm_unison] = Just VRSQRTPSYm

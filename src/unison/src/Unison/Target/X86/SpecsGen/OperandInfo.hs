@@ -1905,17 +1905,11 @@ operandInfo i
       TemporaryInfo (RegisterClass GR32) 0 False,
       TemporaryInfo (RegisterClass GR32) 0 False],
      [TemporaryInfo (RegisterClass VR128) 1 False])
-  | i `elem`
-      [PINSRDrm_unison, ROUNDSSm_unison, VPINSRDrm_unison,
-       VROUNDSSm_unison]
-    =
+  | i `elem` [PINSRDrm_unison, VPINSRDrm_unison] =
     ([TemporaryInfo (RegisterClass VR128) 0 False,
       TemporaryInfo (InfiniteRegisterClass M32) 0 False, BoundInfo],
      [TemporaryInfo (RegisterClass VR128) 1 False])
-  | i `elem`
-      [PINSRQrm_unison, ROUNDSDm_unison, VPINSRQrm_unison,
-       VROUNDSDm_unison]
-    =
+  | i `elem` [PINSRQrm_unison, VPINSRQrm_unison] =
     ([TemporaryInfo (RegisterClass VR128) 0 False,
       TemporaryInfo (InfiniteRegisterClass M64) 0 False, BoundInfo],
      [TemporaryInfo (RegisterClass VR128) 1 False])
