@@ -203,20 +203,35 @@ registerAtoms VMM15_HI = (R1150, R1157)
 registerAtoms WMM0  = (R200, R217)
 registerAtoms WMM0_HI  = (R220, R237)
 registerAtoms WMM1  = (R240, R257)
+registerAtoms WMM1_HI  = (R260, R277)
 registerAtoms WMM2  = (R300, R317)
+registerAtoms WMM2_HI  = (R320, R337)
 registerAtoms WMM3  = (R340, R357)
+registerAtoms WMM3_HI  = (R360, R377)
 registerAtoms WMM4  = (R400, R417)
+registerAtoms WMM4_HI  = (R420, R437)
 registerAtoms WMM5  = (R440, R457)
+registerAtoms WMM5_HI  = (R460, R477)
 registerAtoms WMM6  = (R500, R517)
+registerAtoms WMM6_HI  = (R520, R537)
 registerAtoms WMM7  = (R540, R557)
+registerAtoms WMM7_HI  = (R560, R577)
 registerAtoms WMM8  = (R600, R617)
+registerAtoms WMM8_HI  = (R620, R637)
 registerAtoms WMM9  = (R640, R657)
+registerAtoms WMM9_HI  = (R660, R677)
 registerAtoms WMM10 = (R700, R717)
+registerAtoms WMM10_HI  = (R720, R737)
 registerAtoms WMM11 = (R740, R757)
+registerAtoms WMM11_HI  = (R760, R777)
 registerAtoms WMM12 = (R1000, R1017)
+registerAtoms WMM12_HI  = (R1020, R1037)
 registerAtoms WMM13 = (R1040, R1057)
+registerAtoms WMM13_HI  = (R1060, R1077)
 registerAtoms WMM14 = (R1100, R1117)
+registerAtoms WMM14_HI  = (R1120, R1137)
 registerAtoms WMM15 = (R1140, R1157)
+registerAtoms WMM15_HI  = (R1160, R1177)
 
 -- | Register atoms of ambiguous floating-point registers (XXM*, syntax %xmm*)
 
@@ -448,7 +463,8 @@ registers (RegisterClass FR128) =
      WMM8, WMM9, WMM10, WMM11, WMM12, WMM13, WMM14, WMM15]
 
 registers (RegisterClass FR128_AUX) =
-    [WMM0_HI]
+    [WMM0_HI, WMM1_HI, WMM2_HI, WMM3_HI, WMM4_HI, WMM5_HI, WMM6_HI, WMM7_HI,
+     WMM8_HI, WMM9_HI, WMM10_HI, WMM11_HI, WMM12_HI, WMM13_HI, WMM14_HI, WMM15_HI]
 
 registers (RegisterClass VR128) =
     registers (RegisterClass FR128)
@@ -1413,6 +1429,21 @@ regStrings = M.fromList $
    (VMM14_HI, "vmm14_hi"),
    (VMM15_HI, "vmm15_hi"),
    (WMM0_HI, "wmm0_hi"),
+   (WMM1_HI, "wmm1_hi"),
+   (WMM2_HI, "wmm2_hi"),
+   (WMM3_HI, "wmm3_hi"),
+   (WMM4_HI, "wmm4_hi"),
+   (WMM5_HI, "wmm5_hi"),
+   (WMM6_HI, "wmm6_hi"),
+   (WMM7_HI, "wmm7_hi"),
+   (WMM8_HI, "wmm8_hi"),
+   (WMM9_HI, "wmm9_hi"),
+   (WMM10_HI, "wmm10_hi"),
+   (WMM11_HI, "wmm11_hi"),
+   (WMM12_HI, "wmm12_hi"),
+   (WMM13_HI, "wmm13_hi"),
+   (WMM14_HI, "wmm14_hi"),
+   (WMM15_HI, "wmm15_hi"),
    (RCX_RDX, "rcx_rdx"),
    (RSI_RDI, "rsi_rdi"),
    (R8_R9, "r8_r9"),

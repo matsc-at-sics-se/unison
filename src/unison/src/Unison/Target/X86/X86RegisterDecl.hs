@@ -848,6 +848,21 @@ data X86Register =
     VMM14_HI |
     VMM15_HI |
     WMM0_HI |
+    WMM1_HI |
+    WMM2_HI |
+    WMM3_HI |
+    WMM4_HI |
+    WMM5_HI |
+    WMM6_HI |
+    WMM7_HI |
+    WMM8_HI |
+    WMM9_HI |
+    WMM10_HI |
+    WMM11_HI |
+    WMM12_HI |
+    WMM13_HI |
+    WMM14_HI |
+    WMM15_HI |
     RCX_RDX |
     RSI_RDI |
     R8_R9 |
