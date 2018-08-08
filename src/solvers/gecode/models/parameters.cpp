@@ -1154,6 +1154,7 @@ void Parameters::get_element(QScriptValue root, UnisonConstraintExpr & e) {
     break;
     // ternary literals
   case DISTANCE_EXPR:
+  case ALIGNED_EXPR:
     for (unsigned int i = 0; i < 3; i++) {
       iti.next();
       e.data.push_back(iti.value().toInt32());
@@ -1354,6 +1355,7 @@ void Parameters::get_element(Json::Value root, UnisonConstraintExpr & e) {
     break;
     // ternary literals
   case DISTANCE_EXPR:
+  case ALIGNED_EXPR:
     for (unsigned int i = 0; i < 3; i++) {
       iti++;
       e.data.push_back((*iti).asInt());

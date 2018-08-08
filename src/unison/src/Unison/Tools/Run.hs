@@ -34,9 +34,11 @@ run args @
   (_estimateFreq, _simplifyControlFlow, _noCC, _noReserved, _maxBlockSize,
    _implementFrames, _function, _goal, _noCross, _oldModel, _expandCopies,
    _rematType, baseFile, _scaleFreq, _applyBaseFile, _tightPressureBound,
-   _strictlyBetter, _unsatisfiable, _removeReds, _keepNops, _solverFlag,
-   mirVersion, inFile, _debug, _verbose, _intermediate, _lint, outFile, outTemp,
-   _presolver, _solver, _sizeThreshold, _explicitCallRegs) targetWithOption =
+   _strictlyBetter, _unsatisfiable, _removeReds, _keepNops, _presolverFlag,
+   _solverFlag, mirVersion, inFile, _debug, _verbose, _intermediate, _lint,
+   outFile, outTemp, cleanTemp, _presolver, _solver, _sizeThreshold,
+   _explicitCallRegs)
+  targetWithOption =
   do mirInput         <- strictReadFile inFile
      maybeAsmMirInput <- maybeStrictReadFile baseFile
      let mirInputs    = splitDocs mirVersion mirInput
@@ -46,9 +48,11 @@ run args @
             Nothing          -> replicate (length mirInputs) Nothing
      prefixes <- mapM (runFunction args targetWithOption)
                       (zip mirInputs asmMirInputs)
-     mapM removeFile prefixes
      unisonMirOutputs <- mapM (strictReadFile . addExtension "unison.mir")
                          prefixes
+     when cleanTemp $
+       mapM_ removeFileIfExists (concatMap addUnisonExtensions prefixes)
+
      prefix <- getTempPrefix
      let unisonMirFile =
            case outFile of
@@ -58,15 +62,16 @@ run args @
          unisonMirOutput = combineDocs mirVersion
                            (concatMap (splitDocs mirVersion) unisonMirOutputs)
      emitOutput unisonMirFile unisonMirOutput
-     return (prefix, prefixes)
+     when cleanTemp $ removeFileIfExists prefix
+     return prefixes
 
 runFunction
   (estimateFreq, simplifyControlFlow, noCC, noReserved, maxBlockSize,
-   implementFrames, function, goal, noCross, oldModel, expandCopies,
-   rematType, _baseFile, scaleFreq, applyBaseFile, tightPressureBound,
-   strictlyBetter, unsatisfiable, removeReds, keepNops, solverFlag, mirVersion,
-   inFile, debug, verbose, intermediate, lint, _outFile, _outTemp, presolver,
-   solver, sizeThreshold, explicitCallRegs)
+   implementFrames, function, goal, noCross, oldModel, expandCopies, rematType,
+   _baseFile, scaleFreq, applyBaseFile, tightPressureBound, strictlyBetter,
+   unsatisfiable, removeReds, keepNops, presolverFlag, solverFlag, mirVersion,
+   inFile, debug, verbose, intermediate, lint, _outFile, _cleanTemp, _outTemp,
+   presolver, solver, sizeThreshold, explicitCallRegs)
   targetWithOption (mir, asmMir) =
   do prefix <- getTempPrefix
      let maybePutStrLn = when verbose . hPutStrLn stderr
@@ -124,22 +129,23 @@ runFunction
              altUniInput targetWithOption
 
            let extJsonFile   = addExtension "ext.json" prefix
+               splitPSFlags  = concatMap (splitOn "=") presolverFlag
                presolverPath = case presolver of
                                 Just path -> path
                                 Nothing -> "gecode-presolver"
            maybePutStrLn ("Running '" ++ presolverPath ++ "'...")
            callProcess presolverPath
-             (["-o", extJsonFile] ++ ["-verbose" | verbose] ++
-              ["-t", "180000", jsonFile])
+             (["-o", extJsonFile] ++ ["-verbose" | verbose] ++ splitPSFlags ++
+              [jsonFile])
 
-           let outJsonFile = addExtension "out.json" prefix
-               splitFlags  = concatMap (splitOn "=") solverFlag
-               solverPath  = case solver of
-                                Just path -> path
-                                Nothing -> "gecode-solver"
+           let outJsonFile  = addExtension "out.json" prefix
+               splitSvFlags = concatMap (splitOn "=") solverFlag
+               solverPath   = case solver of
+                                 Just path -> path
+                                 Nothing -> "gecode-solver"
            maybePutStrLn ("Running '" ++ solverPath ++ "'...")
            callProcess solverPath
-             (["-o", outJsonFile] ++ ["-verbose" | verbose] ++ splitFlags ++
+             (["-o", outJsonFile] ++ ["-verbose" | verbose] ++ splitSvFlags ++
               [extJsonFile])
 
            let unisonMirFile = addExtension "unison.mir" prefix
@@ -176,3 +182,14 @@ getTempPrefix =
   do tmp <- getTemporaryDirectory
      prefix <- unisonPrefixFile tmp
      return prefix
+
+addUnisonExtensions prefix =
+  (map (\e -> addExtension e prefix)
+   ["uni", "lssa.uni", "ext.uni", "alt.uni", "json", "ext.json", "out.json",
+    "llvm.mir", "unison.mir"]) ++
+  [prefix]
+
+removeFileIfExists fileName =
+  do fileExists <- doesFileExist fileName
+     when fileExists (removeFile fileName)
+     return ()

@@ -638,7 +638,7 @@ prologueEpilogueConstraints Function {fCode = blocks, fStackFrame = objs, fStack
       mustFpush = (align > 0 || sasize > 0)
       mayFpush = any isCall fcode
       blockInfo = concatMap proEpiInfo blocks
-      blockIns = map (oId . blockIn) blocks
+      blockIns = [oId $ blockIn b | b <- blocks, isEntryBlock b || isExitBlock b]
   in (concatMap indicatorConstraints $ zip blockIns blockInfo) ++
      (concatMap (prologueConstraints mustFpush32 mustFpush mayFpush) blockInfo) ++
      (concatMap (epilogueConstraints mustFpush32 mustFpush mayFpush) blockInfo)

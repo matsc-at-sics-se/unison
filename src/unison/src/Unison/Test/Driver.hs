@@ -84,7 +84,7 @@ runUnison unisonTargets testArgs mirFile =
      when sp $ hPutStrLn stderr ("Running test " ++ mirFile ++ "...")
      case pickTarget (testTarget properties) unisonTargets of
       (Any target) -> do
-        (_, [prefix])
+        [prefix]
                <- Run.run
                   (estimateFreq args,
                    simplifyControlFlow args,
@@ -106,6 +106,7 @@ runUnison unisonTargets testArgs mirFile =
                    unsatisfiable args,
                    removeReds args,
                    keepNops args,
+                   [],
                    ["-local-limit=4000", "-total-threads=1", "-portfolio-threads=1"],
                    fromMaybe (mirVersion args) (testMirVersion properties),
                    mirFile,
@@ -115,6 +116,7 @@ runUnison unisonTargets testArgs mirFile =
                    True,
                    Nothing,
                    True,
+                   False,
                    presolver testArgs,
                    solver testArgs,
                    Nothing,

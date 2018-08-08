@@ -193,9 +193,6 @@ mkConsistentMI tid2rc id mi @ MachineSingle {msOpcode = MachineTargetOpc i, msOp
 
 mkConsistentMI _ id mi = (id, [mi])
 
-isMachineTemp MachineTemp {} = True
-isMachineTemp _ = False
-
 promotedImplicitDef MachineReg {mrName = r, mrFlags = [MachineRegImplicitDefine]} = not (r `elem` [EFLAGS, RSP])
 promotedImplicitDef _ = False
 
