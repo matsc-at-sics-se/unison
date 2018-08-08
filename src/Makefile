@@ -119,6 +119,7 @@ SGX86ROOTDIR   = $(UNISONDIR)/src/Unison/Target/X86/SpecsGen
 SGX86INPUTYAML = $(SGX86ROOTDIR)/input/x86.yaml
 SGX86AUXYAML   = $(SGX86ROOTDIR)/input/x86-manual.yaml
 SGX86REMATYAML = $(SGX86ROOTDIR)/input/x86-remat.yaml
+SGX86ITINERARYYAML = $(SGX86ROOTDIR)/input/x86-itinerary-map.yaml
 
 
 build-specsgen: prepare-specsgen
@@ -193,4 +194,5 @@ run-specsgen-x86:
 		 --promoteeffect ESI:GR32 \
 		 --promoteeffect RSI:GR64 \
 		 --promoteeffect WMM0:VR128 \
-	         --rematfile=$(SGX86REMATYAML)
+	         --rematfile=$(SGX86REMATYAML) \
+	         --preprocessfile=$(SGX86ITINERARYYAML)

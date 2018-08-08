@@ -328,60 +328,47 @@ instruction-set:
           affected-by:
 
         - id:                 PUSH_cst
+          parent:             PUSH64r
           type:               copy
           operands:
            - src:             [register, use, GR64]
            - dst:             [register, def, M64]
           uses:               [src]
           defines:            [dst]
-          size:               0
           affects:
            - RSP:             register
-          affected-by:
-           - RSP:             register
-          itinerary:          IIC_PUSH_REG
 
         - id:                 PUSH_fi
-          type:               linear
+          parent:             PUSH64r
           operands:
            - fi:              bound
            - src:             [register, use, GR64]
           uses:               [fi, src]
           defines:            []
-          size:               0
           affects:
            - RSP:             register
-          affected-by:
-           - RSP:             register
-          itinerary:          IIC_PUSH_REG
 
         - id:                 POP_cst
+          parent:             POP64r
           type:               copy
           operands:
            - src:             [register, def, M64]
            - dst:             [register, use, GR64]
           uses:               [src]
           defines:            [dst]
-          size:               0
-          affects:
-           - RSP:             register
           affected-by:
            - RSP:             register
-          itinerary:          IIC_POP_REG
 
         - id:                 POP_fi
+          parent:             POP64r
           type:               copy
           operands:
            - src:             bound
            - dst:             [register, use, GR64]
           uses:               [src]
           defines:            [dst]
-          size:               0
-          affects:
-           - RSP:             register
           affected-by:
            - RSP:             register
-          itinerary:          IIC_POP_REG
 
         - id:                 SPILL32
           parent:             NOOP
@@ -399,7 +386,6 @@ instruction-set:
           defines:            [dst]
           affects:
           affected-by:
-          itinerary:          IIC_LEA
 
         - id:                 ADD32rr_LEA
           parent:             ADD32rr
@@ -411,7 +397,6 @@ instruction-set:
           defines:            [dst]
           affects:
           affected-by:
-          itinerary:          IIC_LEA
 
         - id:                 ADD64ri_LEA
           parent:             ADD64ri32
@@ -423,7 +408,6 @@ instruction-set:
           defines:            [dst]
           affects:
           affected-by:
-          itinerary:          IIC_LEA
 
         - id:                 ADD64rr_LEA
           parent:             ADD64rr
@@ -435,7 +419,6 @@ instruction-set:
           defines:            [dst]
           affects:
           affected-by:
-          itinerary:          IIC_LEA
 
         - id:                 SHL32r1_LEA
           parent:             SHL32r1
@@ -446,7 +429,6 @@ instruction-set:
           defines:            [dst]
           affects:
           affected-by:
-          itinerary:          IIC_LEA
 
         - id:                 SHL32ri_LEA
           parent:             SHL32ri
@@ -458,7 +440,6 @@ instruction-set:
           defines:            [dst]
           affects:
           affected-by:
-          itinerary:          IIC_LEA
 
         - id:                 SHL64r1_LEA
           parent:             SHL64r1
@@ -469,7 +450,6 @@ instruction-set:
           defines:            [dst]
           affects:
           affected-by:
-          itinerary:          IIC_LEA
 
         - id:                 SHL64ri_LEA
           parent:             SHL64ri
@@ -481,7 +461,6 @@ instruction-set:
           defines:            [dst]
           affects:
           affected-by:
-          itinerary:          IIC_LEA
 
         - id:                 ADC16mi_unison
           parent:             ADC16mi
