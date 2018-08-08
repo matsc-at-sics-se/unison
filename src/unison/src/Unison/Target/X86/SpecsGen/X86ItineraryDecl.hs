@@ -273,5 +273,5 @@ data X86Itinerary = WriteMicrocoded
                   | SKLWriteResGroup213
                   | SKLWriteResGroup216
                   | SKLWriteResGroup63
-                  deriving (Eq, Read, Show)
+                  deriving (Eq, Ord, Read, Show)
 

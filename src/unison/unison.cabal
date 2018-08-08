@@ -260,6 +260,7 @@ Library
                   Unison.Target.X86.SpecsGen.AlignedPairs
                   Unison.Target.X86.SpecsGen.Size
                   Unison.Target.X86.SpecsGen.Parent
+                  Unison.Target.X86.SpecsGen.ItineraryProperties
 
                   Unison.Target.Mips.Common
                   Unison.Target.Mips.Registers
