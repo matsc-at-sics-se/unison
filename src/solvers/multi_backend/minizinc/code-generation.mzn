@@ -90,7 +90,6 @@ array[int] of set of int: op_operands;
 array[int] of set of int: op_instructions;
 array[int] of int: op_type;
 array[int] of bool: op_mand;
-array[int] of int: op_order;
 
 %% see JSON atoms
 array[int] of set of int: atom_regs; % atom -> registers
@@ -236,16 +235,6 @@ array[int,int] of int: cs_spill_transpose;
 array[int] of set of int: activator_insns;
 array[int] of set of int: activator_ops;
 
-%% see JSON predecessors
-array[int] of set of int: predecessors_preds;
-array[int] of int: predecessors_succ;
-array[int] of int: predecessors_lat;
-
-%% see JSON successors
-array[int] of set of int: successors_succs;
-array[int] of int: successors_pred;
-array[int] of int: successors_lat;
-
 %% see JSON value_precede_chain
 array[int] of int: value_precede_min;
 array[int] of int: value_precede_max;
@@ -268,7 +257,7 @@ array[int] of int: exrelated_q;
 array[int] of set of int: exrelated_rows;
 array[int,int] of int: exrelated_ext;
 
-%% dominance
+%% see JSON wcet
 array[int,int] of int: wcet;
 
 %% extra storage for constraint expressions
@@ -673,45 +662,6 @@ constraint
             temp_is_real(q) -> temp_is_real(p)
     );
 
-% DISABLED, in favor of quasi_adjacent
-% constraint % connected (out) inheriting from connected (in)
-%     forall(pout in 0..MAXP where op_type[operand_definer[pout]] = TYPE_OUT)(
-%         let {set of int: tsout = operand_temps[pout],
-% 	     set of int: tsoutbutnull = tsout diff {-1},
-% 	     int: t1 = min(tsoutbutnull),
-% 	     int: oin = temp_definer[t1],
-% 	     int: pin = temp_def[t1],
-% 	     set of int: tsin = operand_temps[pin],
-% 	     set of int: tsc = {v | v in tsoutbutnull where op_type[temp_definer[v]] in {TYPE_IN,TYPE_COPY}}} in
-% 	    if min(tsout) = -1 /\ min(tsin) = -1 /\ op_type[oin] = TYPE_IN then
-% 	       t[pout] in tsc -> t[pin] >= 0
-% 	    else true endif
-%     );
-
-%?% constraint
-%?%     forall(j in index_set(adj_from)) (
-%?%         let {int: p = adj_from[j],
-%?% 	     int: q = adj_to[j]} in (
-%?%             rt[p] = -1 \/ rt[q] = -1 \/ rt[p] = rt[q]
-%?%  	)
-%?%     );
-
-%?% adjacencies: (out) is connected iff some adjacent (in) is connected
-%?% constraint
-%?%     forall(j in index_set(adj_from)) (
-%?%         let {int: p = adj_from[j]} in (
-%?% 	    rt[p] != -1 <-> exists(k in index_set(adj_from) where adj_from[k] = p)(rt[adj_to[k]] != -1)
-%?% 	)
-%?%     );
-
-%?% adjacencies: (in) is connected iff all adjacent (out) are connected
-%?% constraint
-%?%     forall(j in index_set(adj_to)) (
-%?%         let {int: p = adj_to[j]} in (
-%?% 	    rt[p] != -1 <-> forall(k in index_set(adj_to) where adj_to[k] = p)(rt[adj_from[k]] != -1)
-%?% 	)
-%?%     );
-
 %% aligned/adist
 constraint
     forall(j in index_set(aligned_use)) (
@@ -740,23 +690,6 @@ constraint
     forall(P in precedence) (
         eval_expr(P)
     );
-
-%% ensure that all uses are within the live range -- pretty much subsumed by maximum(le[v], ...)
-% constraint
-%     forall(p in 0..MAXP where operand_use[p])
-%           (let {int: iuse = operand_definer[p],
-% 	        set of int: temps = operand_temps[p]} in (
-% 	           forall(v in temps where v >= 0)(
-% 		       let {int: idef = temp_definer[v]} in (
-% 		           if card(temps) = 1 then
-% 		               c[idef] + ld[v] >= c[iuse]
-% 		           else
-% 		               t[p] = v -> c[idef] + ld[v] >= c[iuse]
-% 		   	   endif
-% 		       )
-% 		   )
-% 	   )
-%     );
 
 %% slack and balancing
 
@@ -820,39 +753,7 @@ predicate post_data_prec(int: q) =
 constraint
   forall(q in 0..MAXP where operand_use[q])(post_data_prec(q));
 
-%% Model::post_reverse_data_precedences_constraints
-%% DISABLED, because it seems to clash with my slack fixing stuff
-% set of int: global_definers(int: q) = {pd |     t1 in real_temps(q),
-%                                                 pd in {temp_def[t1]}
-% 					  where global_operand(pd)
-% 				      };
-				     
-% var -MAXL..MAXL: slack_of_global_definer(int: q) =
-%   let {set of int: gds = global_definers(q)} in
-%     if card(gds)>0 then s[min(gds)] else 0 endif;
-
-
-% constraint
-%   forall(o in 0..MAXO, p in op_operands[o] where not operand_use[p])(
-%     let {int: v = single_temp(p),
-%          array[int] of var int: acs = [ if t[q] = v then c[operand_definer[q]] - lat(q,v) - slack_of_global_definer(q) else 0 endif
-%     		       	   	      | q in temp_uses[v]
-% 				      ]} in
-%       if r[v] >= 0 then
-%         c[o] <= max(acs)
-%       else true endif
-%   );
-
 %% resources
-
-% test unit_res_dur_cap(int: res, set of int: active) = (
-%     forall(o in active)(
-%         fixedop(o) /\
-% 	res_con[res,min(op_instructions[o])]=res_cap[res] /\
-% 	res_dur[res,min(op_instructions[o])]=1 /\
-% 	res_off[res,min(op_instructions[o])]=0
-%     )
-% );
 
 test unit_res_dur_cap(int: res, set of int: active) = (
     forall(o in active, oi in op_instructions[o])(
@@ -1065,12 +966,6 @@ constraint
     )
   else true endif;
   
-%% last use -- pretty much subsumed by maximum(le[v], ...)
-% constraint
-%     forall(p in 0..MAXP where operand_use[p])
-%           (t[p]>=0 -> le[t[p]] >= c[operand_definer[p]]) % rematerialization
-%     ;
-
 %% disjoint live ranges projected on callee-saved regs
 constraint
     if good_cumulative then
@@ -1286,32 +1181,16 @@ constraint
     else true endif;
 
 %% symmetry breaking from JSON info
-constraint
-  forall(x in index_set(value_precede_min))(
-    let {set of int: js = value_precede_min[x]..value_precede_max[x],
-         int: nt = sum(j in js)(temp_width[value_precede_temps[j]]),
-         array[1..nt] of var int: chain = [r[v]+d | j in js, v in {value_precede_temps[j]}, d in 0..temp_width[v]-1]} in
-	value_precede_chain([v | v in value_precede_regs[x]], chain)
-  );
-
-%% predecessors -- DISABLED
-constraint
-  forall(x in index_set(predecessors_preds))(
-    min([c[o] | o in predecessors_preds[x]]) + predecessors_lat[x] <= c[predecessors_succ[x]]
-  );
-
-%% successors -- DISABLED
-constraint
-  forall(x in index_set(successors_succs))(
-     c[successors_pred[x]] + successors_lat[x] <= max([c[o] | o in successors_succs[x]])
-  );
+%% DISABLED, cannot be trusted
+% constraint
+%   forall(x in index_set(value_precede_min))(
+%     let {set of int: js = value_precede_min[x]..value_precede_max[x],
+%          int: nt = sum(j in js)(temp_width[value_precede_temps[j]]),
+%          array[1..nt] of var int: chain = [r[v]+d | j in js, v in {value_precede_temps[j]}, d in 0..temp_width[v]-1]} in
+% 	value_precede_chain([v | v in value_precede_regs[x]], chain)
+%   );
 
 %% IMPORTED FROM Model::
-
-%% live range length
-% constraint			%  rematerialization
-%     forall(v in 0..MAXT where op_type[temp_definer[v]] != TYPE_IN)
-%           (a[temp_definer[v]] -> ld[v] >= temp_minlive[v]);
 
 %% Model::post_minimum_temporary_duration_constraints
 constraint
@@ -1369,27 +1248,6 @@ constraint
     endif
   );
 
-%% Model::post_slack_lower_bound_constraints
-% constraint
-%   forall(C in congr)(
-%     let {set of int: CG  = {p | p in C where global_operand(p)},
-% 	 array[int] of int: ins  = [p | p in CG where op_type[operand_definer[p]] = TYPE_IN],
-% 	 array[int] of int: outs = [p | p in CG where op_type[operand_definer[p]] = TYPE_OUT],
-% 	 array[int] of var int: inlats = [lt[q] | p in ins,
-% 						  q in temp_uses[single_temp(p)]],
-% 	 array[int] of var int: outlats = [lt[q] | p in outs,
-% 						   v in real_temps(p),
-% 						   q in {temp_def[v]}]} in
-%       if (length(ins)>0) then
-% 	let {var int: maxinlat = max(inlats)} in
-% 	  forall(p in ins)(trace("s[\(p)] >= -max(\(inlats))\n", s[p] >= - maxinlat))
-%       else true endif /\
-%       if (length(outs)>0) then
-% 	let {var int: maxoutlat = max(outlats)} in
-% 	  forall(p in outs)(trace("s[\(p)] >= -max(\(outlats))\n", s[p] >= - maxoutlat))
-%       else true endif
-%   );
-
 %% [matsc] domination constraint for slack, in fact make it a functional dependency
 %% N.B. Subsumes post_slack_lower_bound_constraints
 %% N.B. MAY clash with post_reverse_data_precedences_constraints
@@ -1430,17 +1288,15 @@ constraint
   );
 
 var 0..MAXC: o_wcet(0..MAXO: o) =
-  let {array[int] of var int: wcs = [wcet[jj,2] | jj in index_set_1of2(wcet) where wcet[jj,1] = o],
-       int: nwcs = length(wcs),
-       int: two = max(nwcs,1)}
+  let {array[int] of var int: wcs = [wcet[jj,3] | jj in index_set_1of2(wcet) where wcet[jj,1] = o],
+       int: nwcs = length(wcs)}
   in if forall(jj in 1..nwcs)(wcs[jj] = 1)
        then a[o]
      else if not op_mand[o] /\ forall(jj in 2..nwcs)(wcs[jj] = 1)
        then a[o]
-     else if op_mand[o]
-       then wcs[ii[o]]
-       else a[o] * wcs[ii[o]]
-     endif endif endif;
+     else
+       wcs[ii[o]]
+     endif endif;
 
 %% output
 

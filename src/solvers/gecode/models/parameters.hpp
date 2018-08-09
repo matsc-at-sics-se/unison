@@ -63,10 +63,6 @@
 #include "common/util.hpp"
 #include "common/definitions.hpp"
 
-// Mats's code changes
-#define MCMOD 1
-#define MCSLACK 1
-
 using namespace Gecode;
 using namespace std;
 
@@ -335,12 +331,6 @@ public:
   // [MC] strictly congruent operand classes
   vector<vector<operand> > strictly_congr;
 
-  // [MC] set of predecessors or successors
-  vector<PresolverPred> predecessors;
-
-  // [MC] set of predecessors or successors
-  vector<PresolverSucc> successors;
-
   // [MC] set of value_precede_chain
   vector<PresolverValuePrecedeChain> value_precede_chains;
 
@@ -358,6 +348,9 @@ public:
 
   // [MC] register atom domain of each temp
   vector<vector<register_atom> > temp_domain;
+
+  // [MC] max tolerable latency to the following issue
+  vector<PresolverWCET> wcet;
 
   Parameters(JSONVALUE root);
 
@@ -657,11 +650,8 @@ public:
   // set of diffregs, per block
   vector<vector<vector<operand> > > bdiffregs;
 
-  // [MC] set of predecessors or successors, per block
-  vector<vector<PresolverPred>> bpredecessors;
-
-  // [MC] set of predecessors or successors, per block
-  vector<vector<PresolverSucc>> bsuccessors;
+  // max tolerable latency to the following issue, per block
+  vector<vector<PresolverWCET> > bwcet;
 
   // Number of objectives
   unsigned int N;
@@ -684,9 +674,8 @@ protected:
   void get_element(JSONVALUE root, PresolverAcrossItemJSON & ai);
   void get_element(JSONVALUE root, PresolverSetAcross & sa);
   void get_element(JSONVALUE root, PresolverDominates & d);
-  void get_element(JSONVALUE root, PresolverPred & d);
-  void get_element(JSONVALUE root, PresolverSucc & d);
   void get_element(JSONVALUE root, PresolverInstrCond & d);
+  void get_element(JSONVALUE root, PresolverWCET & d);
   void get_element(JSONVALUE root, PresolverValuePrecedeChain & d);
 
   template<class T>
