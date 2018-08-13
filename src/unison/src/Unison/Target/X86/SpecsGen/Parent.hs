@@ -1225,7 +1225,7 @@ parent i
   | i `elem` [MOV64ri64_demat, MOV64ri64_remat, MOV64ri64_source] =
     Just MOV64ri64
   | i `elem` [ILOAD64, MOV64rm_unison] = Just MOV64rm
-  | i `elem` [IMOVE64] = Just MOV64rr
+  | i `elem` [FPOP32, IMOVE64] = Just MOV64rr
   | i `elem` [MOV64toPQIrm_unison] = Just MOV64toPQIrm
   | i `elem` [MOV64toSDrm_unison] = Just MOV64toSDrm
   | i `elem` [MOV8mi_unison] = Just MOV8mi
@@ -1613,8 +1613,7 @@ parent i
   | i `elem` [SUB64mi32_unison] = Just SUB64mi32
   | i `elem` [SUB64mi8_unison] = Just SUB64mi8
   | i `elem` [SUB64mr_unison] = Just SUB64mr
-  | i `elem` [FPOP, FPOP32, FPUSH, FPUSH32, NOFPOP, NOFPUSH] =
-    Just SUB64ri8
+  | i `elem` [FPOP, FPUSH, FPUSH32, NOFPOP, NOFPUSH] = Just SUB64ri8
   | i `elem` [SUB64rm_unison] = Just SUB64rm
   | i `elem` [SUB8mi_unison] = Just SUB8mi
   | i `elem` [SUB8mi8_unison] = Just SUB8mi8
