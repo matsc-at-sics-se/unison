@@ -1,16 +1,12 @@
 module Unison.Target.X86.Usages (usages) where
 
 import Data.List
-import qualified Data.Map as M
 
 import Unison
 import Unison.Target.X86.Common
 import Unison.Target.X86.X86ResourceDecl
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
-import Unison.Target.X86.SpecsGen.ItineraryProperties
-
-import Debug.Trace
 
 -- | Declares resource usages of each instruction
 
@@ -54,11 +50,9 @@ isVoidInstruction i
   | otherwise = False
 
 skylakeUsage i it =
-  let original = case M.lookup it itineraryProperties of
+  let original = case itProperties i it of
                   Just (_, resources) -> resources
-                  Nothing ->
-                    trace ("warning: undefined resource usage for itinerary " ++ show it ++ " (instruction " ++ show i ++ ")")
-                    []
+                  Nothing -> []
       expanded = concatMap expandResource original
       combined = mergeAllUsages [mkUsage r 1 d | (r, d) <- expanded]
   in combined

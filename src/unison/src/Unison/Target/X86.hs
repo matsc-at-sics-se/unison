@@ -15,7 +15,6 @@ import Debug.Trace
 import Data.List
 import Data.Maybe
 import qualified Data.Set as S
-import qualified Data.Map as M
 import Control.Arrow
 
 import Common.Util
@@ -37,7 +36,6 @@ import Unison.Target.X86.X86RegisterDecl
 import Unison.Target.X86.X86ResourceDecl
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
 import Unison.Target.X86.SpecsGen.X86ItineraryDecl
-import Unison.Target.X86.SpecsGen.ItineraryProperties
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
 
 target =
@@ -820,8 +818,6 @@ operandInfo to i
 -- if no Skylake latency is defined, use the standard one in OperandInfo.hs
 maybeSkylakeLatency _ NoItinerary l = l
 maybeSkylakeLatency i it l =
-  case M.lookup it itineraryProperties of
+  case itProperties i it of
    Just (latency, _) -> latency
-   Nothing ->
-     trace ("warning: undefined latency for itinerary " ++ show it ++ " (instruction " ++ show i ++ ")")
-     l
+   Nothing -> l

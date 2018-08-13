@@ -20,17 +20,19 @@ module Unison.Target.X86.Common
      spillInstrs, condMoveInstrs, condMoveInverses, condMoveAlts,
      promotedRegs, readsSideEffect,
      writesSideEffect, isDirtyYMMInsn, isDirtyYMMOp, isUseYMMInsn,
-     reg32ToReg64, machineReg32ToReg64, reg64ToReg32) where
+     reg32ToReg64, machineReg32ToReg64, reg64ToReg32, itProperties) where
 
 import qualified Data.Map as M
 import qualified Data.List as L
 import Data.Maybe
+import Debug.Trace
 
 import MachineIR
 import Unison
 import qualified Unison.Target.API as API
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
+import Unison.Target.X86.SpecsGen.ItineraryProperties
 import Unison.Target.X86.X86RegisterClassDecl
 import Unison.Target.X86.X86RegisterDecl
 import Unison.Target.X86.Registers
@@ -1740,3 +1742,8 @@ memTempVersions = M.fromList
    (XOR8rr, MemTempTuple (Just XOR8rm_unison) (Just XOR8mr_unison) ),
    (XORPDrr, MemTempTuple (Just XORPDrm_unison) Nothing ),
    (XORPSrr, MemTempTuple (Just XORPSrm_unison) Nothing )]
+
+itProperties i it =
+  case M.lookup it itineraryProperties of
+   Just properties -> Just properties
+   Nothing -> trace ("warning: undefined properties for itinerary " ++ show it ++ " (instruction " ++ show i ++ ")") Nothing
