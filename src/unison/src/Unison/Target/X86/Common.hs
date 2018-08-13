@@ -10,7 +10,7 @@ Main authors:
 This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.X86.Common
-    (unitLatency, align, instructionType, instrInfiniteUsage,
+    (unitLatency, skylake, align, instructionType, instrInfiniteUsage,
      isFloatClass, isFloatRegIR, isFloatReg,
      isAmbigReg, disAmbigReg, ambiguateReg,
      isMoveInstr, isStoreInstr, isLoadInstr,
@@ -36,6 +36,8 @@ import Unison.Target.X86.X86RegisterDecl
 import Unison.Target.X86.Registers
 
 unitLatency to = API.isBoolOption "unit-latency" to
+
+skylake to = API.isBoolOption "skylake" to
 
 align to = API.isBoolOption "align" to
 

@@ -15,6 +15,8 @@ import Debug.Trace
 import Data.List
 import Data.Maybe
 import qualified Data.Set as S
+import qualified Data.Map as M
+import Control.Arrow
 
 import Common.Util
 
@@ -34,6 +36,8 @@ import Unison.Target.X86.BranchInfo
 import Unison.Target.X86.X86RegisterDecl
 import Unison.Target.X86.X86ResourceDecl
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
+import Unison.Target.X86.SpecsGen.X86ItineraryDecl
+import Unison.Target.X86.SpecsGen.ItineraryProperties
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
 
 target =
@@ -508,8 +512,26 @@ resources =
 
      -- Resources as defined by X86ScheduleV6
 
-     Resource Pipe 1
+     Resource Pipe 1,
 
+     -- Resources as defined by X86SchedSkylakeClient
+
+     Resource SKLPort1 1,
+     Resource SKLPort0 1,
+     Resource SKLPort01 2,
+     Resource SKLPort06 2,
+     Resource SKLPort4 1,
+     Resource SKLPort05 2,
+     Resource SKLPort015 3,
+     Resource SKLPort6 1,
+     Resource SKLDivider 1,
+     Resource SKLPort16 2,
+     Resource SKLPort237 3,
+     Resource SKLPort5 1,
+     Resource SKLPort15 2,
+     Resource SKLPort23 2,
+     Resource SKLPort0156 4,
+     Resource ExePort 1
     ]
 
 -- | No-operation instruction
@@ -784,10 +806,22 @@ proEpiInfo' osp32 osp ofpush ofpop opushl opopl (_ : code)
 
 -- slight adjustment of operandInfo
 
-operandInfo _ i
+operandInfo to i
   | i `elem` [NOFPUSH] =
     let ([use], [def]) = SpecsGen.operandInfo i
     in ([use], [def {oiLatency = 0}])
+  | skylake to =
+      let it = SpecsGen.itinerary i
+      in second (map (applyToLatency (maybeSkylakeLatency i it))) $
+         SpecsGen.operandInfo i
   | otherwise =
     SpecsGen.operandInfo i
 
+-- if no Skylake latency is defined, use the standard one in OperandInfo.hs
+maybeSkylakeLatency _ NoItinerary l = l
+maybeSkylakeLatency i it l =
+  case M.lookup it itineraryProperties of
+   Just (latency, _) -> latency
+   Nothing ->
+     trace ("warning: undefined latency for itinerary " ++ show it ++ " (instruction " ++ show i ++ ")")
+     l

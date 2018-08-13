@@ -1,10 +1,16 @@
 module Unison.Target.X86.Usages (usages) where
 
+import Data.List
+import qualified Data.Map as M
+
 import Unison
 import Unison.Target.X86.Common
 import Unison.Target.X86.X86ResourceDecl
 import qualified Unison.Target.X86.SpecsGen as SpecsGen
 import Unison.Target.X86.SpecsGen.X86InstructionDecl
+import Unison.Target.X86.SpecsGen.ItineraryProperties
+
+import Debug.Trace
 
 -- | Declares resource usages of each instruction
 
@@ -16,14 +22,15 @@ usages to i =
   in uss
 
 itineraryUsage' to i it =
-  let us = itineraryUsage i it
+  let us = itineraryUsage to i it
   in if unitLatency to then
        [u {occupation = 1, offset = 0} | u  <- us]
      else us
 
 -- these are NoItinerary and disappear, whereas other NoItinerary are pseudos for real instructions
-itineraryUsage i _
+itineraryUsage to i it
   | isVoidInstruction i = []
+  | skylake to = mergeUsages (skylakeUsage i it) [mkUsage Pipe 1 1]
   | i == FPUSH32 = [mkUsage Pipe 1 3]
   | otherwise = [mkUsage Pipe 1 1]
 
@@ -34,15 +41,49 @@ size i
 isVoidInstruction i
   | isSourceInstr i || isDematInstr i = True
   | i `elem`
-      [SPILL32, SPILL, NOFPUSH, NOFPOP, BUNDLE, CATCHPAD, CATCHRET, CFI_INSTRUCTION, 
+      [SPILL32, SPILL, NOFPUSH, NOFPOP, BUNDLE, CATCHPAD, CATCHRET, CFI_INSTRUCTION,
        CS_PREFIX, DATA16_PREFIX, DBG_VALUE, DS_PREFIX, EH_LABEL,
        EH_RESTORE, ES_PREFIX, EXTRACT_SUBREG, FAULTING_LOAD_OP, FS_PREFIX,
        GC_LABEL, GS_PREFIX, IMPLICIT_DEF, INLINEASM,
        INSERT_SUBREG,
-       LIFETIME_END, LIFETIME_START, LOCAL_ESCAPE, LOCK_PREFIX, MONITOR, 
+       LIFETIME_END, LIFETIME_START, LOCAL_ESCAPE, LOCK_PREFIX, MONITOR,
        PHI, REPNE_PREFIX, REP_PREFIX, REX64_PREFIX,
        SEH_EndPrologue, SEH_Epilogue,
        SS_PREFIX, SUBREG_TO_REG,
        XRELEASE_PREFIX, XACQUIRE_PREFIX] = True
   | otherwise = False
 
+skylakeUsage i it =
+  let original = case M.lookup it itineraryProperties of
+                  Just (_, resources) -> resources
+                  Nothing ->
+                    trace ("warning: undefined resource usage for itinerary " ++ show it ++ " (instruction " ++ show i ++ ")")
+                    []
+      expanded = concatMap expandResource original
+      combined = mergeAllUsages [mkUsage r 1 d | (r, d) <- expanded]
+  in combined
+
+mergeAllUsages usages = mergeUsages usages []
+
+expandResource :: (X86Resource, Integer) -> [(X86Resource, Integer)]
+expandResource (r, d) = nub [(r', d) | r' <- resourceHierarchy r]
+
+resourceHierarchy :: X86Resource -> [X86Resource]
+resourceHierarchy r = r : concatMap resourceHierarchy (superResources r)
+
+superResources SKLPort0 = [SKLPort01, SKLPort05, SKLPort06]
+superResources SKLPort1 = [SKLPort01, SKLPort15, SKLPort16]
+superResources SKLPort4 = []
+superResources SKLPort5 = [SKLPort05, SKLPort15]
+superResources SKLPort6 = [SKLPort06, SKLPort16]
+superResources SKLPort01 = [SKLPort015]
+superResources SKLPort05 = [SKLPort015]
+superResources SKLPort06 = [SKLPort0156]
+superResources SKLPort15 = [SKLPort015]
+superResources SKLPort16 = [SKLPort0156]
+superResources SKLPort23 = [SKLPort237]
+superResources SKLPort015 = [SKLPort0156]
+superResources SKLPort237 = []
+superResources SKLPort0156 = []
+superResources SKLDivider = []
+superResources ExePort = []
