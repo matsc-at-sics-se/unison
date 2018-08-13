@@ -264,26 +264,6 @@ public:
   }
 };
 
-class PresolverPred {
-public:
-  vector<operation> p;
-  operation q;
-  int d;
-  bool operator==(const PresolverPred& that) const {
-    return (p == that.p) && (q == that.q) && (d == that.d);
-  }
-};
-
-class PresolverSucc {
-public:
-  operation p;
-  vector<operation> q;
-  int d;
-  bool operator==(const PresolverSucc& that) const {
-    return (p == that.p) && (q == that.q) && (d == that.d);
-  }
-};
-
 class PresolverInstrCond {
 public:
   operation o;
@@ -387,6 +367,19 @@ public:
   operation o;
   temporary t;
   presolver_disj d;
+};
+
+
+class PresolverWCET {
+public:
+  operation o;
+  instruction i;
+  latency d;
+  // CONSTRUCTORS
+  PresolverWCET():
+    o(-1), i(-1), d(-1) { }
+  PresolverWCET(operation o, instruction i, latency d):
+    o(o), i(i), d(d) { }
 };
 
 

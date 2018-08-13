@@ -213,15 +213,13 @@ string show(const PresolverActiveTable);
 
 string show(const PresolverCopyTmpTable);
 
-string show(const PresolverPred);
-
-string show(const PresolverSucc);
-
 string show(const PresolverAcrossJSON);
 
 string show(const PresolverAcrossTuple);
 
 string show(const PresolverAcrossItemJSON);
+
+string show(const PresolverWCET);
 
 string show(const PresolverSetAcross);
 
@@ -273,13 +271,11 @@ string emit_json(const PresolverSetAcross at);
 
 string emit_json(const PresolverDominates at);
 
-string emit_json(const PresolverPred at);
-
-string emit_json(const PresolverSucc at);
-
 string emit_json(const PresolverInstrCond at);
 
 string emit_json(const PresolverValuePrecedeChain at);
+
+string emit_json(const PresolverWCET wcet);
 
 string emit_json(const UnisonConstraintExpr e);
 

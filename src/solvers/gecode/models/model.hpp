@@ -331,11 +331,6 @@ public:
   // Domain of resource consumption cost variable by the given operations
   IntArgs consumption_domain(resource r, vector<operation> & is) const;
 
-#if !MCMOD
-  // Classes of interchangeable register atoms
-  set<set<register_atom> > interchangeable_atoms(bool global, block b) const;
-#endif
-
   // Constructors
 
   Model(Parameters * p_input, ModelOptions * p_options, IntPropLevel p_ipl);
@@ -399,7 +394,6 @@ public:
   void post_branch_issue_cycle_constraints(block b);
   void post_redefined_operand_constraints(block b);
   void post_active_first_copy_constraints(block b);
-  void post_sequential_upper_bound_constraints(block b);
   void post_callee_saved_symmetry_breaking_constraints(block b);
   void post_irreflexive_precedence_constraints(block b);
   void post_transitive_precedence_constraints(block b);
@@ -421,6 +415,7 @@ public:
   void post_dominates_constraints(block b);
   void post_difftemps_constraints(block b);
   void post_diffregs_constraints(block b);
+  void post_wcet_constraints(block b);
   void post_predecessors_constraints(block b);
   void post_successors_constraints(block b);
   void post_killer_operand_constraints(block b);

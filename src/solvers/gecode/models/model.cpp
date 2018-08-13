@@ -413,56 +413,6 @@ double Model::pressure(operand p, register_class rc) const {
   return (double) input->operand_width[p] / (double) (input->atoms[rc].size());
 }
 
-int Model::worst(operation o) const {
-
-  block b = input->oblock[o];
-
-  vector<int> durs;
-
-  for (unsigned int ii = 0; ii < input->instructions[o].size(); ii++) {
-
-    instruction i = input->instructions[o][ii];
-    vector<int> opdurs;
-
-    vector<int> duroff;
-    for (resource r : input->R)
-      duroff.push_back(input->dur[i][r] + input->off[i][r]);
-    int maxdur = max_of(duroff);
-    opdurs.push_back(maxdur);
-
-    int maxuselat = 0, maxdeflat = 0;
-    for (unsigned pi = 0; pi < input->operands[o].size(); pi++) {
-      operand p = input->operands[o][pi];
-      if (input->use[p] && input->lat[o][ii][pi] > maxuselat)
-        maxuselat = input->lat[o][ii][pi];
-      if (!input->use[p] && input->lat[o][ii][pi] > maxdeflat)
-        maxdeflat = input->lat[o][ii][pi];
-    }
-    opdurs.push_back(maxuselat + maxdeflat);
-
-    int maxdist = 0;
-    for (unsigned int e = 0; e < input->dep[b].size(); e++) {
-      if ((o == input->dep[b][e][0]) && (input->dist[b][e][ii] > maxdist))
-        maxdist = input->dist[b][e][ii];
-      if ((o == input->dep[b][e][1]) && (max_of(input->dist[b][e]) > maxdist))
-        maxdist = max_of(input->dist[b][e]);
-    }
-    opdurs.push_back(maxdist);
-
-    int maxminlive = 0;
-    for (temporary t : input->tmp[b])
-      if (input->def_opr[t] == o && input->minlive[t] > maxminlive)
-        maxminlive = input->minlive[t];
-    opdurs.push_back(maxminlive);
-
-    durs.push_back(max_of(opdurs));
-
-  }
-
-  return max_of(durs);
-
-}
-
 bool Model::may_saturate(block b, register_atom fa, register_atom la) const {
   pair<int,int> C = make_pair(0, c(input->out[b]).max());
   // TODO: there should be a better way
@@ -483,124 +433,6 @@ IntArgs Model::consumption_domain(resource r, vector<operation> & is) const {
   return IntArgs::create(maxcon / unit + 1, 0, unit);
 }
 
-#if !MCMOD
-// Classes of interchangeable register atoms
-set<set<register_atom> > Model::
-interchangeable_atoms(bool global, block b) const {
-
-  vector<block> B(global ? input->B : vector<block>({b}));
-
-  // initialize 'interchangeable' with all finite register atoms
-  vector<register_space> inf;
-  for (register_space rs : input->RS)
-    if (input->infinite[rs]) inf.push_back(rs);
-  disjointSet<register_atom> interchangeable;
-  for (register_atom ra : input->RA) {
-    bool infatom = false;
-    for (register_space rs : inf) {
-      if (ra >= input->range[rs][0] && ra <= input->range[rs][1]) {
-        infatom = true;
-        break;
-      }
-    }
-    if (!infatom) interchangeable.insert(ra, ra);
-  }
-
-  set<set<register_atom> > class_atoms;
-
-  // add finite register class atoms
-  set<register_class> visited;
-  for (block b : B) {
-    for (operation o : input->ops[b]) {
-      for (unsigned int ii = 0; ii < input->instructions[o].size(); ii++) {
-        for (unsigned pi = 0; pi < input->operands[o].size(); pi++) {
-          operand p = input->operands[o][pi];
-          if (input->instructions[o][ii] != NULL_INSTRUCTION) {
-            register_class rc = input->rclass[o][ii][pi];
-            if (!input->infinite[input->space[rc]]) {
-              if (!visited.count(rc)) {
-                visited.insert(rc);
-                set<register_atom> rc_atoms;
-                for (register_atom ra : input->atoms[rc]) {
-                  for (int w = 0; w < input->operand_width[p]; w++) {
-                    if (interchangeable.count(ra + w)) {
-                      rc_atoms.insert(ra + w);
-                    }
-                  }
-                }
-                class_atoms.insert(rc_atoms);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  bool has_caller = false, has_callee = false;
-
-  for (block b : B) {
-    for (operand p : input->ope[b]) {
-      set<register_atom> domain;
-      for (IntVarValues ra(ry(p)); ra(); ++ra)
-        if (interchangeable.count(ra.val())) {
-          for (int w = 0; w < input->operand_width[p]; w++) {
-            domain.insert(ra.val() + w);
-          }
-        }
-      if (((input->type[input->oper[p]] == FUN) ||
-           (input->type[input->oper[p]] == KILL)) &&
-          subseteq(domain, input->callersaved)) {
-        has_caller = true;
-        continue;
-      } else if
-          (global &&
-           ((input->type[input->oper[p]] == IN) ||
-            (input->type[input->oper[p]] == OUT) ||
-            (input->type[input->oper[p]] == COPY)) &&
-           subseteq(domain, input->calleesaved)) {
-        has_callee = true;
-        continue;
-      }
-      class_atoms.insert(domain);
-    }
-  }
-
-
-  // add caller and caller saved atoms as their own classes
-  if (has_caller)
-    class_atoms.insert(set<register_atom>(input->callersaved.begin(),
-                                          input->callersaved.end()));
-  if (has_callee)
-    class_atoms.insert(set<register_atom>(input->calleesaved.begin(),
-                                          input->calleesaved.end()));
-
-  set<register_atom> finite;
-  for (auto ra : interchangeable) finite.insert(ra.first);
-
-  // merge register atoms that always appear together in the atom classes
-  for (register_atom ra1 : finite) {
-    for (register_atom ra2 : finite) {
-      if (ra1 != ra2) {
-        bool diff = false;
-        for (set<register_atom> atoms : class_atoms) {
-          if ((atoms.count(ra1) && !atoms.count(ra2)) ||
-              (!atoms.count(ra1) && atoms.count(ra2))) {
-            diff = true;
-            break;
-          }
-        }
-        if (diff) continue;
-        interchangeable.merge(ra1, ra2);
-      }
-    }
-  }
-
-  // return equivalence (interchangeable) classes of register atoms
-  return interchangeable.classes();
-
-}
-#endif
 
 Model::Model(Parameters * p_input, ModelOptions * p_options, IntPropLevel p_ipl) :
   input(p_input),
@@ -1310,47 +1142,21 @@ void Model::post_improved_model_constraints(block b) {
   if (!options->disable_improving()) {
     post_null_register_constraints(b);
     post_effective_copy_constraints(b);
-#if !MCMOD // subsumed
-    post_disjoint_operand_constraints(b);
-#endif
     if (!options->disable_maximum_temporary_usage_constraints())
       post_maximum_temporary_usage_constraints(b);
-#if !MCMOD // they are all subsumed
-    if (!options->disable_copy_dominance_constraints()) {
-      post_copy_symmetry_breaking_constraints(b);
-      post_copy_dominance_constraints(b);
-      post_non_decreasing_temporary_usage_constraints(b);
-      post_first_k_copies_constraints(b);
-    }
-#endif
-#if MCSLACK
-#else
-    post_reverse_data_precedence_constraints(b);
-#endif
     post_minimum_temporary_duration_constraints(b);
     post_define_issue_cycle_constraints(b);
     post_kill_issue_cycle_constraints(b);
-#if !MCMOD // subsumed
-    if (!options->disable_partially_ordered_live_range_constraints()) {
-      // This is subsumed by the partially ordered live range constraints
-      post_disjoint_congruent_operand_constraints(b);
-    }
-    post_redefined_operand_constraints(b);
-#endif
     post_disjoint_component_operand_constraints(b);
     if (!options->disable_space_capacity_constraints())
       post_space_capacity_constraints(b);
     post_branch_issue_cycle_constraints(b);
     post_active_first_copy_constraints(b);
-    post_sequential_upper_bound_constraints(b);
     post_callee_saved_symmetry_breaking_constraints(b);
     if (!options->disable_precedence_variables()) {
       post_irreflexive_precedence_constraints(b);
       post_transitive_precedence_constraints(b);
     }
-#if !MCMOD // subsumed
-    post_killed_temporary_precedence_constraints(b);
-#endif
     post_cost_domain_constraints(b);
     post_local_congruence_constraints(b);
     post_ultimate_source_constraints(b);
@@ -1503,39 +1309,6 @@ void Model::post_first_k_copies_constraints(block b) {
 
 }
 
-
-#if MCSLACK
-#else
-void Model::post_reverse_data_precedence_constraints(block b) {
-
-  // An operation that defines a temporary is issued before its last user:
-
-  for (operation o : input->ops[b])
-    for (operand p : input->operands[o])
-      if (!input->use[p]) {
-        temporary t = input->single_temp[p];
-        IntVarArgs acs, ics;
-        for (operand q : input->users[t]) {
-          operation j = input->oper[q];
-          // if there is a global operand p1 defining a temporary that can be
-          // used by q, subtract the slack of p1:
-          operand p1 = -1;
-          for (temporary t1 : input->real_temps[q]) {
-            operand pd = input->definer[t1];
-            if (input->global_operand[pd]) {
-              p1 = pd;
-              break;
-            }
-          }
-          IntVar pc = var(c(j) - lat(q, t) - (p1 == -1 ? var(0) : s(p1)));
-          acs << var(ite(u(q, t), pc, 0));
-          ics << pc;
-        }
-        constraint(c(o) <= ite(l(t), max(acs), max(ics)));
-      }
-
-}
-#endif
 
 void Model::post_minimum_temporary_duration_constraints(block b) {
 
@@ -1792,20 +1565,6 @@ void Model::post_active_first_copy_constraints(block b) {
 
 }
 
-void Model::post_sequential_upper_bound_constraints(block b) {
-
-  // The makespan cannot be larger than that of a sequential schedule:
-
-  IntArgs durs;
-  BoolVarArgs as;
-  for (operation o : input->ops[b]) {
-    durs << worst(o);
-    as << a(o);
-  }
-  constraint(c(input->out[b]) < sum(durs, as));
-
-}
-
 void Model::post_callee_saved_symmetry_breaking_constraints(block b) {
 
   // Assuming all callee-saved registers and copies are symmetric,
@@ -1814,13 +1573,6 @@ void Model::post_callee_saved_symmetry_breaking_constraints(block b) {
   // unspill operations must be smallest register last
   // e.g. "calleesaved_spill": [[3,158,167],[4,159,168],[5,160,169],[6,161,170],[7,162,171],[8,163,172]],
 
-#if !MCMOD
-  if (b == 0) {
-    BoolVarArgs as;
-    for (operation o : input->callee_saved_stores) as << a(o);
-    rel(*this, as, IRT_GQ);
-  }
-#else
   if (!input->calleesaved_spill.empty()) {
     unsigned nrows = input->calleesaved_spill[0].size();
     unsigned ncols = input->calleesaved_spill.size();
@@ -1854,7 +1606,6 @@ void Model::post_callee_saved_symmetry_breaking_constraints(block b) {
       }
     }
   }
-#endif
 }
 
 void Model::post_irreflexive_precedence_constraints(block b) {
@@ -2013,13 +1764,10 @@ void Model::post_presolver_constraints(block b) {
       post_across_call_disjoint_temporary_set_constraints(b);
     if (!options->disable_temporary_symmetry_breaking_constraints())
       post_temporary_symmetry_breaking_constraints(b);
-#if MCMOD
     post_diffregs_constraints(b);
     post_difftemps_constraints(b);
     post_dominates_constraints(b);
-    post_predecessors_constraints(b);
-    post_successors_constraints(b);
-#endif
+    post_wcet_constraints(b);
     // TODO: to be revisited after minlive model improvement
     // post_killer_operand_constraints(b);
     post_mandatory_reuse_constraints(b);
@@ -2280,22 +2028,10 @@ void Model::post_temporary_symmetry_breaking_constraints(block b) {
   for (vector<vector<int> > interchangeable : input->bdomops[b]) {
     vector<operand> ps = interchangeable[0];
     vector<temporary> ts = interchangeable[1];
-#if !MCMOD
-    for (unsigned int pi = 0; pi < (ps.size() - 1); pi++)
-      for (unsigned int qi = pi + 1; qi < ps.size(); qi++) {
-	operand p = ps[pi], q = ps[qi];
-	for (unsigned int t1i = 0; t1i < (ts.size() - 1); t1i++)
-	  for (unsigned int t2i = t1i + 1; t2i < ts.size(); t2i++) {
-	    temporary t1 = ts[t1i], t2 = ts[t2i];
-	    constraint(!(u(p, t2) && u(q, t1)));
-	  }
-      }
-#else
     IntVarArgs ysargs;
     for (operand p : ps) ysargs << y(p);
     IntArgs tsargs(ts.begin(), ts.end());
     precede(*this, ysargs, tsargs);
-#endif
   }
 
 }
@@ -2367,28 +2103,40 @@ void Model::post_diffregs_constraints(block b) {
     disjoint_operand_registers(ps);
 }
 
-void Model::post_predecessors_constraints(block b) {
+void Model::post_wcet_constraints(block b) {
 
-  // Operations with multiple predecessors must be distant from the earliest predecessor.
+  // Longest tolerable inter-issue distance
 
-  for(PresolverPred& PPi : input->bpredecessors[b]) {
-    IntVarArgs pred_cs;
-    for (operation o : PPi.p)
-      pred_cs << c(o);
-    constraint(min(pred_cs) + PPi.d <= c(PPi.q));
+  IntVarArgs worst;
+  map<operation,vector<int>> slacks;
+  if (input->bwcet[b].empty())
+    return;
+  for(PresolverWCET& wcet : input->bwcet[b])
+    slacks[wcet.o].push_back(wcet.d);
+  for(auto kv : slacks) {
+    operation o = kv.first;
+    bool allOne = true;
+    bool allOneButFirst = true;
+    bool first = true;
+    bool mand = input->instructions[o][0] != NULL_INSTRUCTION;
+    
+    for(int d : kv.second) {
+      if (d!=1) allOne = false;
+      if (!first && d!=1) allOneButFirst = false;
+      first = false;
+    }
+    if(allOne) {
+      worst << var(1);
+    } else if(allOneButFirst && !mand) {
+      IntVar ia(*this, 0, 1);
+      Gecode::channel(*this, ia, a(o), IPL_DOM);
+      worst << ia;
+    } else {
+      worst << var(element(kv.second, i(o)));
+    }
   }
-}
-
-void Model::post_successors_constraints(block b) {
-
-  // Operations with multiple successors must be distant to the latest successor.
-
-  for(PresolverSucc& PSi : input->bsuccessors[b]) {
-    IntVarArgs succ_cs;
-    for (operation o : PSi.q)
-      succ_cs << c(o);
-    constraint(c(PSi.p) + PSi.d <= max(succ_cs));
-  }
+  constraint(c(input->out[b]) <= sum(worst));
+    
 }
 
 void Model::post_killer_operand_constraints(block b) {

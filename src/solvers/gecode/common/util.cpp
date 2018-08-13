@@ -112,14 +112,6 @@ string show(const PresolverCopyTmpTable t) {
   return show(vector<string>{show(t.os), show(t.ps), show(t.tuples)}, ", ");
 }
 
-string show(const PresolverPred p) {
-  return show(vector<string>{show(p.p), show(p.q), show(p.d)}, ", ");
-}
-
-string show(const PresolverSucc p) {
-  return show(vector<string>{show(p.p), show(p.q), show(p.d)}, ", ");
-}
-
 string show(const PresolverAcrossJSON x) {
   return show(vector<string>{show(x.o), show(x.ras), show(x.as)}, ", ");
 }
@@ -130,6 +122,10 @@ string show(const PresolverAcrossTuple x) {
 
 string show(const PresolverAcrossItemJSON x) {
   return show(vector<string>{show(x.t), show(x.e)}, ", ");
+}
+
+string show(const PresolverWCET x) {
+  return show(vector<string>{show(x.o), show(x.i), show(x.d)}, ", ");
 }
 
 string show(const PresolverSetAcross x) {
@@ -202,16 +198,6 @@ string emit_json(const PresolverDominates x) {
         emit_json(x.ins), emit_json(x.temps)}, ", ");
 }
 
-string emit_json(const PresolverPred x) {
-  return show(vector<string>{emit_json(x.p), emit_json(x.q),
-        emit_json(x.d)}, ", ");
-}
-
-string emit_json(const PresolverSucc x) {
-  return show(vector<string>{emit_json(x.p), emit_json(x.q),
-        emit_json(x.d)}, ", ");
-}
-
 string emit_json(const PresolverInstrCond x) {
   return show(vector<string>{emit_json(x.o), emit_json(x.i),
         emit_json(x.q)}, ", ");
@@ -219,6 +205,10 @@ string emit_json(const PresolverInstrCond x) {
 
 string emit_json(const PresolverValuePrecedeChain pvc) {
   return show(vector<string>{emit_json(pvc.ts), emit_json(pvc.rss)}, ", ");
+}
+
+string emit_json(const PresolverWCET wcet) {
+  return show(vector<string>{emit_json(wcet.o), emit_json(wcet.i), emit_json(wcet.d)}, ", ");
 }
 
 string emit_json(const UnisonConstraintExpr e) {

@@ -427,33 +427,6 @@ void partition_nodes(Digraph& G,
   }
 }
 
-#if 0
-// naive depth-first search
-static int longest_path(Digraph& G,
-			map<unsigned long,int>& pweight,
-			map<unsigned long,int>& pweight_c,
-			operation src,
-			operation sink,
-			int len) {
-  if (src > sink) {
-    return 0;
-  } else if (src == sink) {
-    return len;
-  } else {
-    int lp = len;
-    vector<operation> ns = G.neighbors(src);
-    for (operation n : ns) {
-      unsigned long key = FastPair(src,n);
-      int weight = (pweight.find(key) != pweight.end() ? pweight[key] : 0);
-      int weight_c = (pweight_c.find(key) != pweight_c.end() ? pweight_c[key] : 0);
-      int nl = longest_path(G, pweight, pweight_c, n, sink, len+max(weight,weight_c));
-      lp = max(nl,lp);
-    }
-    return lp;
-  }
-}
-#endif
-
 static bool has_edge_inside(map<unsigned long,int>& pweight_c,
 			    operation lb,
 			    operation ub) {
@@ -485,28 +458,6 @@ void gen_region_per_partition(const Parameters& input,
       }
     }
   }
-
-#if 0
-  if (!ass.empty()) {
-    operand p = ass[0];
-    temporary t = ass[1];
-    operation src = focus[0];
-    operation sink = focus[1];
-    int lat = focus[2];
-    int lp = longest_path(G, pweight, pweight_c, src, sink, 0);
-
-    // vector<operation> region = ord_union(G.reachables(src), {src});
-    // map<operation,int> src_cps = dag_longest_paths_fwd(region, pweight);
-    // by construction, sink is reachable from src
-    if(lp<lat) {
-      UnisonConstraintExpr e(CONNECTS_EXPR, {p,t}, {});
-      presolver_conj Conj({e});
-      PresolverPrecedence pred(src, sink, lat, presolver_disj({Conj}));
-      PO.push_back(pred);
-      // pweight[FastPair(src,sink)] = lat; // only holds under assumption p...=t...
-    }
-  }
-#endif
   
   for(const pair<operation,vector<pair<operation,operation>>>& b_edges : M) {
     Digraph G = Digraph(b_edges.second);
@@ -1198,178 +1149,64 @@ void subsumed_resources(Parameters& input) {
     input.subsumed_resources[b] = entailed;
   }
 }
-    
-#if 0
 
-/*****************************************************************************
-    Code related to:
-    - JSON.predecessors
-    - JSON.successors
-*****************************************************************************/
-void gen_predecessors_successors(Parameters& input) {
-  Digraph G = Digraph(input.precs);
-  Digraph H = G.reduction();
-  Digraph T = H.transpose();
 
-  for(operation v : T.vertices()) {
-    vector<operation> N = T.neighbors(v);
-    if(N.size() >= 2) {
-      int span = makespan(input, N);
-      if(span > 1) {
-	PresolverPred PPi;
-	PPi.p = N;
-	PPi.q = v;
-	PPi.d = span;
-	input.predecessors.push_back(PPi);
+void computeWCET(Parameters &input) {
+  for (int o : input.O) {
+    if (input.type[o] == OUT) {
+      input.wcet.push_back(PresolverWCET(o, 0, 0));
+    } else {
+      block b = input.oblock[o];
+      int maxminlive = 0;
+      
+      for (temporary t : input.tmp[b])
+	if (input.def_opr[t] == o && input.minlive[t] > maxminlive)
+	  maxminlive = input.minlive[t];
+      for (unsigned int ii = 0; ii < input.instructions[o].size(); ii++) {
+	instruction i = input.instructions[o][ii];
+	vector<int> opdurs;
+	if (i == NULL_INSTRUCTION) {
+	  opdurs.push_back(0);
+	} else {
+	  int maxdeflat = 0;
+	  int maxduroff = 0;
+
+	  for (resource r : input.R)
+	    if (input.con[i][r]) {
+	      int duroff = input.dur[i][r] + input.off[i][r];
+	      if (maxduroff < duroff)
+		maxduroff = duroff;
+	    }
+	  opdurs.push_back(maxduroff);
+
+	  for (unsigned pi = 0; pi < input.operands[o].size(); pi++) {
+	    operand p = input.operands[o][pi];
+	    if (!input.use[p]) {
+	      int l1 = input.lat[o][ii][pi];
+	      for (operand q : input.users[input.single_temp[p]]) {
+		operation o2 = input.oper[q];
+		for (unsigned qi = 0; qi < input.operands[o2].size(); qi++) {
+		  if (input.operands[o2][qi]==q)
+		    for (unsigned int jj = 0; jj < input.instructions[o2].size(); jj++) {
+		      int l2 = input.lat[o2][jj][qi];
+		      if (maxdeflat < l1+l2)
+			maxdeflat = l1+l2;
+		    }
+		}
+	      }
+	    }	    
+	  }
+	  opdurs.push_back(maxdeflat);
+
+	  int maxdist = 0;
+	  for (unsigned int e = 0; e < input.dep[b].size(); e++)
+	    if ((o == input.dep[b][e][0]) && (input.dist[b][e][ii] > maxdist))
+	      maxdist = input.dist[b][e][ii];
+	  opdurs.push_back(maxdist);
+	  opdurs.push_back(maxminlive);
+	}
+	input.wcet.push_back(PresolverWCET(o, i, max_of(opdurs)));
       }
     }
   }
-  for(operation v : H.vertices()) {
-    vector<operation> N = H.neighbors(v);
-    if(N.size() >= 2) {
-      int span = makespan(input, N);
-      if(span > 1) {
-	PresolverSucc PSi;
-	PSi.p = v;
-	PSi.q = N;
-	PSi.d = span;
-	input.successors.push_back(PSi);
-      }
-    }
-  }
 }
-
-int makespan(Parameters& input, const vector<operation>& ops) {
-  ModelOptions options;
-  MakeSpanModel * base = new MakeSpanModel(&input, &options, IPL_DOM);
-  int span = 1;
-
-  base->post(ops);
-  base->status();
-
-  // Set timeout = 3s
-  Search::Stop * relaxedStop = new Search::TimeStop(3000);
-  Search::Options opt;
-  opt.stop = relaxedStop;
-  DFS<MakeSpanModel> e(base, opt);
-  if (MakeSpanModel *r = e.next()) {
-    span = r->v_span.val();
-    delete r;
-  }
-  delete relaxedStop;
-  delete base;
-  return span;
-}
-
-MakeSpanModel::MakeSpanModel(Parameters * p_input, ModelOptions * p_options, IntPropLevel p_ipl) :
-  input(p_input),
-  options(p_options),
-  ipl(p_ipl) {
-}
-
-MakeSpanModel::MakeSpanModel(MakeSpanModel& m) :
-  Space(m),
-  input(m.input),
-  options(m.options),
-  ipl(m.ipl)
-{
-  v_c.update(*this, m.v_c);
-  v_i.update(*this, m.v_i);
-  v_span.update(*this, m.v_span);
-}
-
-MakeSpanModel* MakeSpanModel::copy(void) {
-  return new MakeSpanModel(*this);
-}
-
-void MakeSpanModel::post(const vector<operation>& ops) {
-  int n = ops.size();
-  v_c = IntVarArray(*this, n, 0, n);
-  v_i = IntVarArray(*this, n, 0, input->I.size() - 1);
-  v_span = IntVar(*this, 1, n);
-  for(int oi=0; oi<n; oi++)
-    constraint(v_c[oi] + 1 <= v_span);
-
-  // ripping off Model::post_processor_resources_constraints(block b)
-
-  // The capacity of processor resources cannot be exceeded at any issue cycle:
-
-  map<resource, vector<UsageTask> > r2tasks;
-
-  for(int oi=0; oi<n; oi++) {
-    operation o = ops[oi];
-
-    // Map from consumption to tasks for each resource
-    vector<map<int, vector<pair<int, int> > > > ru2tasks;
-    map<int, vector<pair<int, int> > > emptyMap;
-    init_vector(ru2tasks, input->R.size(), emptyMap);
-
-    // Complete map with tasks grouped by consumption
-    for (unsigned int ii = 0; ii < input->instructions[o].size(); ii++) {
-      instruction i = input->instructions[o][ii];
-      for (resource r : input->R) {
-        int con = input->con[i][r],
-            dur = input->dur[i][r];
-        if (con > 0 && dur > 0) ru2tasks[r][con].push_back(make_pair(ii, dur));
-      }
-    }
-
-    // For each operation, resource and consumption, define a task (possibly
-    // related to several instructions)
-    for (resource r : input->R) {
-      map<int, vector<pair<int, int> > >::iterator it;
-      for (it = ru2tasks[r].begin(); it != ru2tasks[r].end(); it++) {
-        int maxdur = -1;
-        IntArgs durs = IntArgs::create(input->instructions[o].size(), 0, 0);
-        IntArgs iis;
-        typedef pair<int, int> OpDur;
-        for (const OpDur& ou : it->second) {
-          durs[ou.first] = ou.second;
-          iis << ou.first;
-          if (ou.second > maxdur) maxdur = ou.second;
-        }
-        UsageTask task;
-        task.c = v_c[oi];
-        IntVar dur(*this, 0, maxdur);
-        element(*this, durs, v_i[oi], dur);
-        task.dur = dur;
-        task.e = var(v_c[oi] + task.dur);
-        task.con = it->first;
-        BoolVar opc(*this, 0, 1);
-        Gecode::dom(*this, v_i[oi], IntSet(iis), opc);
-        task.o = opc;
-        r2tasks[r].push_back(task);
-      }
-    }
-  }
-
-  for (resource r : input->R) {
-
-    IntVarArgs rc; // Start time of each task
-    IntVarArgs rdur; // Duration of each task
-    IntVarArgs re; // End time of each task
-    IntArgs rcon; // Consumption of each task
-    BoolVarArgs ro; // Whether each task is scheduled
-
-    for (const UsageTask& task : r2tasks[r]) {
-      rc << task.c;
-      rdur << task.dur;
-      re << task.e;
-      rcon << task.con;
-      ro << task.o;
-    }
-
-    cumulative(*this, input->cap[r], rc, rdur, re, rcon, ro);
-  }
-
-  // branching rule
-  IntVarArgs as;
-  as << v_span;
-  for(int i=0; i<n; i++) {
-    as << v_c[i];
-    as << v_i[i];
-  }
-  branch(*this, as, INT_VAR_NONE(), INT_VAL_MIN());
-}
-
-#endif

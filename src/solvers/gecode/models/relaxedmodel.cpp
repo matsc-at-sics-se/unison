@@ -105,12 +105,11 @@ BoolVar RelaxedModel::relaxed_adhoc_constraint_var(UnisonConstraintExpr & e) {
     return u(e.data[0], e.data[1]);
   case IMPLEMENTS_EXPR:
     return imp(e.data[0], e.data[1]);
-  case DISTANCE_EXPR:
-    return var(c(e.data[1]) >= (c(e.data[0]) + e.data[2]));
   case SHARE_EXPR:
     // This is fine because the temps of one will always be a prefix of the
     // temps of the other
     return var(y(e.data[0]) == y(e.data[1]));
+  case DISTANCE_EXPR:
   case OPERAND_OVERLAP_EXPR:
   case TEMPORARY_OVERLAP_EXPR:
     return BoolVar(*this, 0, 1);
@@ -259,19 +258,19 @@ void RelaxedModel::post_active_operation_branching(vector<operation> O) {
   BoolVarArgs as;
   for(operation o : O)
     as << a(o);
-  branch(*this, as, BOOL_VAR_NONE(), BOOL_VAL_MIN());
+  branch(*this, as, BOOL_VAR_AFC_MAX(), BOOL_VAL_MIN());
 }
 
 void RelaxedModel::post_operand_temporary_branching(vector<operand> P) {
   IntVarArgs ts;
   for(operand p : P)
     ts << y(p);
-  branch(*this, ts, INT_VAR_DEGREE_MAX(),INT_VAL_MED());
+  branch(*this, ts, INT_VAR_AFC_MAX(),INT_VALUES_MIN());
 }
 
 void RelaxedModel::post_instruction_operation_branching(vector<operation> O) {
   IntVarArgs is;
   for(operation o : O)
     is << i(o);
-  branch(*this, is, INT_VAR_DEGREE_MAX(), INT_VAL_MED());
+  branch(*this, is, INT_VAR_AFC_MAX(), INT_VALUES_MIN());
 }
