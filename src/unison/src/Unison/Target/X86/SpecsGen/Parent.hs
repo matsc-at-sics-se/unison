@@ -820,15 +820,11 @@ parent i
   | i `elem` [ADD32mi_unison] = Just ADD32mi
   | i `elem` [ADD32mi8_unison] = Just ADD32mi8
   | i `elem` [ADD32mr_unison] = Just ADD32mr
-  | i `elem` [ADD32ri_LEA] = Just ADD32ri
   | i `elem` [ADD32rm_unison] = Just ADD32rm
-  | i `elem` [ADD32rr_LEA] = Just ADD32rr
   | i `elem` [ADD64mi32_unison] = Just ADD64mi32
   | i `elem` [ADD64mi8_unison] = Just ADD64mi8
   | i `elem` [ADD64mr_unison] = Just ADD64mr
-  | i `elem` [ADD64ri_LEA] = Just ADD64ri32
   | i `elem` [ADD64rm_unison] = Just ADD64rm
-  | i `elem` [ADD64rr_LEA] = Just ADD64rr
   | i `elem` [ADD8mi_unison] = Just ADD8mi
   | i `elem` [ADD8mi8_unison] = Just ADD8mi8
   | i `elem` [ADD8mr_unison] = Just ADD8mr
@@ -1161,8 +1157,12 @@ parent i
     Just LEA16r
   | i `elem` [LEA32r_demat, LEA32r_remat, LEA32r_source] =
     Just LEA32r
-  | i `elem` [LEA64r_demat, LEA64r_remat, LEA64r_source] =
-    Just LEA64r
+  | i `elem` [ADD32ri_LEA, ADD32rr_LEA, SHL32r1_LEA, SHL32ri_LEA] =
+    Just LEA64_32r
+  | i `elem`
+      [ADD64ri_LEA, ADD64rr_LEA, LEA64r_demat, LEA64r_remat,
+       LEA64r_source, SHL64r1_LEA, SHL64ri_LEA]
+    = Just LEA64r
   | i `elem` [LLDT16m_unison] = Just LLDT16m
   | i `elem` [LMSW16m_unison] = Just LMSW16m
   | i `elem` [LSL16rm_unison] = Just LSL16rm
@@ -1555,13 +1555,9 @@ parent i
   | i `elem` [SHL32m1_unison] = Just SHL32m1
   | i `elem` [SHL32mCL_unison] = Just SHL32mCL
   | i `elem` [SHL32mi_unison] = Just SHL32mi
-  | i `elem` [SHL32r1_LEA] = Just SHL32r1
-  | i `elem` [SHL32ri_LEA] = Just SHL32ri
   | i `elem` [SHL64m1_unison] = Just SHL64m1
   | i `elem` [SHL64mCL_unison] = Just SHL64mCL
   | i `elem` [SHL64mi_unison] = Just SHL64mi
-  | i `elem` [SHL64r1_LEA] = Just SHL64r1
-  | i `elem` [SHL64ri_LEA] = Just SHL64ri
   | i `elem` [SHL8m1_unison] = Just SHL8m1
   | i `elem` [SHL8mCL_unison] = Just SHL8mCL
   | i `elem` [SHL8mi_unison] = Just SHL8mi

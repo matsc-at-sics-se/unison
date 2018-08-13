@@ -380,7 +380,7 @@ instruction-set:
           parent:             NOOP
 
         - id:                 ADD32ri_LEA
-          parent:             ADD32ri
+          parent:             LEA64_32r
           operands:
            - src1:            [register, use, GR32]
            - src2:            bound
@@ -391,7 +391,7 @@ instruction-set:
           affected-by:
 
         - id:                 ADD32rr_LEA
-          parent:             ADD32rr
+          parent:             LEA64_32r
           operands:
            - src1:            [register, use, GR32]
            - src2:            [register, use, GR32]
@@ -402,7 +402,7 @@ instruction-set:
           affected-by:
 
         - id:                 ADD64ri_LEA
-          parent:             ADD64ri32
+          parent:             LEA64r
           operands:
            - src1:            [register, use, GR64]
            - src2:            bound
@@ -413,7 +413,7 @@ instruction-set:
           affected-by:
 
         - id:                 ADD64rr_LEA
-          parent:             ADD64rr
+          parent:             LEA64r
           operands:
            - src1:            [register, use, GR64]
            - src2:            [register, use, GR64]
@@ -424,7 +424,7 @@ instruction-set:
           affected-by:
 
         - id:                 SHL32r1_LEA
-          parent:             SHL32r1
+          parent:             LEA64_32r
           operands:
            - src1:            [register, use, GR32]
            - dst:             [register, def, GR32]
@@ -434,7 +434,7 @@ instruction-set:
           affected-by:
 
         - id:                 SHL32ri_LEA
-          parent:             SHL32ri
+          parent:             LEA64_32r
           operands:
            - src1:            [register, use, GR32]
            - src2:            bound
@@ -445,7 +445,7 @@ instruction-set:
           affected-by:
 
         - id:                 SHL64r1_LEA
-          parent:             SHL64r1
+          parent:             LEA64r
           operands:
            - src1:            [register, use, GR64]
            - dst:             [register, def, GR64]
@@ -455,7 +455,7 @@ instruction-set:
           affected-by:
 
         - id:                 SHL64ri_LEA
-          parent:             SHL64ri
+          parent:             LEA64r
           operands:
            - src1:            [register, use, GR64]
            - src2:            bound
