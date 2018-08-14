@@ -847,7 +847,7 @@ itinerary i
     = SKLWriteResGroup26
   | i `elem` [MOVBE16mr, MOVBE32mr, MOVBE64mr] = SKLWriteResGroup27
   | i `elem`
-      [FPUSH, PUSH16r, PUSH16rmr, PUSH32r, PUSH32rmr, PUSH64i8, PUSH64r,
+      [PUSH16r, PUSH16rmr, PUSH32r, PUSH32rmr, PUSH64i8, PUSH64r,
        PUSH64rmr, PUSH_cst, PUSH_fi, STOSB, STOSL, STOSQ, STOSW]
     = SKLWriteResGroup28
   | i `elem`
@@ -1159,7 +1159,7 @@ itinerary i
        CMP16rm, CMP16rm_unison, CMP32mi, CMP32mi_unison, CMP32mr,
        CMP32mr_unison, CMP32rm, CMP32rm_unison, CMP64mr, CMP64mr_unison,
        CMP64rm, CMP64rm_unison, CMP8mi, CMP8mi_unison, CMP8mr,
-       CMP8mr_unison, CMP8rm, CMP8rm_unison, FPOP, OR16rm, OR16rm_unison,
+       CMP8mr_unison, CMP8rm, CMP8rm_unison, OR16rm, OR16rm_unison,
        OR32rm, OR32rm_unison, OR64rm, OR64rm_unison, OR8rm, OR8rm_unison,
        POP16r, POP16rmr, POP32r, POP32rmr, POP64r, POP64rmr, POP_cst,
        POP_fi, SUB16rm, SUB16rm_unison, SUB32rm, SUB32rm_unison, SUB64rm,
@@ -1393,10 +1393,10 @@ itinerary i
        BLCIC32rr, BLCIC64rr, BLCMSK32rr, BLCMSK64rr, BLCS32rr, BLCS64rr,
        BLSFILL32rr, BLSFILL64rr, BLSIC32rr, BLSIC64rr, CDQE, CLI, CLTS,
        CMP16i16, CMP16ri8, CMP32i32, CMP32ri8, CMP64i32, CMP64ri32,
-       CMP64ri8, CMP8ri8, DEC16r_alt, DEC32r_alt, FvANDPDrr, FvXORPDrr,
-       INC16r_alt, INC32r_alt, LEAVE, MOV16ao16, MOV16ao32, MOV16o16a,
-       MOV16o32a, MOV32ao16, MOV32ao32, MOV32o16a, MOV32o32a, MOV32r1,
-       MOV32r1_remat, MOV32r_1, MOV32r_1_remat, MOV32ri64,
+       CMP64ri8, CMP8ri8, DEC16r_alt, DEC32r_alt, FPOP, FPUSH, FvANDPDrr,
+       FvXORPDrr, INC16r_alt, INC32r_alt, LEAVE, MOV16ao16, MOV16ao32,
+       MOV16o16a, MOV16o32a, MOV32ao16, MOV32ao32, MOV32o16a, MOV32o32a,
+       MOV32r1, MOV32r1_remat, MOV32r_1, MOV32r_1_remat, MOV32ri64,
        MOV32ri64_remat, MOV64ao32, MOV64o32a, MOV64ri64, MOV64ri64_remat,
        MOV8ao16, MOV8ao32, MOV8o16a, MOV8o32a, MOVSX32_NOREXrr8,
        MOVZX32_NOREXrr8, NOFPOP, NOFPUSH, OR16i16, OR16ri8, OR32i32,

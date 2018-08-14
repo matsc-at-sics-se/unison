@@ -459,12 +459,13 @@ expandPseudo _ (MachineSingle {msOpcode = MachineTargetOpc i})
   | i `elem` [SPILL32, SPILL, NOFPUSH, NOFPOP]
   = []
 
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPUSH,
-                                   msOperands = [_,off]}
-  | off == MachineImm 8
-  = let cx = mkMachineReg RCX
-    in [[mi {msOpcode = mkMachineTargetOpc PUSH64r,
-             msOperands = [cx]}]]
+-- LLVM does this to optimize for size
+-- expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPUSH,
+--                                    msOperands = [_,off]}
+--   | off == MachineImm 8
+--   = let cx = mkMachineReg RCX
+--     in [[mi {msOpcode = mkMachineTargetOpc PUSH64r,
+--              msOperands = [cx]}]]
 
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPUSH,
                                    msOperands = [_,off]}
@@ -483,12 +484,13 @@ expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPUSH32,
         [mi {msOpcode = mkMachineTargetOpc SUB64ri8,
              msOperands = [sp, sp, off]}]]
 
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPOP,
-                                   msOperands = [_,off]}
-  | off == MachineImm 8
-  = let cx = mkMachineReg RCX
-    in [[mi {msOpcode = mkMachineTargetOpc POP64r,
-             msOperands = [cx]}]]
+-- LLVM does this to optimize for size
+-- expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPOP,
+--                                    msOperands = [_,off]}
+--   | off == MachineImm 8
+--   = let cx = mkMachineReg RCX
+--     in [[mi {msOpcode = mkMachineTargetOpc POP64r,
+--              msOperands = [cx]}]]
 
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FPOP,
                                    msOperands = [_,off]}

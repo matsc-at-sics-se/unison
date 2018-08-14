@@ -281,7 +281,6 @@ instruction-set:
            - RSP:             register
           affected-by:
            - RSP:             register
-          itinerary:          SKLWriteResGroup28
 
         - id:                 NOFPUSH
           parent:             SUB64ri8
@@ -318,7 +317,6 @@ instruction-set:
            - RSP:             register
           affected-by:
            - RSP:             register
-          itinerary:          SKLWriteResGroup76
 
         - id:                 NOFPOP
           parent:             SUB64ri8
