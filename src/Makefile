@@ -196,3 +196,17 @@ run-specsgen-x86:
 		 --promoteeffect WMM0:VR128 \
 	         --rematfile=$(SGX86REMATYAML) \
 	         --preprocessfile=$(SGX86ITINERARYYAML)
+
+SKLGENROOTDIR = $(SGX86ROOTDIR)/input/skylake/llvm-resource-model
+SKLGENSPEC    = $(SKLGENROOTDIR)/output/X86SchedSkylakeClient-parser_output.json
+
+run-x86-skylake-generator:
+	$(SKLGENROOTDIR)/X86SchedSkylakeClient-parser.py $(SGX86INPUTYAML) \
+		$(SKLGENROOTDIR)/input/X86SchedSkylakeClient.td \
+		$(SKLGENROOTDIR)/input/manual_instruction_mapping.json \
+		$(SKLGENROOTDIR)/output/tablegen-parser_output.json > \
+		$(SKLGENSPEC)
+	$(SKLGENROOTDIR)/produce-itinerary-map.py $(SKLGENSPEC) > \
+		$(SGX86ITINERARYYAML)
+	$(SKLGENROOTDIR)/produce-itinerary-properties.py $(SKLGENSPEC) > \
+		$(SGX86ROOTDIR)/ItineraryProperties.hs

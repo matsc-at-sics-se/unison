@@ -1,0 +1,3475 @@
+---
+-
+    Instruction: MOV
+    Operands: r,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0156
+    Latency: 
+    Reciprocal throughput: 0.25
+    Comments: 
+-
+    Instruction: MOV
+    Operands: r8/16,r8/16
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0156
+    Latency: 1
+    Reciprocal throughput: 0.25
+    Comments: 
+-
+    Instruction: MOV
+    Operands: r32/64,r32/64
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0156
+    Latency: 0-1
+    Reciprocal throughput: 0.25
+    Comments: may be elim.
+-
+    Instruction: MOV
+    Operands: r8l,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p23 p0156
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: MOV
+    Operands: r8h,m
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: MOV
+    Operands: r16,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p23 p0156
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: MOV
+    Operands: r32/64,m
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p23
+    Latency: 2
+    Reciprocal throughput: 0.5
+    Comments: all addressing modes
+-
+    Instruction: MOV
+    Operands: m,r
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p237 p4
+    Latency: 2
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MOV
+    Operands: m,i
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p237 p4
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MOVNTI
+    Operands: m,r
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p23 p4
+    Latency: ~400
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MOVSX MOVZX MOVSXD
+    Operands: r,r
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0156
+    Latency: 1
+    Reciprocal throughput: 0.25
+    Comments: 
+-
+    Instruction: MOVSX MOVZX
+    Operands: r16,m8
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p23 p0156
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: MOVSX MOVZX MOVSXD
+    Operands: r,m
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: "all other\ncombinations"
+-
+    Instruction: CMOVcc
+    Operands: r,r
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p06
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: CMOVcc
+    Operands: r,m
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p06 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: XCHG
+    Operands: r,r
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: 3p0156
+    Latency: 2
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: XCHG
+    Operands: r,m
+    Uops fused domain: 8
+    Uops unfused domain: 8
+    Uops each port: 
+    Latency: 23
+    Reciprocal throughput: 
+    Comments: implicit lock
+-
+    Instruction: XLAT
+    Operands: 
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: p23 2p0156
+    Latency: 7
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: PUSH
+    Operands: r
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p237 p4
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PUSH
+    Operands: i
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p237 p4
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PUSH
+    Operands: m
+    Uops fused domain: 2
+    Uops unfused domain: 3
+    Uops each port: p4 2p237
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PUSH
+    Operands: stack pointer
+    Uops fused domain: 2
+    Uops unfused domain: 3
+    Uops each port: p0156 p237 p4
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PUSHF(D/Q)
+    Operands: 
+    Uops fused domain: 3
+    Uops unfused domain: 4
+    Uops each port: p1 p4 p237 p06
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PUSHA(D)
+    Operands: 
+    Uops fused domain: 11
+    Uops unfused domain: 19
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 8
+    Comments: not 64 bit
+-
+    Instruction: POP
+    Operands: r
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p23
+    Latency: 2
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: POP
+    Operands: stack pointer
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: p23 2p0156
+    Latency: 
+    Reciprocal throughput: 3
+    Comments: 
+-
+    Instruction: POP
+    Operands: m
+    Uops fused domain: 2
+    Uops unfused domain: 3
+    Uops each port: 2p237 p4
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: POPF(D/Q)
+    Operands: 
+    Uops fused domain: 9
+    Uops unfused domain: 9
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 20
+    Comments: 
+-
+    Instruction: POPA(D)
+    Operands: 
+    Uops fused domain: 18
+    Uops unfused domain: 18
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 8
+    Comments: not 64 bit
+-
+    Instruction: LAHF SAHF
+    Operands: 
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p06
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: SALC
+    Operands: 
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: 3p0156
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: not 64 bit
+-
+    Instruction: LEA
+    Operands: r16,m
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p1 p05
+    Latency: 2-4
+    Reciprocal throughput: 1
+    Comments: 16 or 32 bit address size
+-
+    Instruction: LEA
+    Operands: r32/64,m
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p15
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: "1 or 2 components in\naddress"
+-
+    Instruction: LEA
+    Operands: r32/64,m
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p1
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: 3 components in address
+-
+    Instruction: LEA
+    Operands: r32/64,m
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p1
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: "rip relative\naddress"
+-
+    Instruction: BSWAP
+    Operands: r32
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p15
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: BSWAP
+    Operands: r64
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p06 p15
+    Latency: 2
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MOVBE
+    Operands: r16,m16
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: 2p0156 p23
+    Latency: 
+    Reciprocal throughput: 0.5-1
+    Comments: MOVBE
+-
+    Instruction: MOVBE
+    Operands: r32,m32
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p15 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: MOVBE
+-
+    Instruction: MOVBE
+    Operands: r64,m64
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: 2p0156 p23
+    Latency: 
+    Reciprocal throughput: 0.75
+    Comments: MOVBE
+-
+    Instruction: MOVBE
+    Operands: m16,r16
+    Uops fused domain: 2
+    Uops unfused domain: 3
+    Uops each port: p06 p237 p4
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: MOVBE
+-
+    Instruction: MOVBE
+    Operands: m32,r32
+    Uops fused domain: 2
+    Uops unfused domain: 3
+    Uops each port: p15 p237 p4
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: MOVBE
+-
+    Instruction: MOVBE
+    Operands: m64,r64
+    Uops fused domain: 3
+    Uops unfused domain: 4
+    Uops each port: p06 p15 p237 p4
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: MOVBE
+-
+    Instruction: 
+    Operands: 
+    Uops fused domain: 
+    Uops unfused domain: 
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 
+    Comments: 
+-
+    Instruction: PREFETCHNTA/0/1/2
+    Operands: m
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: PREFETCHW
+    Operands: m
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: PREFETCHW
+-
+    Instruction: LFENCE
+    Operands: 
+    Uops fused domain: 2
+    Uops unfused domain: 
+    Uops each port: none counted
+    Latency: 
+    Reciprocal throughput: 4
+    Comments: 
+-
+    Instruction: MFENCE
+    Operands: 
+    Uops fused domain: 4
+    Uops unfused domain: 4
+    Uops each port: p23 p4
+    Latency: 
+    Reciprocal throughput: 33
+    Comments: 
+-
+    Instruction: SFENCE
+    Operands: 
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p23 p4
+    Latency: 
+    Reciprocal throughput: 6
+    Comments: 
+-
+    Instruction: ADD SUB
+    Operands: r,r/i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0156
+    Latency: 1
+    Reciprocal throughput: 0.25
+    Comments: 
+-
+    Instruction: ADD SUB
+    Operands: r,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p0156 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: ADD SUB
+    Operands: m,r/i
+    Uops fused domain: 2
+    Uops unfused domain: 4
+    Uops each port: 2p0156 2p237 p4
+    Latency: 5
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: ADC SBB
+    Operands: r,r/i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p06
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: ADC SBB
+    Operands: r,m
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p06 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: ADC SBB
+    Operands: m,r/i
+    Uops fused domain: 4
+    Uops unfused domain: 6
+    Uops each port: 3p0156 2p237 p4
+    Latency: 5
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: CMP 
+    Operands: r,r/i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0156
+    Latency: 1
+    Reciprocal throughput: 0.25
+    Comments: 
+-
+    Instruction: CMP 
+    Operands: m,r/i
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p0156 p23
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: INC DEC NEG NOT
+    Operands: r
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0156
+    Latency: 1
+    Reciprocal throughput: 0.25
+    Comments: 
+-
+    Instruction: INC DEC NOT
+    Operands: m
+    Uops fused domain: 3
+    Uops unfused domain: 4
+    Uops each port: p0156 2p237 p4
+    Latency: 5-6
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: NEG
+    Operands: m
+    Uops fused domain: 2
+    Uops unfused domain: 4
+    Uops each port: p0156 2p237 p4
+    Latency: 5-6
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: AAA
+    Operands: 
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p1 p56
+    Latency: 4
+    Reciprocal throughput: 
+    Comments: not 64 bit
+-
+    Instruction: AAS
+    Operands: 
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p1 p056
+    Latency: 4
+    Reciprocal throughput: 
+    Comments: not 64 bit
+-
+    Instruction: DAA DAS
+    Operands: 
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: p1 2p056
+    Latency: 4
+    Reciprocal throughput: 
+    Comments: not 64 bit
+-
+    Instruction: AAD
+    Operands: 
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: p1 2p056
+    Latency: 4
+    Reciprocal throughput: 
+    Comments: not 64 bit
+-
+    Instruction: AAM
+    Operands: 
+    Uops fused domain: 11
+    Uops unfused domain: 11
+    Uops each port: p0 p1 p5 p6
+    Latency: 23
+    Reciprocal throughput: 7
+    Comments: not 64 bit
+-
+    Instruction: MUL IMUL
+    Operands: r8
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p1
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MUL IMUL
+    Operands: r16
+    Uops fused domain: 4
+    Uops unfused domain: 4
+    Uops each port: p1 p0156
+    Latency: 4
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: MUL IMUL
+    Operands: r32
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: p1 p0156
+    Latency: 4
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MUL IMUL
+    Operands: r64
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p1 p6
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MUL IMUL
+    Operands: m8
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p1 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MUL IMUL
+    Operands: m16
+    Uops fused domain: 4
+    Uops unfused domain: 5
+    Uops each port: p1 3p0156 p23
+    Latency: 
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: MUL IMUL
+    Operands: m32
+    Uops fused domain: 3
+    Uops unfused domain: 4
+    Uops each port: p1 2p0156 p23
+    Latency: 
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: MUL IMUL
+    Operands: m64
+    Uops fused domain: 2
+    Uops unfused domain: 3
+    Uops each port: p1 p6 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: IMUL
+    Operands: r,r
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p1
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: IMUL
+    Operands: r,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p1 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: IMUL
+    Operands: r16,r16,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p1 p0156
+    Latency: 4
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: IMUL
+    Operands: r32,r32,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p1
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: IMUL
+    Operands: r64,r64,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p1
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: IMUL
+    Operands: r16,m16,i
+    Uops fused domain: 2
+    Uops unfused domain: 3
+    Uops each port: p1 p0156 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: IMUL
+    Operands: r32,m32,i
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p1 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: IMUL
+    Operands: r64,m64,i
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p1 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MULX
+    Operands: r32,r32,r32
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: p1 2p056
+    Latency: 4
+    Reciprocal throughput: 1
+    Comments: BMI2
+-
+    Instruction: MULX
+    Operands: r32,r32,m32
+    Uops fused domain: 3
+    Uops unfused domain: 4
+    Uops each port: p1 2p056 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: BMI2
+-
+    Instruction: MULX
+    Operands: r64,r64,r64
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p1 p5
+    Latency: 4
+    Reciprocal throughput: 1
+    Comments: BMI2
+-
+    Instruction: MULX
+    Operands: r64,r64,m64
+    Uops fused domain: 2
+    Uops unfused domain: 3
+    Uops each port: p1 p6 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: BMI2
+-
+    Instruction: DIV
+    Operands: r8
+    Uops fused domain: 10
+    Uops unfused domain: 10
+    Uops each port: p0 p1 p5 p6
+    Latency: 23
+    Reciprocal throughput: 6
+    Comments: 
+-
+    Instruction: DIV
+    Operands: r16
+    Uops fused domain: 10
+    Uops unfused domain: 10
+    Uops each port: p0 p1 p5 p6
+    Latency: 23
+    Reciprocal throughput: 6
+    Comments: 
+-
+    Instruction: DIV
+    Operands: r32
+    Uops fused domain: 10
+    Uops unfused domain: 10
+    Uops each port: p0 p1 p5 p6
+    Latency: 26
+    Reciprocal throughput: 6
+    Comments: 
+-
+    Instruction: DIV
+    Operands: r64
+    Uops fused domain: 36
+    Uops unfused domain: 36
+    Uops each port: p0 p1 p5 p6
+    Latency: 35-88
+    Reciprocal throughput: 21-83
+    Comments: 
+-
+    Instruction: IDIV
+    Operands: r8
+    Uops fused domain: 11
+    Uops unfused domain: 11
+    Uops each port: p0 p1 p5 p6
+    Latency: 24
+    Reciprocal throughput: 6
+    Comments: 
+-
+    Instruction: IDIV
+    Operands: r16
+    Uops fused domain: 10
+    Uops unfused domain: 10
+    Uops each port: p0 p1 p5 p6
+    Latency: 23
+    Reciprocal throughput: 6
+    Comments: 
+-
+    Instruction: IDIV
+    Operands: r32
+    Uops fused domain: 10
+    Uops unfused domain: 10
+    Uops each port: p0 p1 p5 p6
+    Latency: 26
+    Reciprocal throughput: 6
+    Comments: 
+-
+    Instruction: IDIV
+    Operands: r64
+    Uops fused domain: 57
+    Uops unfused domain: 57
+    Uops each port: p0 p1 p5 p6
+    Latency: 42-95
+    Reciprocal throughput: 24-90
+    Comments: 
+-
+    Instruction: CBW
+    Operands: 
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0156
+    Latency: 1
+    Reciprocal throughput: 
+    Comments: 
+-
+    Instruction: CWDE
+    Operands: 
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0156
+    Latency: 1
+    Reciprocal throughput: 
+    Comments: 
+-
+    Instruction: CDQE
+    Operands: 
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0156
+    Latency: 1
+    Reciprocal throughput: 
+    Comments: 
+-
+    Instruction: CWD
+    Operands: 
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p0156
+    Latency: 1
+    Reciprocal throughput: 
+    Comments: 
+-
+    Instruction: CDQ
+    Operands: 
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p06
+    Latency: 1
+    Reciprocal throughput: 
+    Comments: 
+-
+    Instruction: CQO
+    Operands: 
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p06
+    Latency: 1
+    Reciprocal throughput: 
+    Comments: 
+-
+    Instruction: POPCNT
+    Operands: r,r
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p1
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: SSE4.2
+-
+    Instruction: POPCNT
+    Operands: r,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p1 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: SSE4.2
+-
+    Instruction: CRC32
+    Operands: r,r
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p1
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: SSE4.2
+-
+    Instruction: CRC32
+    Operands: r,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p1 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: SSE4.2
+-
+    Instruction: AND OR XOR
+    Operands: r,r/i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0156
+    Latency: 1
+    Reciprocal throughput: 0.25
+    Comments: 
+-
+    Instruction: AND OR XOR
+    Operands: r,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p0156 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: AND OR XOR
+    Operands: m,r/i
+    Uops fused domain: 2
+    Uops unfused domain: 4
+    Uops each port: 2p0156 2p237 p4
+    Latency: 5
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: TEST
+    Operands: r,r/i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0156
+    Latency: 1
+    Reciprocal throughput: 0.25
+    Comments: 
+-
+    Instruction: TEST
+    Operands: m,r/i
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p0156 p23
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: SHR SHL SAR
+    Operands: r,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p06
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: SHR SHL SAR
+    Operands: m,i
+    Uops fused domain: 3
+    Uops unfused domain: 4
+    Uops each port: 2p06 p237 p4
+    Latency: 
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: SHR SHL SAR
+    Operands: r,cl
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: 3p06
+    Latency: 2
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: SHR SHL SAR
+    Operands: m,cl
+    Uops fused domain: 5
+    Uops unfused domain: 6
+    Uops each port: 3p06 2p23 p4
+    Latency: 
+    Reciprocal throughput: 4
+    Comments: 
+-
+    Instruction: ROR ROL
+    Operands: r,1
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: 2p06
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: short form
+-
+    Instruction: ROR ROL
+    Operands: r,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p06
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: ROR ROL
+    Operands: m,i
+    Uops fused domain: 4
+    Uops unfused domain: 5
+    Uops each port: 2p06 2p237 p4
+    Latency: 
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: ROR ROL
+    Operands: r,cl
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: 3p06
+    Latency: 2
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: ROR ROL
+    Operands: m,cl
+    Uops fused domain: 5
+    Uops unfused domain: 6
+    Uops each port: 3p06 p23 p4
+    Latency: 
+    Reciprocal throughput: 4
+    Comments: 
+-
+    Instruction: RCR RCL
+    Operands: r,1
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: 2p06 p0156
+    Latency: 2
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: RCR RCL
+    Operands: m,1
+    Uops fused domain: 4
+    Uops unfused domain: 6
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 3
+    Comments: 
+-
+    Instruction: RCR RCL
+    Operands: r,i
+    Uops fused domain: 8
+    Uops unfused domain: 8
+    Uops each port: p0156
+    Latency: 6
+    Reciprocal throughput: 6
+    Comments: 
+-
+    Instruction: RCR RCL
+    Operands: m,i
+    Uops fused domain: 11
+    Uops unfused domain: 11
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 6
+    Comments: 
+-
+    Instruction: RCR RCL
+    Operands: r,cl
+    Uops fused domain: 8
+    Uops unfused domain: 8
+    Uops each port: p0156
+    Latency: 6
+    Reciprocal throughput: 6
+    Comments: 
+-
+    Instruction: RCR RCL
+    Operands: m,cl
+    Uops fused domain: 11
+    Uops unfused domain: 11
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 6
+    Comments: 
+-
+    Instruction: SHRD SHLD
+    Operands: r,r,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p1
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: SHRD SHLD
+    Operands: m,r,i
+    Uops fused domain: 3
+    Uops unfused domain: 5
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: SHLD
+    Operands: r,r,cl
+    Uops fused domain: 4
+    Uops unfused domain: 4
+    Uops each port: p0156
+    Latency: 3
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: SHRD
+    Operands: r,r,cl
+    Uops fused domain: 4
+    Uops unfused domain: 4
+    Uops each port: p0156
+    Latency: 4
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: SHRD SHLD
+    Operands: m,r,cl
+    Uops fused domain: 5
+    Uops unfused domain: 7
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 4
+    Comments: 
+-
+    Instruction: SHLX SHRX SARX
+    Operands: r,r,r
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p06
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: BMI2
+-
+    Instruction: SHLX SHRX SARX
+    Operands: r,m,r
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p06 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: BMI2
+-
+    Instruction: RORX
+    Operands: r,r,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p06
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: BMI2
+-
+    Instruction: RORX
+    Operands: r,m,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p06 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: BMI2
+-
+    Instruction: BT
+    Operands: r,r/i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p06
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: BT
+    Operands: m,r
+    Uops fused domain: 10
+    Uops unfused domain: 10
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 5
+    Comments: 
+-
+    Instruction: BT
+    Operands: m,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p06 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: BTR BTS BTC
+    Operands: r,r/i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p06
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: BTR BTS BTC
+    Operands: m,r
+    Uops fused domain: 10
+    Uops unfused domain: 11
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 5
+    Comments: 
+-
+    Instruction: BTR BTS BTC
+    Operands: m,i
+    Uops fused domain: 3
+    Uops unfused domain: 4
+    Uops each port: p06 p4 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: BSF BSR
+    Operands: r,r
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p1
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: BSF BSR
+    Operands: r,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p1 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: SETcc
+    Operands: r
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p06
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: SETcc
+    Operands: m
+    Uops fused domain: 2
+    Uops unfused domain: 3
+    Uops each port: p06 p237 p4
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: CLC
+    Operands: 
+    Uops fused domain: 1
+    Uops unfused domain: 0
+    Uops each port: none
+    Latency: 
+    Reciprocal throughput: 0.25
+    Comments: 
+-
+    Instruction: STC
+    Operands: 
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0156
+    Latency: 
+    Reciprocal throughput: 0.25
+    Comments: 
+-
+    Instruction: CMC
+    Operands: 
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0156
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: CLD STD
+    Operands: 
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: p15 p6
+    Latency: 
+    Reciprocal throughput: 4
+    Comments: 
+-
+    Instruction: LZCNT
+    Operands: r,r
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p1
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: LZCNT
+-
+    Instruction: LZCNT
+    Operands: r,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p1 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: LZCNT
+-
+    Instruction: TZCNT
+    Operands: r,r
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p1
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: BMI1
+-
+    Instruction: TZCNT
+    Operands: r,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p1 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: BMI1
+-
+    Instruction: ANDN
+    Operands: r,r,r
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p15
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: BMI1
+-
+    Instruction: ANDN
+    Operands: r,r,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p15 p23
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: BMI1
+-
+    Instruction: BLSI BLSMSK BLSR
+    Operands: r,r
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p15
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: BMI1
+-
+    Instruction: BLSI BLSMSK BLSR
+    Operands: r,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p15 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: BMI1
+-
+    Instruction: BEXTR
+    Operands: r,r,r
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: 2p0156
+    Latency: 2
+    Reciprocal throughput: 0.5
+    Comments: BMI1
+-
+    Instruction: BEXTR
+    Operands: r,m,r
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: 2p0156 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: BMI1
+-
+    Instruction: BZHI
+    Operands: r,r,r
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p15
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: BMI2
+-
+    Instruction: BZHI
+    Operands: r,m,r
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p15 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: BMI2
+-
+    Instruction: PDEP
+    Operands: r,r,r
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p1
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: BMI2
+-
+    Instruction: PDEP
+    Operands: r,r,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p1 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: BMI2
+-
+    Instruction: PEXT
+    Operands: r,r,r
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p1
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: BMI2
+-
+    Instruction: PEXT
+    Operands: r,r,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p1 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: BMI2
+-
+    Instruction: JMP
+    Operands: short/near
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p6
+    Latency: 
+    Reciprocal throughput: 1-2
+    Comments: 
+-
+    Instruction: JMP
+    Operands: r
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p6
+    Latency: 
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: JMP
+    Operands: m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p23 p6
+    Latency: 
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: Conditional jump
+    Operands: short/near
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p6
+    Latency: 
+    Reciprocal throughput: 1-2
+    Comments: predicted taken
+-
+    Instruction: Conditional jump
+    Operands: short/near
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p06
+    Latency: 
+    Reciprocal throughput: 0.5-1
+    Comments: predicted not taken
+-
+    Instruction: Fused arithmetic and branch
+    Operands: 
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p6
+    Latency: 
+    Reciprocal throughput: 1-2
+    Comments: predicted taken
+-
+    Instruction: Fused arithmetic and branch
+    Operands: 
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p06
+    Latency: 
+    Reciprocal throughput: 0.5-1
+    Comments: predicted not taken
+-
+    Instruction: J(E/R)CXZ
+    Operands: short
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p0156 p6
+    Latency: 
+    Reciprocal throughput: 0.5-2
+    Comments: 
+-
+    Instruction: LOOP
+    Operands: short
+    Uops fused domain: 7
+    Uops unfused domain: 7
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 5
+    Comments: 
+-
+    Instruction: LOOP(N)E
+    Operands: short
+    Uops fused domain: 11
+    Uops unfused domain: 11
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 6
+    Comments: 
+-
+    Instruction: CALL
+    Operands: near
+    Uops fused domain: 2
+    Uops unfused domain: 3
+    Uops each port: p237 p4 p6
+    Latency: 
+    Reciprocal throughput: 3
+    Comments: 
+-
+    Instruction: CALL
+    Operands: r
+    Uops fused domain: 2
+    Uops unfused domain: 3
+    Uops each port: p237 p4 p6
+    Latency: 
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: CALL
+    Operands: m
+    Uops fused domain: 3
+    Uops unfused domain: 4
+    Uops each port: 2p237 p4 p6
+    Latency: 
+    Reciprocal throughput: 3
+    Comments: 
+-
+    Instruction: RET
+    Operands: 
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p237 p6
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: RET
+    Operands: i
+    Uops fused domain: 
+    Uops unfused domain: 2
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: BOUND
+    Operands: r,m
+    Uops fused domain: 15
+    Uops unfused domain: 15
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 8
+    Comments: not 64 bit
+-
+    Instruction: INTO
+    Operands: 
+    Uops fused domain: 5
+    Uops unfused domain: 5
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 6
+    Comments: not 64 bit
+-
+    Instruction: LODSB/W
+    Operands: 
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: 2p0156 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: LODSD/Q
+    Operands: 
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p0156 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: REP LODS
+    Operands: 
+    Uops fused domain: 5n+12
+    Uops unfused domain: 
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: ~2n
+    Comments: 
+-
+    Instruction: STOS
+    Operands: 
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: p23 p0156 p4
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: REP STOS
+    Operands: 
+    Uops fused domain: <2n
+    Uops unfused domain: 
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: ~0.5n
+    Comments: worst case
+-
+    Instruction: REP STOS
+    Operands: 
+    Uops fused domain: 2.6/32B
+    Uops unfused domain: 
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 1/32B
+    Comments: "best case\naligned by 32"
+-
+    Instruction: MOVS
+    Operands: 
+    Uops fused domain: 5
+    Uops unfused domain: 5
+    Uops each port: 2p23 p4 2p0156
+    Latency: 
+    Reciprocal throughput: 4
+    Comments: 
+-
+    Instruction: REP MOVS
+    Operands: 
+    Uops fused domain: ~2n
+    Uops unfused domain: 
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: < 1n
+    Comments: worst case
+-
+    Instruction: REP MOVS
+    Operands: 
+    Uops fused domain: 4/32B
+    Uops unfused domain: 
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 1/32B
+    Comments: "best case\naligned by 32"
+-
+    Instruction: SCAS
+    Operands: 
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: p23 2p0156
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: REP SCAS
+    Operands: 
+    Uops fused domain: ≥6n
+    Uops unfused domain: 
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: ≥2n
+    Comments: 
+-
+    Instruction: CMPS
+    Operands: 
+    Uops fused domain: 5
+    Uops unfused domain: 5
+    Uops each port: 2p23 3p0156
+    Latency: 
+    Reciprocal throughput: 4
+    Comments: 
+-
+    Instruction: REP CMPS
+    Operands: 
+    Uops fused domain: ≥8n
+    Uops unfused domain: 
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: ≥2n
+    Comments: 
+-
+    Instruction: XADD
+    Operands: m,r
+    Uops fused domain: 4
+    Uops unfused domain: 5
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 5
+    Comments: 
+-
+    Instruction: LOCK XADD
+    Operands: m,r
+    Uops fused domain: 9
+    Uops unfused domain: 9
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 18
+    Comments: 
+-
+    Instruction: LOCK ADD
+    Operands: m,r
+    Uops fused domain: 8
+    Uops unfused domain: 8
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 18
+    Comments: 
+-
+    Instruction: CMPXCHG
+    Operands: m,r
+    Uops fused domain: 5
+    Uops unfused domain: 6
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 6
+    Comments: 
+-
+    Instruction: LOCK CMPXCHG
+    Operands: m,r
+    Uops fused domain: 10
+    Uops unfused domain: 10
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 18
+    Comments: 
+-
+    Instruction: CMPXCHG8B
+    Operands: m,r
+    Uops fused domain: 16
+    Uops unfused domain: 16
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 11
+    Comments: 
+-
+    Instruction: LOCK CMPXCHG8B
+    Operands: m,r
+    Uops fused domain: 20
+    Uops unfused domain: 20
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 19
+    Comments: 
+-
+    Instruction: CMPXCHG16B
+    Operands: m,r
+    Uops fused domain: 23
+    Uops unfused domain: 23
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 16
+    Comments: 
+-
+    Instruction: LOCK CMPXCHG16B
+    Operands: m,r
+    Uops fused domain: 25
+    Uops unfused domain: 25
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 26
+    Comments: 
+-
+    Instruction: NOP (90)
+    Operands: 
+    Uops fused domain: 1
+    Uops unfused domain: 0
+    Uops each port: none
+    Latency: 
+    Reciprocal throughput: 0.25
+    Comments: 
+-
+    Instruction: Long NOP (0F 1F)
+    Operands: 
+    Uops fused domain: 1
+    Uops unfused domain: 0
+    Uops each port: none
+    Latency: 
+    Reciprocal throughput: 0.25
+    Comments: 
+-
+    Instruction: PAUSE
+    Operands: 
+    Uops fused domain: 4
+    Uops unfused domain: 4
+    Uops each port: p6
+    Latency: 
+    Reciprocal throughput: 
+    Comments: 
+-
+    Instruction: ENTER
+    Operands: a,0
+    Uops fused domain: 12
+    Uops unfused domain: 12
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 8
+    Comments: 
+-
+    Instruction: ENTER
+    Operands: a,b
+    Uops fused domain: ~14+7b
+    Uops unfused domain: ~45+7b
+    Uops each port: 
+    Latency: ~87+2b
+    Reciprocal throughput: 
+    Comments: 
+-
+    Instruction: LEAVE
+    Operands: 
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: 2p0156 p23
+    Latency: 
+    Reciprocal throughput: 5
+    Comments: 
+-
+    Instruction: XGETBV
+    Operands: 
+    Uops fused domain: 15
+    Uops unfused domain: 15
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 9
+    Comments: XGETBV
+-
+    Instruction: RDTSC
+    Operands: 
+    Uops fused domain: 20
+    Uops unfused domain: 20
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 25
+    Comments: 
+-
+    Instruction: RDTSCP
+    Operands: 
+    Uops fused domain: 22
+    Uops unfused domain: 22
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 32
+    Comments: RDTSCP
+-
+    Instruction: RDPMC
+    Operands: 
+    Uops fused domain: 35
+    Uops unfused domain: 35
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 40
+    Comments: 
+-
+    Instruction: RDRAND
+    Operands: r
+    Uops fused domain: 16
+    Uops unfused domain: 16
+    Uops each port: p23 15p0156
+    Latency: 
+    Reciprocal throughput: ~460
+    Comments: RDRAND
+-
+    Instruction: RDSEED
+    Operands: r
+    Uops fused domain: 16
+    Uops unfused domain: 16
+    Uops each port: p23 15p0156
+    Latency: 
+    Reciprocal throughput: ~460
+    Comments: RDSEED
+-
+    Instruction: MOVD
+    Operands: r32/64,(x)mm
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0
+    Latency: 2
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MOVD
+    Operands: m32/64,(x)mm
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p237 p4
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MOVD
+    Operands: (x)mm,r32/64
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 2
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MOVD
+    Operands: (x)mm,m32/64
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p23
+    Latency: 2
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: MOVQ
+    Operands: r64,(x)mm
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0
+    Latency: 2
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MOVQ
+    Operands: (x)mm,r64
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MOVQ
+    Operands: mm,mm
+    Uops fused domain: 1
+    Uops unfused domain: 
+    Uops each port: p05
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: MOVQ
+    Operands: x,x
+    Uops fused domain: 1
+    Uops unfused domain: 
+    Uops each port: p015
+    Latency: 1
+    Reciprocal throughput: 0.33
+    Comments: 
+-
+    Instruction: MOVQ
+    Operands: (x)mm,m64
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p23
+    Latency: 2
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: MOVQ
+    Operands: m64, (x)mm
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p237 p4
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MOVDQA/U
+    Operands: x,x
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p015
+    Latency: 0-1
+    Reciprocal throughput: 0.25
+    Comments: may eliminate
+-
+    Instruction: MOVDQA/U
+    Operands: x, m128
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p23
+    Latency: 2
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: MOVDQA/U
+    Operands: m128, x
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p237 p4
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: VMOVDQA/U
+    Operands: y,y
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p015
+    Latency: 0-1
+    Reciprocal throughput: 0.25
+    Comments: may eliminate
+-
+    Instruction: VMOVDQA/U
+    Operands: y,m256
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p23
+    Latency: 3
+    Reciprocal throughput: 0.5
+    Comments: AVX
+-
+    Instruction: VMOVDQA/U
+    Operands: m256,y
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p237 p4
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: AVX
+-
+    Instruction: LDDQU
+    Operands: x, m128
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p23
+    Latency: 3
+    Reciprocal throughput: 0.5
+    Comments: SSE3
+-
+    Instruction: MOVDQ2Q
+    Operands: mm, x
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p0 p5
+    Latency: 2
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MOVQ2DQ
+    Operands: x,mm
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p0 p15
+    Latency: 2
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MOVNTQ
+    Operands: m64,mm
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p237 p4
+    Latency: ~418
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MOVNTDQ
+    Operands: m128,x
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p237 p4
+    Latency: ~450
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: VMOVNTDQ
+    Operands: m256,y
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p237 p4
+    Latency: ~400
+    Reciprocal throughput: 1
+    Comments: AVX2
+-
+    Instruction: MOVNTDQA
+    Operands: x, m128
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p23 p015
+    Latency: 3
+    Reciprocal throughput: 0.5
+    Comments: SSE4.1
+-
+    Instruction: VMOVNTDQA
+    Operands: y,m256
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p23 p015
+    Latency: 3
+    Reciprocal throughput: 0.5
+    Comments: AVX2
+-
+    Instruction: PACKSSWB/DW PACKUSWB
+    Operands: mm,mm
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: p5
+    Latency: 2
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: PACKSSWB/DW PACKUSWB
+    Operands: mm,m64
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: p23 2p5
+    Latency: 
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: PACKSSWB/DW PACKUSWB
+    Operands: x,x / y,y,y
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PACKSSWB/DW PACKUSWB
+    Operands: x,m / y,y,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p23 p5
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PACKUSDW
+    Operands: x,x / y,y,y
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: SSE4.1
+-
+    Instruction: PACKUSDW
+    Operands: x,m / y,y,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p23 p5
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: SSE4.1
+-
+    Instruction: "PUNPCKH/L\nBW/WD/DQ"
+    Operands: v,v / v,v,v
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: "PUNPCKH/L\nBW/WD/DQ"
+    Operands: v,m / v,v,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p23 p5
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: "PUNPCKH/L\nQDQ"
+    Operands: x,x / y,y,y
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: "PUNPCKH/L\nQDQ"
+    Operands: x,m / y,y,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p23 p5
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PMOVSX/ZX BW BD BQ DW DQ
+    Operands: x,x
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: SSE4.1
+-
+    Instruction: PMOVSX/ZX BW BD BQ DW DQ
+    Operands: x,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p23 p5
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: SSE4.1
+-
+    Instruction: VPMOVSX/ZX BW BD BQ DW DQ
+    Operands: y,x
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: AVX2
+-
+    Instruction: VPMOVSX/ZX BW BD BQ DW DQ
+    Operands: y,m
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p5 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: AVX2
+-
+    Instruction: PSHUFB
+    Operands: v,v / v,v,v
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: SSSE3
+-
+    Instruction: PSHUFB
+    Operands: v,m / v,v,m
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p23 p5
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: SSSE3
+-
+    Instruction: PSHUFW 
+    Operands: mm,mm,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PSHUFW 
+    Operands: mm,m64,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p23 p5
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PSHUFD
+    Operands: v,v,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PSHUFD
+    Operands: v,m,i
+    Uops fused domain: 1-2
+    Uops unfused domain: 2
+    Uops each port: p23 p5
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PSHUFL/HW
+    Operands: v,v,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PSHUFL/HW
+    Operands: v,m,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p23 p5
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PALIGNR 
+    Operands: v,v,i / v,v,v,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: SSSE3
+-
+    Instruction: PALIGNR
+    Operands: v,m,i / v,v,m,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p23 p5
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: SSSE3
+-
+    Instruction: PBLENDVB
+    Operands: x,x,xmm0
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p015
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: SSE4.1
+-
+    Instruction: PBLENDVB
+    Operands: x,m,xmm0
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p015 p23
+    Latency: 
+    Reciprocal throughput: 2
+    Comments: SSE4.1
+-
+    Instruction: VPBLENDVB
+    Operands: v,v,v,v
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: 2p015
+    Latency: 2
+    Reciprocal throughput: 1
+    Comments: AVX2
+-
+    Instruction: VPBLENDVB
+    Operands: v,v,m,v
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: 2p015 p23
+    Latency: 
+    Reciprocal throughput: 2
+    Comments: AVX2
+-
+    Instruction: PBLENDW
+    Operands: x,x,i / v,v,v,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: SSE4.1
+-
+    Instruction: PBLENDW
+    Operands: x,m,i / v,v,m,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p23 p5
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: SSE4.1
+-
+    Instruction: VPBLENDD
+    Operands: v,v,v,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p015
+    Latency: 1
+    Reciprocal throughput: 0.33
+    Comments: AVX2
+-
+    Instruction: VPBLENDD
+    Operands: v,v,m,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p015 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: AVX2
+-
+    Instruction: VPERMD
+    Operands: y,y,y
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: AVX2
+-
+    Instruction: VPERMD
+    Operands: y,y,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p5 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: AVX2
+-
+    Instruction: VPERMQ
+    Operands: y,y,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: AVX2
+-
+    Instruction: VPERMQ
+    Operands: y,m,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p5 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: AVX2
+-
+    Instruction: VPERM2I128
+    Operands: y,y,y,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: AVX2
+-
+    Instruction: VPERM2I128
+    Operands: y,y,m,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p5 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: AVX2
+-
+    Instruction: MASKMOVQ
+    Operands: mm,mm
+    Uops fused domain: 4
+    Uops unfused domain: 4
+    Uops each port: p0 p4 2p23
+    Latency: ~450
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: MASKMOVDQU
+    Operands: x,x
+    Uops fused domain: 10
+    Uops unfused domain: 10
+    Uops each port: 4p04 2p56 4p23
+    Latency: 18-500
+    Reciprocal throughput: 6
+    Comments: 
+-
+    Instruction: VPMASKMOVD/Q
+    Operands: v,v,m
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p23 p015
+    Latency: 4
+    Reciprocal throughput: 0.5
+    Comments: AVX2
+-
+    Instruction: VPMASKMOVD/Q
+    Operands: m,v,v
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: p0 p4 p23
+    Latency: 14
+    Reciprocal throughput: 1
+    Comments: AVX2
+-
+    Instruction: PMOVMSKB
+    Operands: r,v
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0
+    Latency: 2-3
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PEXTRB/W/D/Q
+    Operands: r32,x,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p0 p5
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: SSE4.1
+-
+    Instruction: PEXTRB/W/D/Q
+    Operands: m8,x,i
+    Uops fused domain: 2
+    Uops unfused domain: 3
+    Uops each port: p23 p4 p5
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: SSE4.1
+-
+    Instruction: VEXTRACTI128
+    Operands: x,y,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: AVX2
+-
+    Instruction: VEXTRACTI128
+    Operands: m,y,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p23 p4
+    Latency: 4
+    Reciprocal throughput: 1
+    Comments: AVX2
+-
+    Instruction: PINSRB
+    Operands: x,r32,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: 2p5
+    Latency: 3
+    Reciprocal throughput: 2
+    Comments: SSE4.1
+-
+    Instruction: PINSRB
+    Operands: x,m8,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p23 p5
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: SSE4.1
+-
+    Instruction: PINSRW 
+    Operands: (x)mm,r32,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p5
+    Latency: 3
+    Reciprocal throughput: 2
+    Comments: 
+-
+    Instruction: PINSRW 
+    Operands: (x)mm,m16,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p23 p5
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PINSRD/Q
+    Operands: x,r32,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: 2p5
+    Latency: 3
+    Reciprocal throughput: 2
+    Comments: SSE4.1
+-
+    Instruction: PINSRD/Q
+    Operands: x,m32,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p23 p5
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: SSE4.1
+-
+    Instruction: VINSERTI128
+    Operands: y,y,x,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: AVX2
+-
+    Instruction: VINSERTI128
+    Operands: y,y,m,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p015 p23
+    Latency: 3
+    Reciprocal throughput: 0.5
+    Comments: AVX2
+-
+    Instruction: "VPBROADCAST\nB/W/D/Q"
+    Operands: x,x
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: AVX2
+-
+    Instruction: "VPBROADCAST\nB/W"
+    Operands: x,m8/16
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p23 p5
+    Latency: 7
+    Reciprocal throughput: 1
+    Comments: AVX2
+-
+    Instruction: "VPBROADCAST\nD/Q"
+    Operands: x,m32/64
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p23
+    Latency: 4
+    Reciprocal throughput: 0.5
+    Comments: AVX2
+-
+    Instruction: "VPBROADCAST\nB/W/D/Q"
+    Operands: y,x
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: AVX2
+-
+    Instruction: "VPBROADCAST\nB/W"
+    Operands: y,m8/16
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p23 p5
+    Latency: 7
+    Reciprocal throughput: 1
+    Comments: AVX2
+-
+    Instruction: "VPBROADCAST\nD/Q"
+    Operands: y,m32/64
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p23
+    Latency: 3
+    Reciprocal throughput: 0.5
+    Comments: AVX2
+-
+    Instruction: VBROADCASTI128
+    Operands: y,m128
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p23
+    Latency: 3
+    Reciprocal throughput: 0.5
+    Comments: AVX2
+-
+    Instruction: VPGATHERDD
+    Operands: x,[r+s*x],x
+    Uops fused domain: 4
+    Uops unfused domain: 4
+    Uops each port: p0 p1 p23 p5
+    Latency: 
+    Reciprocal throughput: 4
+    Comments: AVX2
+-
+    Instruction: VPGATHERDD
+    Operands: y,[r+s*y],y
+    Uops fused domain: 4
+    Uops unfused domain: 4
+    Uops each port: p0 p1 p23 p5
+    Latency: 
+    Reciprocal throughput: 5
+    Comments: AVX2
+-
+    Instruction: VPGATHERQD
+    Operands: x,[r+s*x],x
+    Uops fused domain: 5
+    Uops unfused domain: 5
+    Uops each port: p0 p1 p23 p5
+    Latency: 
+    Reciprocal throughput: 2
+    Comments: AVX2
+-
+    Instruction: VPGATHERQD
+    Operands: x,[r+s*y],x
+    Uops fused domain: 4
+    Uops unfused domain: 4
+    Uops each port: p0 p1 p23 p5
+    Latency: 
+    Reciprocal throughput: 4
+    Comments: AVX2
+-
+    Instruction: VPGATHERDQ
+    Operands: x,[r+s*x],x
+    Uops fused domain: 5
+    Uops unfused domain: 5
+    Uops each port: p0 p1 p23 p5
+    Latency: 
+    Reciprocal throughput: 2
+    Comments: AVX2
+-
+    Instruction: VPGATHERDQ
+    Operands: y,[r+s*x],y
+    Uops fused domain: 4
+    Uops unfused domain: 4
+    Uops each port: p0 p1 p23 p5
+    Latency: 
+    Reciprocal throughput: 4
+    Comments: AVX2
+-
+    Instruction: VPGATHERQQ
+    Operands: x,[r+s*x],x
+    Uops fused domain: 5
+    Uops unfused domain: 5
+    Uops each port: p0 p1 p23 p5
+    Latency: 
+    Reciprocal throughput: 2
+    Comments: AVX2
+-
+    Instruction: VPGATHERQQ
+    Operands: y,[r+s*y],y
+    Uops fused domain: 4
+    Uops unfused domain: 4
+    Uops each port: p0 p1 p23 p5
+    Latency: 
+    Reciprocal throughput: 4
+    Comments: AVX2
+-
+    Instruction: PADD/SUB(S,US) B/W/D/Q
+    Operands: v,v / v,v,v
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p015
+    Latency: 1
+    Reciprocal throughput: 0.33
+    Comments: 
+-
+    Instruction: PADD/SUB(S,US) B/W/D/Q
+    Operands: v,m / v,v,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p015 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: "PHADD(S)W/D\nPHSUB(S)W/D"
+    Operands: v,v / v,v,v
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: p01 2p5
+    Latency: 3
+    Reciprocal throughput: 2
+    Comments: SSSE3
+-
+    Instruction: "PHADD(S)W/D\nPHSUB(S)W/D"
+    Operands: v,m / v,v,m
+    Uops fused domain: 4
+    Uops unfused domain: 4
+    Uops each port: p01 2p5 p23
+    Latency: 
+    Reciprocal throughput: 2
+    Comments: SSSE3
+-
+    Instruction: "PCMPEQB/W/D\nPCMPGTB/W/D"
+    Operands: mm,mm
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: "PCMPEQB/W/D\nPCMPGTB/W/D"
+    Operands: x,x / y,y,y
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p01
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: "PCMPEQB/W/D\nPCMPGTB/W/D"
+    Operands: x,m / y,y,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p01 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: PCMPEQQ
+    Operands: v,v / v,v,v
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p01
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: SSE4.1
+-
+    Instruction: PCMPEQQ
+    Operands: v,m / v,v,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p01 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: SSE4.1
+-
+    Instruction: PCMPGTQ
+    Operands: v,v / v,v,v
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: SSE4.2
+-
+    Instruction: PCMPGTQ
+    Operands: v,m / v,v,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p5 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: SSE4.2
+-
+    Instruction: "PMULL/HW\nPMULHUW"
+    Operands: mm,mm
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0
+    Latency: 5
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: "PMULL/HW\nPMULHUW"
+    Operands: x,x / y,y,y
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p01
+    Latency: 5
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: "PMULL/HW\nPMULHUW"
+    Operands: x,m / y,y,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p01 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: PMULHRSW
+    Operands: mm,mm
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0
+    Latency: 5
+    Reciprocal throughput: 1
+    Comments: SSSE3
+-
+    Instruction: PMULHRSW
+    Operands: x,x / y,y,y
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p01
+    Latency: 5
+    Reciprocal throughput: 0.5
+    Comments: SSSE3
+-
+    Instruction: PMULHRSW
+    Operands: x,m / y,y,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p01 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: SSSE3
+-
+    Instruction: PMULLD
+    Operands: x,x / y,y,y
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: 2p01
+    Latency: 10
+    Reciprocal throughput: 1
+    Comments: SSE4.1
+-
+    Instruction: PMULLD
+    Operands: x,m / y,y,m
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: 2p01 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: SSE4.1
+-
+    Instruction: PMULDQ
+    Operands: x,x / y,y,y
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p01
+    Latency: 5
+    Reciprocal throughput: 0.5
+    Comments: SSE4.1
+-
+    Instruction: PMULDQ
+    Operands: x,m / y,y,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p01 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: SSE4.1
+-
+    Instruction: PMULUDQ
+    Operands: mm,mm
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0
+    Latency: 5
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PMULUDQ
+    Operands: x,x / y,y,y
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p01
+    Latency: 5
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: PMULUDQ
+    Operands: x,m / y,y,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p01 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: PMADDWD
+    Operands: mm,mm
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0
+    Latency: 5
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PMADDWD
+    Operands: x,x / y,y,y
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p01
+    Latency: 5
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: PMADDWD
+    Operands: x,m / y,y,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p01 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: PMADDUBSW
+    Operands: mm,mm
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0
+    Latency: 5
+    Reciprocal throughput: 1
+    Comments: SSSE3
+-
+    Instruction: PMADDUBSW
+    Operands: x,x / y,y,y
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p01
+    Latency: 5
+    Reciprocal throughput: 0.5
+    Comments: SSSE3
+-
+    Instruction: PMADDUBSW
+    Operands: x,m / y,y,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p01 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: SSSE3
+-
+    Instruction: PAVGB/W
+    Operands: mm,mm
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PAVGB/W
+    Operands: x,x / y,y,y
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p01
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: PAVGB/W
+    Operands: x,m / y,y,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p01 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: "PMIN/PMAX\nSB/SW/SD\nUB/UW/UD"
+    Operands: mm,mm
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: SSE4.1
+-
+    Instruction: "PMIN/PMAX\nSB/SW/SD\nUB/UW/UD"
+    Operands: x,x / y,y,y
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p01
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: SSE4.1
+-
+    Instruction: "PMIN/PMAX\nSB/SW/SD\nUB/UW/UD"
+    Operands: x,m / y,y,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p01 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: SSE4.1
+-
+    Instruction: PHMINPOSUW
+    Operands: x,x
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0
+    Latency: 4
+    Reciprocal throughput: 1
+    Comments: SSE4.1
+-
+    Instruction: PHMINPOSUW
+    Operands: x,m128
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p0 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: SSE4.1
+-
+    Instruction: PABSB/W/D
+    Operands: mm,mm
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: SSSE3
+-
+    Instruction: PABSB/W/D
+    Operands: x,x / y,y
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p01
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: SSSE3
+-
+    Instruction: PABSB/W/D
+    Operands: x,m / y,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p01 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: SSSE3
+-
+    Instruction: PSIGNB/W/D
+    Operands: mm,mm
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: SSSE3
+-
+    Instruction: PSIGNB/W/D
+    Operands: x,x / y,y,y
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p01
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: SSSE3
+-
+    Instruction: PSIGNB/W/D
+    Operands: x,m / y,y,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p01 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: SSSE3
+-
+    Instruction: PSADBW
+    Operands: v,v / v,v,v
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PSADBW
+    Operands: v,m / v,v,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p5 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: MPSADBW
+    Operands: x,x,i / v,v,v,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: 2p5
+    Latency: 4
+    Reciprocal throughput: 2
+    Comments: SSE4.1
+-
+    Instruction: MPSADBW
+    Operands: x,m,i / v,v,m,i
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: 2p5 p23
+    Latency: 
+    Reciprocal throughput: 2
+    Comments: SSE4.1
+-
+    Instruction: "PAND PANDN\nPOR PXOR"
+    Operands: mm,mm
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p05
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: "PAND PANDN\nPOR PXOR"
+    Operands: x,x / y,y,y
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p015
+    Latency: 1
+    Reciprocal throughput: 0.33
+    Comments: 
+-
+    Instruction: "PAND PANDN\nPOR PXOR"
+    Operands: v,m / v,v,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p015 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: PTEST
+    Operands: v,v
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p0 p5
+    Latency: 3
+    Reciprocal throughput: 1
+    Comments: SSE4.1
+-
+    Instruction: PTEST
+    Operands: v,m
+    Uops fused domain: 2
+    Uops unfused domain: 3
+    Uops each port: p0 p5 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: SSE4.1
+-
+    Instruction: "PSLLW/D/Q\nPSRLW/D/Q\nPSRAW/D/Q"
+    Operands: mm,mm
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: "PSLLW/D/Q\nPSRLW/D/Q\nPSRAW/D/Q"
+    Operands: mm,m64
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p0 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: "PSLLW/D/Q\nPSRLW/D/Q\nPSRAW/D/Q"
+    Operands: x,x / v,v,x
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p01 p5
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: "PSLLW/D/Q\nPSRLW/D/Q\nPSRAW/D/Q"
+    Operands: x,m / v,v,m
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p01 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: "PSLLW/D/Q\nPSRLW/D/Q\nPSRAW/D/Q"
+    Operands: mm,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: "PSLLW/D/Q\nPSRLW/D/Q\nPSRAW/D/Q"
+    Operands: x,i / y,y,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p01
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: 
+-
+    Instruction: "VPSLLVD/Q\nVPSRAVD\nVPSRLVD/Q"
+    Operands: v,v,v
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p01
+    Latency: 1
+    Reciprocal throughput: 0.5
+    Comments: AVX2
+-
+    Instruction: "VPSLLVD/Q\nVPSRAVD\nVPSRLVD/Q"
+    Operands: v,v,m
+    Uops fused domain: 1
+    Uops unfused domain: 2
+    Uops each port: p01 p23
+    Latency: 
+    Reciprocal throughput: 0.5
+    Comments: AVX2
+-
+    Instruction: "PSLLDQ\nPSRLDQ"
+    Operands: x,i / v,v,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 1
+    Reciprocal throughput: 1
+    Comments: 
+-
+    Instruction: PCMPESTRI
+    Operands: x,x,i
+    Uops fused domain: 8
+    Uops unfused domain: 8
+    Uops each port: 6p05 2p16
+    Latency: 12
+    Reciprocal throughput: 4
+    Comments: SSE4.2
+-
+    Instruction: PCMPESTRI
+    Operands: x,m128,i
+    Uops fused domain: 8
+    Uops unfused domain: 8
+    Uops each port: 3p0 2p16 2p5 p23
+    Latency: 
+    Reciprocal throughput: 4
+    Comments: SSE4.2
+-
+    Instruction: PCMPESTRM
+    Operands: x,x,i
+    Uops fused domain: 9
+    Uops unfused domain: 9
+    Uops each port: 3p0 2p16 4p5
+    Latency: 9
+    Reciprocal throughput: 5
+    Comments: SSE4.2
+-
+    Instruction: PCMPESTRM
+    Operands: x,m128,i
+    Uops fused domain: 9
+    Uops unfused domain: 9
+    Uops each port: 6p05 2p16 p23
+    Latency: 
+    Reciprocal throughput: 5
+    Comments: SSE4.2
+-
+    Instruction: PCMPISTRI
+    Operands: x,x,i
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: 3p0
+    Latency: 12
+    Reciprocal throughput: 3
+    Comments: SSE4.2
+-
+    Instruction: PCMPISTRI
+    Operands: x,m128,i
+    Uops fused domain: 4
+    Uops unfused domain: 4
+    Uops each port: 3p0 p23
+    Latency: 
+    Reciprocal throughput: 3
+    Comments: SSE4.2
+-
+    Instruction: PCMPISTRM
+    Operands: x,x,i
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: 3p0
+    Latency: 9
+    Reciprocal throughput: 3
+    Comments: SSE4.2
+-
+    Instruction: PCMPISTRM
+    Operands: x,m128,i
+    Uops fused domain: 4
+    Uops unfused domain: 4
+    Uops each port: 3p0 p23
+    Latency: 
+    Reciprocal throughput: 3
+    Comments: SSE4.2
+-
+    Instruction: PCLMULQDQ
+    Operands: x,x,i
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p5
+    Latency: 7
+    Reciprocal throughput: 1
+    Comments: CLMUL
+-
+    Instruction: PCLMULQDQ
+    Operands: x,m,i
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p5 p23
+    Latency: 
+    Reciprocal throughput: 1
+    Comments: CLMUL
+-
+    Instruction: AESDEC, AESDECLAST, AESENC, AESENCLAST
+    Operands: x,x
+    Uops fused domain: 1
+    Uops unfused domain: 1
+    Uops each port: p0
+    Latency: 4
+    Reciprocal throughput: 1
+    Comments: AES
+-
+    Instruction: AESDEC, AESDECLAST, AESENC, AESENCLAST
+    Operands: x,m
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: p0 p23
+    Latency: 
+    Reciprocal throughput: 1.5
+    Comments: AES
+-
+    Instruction: AESIMC
+    Operands: x,x
+    Uops fused domain: 2
+    Uops unfused domain: 2
+    Uops each port: 2p0
+    Latency: 8
+    Reciprocal throughput: 2
+    Comments: AES
+-
+    Instruction: AESIMC
+    Operands: x,m
+    Uops fused domain: 3
+    Uops unfused domain: 3
+    Uops each port: 2p0 p23
+    Latency: 
+    Reciprocal throughput: 2
+    Comments: AES
+-
+    Instruction: AESKEYGENASSIST
+    Operands: x,x,i
+    Uops fused domain: 13
+    Uops unfused domain: 13
+    Uops each port: p0 p5
+    Latency: 12
+    Reciprocal throughput: 12
+    Comments: AES
+-
+    Instruction: AESKEYGENASSIST
+    Operands: x,m,i
+    Uops fused domain: 13
+    Uops unfused domain: 13
+    Uops each port: 
+    Latency: 
+    Reciprocal throughput: 12
+    Comments: AES
+-
+    Instruction: EMMS
+    Operands: 
+    Uops fused domain: 10
+    Uops unfused domain: 10
+    Uops each port: p05
+    Latency: 
+    Reciprocal throughput: 6
+    Comments: 

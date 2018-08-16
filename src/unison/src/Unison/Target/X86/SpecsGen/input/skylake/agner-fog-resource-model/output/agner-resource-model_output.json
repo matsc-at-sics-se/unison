@@ -1,0 +1,5601 @@
+{
+    "ResourceUsage": [
+        {
+            "Instruction": "MOV",
+            "Operands": "r,i",
+            "Resources": [
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOV",
+            "Operands": "r8/16,r8/16",
+            "Resources": [
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOV",
+            "Operands": "r32/64,r32/64",
+            "Resources": [
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOV",
+            "Operands": "r8l,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOV",
+            "Operands": "r8h,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "MOV",
+            "Operands": "r16,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOV",
+            "Operands": "r32/64,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "MOV",
+            "Operands": "m,r",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "MOV",
+            "Operands": "m,i",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVNTI",
+            "Operands": "m,r",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVSX MOVZX MOVSXD",
+            "Operands": "r,r",
+            "Resources": [
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVSX MOVZX",
+            "Operands": "r16,m8",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVSX MOVZX MOVSXD",
+            "Operands": "r,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "CMOVcc",
+            "Operands": "r,r",
+            "Resources": [
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "CMOVcc",
+            "Operands": "r,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "XCHG",
+            "Operands": "r,r",
+            "Resources": [
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 3,
+                    "HoldTime": 1.3333333333333333
+                }
+            ]
+        },
+        {
+            "Instruction": "XLAT",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 2,
+                    "HoldTime": 4.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PUSH",
+            "Operands": "r",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "PUSH",
+            "Operands": "i",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "PUSH",
+            "Operands": "m",
+            "Resources": [
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "PUSH",
+            "Operands": "stack pointer",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PUSHF(D/Q)",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                },
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PUSHA(D)",
+            "Operands": null,
+            "Resources": []
+        },
+        {
+            "Instruction": "POP",
+            "Operands": "r",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "POP",
+            "Operands": "stack pointer",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 2,
+                    "HoldTime": 6.0
+                }
+            ]
+        },
+        {
+            "Instruction": "POP",
+            "Operands": "m",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "POPF(D/Q)",
+            "Operands": null,
+            "Resources": []
+        },
+        {
+            "Instruction": "POPA(D)",
+            "Operands": null,
+            "Resources": []
+        },
+        {
+            "Instruction": "LAHF SAHF",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "SALC",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 3,
+                    "HoldTime": 1.3333333333333333
+                }
+            ]
+        },
+        {
+            "Instruction": "LEA",
+            "Operands": "r16,m",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                },
+                {
+                    "Resource": "p05",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "LEA",
+            "Operands": "r32/64,m",
+            "Resources": [
+                {
+                    "Resource": "p15",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "LEA",
+            "Operands": "r32/64,m",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "LEA",
+            "Operands": "r32/64,m",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "BSWAP",
+            "Operands": "r32",
+            "Resources": [
+                {
+                    "Resource": "p15",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "BSWAP",
+            "Operands": "r64",
+            "Resources": [
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                },
+                {
+                    "Resource": "p15",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVBE",
+            "Operands": "r32,m32",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p15",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVBE",
+            "Operands": "r64,m64",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1.5
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVBE",
+            "Operands": "m16,r16",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVBE",
+            "Operands": "m32,r32",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p15",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVBE",
+            "Operands": "m64,r64",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                },
+                {
+                    "Resource": "p15",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PREFETCHNTA/0/1/2",
+            "Operands": "m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "PREFETCHW",
+            "Operands": "m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "LFENCE",
+            "Operands": null,
+            "Resources": []
+        },
+        {
+            "Instruction": "MFENCE",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "SFENCE",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "ADD SUB",
+            "Operands": "r,r/i",
+            "Resources": [
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "ADD SUB",
+            "Operands": "r,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "ADD SUB",
+            "Operands": "m,r/i",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 2,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "ADC SBB",
+            "Operands": "r,r/i",
+            "Resources": [
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "ADC SBB",
+            "Operands": "r,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "ADC SBB",
+            "Operands": "m,r/i",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 3,
+                    "HoldTime": 2.6666666666666665
+                }
+            ]
+        },
+        {
+            "Instruction": "CMP",
+            "Operands": "r,r/i",
+            "Resources": [
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "CMP",
+            "Operands": "m,r/i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "INC DEC NEG NOT",
+            "Operands": "r",
+            "Resources": [
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "INC DEC NOT",
+            "Operands": "m",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                }
+            ]
+        },
+        {
+            "Instruction": "NEG",
+            "Operands": "m",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                }
+            ]
+        },
+        {
+            "Instruction": "AAM",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 7.0
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 7.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 7.0
+                },
+                {
+                    "Resource": "p6",
+                    "ResourceUsage": 1,
+                    "HoldTime": 7.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MUL IMUL",
+            "Operands": "r8",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MUL IMUL",
+            "Operands": "r16",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 8.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MUL IMUL",
+            "Operands": "r32",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MUL IMUL",
+            "Operands": "r64",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                },
+                {
+                    "Resource": "p6",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MUL IMUL",
+            "Operands": "m8",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MUL IMUL",
+            "Operands": "m16",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 3,
+                    "HoldTime": 2.6666666666666665
+                }
+            ]
+        },
+        {
+            "Instruction": "MUL IMUL",
+            "Operands": "m32",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 2,
+                    "HoldTime": 4.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MUL IMUL",
+            "Operands": "m64",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                },
+                {
+                    "Resource": "p6",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "IMUL",
+            "Operands": "r,r",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "IMUL",
+            "Operands": "r,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "IMUL",
+            "Operands": "r16,r16,i",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                }
+            ]
+        },
+        {
+            "Instruction": "IMUL",
+            "Operands": "r32,r32,i",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "IMUL",
+            "Operands": "r64,r64,i",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "IMUL",
+            "Operands": "r16,m16,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                }
+            ]
+        },
+        {
+            "Instruction": "IMUL",
+            "Operands": "r32,m32,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "IMUL",
+            "Operands": "r64,m64,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MULX",
+            "Operands": "r32,r32,r32",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                },
+                {
+                    "Resource": "p056",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1.5
+                }
+            ]
+        },
+        {
+            "Instruction": "MULX",
+            "Operands": "r32,r32,m32",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                },
+                {
+                    "Resource": "p056",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1.5
+                }
+            ]
+        },
+        {
+            "Instruction": "MULX",
+            "Operands": "r64,r64,r64",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MULX",
+            "Operands": "r64,r64,m64",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                },
+                {
+                    "Resource": "p6",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "DIV",
+            "Operands": "r8",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                },
+                {
+                    "Resource": "p6",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                }
+            ]
+        },
+        {
+            "Instruction": "DIV",
+            "Operands": "r16",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                },
+                {
+                    "Resource": "p6",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                }
+            ]
+        },
+        {
+            "Instruction": "DIV",
+            "Operands": "r32",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                },
+                {
+                    "Resource": "p6",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                }
+            ]
+        },
+        {
+            "Instruction": "IDIV",
+            "Operands": "r8",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                },
+                {
+                    "Resource": "p6",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                }
+            ]
+        },
+        {
+            "Instruction": "IDIV",
+            "Operands": "r16",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                },
+                {
+                    "Resource": "p6",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                }
+            ]
+        },
+        {
+            "Instruction": "IDIV",
+            "Operands": "r32",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                },
+                {
+                    "Resource": "p6",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                }
+            ]
+        },
+        {
+            "Instruction": "POPCNT",
+            "Operands": "r,r",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "POPCNT",
+            "Operands": "r,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "CRC32",
+            "Operands": "r,r",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "CRC32",
+            "Operands": "r,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "AND OR XOR",
+            "Operands": "r,r/i",
+            "Resources": [
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "AND OR XOR",
+            "Operands": "r,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "AND OR XOR",
+            "Operands": "m,r/i",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 2,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "TEST",
+            "Operands": "r,r/i",
+            "Resources": [
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "TEST",
+            "Operands": "m,r/i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "SHR SHL SAR",
+            "Operands": "r,i",
+            "Resources": [
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "SHR SHL SAR",
+            "Operands": "m,i",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 2,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "SHR SHL SAR",
+            "Operands": "r,cl",
+            "Resources": [
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 3,
+                    "HoldTime": 1.3333333333333333
+                }
+            ]
+        },
+        {
+            "Instruction": "SHR SHL SAR",
+            "Operands": "m,cl",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 3,
+                    "HoldTime": 2.6666666666666665
+                }
+            ]
+        },
+        {
+            "Instruction": "ROR ROL",
+            "Operands": "r,1",
+            "Resources": [
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "ROR ROL",
+            "Operands": "r,i",
+            "Resources": [
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "ROR ROL",
+            "Operands": "m,i",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 2,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "ROR ROL",
+            "Operands": "r,cl",
+            "Resources": [
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 3,
+                    "HoldTime": 1.3333333333333333
+                }
+            ]
+        },
+        {
+            "Instruction": "ROR ROL",
+            "Operands": "m,cl",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 3,
+                    "HoldTime": 2.6666666666666665
+                }
+            ]
+        },
+        {
+            "Instruction": "RCR RCL",
+            "Operands": "r,1",
+            "Resources": [
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 2,
+                    "HoldTime": 2.0
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 8.0
+                }
+            ]
+        },
+        {
+            "Instruction": "RCR RCL",
+            "Operands": "m,1",
+            "Resources": []
+        },
+        {
+            "Instruction": "RCR RCL",
+            "Operands": "r,i",
+            "Resources": [
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 24.0
+                }
+            ]
+        },
+        {
+            "Instruction": "RCR RCL",
+            "Operands": "m,i",
+            "Resources": []
+        },
+        {
+            "Instruction": "RCR RCL",
+            "Operands": "r,cl",
+            "Resources": [
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 24.0
+                }
+            ]
+        },
+        {
+            "Instruction": "RCR RCL",
+            "Operands": "m,cl",
+            "Resources": []
+        },
+        {
+            "Instruction": "SHRD SHLD",
+            "Operands": "r,r,i",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "SHRD SHLD",
+            "Operands": "m,r,i",
+            "Resources": []
+        },
+        {
+            "Instruction": "SHLD",
+            "Operands": "r,r,cl",
+            "Resources": [
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 8.0
+                }
+            ]
+        },
+        {
+            "Instruction": "SHRD",
+            "Operands": "r,r,cl",
+            "Resources": [
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 8.0
+                }
+            ]
+        },
+        {
+            "Instruction": "SHRD SHLD",
+            "Operands": "m,r,cl",
+            "Resources": []
+        },
+        {
+            "Instruction": "SHLX SHRX SARX",
+            "Operands": "r,r,r",
+            "Resources": [
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "SHLX SHRX SARX",
+            "Operands": "r,m,r",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "RORX",
+            "Operands": "r,r,i",
+            "Resources": [
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "RORX",
+            "Operands": "r,m,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "BT",
+            "Operands": "r,r/i",
+            "Resources": [
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "BT",
+            "Operands": "m,r",
+            "Resources": []
+        },
+        {
+            "Instruction": "BT",
+            "Operands": "m,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "BTR BTS BTC",
+            "Operands": "r,r/i",
+            "Resources": [
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "BTR BTS BTC",
+            "Operands": "m,r",
+            "Resources": []
+        },
+        {
+            "Instruction": "BTR BTS BTC",
+            "Operands": "m,i",
+            "Resources": [
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "BSF BSR",
+            "Operands": "r,r",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "BSF BSR",
+            "Operands": "r,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "SETcc",
+            "Operands": "r",
+            "Resources": [
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "SETcc",
+            "Operands": "m",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p06",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "CLC",
+            "Operands": null,
+            "Resources": []
+        },
+        {
+            "Instruction": "STC",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "CMC",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                }
+            ]
+        },
+        {
+            "Instruction": "CLD STD",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p15",
+                    "ResourceUsage": 1,
+                    "HoldTime": 8.0
+                },
+                {
+                    "Resource": "p6",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                }
+            ]
+        },
+        {
+            "Instruction": "LZCNT",
+            "Operands": "r,r",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "LZCNT",
+            "Operands": "r,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "TZCNT",
+            "Operands": "r,r",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "TZCNT",
+            "Operands": "r,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "ANDN",
+            "Operands": "r,r,r",
+            "Resources": [
+                {
+                    "Resource": "p15",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "ANDN",
+            "Operands": "r,r,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p15",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "BLSI BLSMSK BLSR",
+            "Operands": "r,r",
+            "Resources": [
+                {
+                    "Resource": "p15",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "BLSI BLSMSK BLSR",
+            "Operands": "r,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p15",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "BEXTR",
+            "Operands": "r,r,r",
+            "Resources": [
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "BEXTR",
+            "Operands": "r,m,r",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 2,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "BZHI",
+            "Operands": "r,r,r",
+            "Resources": [
+                {
+                    "Resource": "p15",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "BZHI",
+            "Operands": "r,m,r",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p15",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PDEP",
+            "Operands": "r,r,r",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PDEP",
+            "Operands": "r,r,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PEXT",
+            "Operands": "r,r,r",
+            "Resources": [
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PEXT",
+            "Operands": "r,r,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "JMP",
+            "Operands": "r",
+            "Resources": [
+                {
+                    "Resource": "p6",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "JMP",
+            "Operands": "m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p6",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "LOOP",
+            "Operands": "short",
+            "Resources": []
+        },
+        {
+            "Instruction": "LOOP(N)E",
+            "Operands": "short",
+            "Resources": []
+        },
+        {
+            "Instruction": "CALL",
+            "Operands": "near",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p6",
+                    "ResourceUsage": 1,
+                    "HoldTime": 3.0
+                }
+            ]
+        },
+        {
+            "Instruction": "CALL",
+            "Operands": "r",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p6",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "CALL",
+            "Operands": "m",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p6",
+                    "ResourceUsage": 1,
+                    "HoldTime": 3.0
+                }
+            ]
+        },
+        {
+            "Instruction": "RET",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p6",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "RET",
+            "Operands": "i",
+            "Resources": []
+        },
+        {
+            "Instruction": "BOUND",
+            "Operands": "r,m",
+            "Resources": []
+        },
+        {
+            "Instruction": "INTO",
+            "Operands": null,
+            "Resources": []
+        },
+        {
+            "Instruction": "LODSB/W",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 2,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "LODSD/Q",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                }
+            ]
+        },
+        {
+            "Instruction": "STOS",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVS",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 2,
+                    "HoldTime": 8.0
+                }
+            ]
+        },
+        {
+            "Instruction": "SCAS",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 2,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "CMPS",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 3,
+                    "HoldTime": 5.333333333333333
+                }
+            ]
+        },
+        {
+            "Instruction": "XADD",
+            "Operands": "m,r",
+            "Resources": []
+        },
+        {
+            "Instruction": "LOCK XADD",
+            "Operands": "m,r",
+            "Resources": []
+        },
+        {
+            "Instruction": "LOCK ADD",
+            "Operands": "m,r",
+            "Resources": []
+        },
+        {
+            "Instruction": "CMPXCHG",
+            "Operands": "m,r",
+            "Resources": []
+        },
+        {
+            "Instruction": "LOCK CMPXCHG",
+            "Operands": "m,r",
+            "Resources": []
+        },
+        {
+            "Instruction": "CMPXCHG8B",
+            "Operands": "m,r",
+            "Resources": []
+        },
+        {
+            "Instruction": "LOCK CMPXCHG8B",
+            "Operands": "m,r",
+            "Resources": []
+        },
+        {
+            "Instruction": "CMPXCHG16B",
+            "Operands": "m,r",
+            "Resources": []
+        },
+        {
+            "Instruction": "LOCK CMPXCHG16B",
+            "Operands": "m,r",
+            "Resources": []
+        },
+        {
+            "Instruction": "NOP (90)",
+            "Operands": null,
+            "Resources": []
+        },
+        {
+            "Instruction": "Long NOP (0F 1F)",
+            "Operands": null,
+            "Resources": []
+        },
+        {
+            "Instruction": "ENTER",
+            "Operands": "a,0",
+            "Resources": []
+        },
+        {
+            "Instruction": "LEAVE",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0156",
+                    "ResourceUsage": 2,
+                    "HoldTime": 10.0
+                }
+            ]
+        },
+        {
+            "Instruction": "XGETBV",
+            "Operands": null,
+            "Resources": []
+        },
+        {
+            "Instruction": "RDTSC",
+            "Operands": null,
+            "Resources": []
+        },
+        {
+            "Instruction": "RDTSCP",
+            "Operands": null,
+            "Resources": []
+        },
+        {
+            "Instruction": "RDPMC",
+            "Operands": null,
+            "Resources": []
+        },
+        {
+            "Instruction": "MOVD",
+            "Operands": "r32/64,(x)mm",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVD",
+            "Operands": "m32/64,(x)mm",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVD",
+            "Operands": "(x)mm,r32/64",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVD",
+            "Operands": "(x)mm,m32/64",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVQ",
+            "Operands": "r64,(x)mm",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVQ",
+            "Operands": "(x)mm,r64",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVQ",
+            "Operands": "mm,mm",
+            "Resources": [
+                {
+                    "Resource": "p05",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVQ",
+            "Operands": "x,x",
+            "Resources": [
+                {
+                    "Resource": "p015",
+                    "ResourceUsage": 1,
+                    "HoldTime": 0.99
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVQ",
+            "Operands": "(x)mm,m64",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVQ",
+            "Operands": "m64, (x)mm",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVDQA/U",
+            "Operands": "x,x",
+            "Resources": [
+                {
+                    "Resource": "p015",
+                    "ResourceUsage": 1,
+                    "HoldTime": 0.75
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVDQA/U",
+            "Operands": "x, m128",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVDQA/U",
+            "Operands": "m128, x",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "VMOVDQA/U",
+            "Operands": "y,y",
+            "Resources": [
+                {
+                    "Resource": "p015",
+                    "ResourceUsage": 1,
+                    "HoldTime": 0.75
+                }
+            ]
+        },
+        {
+            "Instruction": "VMOVDQA/U",
+            "Operands": "y,m256",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "VMOVDQA/U",
+            "Operands": "m256,y",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "LDDQU",
+            "Operands": "x, m128",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVDQ2Q",
+            "Operands": "mm, x",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVQ2DQ",
+            "Operands": "x,mm",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                },
+                {
+                    "Resource": "p15",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVNTQ",
+            "Operands": "m64,mm",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVNTDQ",
+            "Operands": "m128,x",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "VMOVNTDQ",
+            "Operands": "m256,y",
+            "Resources": [
+                {
+                    "Resource": "p237",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "MOVNTDQA",
+            "Operands": "x, m128",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p015",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.5
+                }
+            ]
+        },
+        {
+            "Instruction": "VMOVNTDQA",
+            "Operands": "y,m256",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p015",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.5
+                }
+            ]
+        },
+        {
+            "Instruction": "PACKSSWB/DW PACKUSWB",
+            "Operands": "mm,mm",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PACKSSWB/DW PACKUSWB",
+            "Operands": "mm,m64",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PACKSSWB/DW PACKUSWB",
+            "Operands": "x,x / y,y,y",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PACKSSWB/DW PACKUSWB",
+            "Operands": "x,m / y,y,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PACKUSDW",
+            "Operands": "x,x / y,y,y",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PACKUSDW",
+            "Operands": "x,m / y,y,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PUNPCKH/LBW/WD/DQ",
+            "Operands": "v,v / v,v,v",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PUNPCKH/LBW/WD/DQ",
+            "Operands": "v,m / v,v,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PUNPCKH/LQDQ",
+            "Operands": "x,x / y,y,y",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PUNPCKH/LQDQ",
+            "Operands": "x,m / y,y,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMOVSX/ZX BW BD BQ DW DQ",
+            "Operands": "x,x",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMOVSX/ZX BW BD BQ DW DQ",
+            "Operands": "x,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPMOVSX/ZX BW BD BQ DW DQ",
+            "Operands": "y,x",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPMOVSX/ZX BW BD BQ DW DQ",
+            "Operands": "y,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSHUFB",
+            "Operands": "v,v / v,v,v",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSHUFB",
+            "Operands": "v,m / v,v,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSHUFW",
+            "Operands": "mm,mm,i",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSHUFW",
+            "Operands": "mm,m64,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSHUFD",
+            "Operands": "v,v,i",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSHUFD",
+            "Operands": "v,m,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSHUFL/HW",
+            "Operands": "v,v,i",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSHUFL/HW",
+            "Operands": "v,m,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PALIGNR",
+            "Operands": "v,v,i / v,v,v,i",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PALIGNR",
+            "Operands": "v,m,i / v,v,m,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PBLENDVB",
+            "Operands": "x,x,xmm0",
+            "Resources": [
+                {
+                    "Resource": "p015",
+                    "ResourceUsage": 1,
+                    "HoldTime": 3.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PBLENDVB",
+            "Operands": "x,m,xmm0",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p015",
+                    "ResourceUsage": 1,
+                    "HoldTime": 6.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPBLENDVB",
+            "Operands": "v,v,v,v",
+            "Resources": [
+                {
+                    "Resource": "p015",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1.5
+                }
+            ]
+        },
+        {
+            "Instruction": "VPBLENDVB",
+            "Operands": "v,v,m,v",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p015",
+                    "ResourceUsage": 2,
+                    "HoldTime": 3.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PBLENDW",
+            "Operands": "x,x,i / v,v,v,i",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PBLENDW",
+            "Operands": "x,m,i / v,v,m,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPBLENDD",
+            "Operands": "v,v,v,i",
+            "Resources": [
+                {
+                    "Resource": "p015",
+                    "ResourceUsage": 1,
+                    "HoldTime": 0.99
+                }
+            ]
+        },
+        {
+            "Instruction": "VPBLENDD",
+            "Operands": "v,v,m,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p015",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.5
+                }
+            ]
+        },
+        {
+            "Instruction": "VPERMD",
+            "Operands": "y,y,y",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPERMD",
+            "Operands": "y,y,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPERMQ",
+            "Operands": "y,y,i",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPERMQ",
+            "Operands": "y,m,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPERM2I128",
+            "Operands": "y,y,y,i",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPERM2I128",
+            "Operands": "y,y,m,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MASKMOVQ",
+            "Operands": "mm,mm",
+            "Resources": [
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MASKMOVDQU",
+            "Operands": "x,x",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 4,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p04",
+                    "ResourceUsage": 4,
+                    "HoldTime": 3.0
+                },
+                {
+                    "Resource": "p56",
+                    "ResourceUsage": 2,
+                    "HoldTime": 6.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPMASKMOVD/Q",
+            "Operands": "v,v,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p015",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.5
+                }
+            ]
+        },
+        {
+            "Instruction": "VPMASKMOVD/Q",
+            "Operands": "m,v,v",
+            "Resources": [
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMOVMSKB",
+            "Operands": "r,v",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PEXTRB/W/D/Q",
+            "Operands": "r32,x,i",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PEXTRB/W/D/Q",
+            "Operands": "m8,x,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VEXTRACTI128",
+            "Operands": "x,y,i",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VEXTRACTI128",
+            "Operands": "m,y,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p4",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "PINSRB",
+            "Operands": "x,r32,i",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PINSRB",
+            "Operands": "x,m8,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PINSRW",
+            "Operands": "(x)mm,r32,i",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PINSRW",
+            "Operands": "(x)mm,m16,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PINSRD/Q",
+            "Operands": "x,r32,i",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PINSRD/Q",
+            "Operands": "x,m32,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VINSERTI128",
+            "Operands": "y,y,x,i",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VINSERTI128",
+            "Operands": "y,y,m,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p015",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.5
+                }
+            ]
+        },
+        {
+            "Instruction": "VPBROADCASTB/W/D/Q",
+            "Operands": "x,x",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPBROADCASTB/W",
+            "Operands": "x,m8/16",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPBROADCASTD/Q",
+            "Operands": "x,m32/64",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "VPBROADCASTB/W/D/Q",
+            "Operands": "y,x",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPBROADCASTB/W",
+            "Operands": "y,m8/16",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPBROADCASTD/Q",
+            "Operands": "y,m32/64",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "VBROADCASTI128",
+            "Operands": "y,m128",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                }
+            ]
+        },
+        {
+            "Instruction": "VPGATHERDD",
+            "Operands": "x,[r+s*x],x",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPGATHERDD",
+            "Operands": "y,[r+s*y],y",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 5.0
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 5.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 5.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPGATHERQD",
+            "Operands": "x,[r+s*x],x",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPGATHERQD",
+            "Operands": "x,[r+s*y],x",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPGATHERDQ",
+            "Operands": "x,[r+s*x],x",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPGATHERDQ",
+            "Operands": "y,[r+s*x],y",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPGATHERQQ",
+            "Operands": "x,[r+s*x],x",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPGATHERQQ",
+            "Operands": "y,[r+s*y],y",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                },
+                {
+                    "Resource": "p1",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PADD/SUB(S,US) B/W/D/Q",
+            "Operands": "v,v / v,v,v",
+            "Resources": [
+                {
+                    "Resource": "p015",
+                    "ResourceUsage": 1,
+                    "HoldTime": 0.99
+                }
+            ]
+        },
+        {
+            "Instruction": "PADD/SUB(S,US) B/W/D/Q",
+            "Operands": "v,m / v,v,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p015",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.5
+                }
+            ]
+        },
+        {
+            "Instruction": "PHADD(S)W/DPHSUB(S)W/D",
+            "Operands": "v,v / v,v,v",
+            "Resources": [
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PHADD(S)W/DPHSUB(S)W/D",
+            "Operands": "v,m / v,v,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 4.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PCMPEQB/W/DPCMPGTB/W/D",
+            "Operands": "mm,mm",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PCMPEQB/W/DPCMPGTB/W/D",
+            "Operands": "x,x / y,y,y",
+            "Resources": [
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PCMPEQB/W/DPCMPGTB/W/D",
+            "Operands": "x,m / y,y,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PCMPEQQ",
+            "Operands": "v,v / v,v,v",
+            "Resources": [
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PCMPEQQ",
+            "Operands": "v,m / v,v,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PCMPGTQ",
+            "Operands": "v,v / v,v,v",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PCMPGTQ",
+            "Operands": "v,m / v,v,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMULL/HWPMULHUW",
+            "Operands": "mm,mm",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMULL/HWPMULHUW",
+            "Operands": "x,x / y,y,y",
+            "Resources": [
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMULL/HWPMULHUW",
+            "Operands": "x,m / y,y,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMULHRSW",
+            "Operands": "mm,mm",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMULHRSW",
+            "Operands": "x,x / y,y,y",
+            "Resources": [
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMULHRSW",
+            "Operands": "x,m / y,y,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMULLD",
+            "Operands": "x,x / y,y,y",
+            "Resources": [
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMULLD",
+            "Operands": "x,m / y,y,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMULDQ",
+            "Operands": "x,x / y,y,y",
+            "Resources": [
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMULDQ",
+            "Operands": "x,m / y,y,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMULUDQ",
+            "Operands": "mm,mm",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMULUDQ",
+            "Operands": "x,x / y,y,y",
+            "Resources": [
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMULUDQ",
+            "Operands": "x,m / y,y,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMADDWD",
+            "Operands": "mm,mm",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMADDWD",
+            "Operands": "x,x / y,y,y",
+            "Resources": [
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMADDWD",
+            "Operands": "x,m / y,y,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMADDUBSW",
+            "Operands": "mm,mm",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMADDUBSW",
+            "Operands": "x,x / y,y,y",
+            "Resources": [
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMADDUBSW",
+            "Operands": "x,m / y,y,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PAVGB/W",
+            "Operands": "mm,mm",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PAVGB/W",
+            "Operands": "x,x / y,y,y",
+            "Resources": [
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PAVGB/W",
+            "Operands": "x,m / y,y,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMIN/PMAXSB/SW/SDUB/UW/UD",
+            "Operands": "mm,mm",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMIN/PMAXSB/SW/SDUB/UW/UD",
+            "Operands": "x,x / y,y,y",
+            "Resources": [
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PMIN/PMAXSB/SW/SDUB/UW/UD",
+            "Operands": "x,m / y,y,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PHMINPOSUW",
+            "Operands": "x,x",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PHMINPOSUW",
+            "Operands": "x,m128",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PABSB/W/D",
+            "Operands": "mm,mm",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PABSB/W/D",
+            "Operands": "x,x / y,y",
+            "Resources": [
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PABSB/W/D",
+            "Operands": "x,m / y,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSIGNB/W/D",
+            "Operands": "mm,mm",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSIGNB/W/D",
+            "Operands": "x,x / y,y,y",
+            "Resources": [
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSIGNB/W/D",
+            "Operands": "x,m / y,y,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSADBW",
+            "Operands": "v,v / v,v,v",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSADBW",
+            "Operands": "v,m / v,v,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MPSADBW",
+            "Operands": "x,x,i / v,v,v,i",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "MPSADBW",
+            "Operands": "x,m,i / v,v,m,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PAND PANDNPOR PXOR",
+            "Operands": "mm,mm",
+            "Resources": [
+                {
+                    "Resource": "p05",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PAND PANDNPOR PXOR",
+            "Operands": "x,x / y,y,y",
+            "Resources": [
+                {
+                    "Resource": "p015",
+                    "ResourceUsage": 1,
+                    "HoldTime": 0.99
+                }
+            ]
+        },
+        {
+            "Instruction": "PAND PANDNPOR PXOR",
+            "Operands": "v,m / v,v,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p015",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.5
+                }
+            ]
+        },
+        {
+            "Instruction": "PTEST",
+            "Operands": "v,v",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PTEST",
+            "Operands": "v,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSLLW/D/QPSRLW/D/QPSRAW/D/Q",
+            "Operands": "mm,mm",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSLLW/D/QPSRLW/D/QPSRAW/D/Q",
+            "Operands": "mm,m64",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSLLW/D/QPSRLW/D/QPSRAW/D/Q",
+            "Operands": "x,x / v,v,x",
+            "Resources": [
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 2.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSLLW/D/QPSRLW/D/QPSRAW/D/Q",
+            "Operands": "x,m / v,v,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSLLW/D/QPSRLW/D/QPSRAW/D/Q",
+            "Operands": "mm,i",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSLLW/D/QPSRLW/D/QPSRAW/D/Q",
+            "Operands": "x,i / y,y,i",
+            "Resources": [
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPSLLVD/QVPSRAVDVPSRLVD/Q",
+            "Operands": "v,v,v",
+            "Resources": [
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "VPSLLVD/QVPSRAVDVPSRLVD/Q",
+            "Operands": "v,v,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p01",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PSLLDQPSRLDQ",
+            "Operands": "x,i / v,v,i",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PCMPESTRI",
+            "Operands": "x,x,i",
+            "Resources": [
+                {
+                    "Resource": "p05",
+                    "ResourceUsage": 6,
+                    "HoldTime": 1.3333333333333333
+                },
+                {
+                    "Resource": "p16",
+                    "ResourceUsage": 2,
+                    "HoldTime": 4.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PCMPESTRI",
+            "Operands": "x,m128,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 3,
+                    "HoldTime": 1.3333333333333333
+                },
+                {
+                    "Resource": "p16",
+                    "ResourceUsage": 2,
+                    "HoldTime": 4.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 2,
+                    "HoldTime": 2.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PCMPESTRM",
+            "Operands": "x,x,i",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 3,
+                    "HoldTime": 1.6666666666666667
+                },
+                {
+                    "Resource": "p16",
+                    "ResourceUsage": 2,
+                    "HoldTime": 5.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 4,
+                    "HoldTime": 1.25
+                }
+            ]
+        },
+        {
+            "Instruction": "PCMPESTRM",
+            "Operands": "x,m128,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p05",
+                    "ResourceUsage": 6,
+                    "HoldTime": 1.6666666666666667
+                },
+                {
+                    "Resource": "p16",
+                    "ResourceUsage": 2,
+                    "HoldTime": 5.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PCMPISTRI",
+            "Operands": "x,x,i",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 3,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PCMPISTRI",
+            "Operands": "x,m128,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 3,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PCMPISTRM",
+            "Operands": "x,x,i",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 3,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PCMPISTRM",
+            "Operands": "x,m128,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 3,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PCLMULQDQ",
+            "Operands": "x,x,i",
+            "Resources": [
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "PCLMULQDQ",
+            "Operands": "x,m,i",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "AESDEC, AESDECLAST, AESENC, AESENCLAST",
+            "Operands": "x,x",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "AESDEC, AESDECLAST, AESENC, AESENCLAST",
+            "Operands": "x,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1.5
+                }
+            ]
+        },
+        {
+            "Instruction": "AESIMC",
+            "Operands": "x,x",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "AESIMC",
+            "Operands": "x,m",
+            "Resources": [
+                {
+                    "Resource": "p23",
+                    "ResourceUsage": 1,
+                    "HoldTime": 1
+                },
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 2,
+                    "HoldTime": 1.0
+                }
+            ]
+        },
+        {
+            "Instruction": "AESKEYGENASSIST",
+            "Operands": "x,x,i",
+            "Resources": [
+                {
+                    "Resource": "p0",
+                    "ResourceUsage": 1,
+                    "HoldTime": 12.0
+                },
+                {
+                    "Resource": "p5",
+                    "ResourceUsage": 1,
+                    "HoldTime": 12.0
+                }
+            ]
+        },
+        {
+            "Instruction": "AESKEYGENASSIST",
+            "Operands": "x,m,i",
+            "Resources": []
+        },
+        {
+            "Instruction": "EMMS",
+            "Operands": null,
+            "Resources": [
+                {
+                    "Resource": "p05",
+                    "ResourceUsage": 1,
+                    "HoldTime": 12.0
+                }
+            ]
+        }
+    ],
+    "UndefinedPorts": [
+        {
+            "Instruction": "RCR RCL",
+            "Operands": "m,i",
+            "Uops fused domain": 11,
+            "Uops unfused domain": 11,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 6,
+            "Comments": null
+        },
+        {
+            "Instruction": "LOCK CMPXCHG16B",
+            "Operands": "m,r",
+            "Uops fused domain": 25,
+            "Uops unfused domain": 25,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 26,
+            "Comments": null
+        },
+        {
+            "Instruction": "POPF(D/Q)",
+            "Operands": null,
+            "Uops fused domain": 9,
+            "Uops unfused domain": 9,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 20,
+            "Comments": null
+        },
+        {
+            "Instruction": "RET",
+            "Operands": "i",
+            "Uops fused domain": null,
+            "Uops unfused domain": 2,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 2,
+            "Comments": null
+        },
+        {
+            "Instruction": "CMPXCHG",
+            "Operands": "m,r",
+            "Uops fused domain": 5,
+            "Uops unfused domain": 6,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 6,
+            "Comments": null
+        },
+        {
+            "Instruction": "RCR RCL",
+            "Operands": "m,1",
+            "Uops fused domain": 4,
+            "Uops unfused domain": 6,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 3,
+            "Comments": null
+        },
+        {
+            "Instruction": "LOCK CMPXCHG8B",
+            "Operands": "m,r",
+            "Uops fused domain": 20,
+            "Uops unfused domain": 20,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 19,
+            "Comments": null
+        },
+        {
+            "Instruction": "LOOP",
+            "Operands": "short",
+            "Uops fused domain": 7,
+            "Uops unfused domain": 7,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 5,
+            "Comments": null
+        },
+        {
+            "Instruction": "LOCK XADD",
+            "Operands": "m,r",
+            "Uops fused domain": 9,
+            "Uops unfused domain": 9,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 18,
+            "Comments": null
+        },
+        {
+            "Instruction": "NOP (90)",
+            "Operands": null,
+            "Uops fused domain": 1,
+            "Uops unfused domain": 0,
+            "Uops each port": "none",
+            "Latency": null,
+            "Reciprocal throughput": 0.25,
+            "Comments": null
+        },
+        {
+            "Instruction": "CMPXCHG16B",
+            "Operands": "m,r",
+            "Uops fused domain": 23,
+            "Uops unfused domain": 23,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 16,
+            "Comments": null
+        },
+        {
+            "Instruction": "LFENCE",
+            "Operands": null,
+            "Uops fused domain": 2,
+            "Uops unfused domain": null,
+            "Uops each port": "none counted",
+            "Latency": null,
+            "Reciprocal throughput": 4,
+            "Comments": null
+        },
+        {
+            "Instruction": "ENTER",
+            "Operands": "a,0",
+            "Uops fused domain": 12,
+            "Uops unfused domain": 12,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 8,
+            "Comments": null
+        },
+        {
+            "Instruction": "SHRD SHLD",
+            "Operands": "m,r,cl",
+            "Uops fused domain": 5,
+            "Uops unfused domain": 7,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 4,
+            "Comments": null
+        },
+        {
+            "Instruction": "LOOP(N)E",
+            "Operands": "short",
+            "Uops fused domain": 11,
+            "Uops unfused domain": 11,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 6,
+            "Comments": null
+        },
+        {
+            "Instruction": "SHRD SHLD",
+            "Operands": "m,r,i",
+            "Uops fused domain": 3,
+            "Uops unfused domain": 5,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 2,
+            "Comments": null
+        },
+        {
+            "Instruction": "BT",
+            "Operands": "m,r",
+            "Uops fused domain": 10,
+            "Uops unfused domain": 10,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 5,
+            "Comments": null
+        },
+        {
+            "Instruction": "POPA(D)",
+            "Operands": null,
+            "Uops fused domain": 18,
+            "Uops unfused domain": 18,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 8,
+            "Comments": "not 64 bit"
+        },
+        {
+            "Instruction": "CLC",
+            "Operands": null,
+            "Uops fused domain": 1,
+            "Uops unfused domain": 0,
+            "Uops each port": "none",
+            "Latency": null,
+            "Reciprocal throughput": 0.25,
+            "Comments": null
+        },
+        {
+            "Instruction": "XADD",
+            "Operands": "m,r",
+            "Uops fused domain": 4,
+            "Uops unfused domain": 5,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 5,
+            "Comments": null
+        },
+        {
+            "Instruction": "RDTSC",
+            "Operands": null,
+            "Uops fused domain": 20,
+            "Uops unfused domain": 20,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 25,
+            "Comments": null
+        },
+        {
+            "Instruction": "AESKEYGENASSIST",
+            "Operands": "x,m,i",
+            "Uops fused domain": 13,
+            "Uops unfused domain": 13,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 12,
+            "Comments": "AES"
+        },
+        {
+            "Instruction": "PUSHA(D)",
+            "Operands": null,
+            "Uops fused domain": 11,
+            "Uops unfused domain": 19,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 8,
+            "Comments": "not 64 bit"
+        },
+        {
+            "Instruction": "LOCK CMPXCHG",
+            "Operands": "m,r",
+            "Uops fused domain": 10,
+            "Uops unfused domain": 10,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 18,
+            "Comments": null
+        },
+        {
+            "Instruction": "RDPMC",
+            "Operands": null,
+            "Uops fused domain": 35,
+            "Uops unfused domain": 35,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 40,
+            "Comments": null
+        },
+        {
+            "Instruction": "BOUND",
+            "Operands": "r,m",
+            "Uops fused domain": 15,
+            "Uops unfused domain": 15,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 8,
+            "Comments": "not 64 bit"
+        },
+        {
+            "Instruction": "Long NOP (0F 1F)",
+            "Operands": null,
+            "Uops fused domain": 1,
+            "Uops unfused domain": 0,
+            "Uops each port": "none",
+            "Latency": null,
+            "Reciprocal throughput": 0.25,
+            "Comments": null
+        },
+        {
+            "Instruction": "RDTSCP",
+            "Operands": null,
+            "Uops fused domain": 22,
+            "Uops unfused domain": 22,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 32,
+            "Comments": "RDTSCP"
+        },
+        {
+            "Instruction": "BTR BTS BTC",
+            "Operands": "m,r",
+            "Uops fused domain": 10,
+            "Uops unfused domain": 11,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 5,
+            "Comments": null
+        },
+        {
+            "Instruction": "INTO",
+            "Operands": null,
+            "Uops fused domain": 5,
+            "Uops unfused domain": 5,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 6,
+            "Comments": "not 64 bit"
+        },
+        {
+            "Instruction": "XGETBV",
+            "Operands": null,
+            "Uops fused domain": 15,
+            "Uops unfused domain": 15,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 9,
+            "Comments": "XGETBV"
+        },
+        {
+            "Instruction": "RCR RCL",
+            "Operands": "m,cl",
+            "Uops fused domain": 11,
+            "Uops unfused domain": 11,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 6,
+            "Comments": null
+        },
+        {
+            "Instruction": "CMPXCHG8B",
+            "Operands": "m,r",
+            "Uops fused domain": 16,
+            "Uops unfused domain": 16,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 11,
+            "Comments": null
+        },
+        {
+            "Instruction": "LOCK ADD",
+            "Operands": "m,r",
+            "Uops fused domain": 8,
+            "Uops unfused domain": 8,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": 18,
+            "Comments": null
+        }
+    ],
+    "NoReciprocalThrougput": [
+        {
+            "Instruction": "CWDE",
+            "Operands": null,
+            "Uops fused domain": 1,
+            "Uops unfused domain": 1,
+            "Uops each port": "p0156",
+            "Latency": 1,
+            "Reciprocal throughput": null,
+            "Comments": null
+        },
+        {
+            "Instruction": "CDQE",
+            "Operands": null,
+            "Uops fused domain": 1,
+            "Uops unfused domain": 1,
+            "Uops each port": "p0156",
+            "Latency": 1,
+            "Reciprocal throughput": null,
+            "Comments": null
+        },
+        {
+            "Instruction": "CDQ",
+            "Operands": null,
+            "Uops fused domain": 1,
+            "Uops unfused domain": 1,
+            "Uops each port": "p06",
+            "Latency": 1,
+            "Reciprocal throughput": null,
+            "Comments": null
+        },
+        {
+            "Instruction": "ENTER",
+            "Operands": "a,b",
+            "Uops fused domain": "~14+7b",
+            "Uops unfused domain": "~45+7b",
+            "Uops each port": null,
+            "Latency": "~87+2b",
+            "Reciprocal throughput": null,
+            "Comments": null
+        },
+        {
+            "Instruction": "PAUSE",
+            "Operands": null,
+            "Uops fused domain": 4,
+            "Uops unfused domain": 4,
+            "Uops each port": "p6",
+            "Latency": null,
+            "Reciprocal throughput": null,
+            "Comments": null
+        },
+        {
+            "Instruction": "AAS",
+            "Operands": null,
+            "Uops fused domain": 2,
+            "Uops unfused domain": 2,
+            "Uops each port": "p1 p056",
+            "Latency": 4,
+            "Reciprocal throughput": null,
+            "Comments": "not 64 bit"
+        },
+        {
+            "Instruction": "DAA DAS",
+            "Operands": null,
+            "Uops fused domain": 3,
+            "Uops unfused domain": 3,
+            "Uops each port": "p1 2p056",
+            "Latency": 4,
+            "Reciprocal throughput": null,
+            "Comments": "not 64 bit"
+        },
+        {
+            "Instruction": null,
+            "Operands": null,
+            "Uops fused domain": null,
+            "Uops unfused domain": null,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": null,
+            "Comments": null
+        },
+        {
+            "Instruction": "CBW",
+            "Operands": null,
+            "Uops fused domain": 1,
+            "Uops unfused domain": 1,
+            "Uops each port": "p0156",
+            "Latency": 1,
+            "Reciprocal throughput": null,
+            "Comments": null
+        },
+        {
+            "Instruction": "CWD",
+            "Operands": null,
+            "Uops fused domain": 2,
+            "Uops unfused domain": 2,
+            "Uops each port": "p0156",
+            "Latency": 1,
+            "Reciprocal throughput": null,
+            "Comments": null
+        },
+        {
+            "Instruction": "AAA",
+            "Operands": null,
+            "Uops fused domain": 2,
+            "Uops unfused domain": 2,
+            "Uops each port": "p1 p56",
+            "Latency": 4,
+            "Reciprocal throughput": null,
+            "Comments": "not 64 bit"
+        },
+        {
+            "Instruction": "CQO",
+            "Operands": null,
+            "Uops fused domain": 1,
+            "Uops unfused domain": 1,
+            "Uops each port": "p06",
+            "Latency": 1,
+            "Reciprocal throughput": null,
+            "Comments": null
+        },
+        {
+            "Instruction": "XCHG",
+            "Operands": "r,m",
+            "Uops fused domain": 8,
+            "Uops unfused domain": 8,
+            "Uops each port": null,
+            "Latency": 23,
+            "Reciprocal throughput": null,
+            "Comments": "implicit lock"
+        },
+        {
+            "Instruction": "AAD",
+            "Operands": null,
+            "Uops fused domain": 3,
+            "Uops unfused domain": 3,
+            "Uops each port": "p1 2p056",
+            "Latency": 4,
+            "Reciprocal throughput": null,
+            "Comments": "not 64 bit"
+        }
+    ],
+    "UndefinedReciprocalThrougput": [
+        {
+            "Instruction": "MOVBE",
+            "Operands": "r16,m16",
+            "Uops fused domain": 3,
+            "Uops unfused domain": 3,
+            "Uops each port": "2p0156 p23",
+            "Latency": null,
+            "Reciprocal throughput": "0.5-1",
+            "Comments": "MOVBE"
+        },
+        {
+            "Instruction": "DIV",
+            "Operands": "r64",
+            "Uops fused domain": 36,
+            "Uops unfused domain": 36,
+            "Uops each port": "p0 p1 p5 p6",
+            "Latency": "35-88",
+            "Reciprocal throughput": "21-83",
+            "Comments": null
+        },
+        {
+            "Instruction": "IDIV",
+            "Operands": "r64",
+            "Uops fused domain": 57,
+            "Uops unfused domain": 57,
+            "Uops each port": "p0 p1 p5 p6",
+            "Latency": "42-95",
+            "Reciprocal throughput": "24-90",
+            "Comments": null
+        },
+        {
+            "Instruction": "JMP",
+            "Operands": "short/near",
+            "Uops fused domain": 1,
+            "Uops unfused domain": 1,
+            "Uops each port": "p6",
+            "Latency": null,
+            "Reciprocal throughput": "1-2",
+            "Comments": null
+        },
+        {
+            "Instruction": "Conditional jump",
+            "Operands": "short/near",
+            "Uops fused domain": 1,
+            "Uops unfused domain": 1,
+            "Uops each port": "p6",
+            "Latency": null,
+            "Reciprocal throughput": "1-2",
+            "Comments": "predicted taken"
+        },
+        {
+            "Instruction": "Conditional jump",
+            "Operands": "short/near",
+            "Uops fused domain": 1,
+            "Uops unfused domain": 1,
+            "Uops each port": "p06",
+            "Latency": null,
+            "Reciprocal throughput": "0.5-1",
+            "Comments": "predicted not taken"
+        },
+        {
+            "Instruction": "Fused arithmetic and branch",
+            "Operands": null,
+            "Uops fused domain": 1,
+            "Uops unfused domain": 1,
+            "Uops each port": "p6",
+            "Latency": null,
+            "Reciprocal throughput": "1-2",
+            "Comments": "predicted taken"
+        },
+        {
+            "Instruction": "Fused arithmetic and branch",
+            "Operands": null,
+            "Uops fused domain": 1,
+            "Uops unfused domain": 1,
+            "Uops each port": "p06",
+            "Latency": null,
+            "Reciprocal throughput": "0.5-1",
+            "Comments": "predicted not taken"
+        },
+        {
+            "Instruction": "J(E/R)CXZ",
+            "Operands": "short",
+            "Uops fused domain": 2,
+            "Uops unfused domain": 2,
+            "Uops each port": "p0156 p6",
+            "Latency": null,
+            "Reciprocal throughput": "0.5-2",
+            "Comments": null
+        },
+        {
+            "Instruction": "REP LODS",
+            "Operands": null,
+            "Uops fused domain": "5n+12",
+            "Uops unfused domain": null,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": "~2n",
+            "Comments": null
+        },
+        {
+            "Instruction": "REP STOS",
+            "Operands": null,
+            "Uops fused domain": "<2n",
+            "Uops unfused domain": null,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": "~0.5n",
+            "Comments": "worst case"
+        },
+        {
+            "Instruction": "REP STOS",
+            "Operands": null,
+            "Uops fused domain": "2.6/32B",
+            "Uops unfused domain": null,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": "1/32B",
+            "Comments": "best case\naligned by 32"
+        },
+        {
+            "Instruction": "REP MOVS",
+            "Operands": null,
+            "Uops fused domain": "~2n",
+            "Uops unfused domain": null,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": "< 1n",
+            "Comments": "worst case"
+        },
+        {
+            "Instruction": "REP MOVS",
+            "Operands": null,
+            "Uops fused domain": "4/32B",
+            "Uops unfused domain": null,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": "1/32B",
+            "Comments": "best case\naligned by 32"
+        },
+        {
+            "Instruction": "REP SCAS",
+            "Operands": null,
+            "Uops fused domain": "\u22656n",
+            "Uops unfused domain": null,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": "\u22652n",
+            "Comments": null
+        },
+        {
+            "Instruction": "REP CMPS",
+            "Operands": null,
+            "Uops fused domain": "\u22658n",
+            "Uops unfused domain": null,
+            "Uops each port": null,
+            "Latency": null,
+            "Reciprocal throughput": "\u22652n",
+            "Comments": null
+        },
+        {
+            "Instruction": "RDRAND",
+            "Operands": "r",
+            "Uops fused domain": 16,
+            "Uops unfused domain": 16,
+            "Uops each port": "p23 15p0156",
+            "Latency": null,
+            "Reciprocal throughput": "~460",
+            "Comments": "RDRAND"
+        },
+        {
+            "Instruction": "RDSEED",
+            "Operands": "r",
+            "Uops fused domain": 16,
+            "Uops unfused domain": 16,
+            "Uops each port": "p23 15p0156",
+            "Latency": null,
+            "Reciprocal throughput": "~460",
+            "Comments": "RDSEED"
+        }
+    ]
+}
+None

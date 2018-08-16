@@ -1,0 +1,88 @@
+{
+	"ManualMapping": [
+		{
+			"Instruction": "CFI_INSTRUCTION",
+			"ResourceGroup": "WriteZero"
+		},
+		{
+			"Instruction": "CMOV_FR32",
+			"ResourceGroup": "SKLWriteResGroup7"
+		},
+		{
+			"Instruction": "CMOV_GR8",
+			"ResourceGroup": "SKLWriteResGroup7"
+		},
+		{
+			"Instruction": "COPY",
+			"ResourceGroup": "WriteMove"
+		},
+		{
+			"Instruction": "FvANDPDrm",
+			"ResourceGroup": "WriteALULdWriteRMW"
+		},
+		{
+			"Instruction": "FvANDPDrr",
+			"ResourceGroup": "WriteALU"
+		},
+		{
+			"Instruction": "FvXORPDrm",
+			"ResourceGroup": "WriteALULdWriteRMW"
+		},
+		{
+			"Instruction": "FvXORPDrr",
+			"ResourceGroup": "WriteALU"
+		},
+		{
+			"Instruction": "FvXORPSrm",
+			"ResourceGroup": "WriteALULdWriteRMW"
+		},
+		{
+			"Instruction": "IMPLICIT_DEF",
+			"ResourceGroup": "WriteZero"
+		},
+		{
+			"Instruction": "INSERT_SUBREG",
+			"ResourceGroup": "WriteZero"
+		},
+		{
+			"Instruction": "LIFETIME_END",
+			"ResourceGroup": "WriteZero"
+		},
+		{
+			"Instruction": "LIFETIME_START",
+			"ResourceGroup": "WriteZero"
+		},
+		{
+			"Instruction": "PHI",
+			"ResourceGroup": "WriteZero"
+		},
+		{
+			"Instruction": "SUBREG_TO_REG",
+			"ResourceGroup": "WriteALU"
+		},
+		{
+			"Instruction": "TEST32rm",
+			"ResourceGroup": "WriteALULdWriteRMW"
+		},
+		{
+			"Instruction": "VFvANDPDrm",
+			"ResourceGroup": "WriteALULdWriteRMW"
+		},
+		{
+			"Instruction": "VFvANDPDrr",
+			"ResourceGroup": "WriteALU"
+		},
+		{
+			"Instruction": "VFvXORPDrm",
+			"ResourceGroup": "WriteALULdWriteRMW"
+		},
+		{
+			"Instruction": "VFvXORPDrr",
+			"ResourceGroup": "WriteALU"
+		},
+		{
+			"Instruction": "VFvXORPSrm",
+			"ResourceGroup": "WriteALULdWriteRMW"
+		}
+	]
+}
