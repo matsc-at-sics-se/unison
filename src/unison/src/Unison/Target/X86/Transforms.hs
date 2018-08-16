@@ -33,6 +33,7 @@ module Unison.Target.X86.Transforms
      myLowerFrameIndices,
      addStackIndexReadsSP,
      addFunWrites,
+     addYMMReads,
      addSpillIndicators,
      addVzeroupper,
      removeDeadEflags) where
@@ -1174,6 +1175,14 @@ addFunWrites o
   = mapToWrites (++ [OtherSideEffect EFLAGS]) o
 addFunWrites o = o
 
+-- This transformation adds "reads: ymm0" to operations that use YMM registers
+-- to make them precede VZEROUPPER
+
+addYMMReads o
+  | isUseYMMOp o
+  = mapToReads (++ [OtherSideEffect YMM0]) o
+addYMMReads o = o
+
 -- This transformation adds SPILL32 and SPILL optional operations instructions
 -- in entry and exit blocks
 
@@ -1234,7 +1243,8 @@ branchInfo' bo @ SingleOperation {oOpr = Natural i}
 insertVzeroupper code o =
   let (_, oid, _) = newIndexes $ flatten code
       vzu = mkLinear oid [TargetInstruction VZEROUPPER] [] []
-      code' = map (insertOperationInBlock before (isIdOf o) vzu) code
+      vzu' = mapToWrites (++ [OtherSideEffect YMM0]) vzu
+      code' = map (insertOperationInBlock before (isIdOf o) vzu') code
    in code'
 
 insertCandidate icfg controlInsns id =

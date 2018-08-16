@@ -19,7 +19,7 @@ module Unison.Target.X86.Common
      hasRegMemInstr, hasMemRegInstr, isRegMemInstr, isMemRegInstr, regMemInstr, memRegInstr,
      spillInstrs, condMoveInstrs, condMoveInverses, condMoveAlts,
      promotedRegs, readsSideEffect,
-     writesSideEffect, isDirtyYMMInsn, isDirtyYMMOp, isUseYMMInsn,
+     writesSideEffect, isDirtyYMMInsn, isDirtyYMMOp, isUseYMMInsn, isUseYMMOp,
      reg32ToReg64, machineReg32ToReg64, reg64ToReg32, itProperties) where
 
 import qualified Data.Map as M
@@ -250,6 +250,9 @@ isDirtyYMMOp o
 
 isDirtyYMMInsn i
   = any temporaryInfoYMM (snd $ SpecsGen.operandInfo i)
+
+isUseYMMOp o
+  = any isUseYMMInsn [(oTargetInstr oi) | oi <- (oInstructions o), isTargetInstruction oi]
 
 isUseYMMInsn i
   = any temporaryInfoYMM (fst $ SpecsGen.operandInfo i)

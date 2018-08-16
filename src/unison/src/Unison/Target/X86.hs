@@ -596,6 +596,7 @@ transforms AugmentPreRW = [suppressCombineCopies]
 transforms AugmentPostRW = [movePrologueEpilogue,
                             addSpillIndicators,
                             addVzeroupper,
+                            mapToOperation addYMMReads,
                             mapToOperation addStackIndexReadsSP,
                             mapToOperation addFunWrites,
                             removeDeadEflags
@@ -624,32 +625,8 @@ expandCopy _ _ o = [o]
 
 -- | Custom processor constraints
 
--- force VZEROUPPER operations to be scheduled exactly one cycle before their
--- corresponding call/tailcall/return/out operation
-
 constraints f =
-  fixVzeroupperConstraints f ++
   prologueEpilogueConstraints f
-
-fixVzeroupperConstraints f =
-  let fcode = flatCode f
-      ops = filter isVzeroupperRelevant fcode
-  in fixVzeroupperConstraints' ops
-
-fixVzeroupperConstraints' (o1 : o2 : rest)
-  | isVzeroupper o1
-  = [DistanceExpr (oId o2) (oId o1) (-1),
-     DistanceExpr (oId o1) (oId o2) ( 1)] ++
-    fixVzeroupperConstraints' rest
-fixVzeroupperConstraints' (_ : rest)
-  = fixVzeroupperConstraints' rest
-fixVzeroupperConstraints' [] = []
-
-isVzeroupperRelevant o =
-  isVzeroupper o || isBranch o || isCall o || isTailCall o || isDelimiter o
-
-isVzeroupper o =
-  (TargetInstruction VZEROUPPER) `elem` oInstructions o
 
 prologueEpilogueConstraints Function {fCode = blocks, fStackFrame = objs, fStackArgSize = sasize} =
   let fcode = flatten blocks
