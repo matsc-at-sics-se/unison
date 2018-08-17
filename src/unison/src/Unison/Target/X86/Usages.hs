@@ -26,9 +26,9 @@ itineraryUsage' to i it =
 -- these are NoItinerary and disappear, whereas other NoItinerary are pseudos for real instructions
 itineraryUsage to i it
   | isVoidInstruction i = []
-  | skylake to = mergeUsages (skylakeUsage i it) [mkUsage Pipe 1 1]
-  | i == FPUSH32 = [mkUsage Pipe 1 3]
-  | otherwise = [mkUsage Pipe 1 1]
+  | skylake to =
+      mergeUsages (skylakeUsage i it) [mkUsage Pipe 1 (pipeDuration i)]
+  | otherwise = [mkUsage Pipe 1 (pipeDuration i)]
 
 size i
   | isVoidInstruction i = 0
@@ -48,6 +48,10 @@ isVoidInstruction i
        SS_PREFIX, SUBREG_TO_REG,
        XRELEASE_PREFIX, XACQUIRE_PREFIX] = True
   | otherwise = False
+
+pipeDuration i
+  | i == FPUSH32 = 3
+  | otherwise = 1
 
 skylakeUsage i it =
   let original = case itProperties i it of
