@@ -54,7 +54,7 @@ target =
       API.tBranchInfo       = const branchInfo,
       API.tPreProcess       = preProcess,
       API.tPostProcess      = postProcess,
-      API.tTransforms       = const transforms,
+      API.tTransforms       = transforms,
       API.tCopies           = const copies,
       API.tRematInstrs      = const rematInstrs,
       API.tFromCopy         = const fromCopy,
@@ -582,26 +582,26 @@ postProcess to = [expandPseudos to,
 
 -- | Gives a list of function transformers
 
-transforms ImportPreLift = [peephole extractReturnRegs,
-                            liftStackArgSize,
-                            addPrologueEpilogue]
-transforms ImportPostLift = [mapToOperation handlePromotedOperands,
-                             generalizeRegisterDefines,
-                             generalizeRegisterUses,
-                             transAlternativeLEA]
-transforms ImportPostCC = [liftReturnAddress]
-transforms ExportPreOffs = [revertFixedFrame]
-transforms ExportPreLow = [myLowerFrameIndices]
-transforms AugmentPreRW = [suppressCombineCopies]
-transforms AugmentPostRW = [movePrologueEpilogue,
-                            addSpillIndicators,
-                            addVzeroupper,
-                            mapToOperation addYMMReads,
-                            mapToOperation addStackIndexReadsSP,
-                            mapToOperation addFunWrites,
-                            removeDeadEflags
-                            ]
-transforms _ = []
+transforms _  ImportPreLift = [peephole extractReturnRegs,
+			       liftStackArgSize,
+			       addPrologueEpilogue]
+transforms to ImportPostLift =
+  [mapToOperation handlePromotedOperands] ++
+  (if memoryOps to then [generalizeRegisterDefines, generalizeRegisterUses] else []) ++
+  [transAlternativeLEA]
+transforms _  ImportPostCC = [liftReturnAddress]
+transforms _  ExportPreOffs = [revertFixedFrame]
+transforms _  ExportPreLow = [myLowerFrameIndices]
+transforms _  AugmentPreRW = [suppressCombineCopies]
+transforms _  AugmentPostRW = [movePrologueEpilogue,
+			       addSpillIndicators,
+			       addVzeroupper,
+			       mapToOperation addYMMReads,
+			       mapToOperation addStackIndexReadsSP,
+			       mapToOperation addFunWrites,
+			       removeDeadEflags
+			       ]
+transforms _  _ = []
 
 -- | Latency of read-write dependencies
 
