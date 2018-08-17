@@ -57,7 +57,6 @@ data X86Itinerary = WriteMicrocoded
                   | SKLWriteResGroup177
                   | SKLWriteResGroup87
                   | SKLWriteResGroup12
-                  | WriteMove
                   | SKLWriteResGroup184
                   | WriteNop
                   | SKLWriteResGroup150
@@ -67,8 +66,6 @@ data X86Itinerary = WriteMicrocoded
                   | SKLWriteResGroup151
                   | SKLWriteResGroup70
                   | SKLWriteResGroup139
-                  | IIC_SSE_CVT_Scalar_RM
-                  | IIC_SSE_CVT_Scalar_RR
                   | WriteCvtI2FLd
                   | SKLWriteResGroup160
                   | SKLWriteResGroup95
@@ -104,9 +101,7 @@ data X86Itinerary = WriteMicrocoded
                   | SKLWriteResGroup223
                   | SKLWriteResGroup219
                   | SKLWriteResGroup218
-                  | IIC_SSE_BIT_P_RM
-                  | IIC_SSE_BIT_P_RR
-                  | IIC_SSE_MOVA_P_RM
+                  | SKLWriteResGroup67
                   | SKLWriteResGroup159
                   | SKLWriteResGroup77
                   | SKLWriteResGroup207
@@ -119,19 +114,9 @@ data X86Itinerary = WriteMicrocoded
                   | SKLWriteResGroup192
                   | SKLWriteResGroup88
                   | SKLWriteResGroup3
-                  | IIC_SSE_ALU_F64S_RR
-                  | IIC_SSE_ALU_F32S_RR
-                  | IIC_SSE_CVT_SD2SI_RM
-                  | IIC_SSE_CVT_SD2SI_RR
-                  | IIC_SSE_CVT_SS2SI64_RM
-                  | IIC_SSE_CVT_SS2SI64_RR
-                  | IIC_SSE_CVT_SS2SI32_RM
-                  | IIC_SSE_CVT_SS2SI32_RR
-                  | IIC_SSE_ALU_F32S_RM
                   | SKLWriteResGroup4
                   | SKLWriteResGroup131
                   | SKLWriteResGroup57
-                  | SKLWriteResGroup67
                   | SKLWriteResGroup97
                   | SKLWriteResGroup94
                   | SKLWriteResGroup17
@@ -143,10 +128,10 @@ data X86Itinerary = WriteMicrocoded
                   | SKLWriteResGroup138
                   | SKLWriteResGroup120
                   | SKLWriteResGroup144
+                  | WriteMove
                   | SKLWriteResGroup58
                   | SKLWriteResGroup27
                   | SKLWriteResGroup71
-                  | IIC_SSE_MOVDQ
                   | WriteVecLogic
                   | SKLWriteResGroup137
                   | SKLWriteResGroup50
@@ -154,15 +139,10 @@ data X86Itinerary = WriteMicrocoded
                   | WriteFMul
                   | SKLWriteResGroup142
                   | SKLWriteResGroup127
-                  | IIC_SSE_MWAIT
                   | SKLWriteResGroup193
                   | SKLWriteResGroup210
-                  | IIC_SSE_PABS_RM
-                  | IIC_SSE_PABS_RR
                   | SKLWriteResGroup90
                   | SKLWriteResGroup5
-                  | IIC_SSE_PALIGNRM
-                  | IIC_SSE_PALIGNRR
                   | SKLWriteResGroup55
                   | SKLWriteResGroup158
                   | SKLWriteResGroup66
@@ -181,8 +161,6 @@ data X86Itinerary = WriteMicrocoded
                   | SKLWriteResGroup13
                   | SKLWriteResGroup168
                   | SKLWriteResGroup105
-                  | IIC_SSE_PSIGN_RM
-                  | IIC_SSE_PSIGN_RR
                   | SKLWriteResGroup19
                   | SKLWriteResGroup126
                   | SKLWriteResGroup28
@@ -219,8 +197,6 @@ data X86Itinerary = WriteMicrocoded
                   | SKLWriteResGroup182
                   | SKLWriteResGroup84
                   | SKLWriteResGroup61
-                  | IIC_JMP_REL
-                  | IIC_BIN_MEM
                   | SKLWriteResGroup147
                   | SKLWriteResGroup110
                   | SKLWriteResGroup125
@@ -230,7 +206,6 @@ data X86Itinerary = WriteMicrocoded
                   | SKLWriteResGroup86
                   | WriteCvtF2ILd
                   | SKLWriteResGroup89
-                  | IIC_SSE_CVT_PD_RM
                   | WriteCvtF2FLd
                   | SKLWriteResGroup114
                   | SKLWriteResGroup81
@@ -255,8 +230,6 @@ data X86Itinerary = WriteMicrocoded
                   | WriteVarVecShiftLd
                   | WriteVecShift
                   | WriteVarVecShift
-                  | IIC_SSE_PHADDSUBW_RM
-                  | IIC_SSE_PHADDSUBW_RR
                   | SKLWriteResGroup52
                   | SKLWriteResGroup146
                   | SKLWriteResGroup181
