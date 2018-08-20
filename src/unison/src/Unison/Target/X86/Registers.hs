@@ -148,20 +148,35 @@ registerAtoms R15 = (R15B, R177)
 registerAtoms UMM0  = (R200, R203)
 registerAtoms UMM0_HI  = (R204, R207)
 registerAtoms UMM1  = (R240, R243)
+registerAtoms UMM1_HI  = (R244, R247)
 registerAtoms UMM2  = (R300, R303)
+registerAtoms UMM2_HI  = (R304, R307)
 registerAtoms UMM3  = (R340, R343)
+registerAtoms UMM3_HI  = (R344, R347)
 registerAtoms UMM4  = (R400, R403)
+registerAtoms UMM4_HI  = (R404, R407)
 registerAtoms UMM5  = (R440, R443)
+registerAtoms UMM5_HI  = (R444, R447)
 registerAtoms UMM6  = (R500, R503)
+registerAtoms UMM6_HI  = (R504, R507)
 registerAtoms UMM7  = (R540, R543)
+registerAtoms UMM7_HI  = (R544, R547)
 registerAtoms UMM8  = (R600, R603)
+registerAtoms UMM8_HI  = (R604, R607)
 registerAtoms UMM9  = (R640, R643)
+registerAtoms UMM9_HI  = (R644, R647)
 registerAtoms UMM10 = (R700, R703)
+registerAtoms UMM10_HI = (R704, R707)
 registerAtoms UMM11 = (R740, R743)
+registerAtoms UMM11_HI = (R744, R747)
 registerAtoms UMM12 = (R1000, R1003)
+registerAtoms UMM12_HI = (R1004, R1007)
 registerAtoms UMM13 = (R1040, R1043)
+registerAtoms UMM13_HI = (R1044, R1047)
 registerAtoms UMM14 = (R1100, R1103)
+registerAtoms UMM14_HI = (R1104, R1107)
 registerAtoms UMM15 = (R1140, R1143)
+registerAtoms UMM15_HI = (R1144, R1147)
 
 -- | Register atoms of 64-bit floating-point registers (VMM*, syntax %xmm*)
 
@@ -448,7 +463,8 @@ registers (RegisterClass FR32) =
      UMM8, UMM9, UMM10, UMM11, UMM12, UMM13, UMM14, UMM15]
 
 registers (RegisterClass FR32_AUX) =
-    [UMM0_HI]
+    [UMM0_HI, UMM1_HI, UMM2_HI, UMM3_HI, UMM4_HI, UMM5_HI, UMM6_HI, UMM7_HI,
+     UMM8_HI, UMM9_HI, UMM10_HI, UMM11_HI, UMM12_HI, UMM13_HI, UMM14_HI, UMM15_HI]
 
 registers (RegisterClass FR64) =
     [VMM0, VMM1, VMM2, VMM3, VMM4, VMM5, VMM6, VMM7,
@@ -1412,6 +1428,21 @@ regStrings = M.fromList $
    (YMM14, "ymm14"),
    (YMM15, "ymm15"),
    (UMM0_HI, "umm0_hi"),
+   (UMM1_HI, "umm1_hi"),
+   (UMM2_HI, "umm2_hi"),
+   (UMM3_HI, "umm3_hi"),
+   (UMM4_HI, "umm4_hi"),
+   (UMM5_HI, "umm5_hi"),
+   (UMM6_HI, "umm6_hi"),
+   (UMM7_HI, "umm7_hi"),
+   (UMM8_HI, "umm8_hi"),
+   (UMM9_HI, "umm9_hi"),
+   (UMM10_HI, "umm10_hi"),
+   (UMM11_HI, "umm11_hi"),
+   (UMM12_HI, "umm12_hi"),
+   (UMM13_HI, "umm13_hi"),
+   (UMM14_HI, "umm14_hi"),
+   (UMM15_HI, "umm15_hi"),
    (VMM0_HI, "vmm0_hi"),
    (VMM1_HI, "vmm1_hi"),
    (VMM2_HI, "vmm2_hi"),

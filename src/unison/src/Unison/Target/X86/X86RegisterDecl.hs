@@ -831,6 +831,21 @@ data X86Register =
     YMM14 |
     YMM15 |
     UMM0_HI |
+    UMM1_HI |
+    UMM2_HI |
+    UMM3_HI |
+    UMM4_HI |
+    UMM5_HI |
+    UMM6_HI |
+    UMM7_HI |
+    UMM8_HI |
+    UMM9_HI |
+    UMM10_HI |
+    UMM11_HI |
+    UMM12_HI |
+    UMM13_HI |
+    UMM14_HI |
+    UMM15_HI |
     VMM0_HI |
     VMM1_HI |
     VMM2_HI |
