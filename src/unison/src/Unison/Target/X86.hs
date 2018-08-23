@@ -583,8 +583,8 @@ postProcess to = [expandPseudos to,
 -- | Gives a list of function transformers
 
 transforms _  ImportPreLift = [peephole extractReturnRegs,
-			       liftStackArgSize,
-			       addPrologueEpilogue]
+                               liftStackArgSize,
+                               addPrologueEpilogue]
 transforms to ImportPostLift =
   [mapToOperation handlePromotedOperands] ++
   (if memoryOps to then [generalizeRegisterDefines, generalizeRegisterUses] else []) ++
@@ -594,13 +594,13 @@ transforms _  ExportPreOffs = [revertFixedFrame]
 transforms _  ExportPreLow = [myLowerFrameIndices]
 transforms _  AugmentPreRW = [suppressCombineCopies]
 transforms _  AugmentPostRW = [movePrologueEpilogue,
-			       addSpillIndicators,
-			       addVzeroupper,
-			       mapToOperation addYMMReads,
-			       mapToOperation addStackIndexReadsSP,
-			       mapToOperation addFunWrites,
-			       removeDeadEflags
-			       ]
+                               addSpillIndicators,
+                               addVzeroupper,
+                               mapToOperation addYMMReads,
+                               mapToOperation addStackIndexReadsSP,
+                               mapToOperation addFunWrites,
+                               removeDeadEflags
+                               ]
 transforms _  _ = []
 
 -- | Latency of read-write dependencies
