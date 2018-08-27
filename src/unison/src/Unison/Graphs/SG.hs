@@ -95,5 +95,6 @@ oprMandatoryAlignmentCongruences :: Eq i => Show i => Ord r => Show r =>
   AlignedPairsFunction i r -> BlockOperation i r -> [(Operand r, Operand r)]
 oprMandatoryAlignmentCongruences apf o =
   let ap2i = fromListMult [((p, q), i) | (p, q, i) <- apf o]
-      aps  = [(p, q) | ((p, q), is) <- M.toList ap2i, length is == length (oInstructions o)]
+      aps  = [(p, q) | ((p, q), is) <- M.toList ap2i,
+              length is == length (oInstructions o)]
   in aps
