@@ -91,7 +91,7 @@ isSingletonChoice _ = False
 mandatoryAlignmentCongruences apf code =
   concatMap (oprMandatoryAlignmentCongruences apf) (flatten code)
 
-oprMandatoryAlignmentCongruences :: Eq i => Show i => Ord r => Show r =>
+oprMandatoryAlignmentCongruences :: Eq i => Show i => Ord r =>
   AlignedPairsFunction i r -> BlockOperation i r -> [(Operand r, Operand r)]
 oprMandatoryAlignmentCongruences apf o =
   let ap2i = fromListMult [((p, q), i) | (p, q, i) <- apf o]
