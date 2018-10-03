@@ -37,6 +37,7 @@ import System.Process
 import System.Process.Internals
 import System.Directory
 import System.IO
+import System.IO.Silently
 import System.Environment
 import System.Timeout
 import Data.Time
@@ -93,6 +94,7 @@ tryUntilSuccess a =
      case result of
       Left ex ->
         do putStrLn $ show ex ++ ", trying again..."
+           threadDelay 5000000
            tryUntilSuccess a
       Right () -> return ()
 
@@ -115,7 +117,7 @@ runChuffed flags to memLimit extJson lowerBoundFile outJsonFile =
          dzn = pre ++ ".dzn"
          out = pre ++ ".out"
      setEnv "FLATZINC_CMD" "fzn-chuffed"
-     tryUntilSuccess $ callProcess mznChuffed
+     tryUntilSuccess $ hSilence [stderr] $ callProcess mznChuffed
        (concatMap fznFlag (["--verbosity", "3",
                             "-f",
                             "--rnd-seed", "123456"] ++
