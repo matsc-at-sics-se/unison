@@ -1151,6 +1151,28 @@ liftFIif basereg fixed _ idxToOff
         use5' = mkBound (mkMachineImm $ (idxToOff M.! idx) + off1 + off2)
     in o {oOpr = Natural ni {oUs = [use1,use2',use3,use4,use5',use6]}}
 
+liftFIif basereg fixed _ idxToOff
+  o @ SingleOperation {oOpr = Natural ni @ (Call {oCallUs = [(Bound (MachineFrameIndex idx fixed' off1)),
+                                                             use2,
+                                                             use3,
+                                                             (Bound (MachineImm off2)),
+                                                             use5]})}
+  | fixed == fixed'
+  = let use1' = mkRegister basereg
+        use4' = mkBound (mkMachineImm $ (idxToOff M.! idx) + off1 + off2)
+    in o {oOpr = Natural ni {oCallUs = [use1',use2,use3,use4',use5]}}
+
+liftFIif basereg fixed _ idxToOff
+  o @ SingleOperation {oOpr = Natural ni @ (Branch {oBranchUs = [(Bound (MachineFrameIndex idx fixed' off1)),
+                                                                  use2,
+                                                                  use3,
+                                                                  (Bound (MachineImm off2)),
+                                                                  use5]})}
+  | fixed == fixed'
+  = let use1' = mkRegister basereg
+        use4' = mkBound (mkMachineImm $ (idxToOff M.! idx) + off1 + off2)
+    in o {oOpr = Natural ni {oBranchUs = [use1',use2,use3,use4',use5]}}
+
 liftFIif _ _ _ _ o = o
 
 addStackIndexReadsSP
