@@ -93,6 +93,7 @@ tryUntilSuccess a =
      case result of
       Left ex ->
         do putStrLn $ show ex ++ ", trying again..."
+           threadDelay 5000000
            tryUntilSuccess a
       Right () -> return ()
 
@@ -115,7 +116,7 @@ runChuffed flags to memLimit extJson lowerBoundFile outJsonFile =
          dzn = pre ++ ".dzn"
          out = pre ++ ".out"
      setEnv "FLATZINC_CMD" "fzn-chuffed"
-     tryUntilSuccess $ callProcess mznChuffed
+     tryUntilSuccess $ callSilentProcess mznChuffed
        (concatMap fznFlag (["--verbosity", "3",
                             "-f",
                             "--rnd-seed", "123456"] ++
@@ -147,6 +148,14 @@ chuffedTimeoutFlags to
   -- always honor the kill signal)
   | to >= 0 = ["--time-out", show (to `div` timeoutFactor)]
   | otherwise = []
+
+callSilentProcess exec args =
+  withFile "/dev/null" WriteMode
+  (\handle ->
+    do (_, _, _, h) <- createProcess (proc exec args)
+                       {std_err = UseHandle handle}
+       waitForProcess h
+       return ())
 
 splitFlags :: String -> [String]
 splitFlags flags =

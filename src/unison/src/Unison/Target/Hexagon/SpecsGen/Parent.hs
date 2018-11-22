@@ -770,28 +770,29 @@ parent i
        S6_rol_i_r_or_ce, S6_rol_i_r_xacc, S6_rol_i_r_xacc_ce,
        SAVE_REGISTERS_CALL_V4, SAVE_REGISTERS_CALL_V4_EXT,
        SAVE_REGISTERS_CALL_V4_EXT_ce, SAVE_REGISTERS_CALL_V4_ce, STACKMAP,
-       STACKMAP_ce, STATEPOINT, STATEPOINT_ce, STD, STD_ce, STW, STW_ce,
-       STW_nv, STW_nv_ce, STriq_pred_V6, STriq_pred_V6_128B,
-       STriq_pred_V6_128B_ce, STriq_pred_V6_ce, STriq_pred_vec_V6,
-       STriq_pred_vec_V6_128B, STriq_pred_vec_V6_128B_ce,
-       STriq_pred_vec_V6_ce, STriv_pseudo_V6, STriv_pseudo_V6_128B,
-       STriv_pseudo_V6_128B_ce, STriv_pseudo_V6_ce, STrivv_indexed,
-       STrivv_indexed_128B, STrivv_indexed_128B_ce, STrivv_indexed_ce,
-       STrivv_pseudo_V6, STrivv_pseudo_V6_128B, STrivv_pseudo_V6_128B_ce,
-       STrivv_pseudo_V6_ce, STriw_pred, STriw_pred_ce, SUBREG_TO_REG,
-       SUBREG_TO_REG_ce, TCRETURNi, TCRETURNi_ce, TCRETURNr,
-       TFRI64_V2_ext, TFRI64_V2_ext_ce, TFRI64_V4, TFRI64_V4_ce,
-       TFRI_cNotPt_f, TFRI_cNotPt_f_ce, TFRI_cPt_f, TFRI_cPt_f_ce, TFRI_f,
-       TFRI_f_ce, TFR_FI, TFR_FIA, TFR_FIA_ce, TFR_FI_ce, TFR_FI_fi,
-       TFR_FI_fi_ce, TFR_PdFalse, TFR_PdTrue, V4_SA1_addi, V4_SA1_addi_ce,
-       V4_SA1_addrx, V4_SA1_addsp, V4_SA1_addsp_ce, V4_SA1_and1,
-       V4_SA1_clrf, V4_SA1_clrfnew, V4_SA1_clrt, V4_SA1_clrtnew,
-       V4_SA1_cmpeqi, V4_SA1_cmpeqi_ce, V4_SA1_combine0i,
-       V4_SA1_combine0i_ce, V4_SA1_combine1i, V4_SA1_combine1i_ce,
-       V4_SA1_combine2i, V4_SA1_combine2i_ce, V4_SA1_combine3i,
-       V4_SA1_combine3i_ce, V4_SA1_combinerz, V4_SA1_combinezr,
-       V4_SA1_dec, V4_SA1_inc, V4_SA1_seti, V4_SA1_seti_ce, V4_SA1_setin1,
-       V4_SA1_sxtb, V4_SA1_sxth, V4_SA1_tfr, V4_SA1_zxtb, V4_SA1_zxth,
+       STACKMAP_ce, STATEPOINT, STATEPOINT_ce, STD, STD_ce, STD_cs,
+       STD_cs_ce, STW, STW_ce, STW_nv, STW_nv_ce, STriq_pred_V6,
+       STriq_pred_V6_128B, STriq_pred_V6_128B_ce, STriq_pred_V6_ce,
+       STriq_pred_vec_V6, STriq_pred_vec_V6_128B,
+       STriq_pred_vec_V6_128B_ce, STriq_pred_vec_V6_ce, STriv_pseudo_V6,
+       STriv_pseudo_V6_128B, STriv_pseudo_V6_128B_ce, STriv_pseudo_V6_ce,
+       STrivv_indexed, STrivv_indexed_128B, STrivv_indexed_128B_ce,
+       STrivv_indexed_ce, STrivv_pseudo_V6, STrivv_pseudo_V6_128B,
+       STrivv_pseudo_V6_128B_ce, STrivv_pseudo_V6_ce, STriw_pred,
+       STriw_pred_ce, SUBREG_TO_REG, SUBREG_TO_REG_ce, TCRETURNi,
+       TCRETURNi_ce, TCRETURNr, TFRI64_V2_ext, TFRI64_V2_ext_ce,
+       TFRI64_V4, TFRI64_V4_ce, TFRI_cNotPt_f, TFRI_cNotPt_f_ce,
+       TFRI_cPt_f, TFRI_cPt_f_ce, TFRI_f, TFRI_f_ce, TFR_FI, TFR_FIA,
+       TFR_FIA_ce, TFR_FI_ce, TFR_FI_fi, TFR_FI_fi_ce, TFR_PdFalse,
+       TFR_PdTrue, V4_SA1_addi, V4_SA1_addi_ce, V4_SA1_addrx,
+       V4_SA1_addsp, V4_SA1_addsp_ce, V4_SA1_and1, V4_SA1_clrf,
+       V4_SA1_clrfnew, V4_SA1_clrt, V4_SA1_clrtnew, V4_SA1_cmpeqi,
+       V4_SA1_cmpeqi_ce, V4_SA1_combine0i, V4_SA1_combine0i_ce,
+       V4_SA1_combine1i, V4_SA1_combine1i_ce, V4_SA1_combine2i,
+       V4_SA1_combine2i_ce, V4_SA1_combine3i, V4_SA1_combine3i_ce,
+       V4_SA1_combinerz, V4_SA1_combinezr, V4_SA1_dec, V4_SA1_inc,
+       V4_SA1_seti, V4_SA1_seti_ce, V4_SA1_setin1, V4_SA1_sxtb,
+       V4_SA1_sxth, V4_SA1_tfr, V4_SA1_zxtb, V4_SA1_zxth,
        V4_SL1_loadri_io, V4_SL1_loadri_io_ce, V4_SL1_loadrub_io,
        V4_SL1_loadrub_io_ce, V4_SL2_deallocframe, V4_SL2_jumpr31,
        V4_SL2_jumpr31_f, V4_SL2_jumpr31_fnew, V4_SL2_jumpr31_t,
@@ -1081,6 +1082,13 @@ parent i
       [A2_tfrsi_demat, A2_tfrsi_demat_ce, A2_tfrsi_remat,
        A2_tfrsi_remat_ce, A2_tfrsi_source, A2_tfrsi_source_ce]
     = Just A2_tfrsi
+  | i `elem` [C2_cmpeq_combo] = Just C2_cmpeq
+  | i `elem` [C2_cmpeqi_combo, C2_cmpeqi_combo_ce] = Just C2_cmpeqi
+  | i `elem` [C2_cmpgt_combo] = Just C2_cmpgt
+  | i `elem` [C2_cmpgti_combo, C2_cmpgti_combo_ce] = Just C2_cmpgti
+  | i `elem` [C2_cmpgtu_combo] = Just C2_cmpgtu
+  | i `elem` [C2_cmpgtui_combo, C2_cmpgtui_combo_ce] =
+    Just C2_cmpgtui
   | i `elem` [C2_mux_tfr, C2_mux_tfr_new] = Just C2_mux
   | i `elem`
       [C2_muxii_tfr, C2_muxii_tfr_ce, C2_muxii_tfr_new,
@@ -1096,53 +1104,43 @@ parent i
     = Just C2_muxri
   | i `elem` [MVPR, MVPR_ce] = Just C2_tfrpr
   | i `elem` [MVRP, MVRP_ce] = Just C2_tfrrp
+  | i `elem` [C2_cmplt_combo] = Just C4_cmplte
+  | i `elem` [C2_cmpltu_combo] = Just C4_cmplteu
   | i `elem`
       [CONST64_Int_Real_demat, CONST64_Int_Real_demat_ce,
        CONST64_Int_Real_remat, CONST64_Int_Real_remat_ce,
        CONST64_Int_Real_source, CONST64_Int_Real_source_ce]
     = Just CONST64_Int_Real
   | i `elem`
-      [J2_jumpf_linear, J2_jumpf_nv, J2_jumpf_nv_ce, J2_jumpf_nv_linear]
+      [J2_jumpf_nv, J2_jumpf_nv_ce, J4_combo_f_jumpnv_t,
+       J4_combo_f_jumpnv_t_ce]
     = Just J2_jumpf
   | i `elem`
-      [J2_jumpt_linear, J2_jumpt_nv, J2_jumpt_nv_ce, J2_jumpt_nv_linear]
+      [J2_jumpt_nv, J2_jumpt_nv_ce, J4_combo_t_jumpnv_t,
+       J4_combo_t_jumpnv_t_ce]
     = Just J2_jumpt
-  | i `elem` [J4_cmpeq_f_jumpnv_t_linear] = Just J4_cmpeq_f_jumpnv_t
-  | i `elem` [J4_cmpeq_t_jumpnv_t_linear] = Just J4_cmpeq_t_jumpnv_t
-  | i `elem`
-      [J4_cmpeqi_f_jumpnv_t_linear, J4_cmpeqi_f_jumpnv_t_linear_ce]
-    = Just J4_cmpeqi_f_jumpnv_t
-  | i `elem`
-      [J4_cmpeqi_t_jumpnv_t_linear, J4_cmpeqi_t_jumpnv_t_linear_ce]
-    = Just J4_cmpeqi_t_jumpnv_t
-  | i `elem` [J4_cmpeqn1_t_jumpnv_t_linear] =
+  | i `elem` [J4_cmpeq_f_jumpnv_t_combo] = Just J4_cmpeq_f_jumpnv_t
+  | i `elem` [J4_cmpeq_t_jumpnv_t_combo] = Just J4_cmpeq_t_jumpnv_t
+  | i `elem` [J4_cmpeqi_f_jumpnv_t_combo] = Just J4_cmpeqi_f_jumpnv_t
+  | i `elem` [J4_cmpeqi_t_jumpnv_t_combo] = Just J4_cmpeqi_t_jumpnv_t
+  | i `elem` [J4_cmpeqn1_t_jumpnv_t_combo] =
     Just J4_cmpeqn1_t_jumpnv_t
-  | i `elem` [J4_cmpgt_f_jumpnv_t_linear] = Just J4_cmpgt_f_jumpnv_t
-  | i `elem` [J4_cmpgt_t_jumpnv_t_linear] = Just J4_cmpgt_t_jumpnv_t
-  | i `elem`
-      [J4_cmpgti_f_jumpnv_t_linear, J4_cmpgti_f_jumpnv_t_linear_ce]
-    = Just J4_cmpgti_f_jumpnv_t
-  | i `elem`
-      [J4_cmpgti_t_jumpnv_t_linear, J4_cmpgti_t_jumpnv_t_linear_ce]
-    = Just J4_cmpgti_t_jumpnv_t
-  | i `elem` [J4_cmpgtn1_t_jumpnv_t_linear] =
+  | i `elem` [J4_cmpgt_f_jumpnv_t_combo] = Just J4_cmpgt_f_jumpnv_t
+  | i `elem` [J4_cmpgt_t_jumpnv_t_combo] = Just J4_cmpgt_t_jumpnv_t
+  | i `elem` [J4_cmpgti_f_jumpnv_t_combo] = Just J4_cmpgti_f_jumpnv_t
+  | i `elem` [J4_cmpgti_t_jumpnv_t_combo] = Just J4_cmpgti_t_jumpnv_t
+  | i `elem` [J4_cmpgtn1_t_jumpnv_t_combo] =
     Just J4_cmpgtn1_t_jumpnv_t
-  | i `elem` [J4_cmpgtu_f_jumpnv_t_linear] =
-    Just J4_cmpgtu_f_jumpnv_t
-  | i `elem` [J4_cmpgtu_t_jumpnv_t_linear] =
-    Just J4_cmpgtu_t_jumpnv_t
-  | i `elem`
-      [J4_cmpgtui_f_jumpnv_t_linear, J4_cmpgtui_f_jumpnv_t_linear_ce]
-    = Just J4_cmpgtui_f_jumpnv_t
-  | i `elem`
-      [J4_cmpgtui_t_jumpnv_t_linear, J4_cmpgtui_t_jumpnv_t_linear_ce]
-    = Just J4_cmpgtui_t_jumpnv_t
-  | i `elem` [J4_cmplt_f_jumpnv_t_linear] = Just J4_cmplt_f_jumpnv_t
-  | i `elem` [J4_cmplt_t_jumpnv_t_linear] = Just J4_cmplt_t_jumpnv_t
-  | i `elem` [J4_cmpltu_f_jumpnv_t_linear] =
-    Just J4_cmpltu_f_jumpnv_t
-  | i `elem` [J4_cmpltu_t_jumpnv_t_linear] =
-    Just J4_cmpltu_t_jumpnv_t
+  | i `elem` [J4_cmpgtu_f_jumpnv_t_combo] = Just J4_cmpgtu_f_jumpnv_t
+  | i `elem` [J4_cmpgtu_t_jumpnv_t_combo] = Just J4_cmpgtu_t_jumpnv_t
+  | i `elem` [J4_cmpgtui_f_jumpnv_t_combo] =
+    Just J4_cmpgtui_f_jumpnv_t
+  | i `elem` [J4_cmpgtui_t_jumpnv_t_combo] =
+    Just J4_cmpgtui_t_jumpnv_t
+  | i `elem` [J4_cmplt_f_jumpnv_t_combo] = Just J4_cmplt_f_jumpnv_t
+  | i `elem` [J4_cmplt_t_jumpnv_t_combo] = Just J4_cmplt_t_jumpnv_t
+  | i `elem` [J4_cmpltu_f_jumpnv_t_combo] = Just J4_cmpltu_f_jumpnv_t
+  | i `elem` [J4_cmpltu_t_jumpnv_t_combo] = Just J4_cmpltu_t_jumpnv_t
   | i `elem` [JMPret_dealloc_linear, JMPret_linear] = Just JMPret
   | i `elem` [L2_deallocframe_linear] = Just L2_deallocframe
   | i `elem`

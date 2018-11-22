@@ -10,8 +10,9 @@ Main authors:
 This file is part of Unison, see http://unison-code.github.io
 -}
 module Unison.Target.Hexagon.Common
-    (singleIssue, isNVJmpInstr, isNVJmp, isCmp, isCmpInstr, isJmp, isJmpInstr,
-     isLinearJump, isLinearNewValueCmpJump, isNewValueCmpJump, isJumpNew,
+    (singleIssue, preserveDominatedIns, usePredicateRegsForNvcj, isNVJmpInstr,
+     isNVJmp, isCmp, isCmpInstr, isJmp, isJmpInstr,
+     isNewValueCmpJump, isJumpNew, isCmpComboInstr, cmpComboInstr,
      isMemAccessWithOff, memAccessAlignment, isOldValueStoreInstr,
      newValueStoreInstr, isMuxTransferInstr, isCondTransferInstr,
      condTransferInstr, muxTransferInstr, isRematerializable,
@@ -30,6 +31,10 @@ import qualified Unison.Target.API as API
 import Unison.Target.Hexagon.SpecsGen.HexagonInstructionDecl
 
 singleIssue to = API.isBoolOption "single-issue" to
+
+preserveDominatedIns to = API.isBoolOption "preserve-dominated-ins" to
+
+usePredicateRegsForNvcj to = API.isBoolOption "use-predicate-regs-for-nvcj" to
 
 instance Read HexagonInstruction where
   readsPrec _ strOp = [(SpecsGen.readOp strOp, "")]
@@ -58,12 +63,25 @@ jmpInstrs = [J2_jumpt, J2_jumpf]
 isSingleTargetOf is ms =
     isMachineTarget ms && mopcTarget (msOpcode ms) `elem` is
 
-isLinearJump i = i `elem` [J2_jumpt_linear, J2_jumpt_nv_linear, J2_jumpf_linear,
-                           J2_jumpf_nv_linear]
-isLinearNewValueCmpJump i = "_jumpnv_t_linear" `isSuffixOf` (show i)
+isNewValueCmpJump i =
+  "_jumpnv_t" `isSuffixOf` (show i) ||
+  "_jumpnv_nt" `isSuffixOf` (show i)
 
-isNewValueCmpJump i = "_jumpnv_t" `isSuffixOf` (show i)
 isJumpNew i = i `elem` [J2_jumptnew, J2_jumpfnew]
+
+isCmpComboInstr i = M.member i (inverseMap cmpComboVersions)
+
+cmpComboInstr i = cmpComboVersions M.! i
+
+cmpComboVersions = M.fromList
+  [(C2_cmpeq,   C2_cmpeq_combo),
+   (C2_cmpgt,   C2_cmpgt_combo),
+   (C2_cmpgtu,  C2_cmpgtu_combo),
+   (C4_cmplte,  C2_cmplt_combo),
+   (C4_cmplteu, C2_cmpltu_combo),
+   (C2_cmpeqi,  C2_cmpeqi_combo),
+   (C2_cmpgti,  C2_cmpgti_combo),
+   (C2_cmpgtui, C2_cmpgtui_combo)]
 
 isMemAccessWithOff i = M.member i memAccessAlignments
 
@@ -188,4 +206,4 @@ mayLoad' = mayLoad SpecsGen.readWriteInfo
 mayStore' STW_nv = True
 mayStore' i = mayStore (SpecsGen.readWriteInfo) i
 
-spillInstrs = [STW, STD, STW_nv, LDW, LDD]
+spillInstrs = [STW, STD, STD_cs, STW_nv, LDW, LDD]
