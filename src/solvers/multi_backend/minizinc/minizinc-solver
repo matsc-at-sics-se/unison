@@ -14,7 +14,7 @@ ncores='1'
 statflag='-s'
 lbflag=''
 toflag=''
-toprefix='--fzn-flag --time-out --fzn-flag '
+toprefix='-t '
 freeflag=''
 freedefault='--fzn-flag -f'
 rndflag=''
@@ -146,4 +146,4 @@ if [ $setuponly = true ]; then
     exit 0
 fi
 set -x
-time ${mzn} ${allsolns} ${statflag} ${pflag} ${pvalue} ${freeflag} ${rndflag} ${toflag} ${nogoods} -D good_cumulative=${cumulative} -D good_diffn=${diffn} -D good_member=${member} ${tail} $DIRBASENAME.mzn $dznfile | $COMMON_DIR/outfilter.pl ${OUTJSON}.last ${lbfile} | aeson-pretty > ${OUTJSON}
+time ${mzn} -O1 ${allsolns} ${statflag} ${pflag} ${pvalue} ${freeflag} ${rndflag} ${toflag} ${nogoods} -D good_cumulative=${cumulative} -D good_diffn=${diffn} -D good_member=${member} ${tail} $DIRBASENAME.mzn $dznfile | $COMMON_DIR/outfilter.pl ${OUTJSON}.last ${lbfile} | aeson-pretty > ${OUTJSON}
