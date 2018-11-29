@@ -76,6 +76,8 @@ install-unison:
 
 install-solver:
 	cp $(SOLVERBIN) $(BINDIR)
+	cp solvers/multi_backend/portfolio-solver $(BINDIR)
+	cp solvers/multi_backend/minizinc/minizinc-solver $(BINDIR)
 
 install-presolver:
 	cp $(PRESOLVERBIN) $(BINDIR)
