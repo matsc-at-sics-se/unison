@@ -54,7 +54,7 @@ my @buf = ();
 
 while (my $line = <STDIN>) {
     chomp($line);
-    if ($line =~ "=====") {
+    if ($line =~ "========") {
 	print STDERR "$line\n";
 	$state = 1;
 	$proven = 1;
