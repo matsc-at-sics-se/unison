@@ -34,8 +34,8 @@
 
 solve :: seq_search(
      % can help, but far from always
-     % [bool_search([a[min(calleesaved_spill[i])] | i in index_set(calleesaved_spill)]++[true],
-     %              input_order, indomain_max, complete)] ++
+     [bool_search([a[min(calleesaved_spill[i])] | i in index_set(calleesaved_spill)],
+                  input_order, indomain_min, complete)] ++
      % can help, but far from always
      % [bool_search([a[min(activator_ops[i])] | i in index_set(activator_ops)]++[true],
      %              input_order, indomain_max, complete)] ++
