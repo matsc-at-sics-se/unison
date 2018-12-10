@@ -1150,12 +1150,29 @@ constraint
 		     int: thepd = temp_def[thetu],
 		     int: thea = min(k in index_set(preassign_reg) where preassign_operand[k]=thepd)(preassign_reg[k]),
 		     int: thew = temp_width[thetu],
-		     set of int: clcands = {t | t in tcands where can_clobber(t,thea,thew)}} in (
-		    a[theop] <-> exists(ti in clcands)(r[ti] > max(-1,thea-temp_width[ti]) /\ r[ti] < thea+thew)
+		     set of int: clcands = {t | t in tcands where can_clobber(t,thea,thew)},
+		     set of int: clcands1 = {t | t in clcands where max(-1,thea-temp_width[t])+1 = thea+thew-1},
+		     set of int: clcands2 = clcands diff clcands1} in (
+		    a[theop] <-> exists(ti in clcands1)(r[ti] = thea+thew-1) \/
+		                 exists(ti in clcands2)(r[ti] in max(-1,thea-temp_width[ti])+1 .. thea+thew-1)
 		)
 	    )
 	)
     else true endif;
+
+%% no introduced temp can interfere with a reserved reg
+constraint
+    let {set of int: preass_ops = {o | o in 0..MAXO where op_type[o] in {TYPE_IN,TYPE_CALL,TYPE_TAIL,TYPE_FUN}},
+	 set of int: tcands = {t | t in 0..MAXT where not (temp_definer[t] in preass_ops)}} in (
+    forall(v in {r | r in preassign_reg} diff calleesaved diff callersaved)(
+	let {set of int: clcands = {t | t in tcands where can_clobber(t,v,1)},
+	     set of int: clcands1 = {t | t in clcands where temp_width[t]=1},
+	     set of int: clcands2 = clcands diff clcands1} in (
+	    forall(ti in clcands1)(r[ti] != v) /\
+	    forall(ti in clcands2)(not(r[ti] in max(-1,v-temp_width[ti])+1 .. v))
+	)
+      )
+    );
 
 %% break symmetries among which callee-saved to spill
 constraint
