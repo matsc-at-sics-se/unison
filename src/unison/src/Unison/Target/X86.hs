@@ -204,8 +204,8 @@ rematInstrs i
       Just (sourceInstr i, dematInstr i, rematInstr i)
   | i `elem` [FPUSH32, FPUSH, NOFPUSH,
               MOV8rm, MOV16rm, MOV32rm, MOV64rm,
-              MOVSX16rm8, MOVSX32rm8, MOVSX32_NOREXrm8, MOVSX32rm16, MOVSX64rm8, MOVSX64rm16, MOVSX64rm32, 
-              MOVZX16rm8, MOVZX32rm8, MOVZX32_NOREXrm8, MOVZX32rm16, MOVZX64rm8, MOVZX64rm16,
+              MOVSX16rm8, MOVSX32rm8, MOVSX32rm8_NOREX, MOVSX32rm16, MOVSX64rm8, MOVSX64rm16, MOVSX64rm32, 
+              MOVZX16rm8, MOVZX32rm8, MOVZX32rm8_NOREX, MOVZX32rm16, MOVZX64rm8, MOVZX64rm16,
               IMUL64rmi32,
               VMOVSSrm, VMOVSDrm, VMOVAPSrm, VMOVUPSrm, VMOVAPSYrm, VMOVUPSYrm,
               SETAEr, SETAr, SETBEr, SETBr, SETEr, SETGEr, SETGr, SETLEr, SETLr,
@@ -522,13 +522,14 @@ resources =
      Resource SKLPort05 2,
      Resource SKLPort015 3,
      Resource SKLPort6 1,
-     Resource SKLDivider 1,
      Resource SKLPort16 2,
      Resource SKLPort237 3,
      Resource SKLPort5 1,
      Resource SKLPort15 2,
      Resource SKLPort23 2,
      Resource SKLPort0156 4,
+     Resource SKLDivider 1,
+     Resource SKLFPDivider 1,
      Resource ExePort 1
     ]
 
@@ -584,6 +585,8 @@ postProcess to = [expandPseudos to,
 
 transforms _  ImportPreLift = [peephole extractReturnRegs,
                                liftStackArgSize,
+                               -- addLiveSSP,
+                               addDefineSSP,
                                addPrologueEpilogue]
 transforms to ImportPostLift =
   [mapToOperation handlePromotedOperands] ++

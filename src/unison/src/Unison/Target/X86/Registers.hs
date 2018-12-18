@@ -298,8 +298,11 @@ registerAtoms R10_R11 = (R10B, R137)
 registerAtoms YMM1_15 = (R240, R1177)
 
 -- not really in the register array
-registerAtoms EFLAGS = (R1200, R1207)
-registerAtoms RIP = (R1210, R1217)
+registerAtoms RIP = (R1200, R1207)
+registerAtoms EFLAGS = (R1210, R1217)
+registerAtoms DF = (R1220, R1227)
+registerAtoms SSP = (R1230, R1237)
+registerAtoms EFLAGS_SSP = (R1210, R1237)
 
 registerAtoms r = error ("unmatched: registerAtoms " ++ show r)
 
@@ -309,7 +312,7 @@ regClasses =
                        GR128_AUX,
                        Ptr_rc, Ptr_rc_nosp, Ptr_rc_norex, Ptr_rc_norex_nosp, Ptr_rc_tailcall,
                        FR32, FR64, FR128, VR128, VR256, FR32_AUX, FR64_AUX, FR128_AUX, VR2048_AUX, AMBIG,
-                       AUXE, AUXR, AUXB] ++
+                       AUXR, AUXE, AUXB, MISC] ++
     map InfiniteRegisterClass [M8, M16, M32, M64, M128, M256, RM8, RM16, RM32, RM64, RM128, RM256]
 
 -- | Individual registers of each register class (octal, internal names)
@@ -400,7 +403,9 @@ registers (RegisterClass FPR) =
 
 registers (RegisterClass CCR) =
     [R1200, R1201, R1202, R1203, R1204, R1205, R1206, R1207,
-     R1210, R1211, R1212, R1213, R1214, R1215, R1216, R1217]
+     R1210, R1211, R1212, R1213, R1214, R1215, R1216, R1217,
+     R1220, R1221, R1222, R1223, R1224, R1225, R1226, R1227,
+     R1230, R1231, R1232, R1233, R1234, R1235, R1236, R1237]
 
 registers (RegisterClass GR8) =
     [AL, AH, CL, CH, DL, DH, BL, BH, SIL, DIL, SPL, BPL, R8B, R9B, R10B, R11B, R12B, R13B, R14B, R15B]
@@ -492,14 +497,17 @@ registers (RegisterClass AMBIG) =
     [XMM0, XMM1, XMM2, XMM3, XMM4, XMM5, XMM6, XMM7,
      XMM8, XMM9, XMM10, XMM11, XMM12, XMM13, XMM14, XMM15]
 
-registers (RegisterClass AUXE) =
-    [EFLAGS]
-
 registers (RegisterClass AUXR) =
     [RIP]
 
+registers (RegisterClass AUXE) =
+    [EFLAGS, DF, SSP]
+
 registers (RegisterClass AUXB) =
     [RBX]
+
+registers (RegisterClass MISC) =
+    [EFLAGS_SSP]
 
 registers (RegisterClass ALL) =
     registers (RegisterClass GPR) ++ registers (RegisterClass VR128)
@@ -590,8 +598,7 @@ reserved = [RSP, RIP]
 -- | Caller- and callee-saved registers
 
 -- | Registers that are not preserved across calls
--- callerSaved = [RAX, RCX, RDX, RDI, RSI, R8, R9, R10, R11] ++ registers (RegisterClass VR128)
-callerSaved = [RAX, RCX, RDX, RDI, RSI, R8, R9, R10, R11, YMM0, YMM1_15]
+callerSaved = [RAX, RCX, RDX, RDI, RSI, R8, R9, R10, R11, YMM0, YMM1_15, EFLAGS_SSP]
 
 -- | Registers that are preserved across calls
 calleeSaved = [RBX, RBP, R12, R13, R14, R15]
@@ -609,8 +616,11 @@ instance Show X86Register where
              Nothing -> error $ "unmatched: show X86Register"
 
 regStrings = M.fromList $
-  [(EFLAGS, "eflags"),
-   (RIP, "rip"),
+  [(RIP, "rip"),
+   (EFLAGS, "eflags"),
+   (DF, "df"),
+   (SSP, "ssp"),
+   (EFLAGS_SSP, "eflags_ssp"),
    (AL, "al"),
    (AH, "ah"),
    (R002, "r002"),
@@ -1267,6 +1277,22 @@ regStrings = M.fromList $
    (R1215, "r1215"),
    (R1216, "r1216"),
    (R1217, "r1217"),
+   (R1220, "r1220"),
+   (R1221, "r1221"),
+   (R1222, "r1222"),
+   (R1223, "r1223"),
+   (R1224, "r1224"),
+   (R1225, "r1225"),
+   (R1226, "r1226"),
+   (R1227, "r1227"),
+   (R1230, "r1230"),
+   (R1231, "r1231"),
+   (R1232, "r1232"),
+   (R1233, "r1233"),
+   (R1234, "r1234"),
+   (R1235, "r1235"),
+   (R1236, "r1236"),
+   (R1237, "r1237"),
    (AX, "ax"),
    (CX, "cx"),
    (DX, "dx"),

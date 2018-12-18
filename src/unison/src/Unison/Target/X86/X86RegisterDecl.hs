@@ -12,8 +12,11 @@ This file is part of Unison, see http://unison-code.github.io
 module Unison.Target.X86.X86RegisterDecl (X86Register (..)) where
 
 data X86Register =
-    EFLAGS |
     RIP |
+    EFLAGS |
+    DF |
+    SSP |
+    EFLAGS_SSP |
     R002 |
     R003 |
     R004 |
@@ -650,6 +653,22 @@ data X86Register =
     R1215 |
     R1216 |
     R1217 |
+    R1220 |
+    R1221 |
+    R1222 |
+    R1223 |
+    R1224 |
+    R1225 |
+    R1226 |
+    R1227 |
+    R1230 |
+    R1231 |
+    R1232 |
+    R1233 |
+    R1234 |
+    R1235 |
+    R1236 |
+    R1237 |
     AL |
     CL |
     DL |

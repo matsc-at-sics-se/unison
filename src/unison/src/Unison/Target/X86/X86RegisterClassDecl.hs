@@ -46,6 +46,7 @@ data X86RegisterClass =
     AUXE |
     AUXR |
     AUXB |
+    MISC |
     M8 |
     M16 |
     M32 |

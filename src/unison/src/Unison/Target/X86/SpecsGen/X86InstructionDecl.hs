@@ -7,10 +7,6 @@ data X86Instruction = AAA
                     | AAD8i8
                     | AAM8i8
                     | AAS
-                    | ACQUIRE_MOV16rm
-                    | ACQUIRE_MOV32rm
-                    | ACQUIRE_MOV64rm
-                    | ACQUIRE_MOV8rm
                     | ADC16i16
                     | ADC16mi
                     | ADC16mi8
@@ -112,6 +108,10 @@ data X86Instruction = AAA
                     | ADDSUBPDrr
                     | ADDSUBPSrm
                     | ADDSUBPSrr
+                    | ADJCALLSTACKDOWN32
+                    | ADJCALLSTACKDOWN64
+                    | ADJCALLSTACKUP32
+                    | ADJCALLSTACKUP64
                     | ADOX32rm
                     | ADOX32rr
                     | ADOX64rm
@@ -176,8 +176,10 @@ data X86Instruction = AAA
                     | ANDPDrr
                     | ANDPSrm
                     | ANDPSrr
+                    | ANNOTATION_LABEL
                     | ARPL16mr
                     | ARPL16rr
+                    | AVX1_SETALLONES
                     | AVX2_SETALLONES
                     | AVX_SET0
                     | BEXTR32rm
@@ -250,6 +252,7 @@ data X86Instruction = AAA
                     | BSR32rr
                     | BSR64rm
                     | BSR64rr
+                    | BSWAP16r_BAD
                     | BSWAP32r
                     | BSWAP64r
                     | BT16mi8
@@ -306,12 +309,18 @@ data X86Instruction = AAA
                     | BZHI64rm
                     | BZHI64rr
                     | CALL16m
+                    | CALL16m_NT
                     | CALL16r
+                    | CALL16r_NT
                     | CALL32m
+                    | CALL32m_NT
                     | CALL32r
+                    | CALL32r_NT
                     | CALL64m
+                    | CALL64m_NT
                     | CALL64pcrel32
                     | CALL64r
+                    | CALL64r_NT
                     | CALLpcrel16
                     | CALLpcrel32
                     | CATCHPAD
@@ -323,13 +332,16 @@ data X86Instruction = AAA
                     | CLAC
                     | CLC
                     | CLD
+                    | CLDEMOTE
                     | CLEANUPRET
                     | CLFLUSH
                     | CLFLUSHOPT
                     | CLGI
                     | CLI
+                    | CLRSSBSY
                     | CLTS
                     | CLWB
+                    | CLZERO
                     | CLZEROr
                     | CMC
                     | CMOVA16rm
@@ -428,7 +440,7 @@ data X86Instruction = AAA
                     | CMOVS32rr
                     | CMOVS64rm
                     | CMOVS64rr
-                    | CMOV_FR128
+                    | CMOV_F128
                     | CMOV_FR32
                     | CMOV_FR64
                     | CMOV_GR16
@@ -484,18 +496,18 @@ data X86Instruction = AAA
                     | CMPPSrmi_alt
                     | CMPPSrri
                     | CMPPSrri_alt
-                    | CMPSB
                     | CMPSDrm
+                    | CMPSDrm_Int
                     | CMPSDrm_alt
                     | CMPSDrr
+                    | CMPSDrr_Int
                     | CMPSDrr_alt
-                    | CMPSL
-                    | CMPSQ
                     | CMPSSrm
+                    | CMPSSrm_Int
                     | CMPSSrm_alt
                     | CMPSSrr
+                    | CMPSSrr_Int
                     | CMPSSrr_alt
-                    | CMPSW
                     | CMPXCHG16B
                     | CMPXCHG16rm
                     | CMPXCHG16rr
@@ -507,9 +519,13 @@ data X86Instruction = AAA
                     | CMPXCHG8rm
                     | CMPXCHG8rr
                     | COMISDrm
+                    | COMISDrm_Int
                     | COMISDrr
+                    | COMISDrr_Int
                     | COMISSrm
+                    | COMISSrm_Int
                     | COMISSrr
+                    | COMISSrr_Int
                     | COPY
                     | COPY_TO_REGCLASS
                     | CPUID
@@ -537,43 +553,64 @@ data X86Instruction = AAA
                     | CVTPS2DQrr
                     | CVTPS2PDrm
                     | CVTPS2PDrr
-                    | CVTSD2SI64rm
-                    | CVTSD2SI64rr
-                    | CVTSD2SIrm
-                    | CVTSD2SIrr
+                    | CVTSD2SI64rm_Int
+                    | CVTSD2SI64rr_Int
+                    | CVTSD2SIrm_Int
+                    | CVTSD2SIrr_Int
                     | CVTSD2SSrm
+                    | CVTSD2SSrm_Int
                     | CVTSD2SSrr
-                    | CVTSI2SD64rm
-                    | CVTSI2SD64rr
+                    | CVTSD2SSrr_Int
                     | CVTSI2SDrm
+                    | CVTSI2SDrm_Int
                     | CVTSI2SDrr
-                    | CVTSI2SS64rm
-                    | CVTSI2SS64rr
+                    | CVTSI2SDrr_Int
                     | CVTSI2SSrm
+                    | CVTSI2SSrm_Int
                     | CVTSI2SSrr
+                    | CVTSI2SSrr_Int
+                    | CVTSI642SDrm
+                    | CVTSI642SDrm_Int
+                    | CVTSI642SDrr
+                    | CVTSI642SDrr_Int
+                    | CVTSI642SSrm
+                    | CVTSI642SSrm_Int
+                    | CVTSI642SSrr
+                    | CVTSI642SSrr_Int
                     | CVTSS2SDrm
+                    | CVTSS2SDrm_Int
                     | CVTSS2SDrr
-                    | CVTSS2SI64rm
-                    | CVTSS2SI64rr
-                    | CVTSS2SIrm
-                    | CVTSS2SIrr
+                    | CVTSS2SDrr_Int
+                    | CVTSS2SI64rm_Int
+                    | CVTSS2SI64rr_Int
+                    | CVTSS2SIrm_Int
+                    | CVTSS2SIrr_Int
                     | CVTTPD2DQrm
                     | CVTTPD2DQrr
                     | CVTTPS2DQrm
                     | CVTTPS2DQrr
                     | CVTTSD2SI64rm
+                    | CVTTSD2SI64rm_Int
                     | CVTTSD2SI64rr
+                    | CVTTSD2SI64rr_Int
                     | CVTTSD2SIrm
+                    | CVTTSD2SIrm_Int
                     | CVTTSD2SIrr
+                    | CVTTSD2SIrr_Int
                     | CVTTSS2SI64rm
+                    | CVTTSS2SI64rm_Int
                     | CVTTSS2SI64rr
+                    | CVTTSS2SI64rr_Int
                     | CVTTSS2SIrm
+                    | CVTTSS2SIrm_Int
                     | CVTTSS2SIrr
+                    | CVTTSS2SIrr_Int
                     | CWD
                     | CWDE
                     | DAA
                     | DAS
                     | DATA16_PREFIX
+                    | DBG_LABEL
                     | DBG_VALUE
                     | DEC16m
                     | DEC16r
@@ -621,6 +658,9 @@ data X86Instruction = AAA
                     | EH_SjLj_Setup
                     | ENCLS
                     | ENCLU
+                    | ENCLV
+                    | ENDBR32
+                    | ENDBR64
                     | ENTER
                     | ES_PREFIX
                     | EXTRACTPSmr
@@ -628,7 +668,6 @@ data X86Instruction = AAA
                     | EXTRACT_SUBREG
                     | EXTRQ
                     | EXTRQI
-                    | F2XM1
                     | FARCALL16i
                     | FARCALL16m
                     | FARCALL32i
@@ -639,91 +678,144 @@ data X86Instruction = AAA
                     | FARJMP32i
                     | FARJMP32m
                     | FARJMP64
-                    | FAULTING_LOAD_OP
+                    | FAULTING_OP
                     | FBLDm
                     | FBSTPm
                     | FCOM32m
                     | FCOM64m
                     | FCOMP32m
                     | FCOMP64m
-                    | FCOMPP
-                    | FDECSTP
                     | FEMMS
+                    | FENTRY_CALL
                     | FICOM16m
                     | FICOM32m
                     | FICOMP16m
                     | FICOMP32m
-                    | FINCSTP
-                    | FLDCW16m
                     | FLDENVm
-                    | FLDL2E
-                    | FLDL2T
-                    | FLDLG2
-                    | FLDLN2
-                    | FLDPI
                     | FNOP
-                    | FNSTCW16m
                     | FNSTSWm
-                    | FPATAN
-                    | FPREM
-                    | FPREM1
-                    | FPTAN
-                    | FRNDINT
                     | FRSTORm
                     | FSAVEm
-                    | FSCALE
-                    | FSINCOS
                     | FSTENVm
                     | FS_PREFIX
-                    | FXAM
                     | FXRSTOR
                     | FXRSTOR64
                     | FXSAVE
                     | FXSAVE64
-                    | FXTRACT
-                    | FYL2X
-                    | FYL2XP1
-                    | FsANDNPDrm
-                    | FsANDNPDrr
-                    | FsANDNPSrm
-                    | FsANDNPSrr
-                    | FsANDPDrm
-                    | FsANDPDrr
-                    | FsANDPSrm
-                    | FsANDPSrr
                     | FsFLD0SD
                     | FsFLD0SS
-                    | FsMOVAPDrm
-                    | FsMOVAPSrm
-                    | FsORPDrm
-                    | FsORPDrr
-                    | FsORPSrm
-                    | FsORPSrr
-                    | FsVMOVAPDrm
-                    | FsVMOVAPSrm
-                    | FsXORPDrm
-                    | FsXORPDrr
-                    | FsXORPSrm
-                    | FsXORPSrr
-                    | FvANDNPDrm
-                    | FvANDNPDrr
-                    | FvANDNPSrm
-                    | FvANDNPSrr
-                    | FvANDPDrm
-                    | FvANDPDrr
-                    | FvANDPSrm
-                    | FvANDPSrr
-                    | FvORPDrm
-                    | FvORPDrr
-                    | FvORPSrm
-                    | FvORPSrr
-                    | FvXORPDrm
-                    | FvXORPDrr
-                    | FvXORPSrm
-                    | FvXORPSrr
                     | GC_LABEL
                     | GETSEC
+                    | GF2P8AFFINEINVQBrmi
+                    | GF2P8AFFINEINVQBrri
+                    | GF2P8AFFINEQBrmi
+                    | GF2P8AFFINEQBrri
+                    | GF2P8MULBrm
+                    | GF2P8MULBrr
                     | GS_PREFIX
+                    | G_ADD
+                    | G_ADDRSPACE_CAST
+                    | G_AND
+                    | G_ANYEXT
+                    | G_ASHR
+                    | G_ATOMICRMW_ADD
+                    | G_ATOMICRMW_AND
+                    | G_ATOMICRMW_MAX
+                    | G_ATOMICRMW_MIN
+                    | G_ATOMICRMW_NAND
+                    | G_ATOMICRMW_OR
+                    | G_ATOMICRMW_SUB
+                    | G_ATOMICRMW_UMAX
+                    | G_ATOMICRMW_UMIN
+                    | G_ATOMICRMW_XCHG
+                    | G_ATOMICRMW_XOR
+                    | G_ATOMIC_CMPXCHG
+                    | G_ATOMIC_CMPXCHG_WITH_SUCCESS
+                    | G_BITCAST
+                    | G_BLOCK_ADDR
+                    | G_BR
+                    | G_BRCOND
+                    | G_BRINDIRECT
+                    | G_BSWAP
+                    | G_CONSTANT
+                    | G_CTLZ
+                    | G_CTLZ_ZERO_UNDEF
+                    | G_CTPOP
+                    | G_CTTZ
+                    | G_CTTZ_ZERO_UNDEF
+                    | G_EXTRACT
+                    | G_EXTRACT_VECTOR_ELT
+                    | G_FABS
+                    | G_FADD
+                    | G_FCMP
+                    | G_FCONSTANT
+                    | G_FDIV
+                    | G_FEXP
+                    | G_FEXP2
+                    | G_FLOG
+                    | G_FLOG2
+                    | G_FMA
+                    | G_FMUL
+                    | G_FNEG
+                    | G_FPEXT
+                    | G_FPOW
+                    | G_FPTOSI
+                    | G_FPTOUI
+                    | G_FPTRUNC
+                    | G_FRAME_INDEX
+                    | G_FREM
+                    | G_FSUB
+                    | G_GEP
+                    | G_GLOBAL_VALUE
+                    | G_ICMP
+                    | G_IMPLICIT_DEF
+                    | G_INSERT
+                    | G_INSERT_VECTOR_ELT
+                    | G_INTRINSIC
+                    | G_INTRINSIC_ROUND
+                    | G_INTRINSIC_TRUNC
+                    | G_INTRINSIC_W_SIDE_EFFECTS
+                    | G_INTTOPTR
+                    | G_LOAD
+                    | G_LSHR
+                    | G_MERGE_VALUES
+                    | G_MUL
+                    | G_OR
+                    | G_PHI
+                    | G_PTRTOINT
+                    | G_PTR_MASK
+                    | G_SADDE
+                    | G_SADDO
+                    | G_SDIV
+                    | G_SELECT
+                    | G_SEXT
+                    | G_SEXTLOAD
+                    | G_SHL
+                    | G_SHUFFLE_VECTOR
+                    | G_SITOFP
+                    | G_SMULH
+                    | G_SMULO
+                    | G_SREM
+                    | G_SSUBE
+                    | G_SSUBO
+                    | G_STORE
+                    | G_SUB
+                    | G_TRUNC
+                    | G_UADDE
+                    | G_UADDO
+                    | G_UDIV
+                    | G_UITOFP
+                    | G_UMULH
+                    | G_UMULO
+                    | G_UNMERGE_VALUES
+                    | G_UREM
+                    | G_USUBE
+                    | G_USUBO
+                    | G_VAARG
+                    | G_VASTART
+                    | G_XOR
+                    | G_ZEXT
+                    | G_ZEXTLOAD
                     | HADDPDrm
                     | HADDPDrr
                     | HADDPSrm
@@ -733,6 +825,7 @@ data X86Instruction = AAA
                     | HSUBPDrr
                     | HSUBPSrm
                     | HSUBPSrr
+                    | ICALL_BRANCH_FUNNEL
                     | IDIV16m
                     | IDIV16r
                     | IDIV32m
@@ -784,6 +877,8 @@ data X86Instruction = AAA
                     | INC64r
                     | INC8m
                     | INC8r
+                    | INCSSPD
+                    | INCSSPQ
                     | INLINEASM
                     | INSB
                     | INSERTPSrm
@@ -810,69 +905,8 @@ data X86Instruction = AAA
                     | IRET16
                     | IRET32
                     | IRET64
-                    | Int_CMPSDrr
-                    | Int_CMPSSrr
-                    | Int_COMISDrm
-                    | Int_COMISDrr
-                    | Int_COMISSrm
-                    | Int_COMISSrr
-                    | Int_CVTSD2SSrm
-                    | Int_CVTSD2SSrr
-                    | Int_CVTSI2SD64rm
-                    | Int_CVTSI2SD64rr
-                    | Int_CVTSI2SDrm
-                    | Int_CVTSI2SDrr
-                    | Int_CVTSI2SS64rm
-                    | Int_CVTSI2SS64rr
-                    | Int_CVTSI2SSrm
-                    | Int_CVTSI2SSrr
-                    | Int_CVTSS2SDrm
-                    | Int_CVTSS2SDrr
-                    | Int_CVTTSD2SI64rm
-                    | Int_CVTTSD2SI64rr
-                    | Int_CVTTSD2SIrm
-                    | Int_CVTTSD2SIrr
-                    | Int_CVTTSS2SI64rm
-                    | Int_CVTTSS2SI64rr
-                    | Int_CVTTSS2SIrm
-                    | Int_CVTTSS2SIrr
                     | Int_MemBarrier
-                    | Int_UCOMISDrm
-                    | Int_UCOMISDrr
-                    | Int_UCOMISSrm
-                    | Int_UCOMISSrr
-                    | Int_VCMPSDrm
-                    | Int_VCMPSDrr
-                    | Int_VCMPSSrm
-                    | Int_VCMPSSrr
-                    | Int_VCOMISDrm
-                    | Int_VCOMISDrr
-                    | Int_VCOMISSrm
-                    | Int_VCOMISSrr
-                    | Int_VCVTSD2SSrm
-                    | Int_VCVTSD2SSrr
-                    | Int_VCVTSI2SD64rm
-                    | Int_VCVTSI2SD64rr
-                    | Int_VCVTSI2SDrm
-                    | Int_VCVTSI2SDrr
-                    | Int_VCVTSI2SS64rm
-                    | Int_VCVTSI2SS64rr
-                    | Int_VCVTSI2SSrm
-                    | Int_VCVTSI2SSrr
-                    | Int_VCVTSS2SDrm
-                    | Int_VCVTSS2SDrr
-                    | Int_VCVTTSD2SI64rm
-                    | Int_VCVTTSD2SI64rr
-                    | Int_VCVTTSD2SIrm
-                    | Int_VCVTTSD2SIrr
-                    | Int_VCVTTSS2SI64rm
-                    | Int_VCVTTSS2SI64rr
-                    | Int_VCVTTSS2SIrm
-                    | Int_VCVTTSS2SIrr
-                    | Int_VUCOMISDrm
-                    | Int_VUCOMISDrr
-                    | Int_VUCOMISSrm
-                    | Int_VUCOMISSrr
+                    | Int_eh_sjlj_setup_dispatch
                     | JAE_1
                     | JAE_2
                     | JAE_4
@@ -903,11 +937,17 @@ data X86Instruction = AAA
                     | JL_2
                     | JL_4
                     | JMP16m
+                    | JMP16m_NT
                     | JMP16r
+                    | JMP16r_NT
                     | JMP32m
+                    | JMP32m_NT
                     | JMP32r
+                    | JMP32r_NT
                     | JMP64m
+                    | JMP64m_NT
                     | JMP64r
+                    | JMP64r_NT
                     | JMP_1
                     | JMP_2
                     | JMP_4
@@ -978,6 +1018,8 @@ data X86Instruction = AAA
                     | LIFETIME_START
                     | LLDT16m
                     | LLDT16r
+                    | LLWPCB
+                    | LLWPCB64
                     | LMSW16m
                     | LMSW16r
                     | LOAD_STACK_GUARD
@@ -1046,10 +1088,6 @@ data X86Instruction = AAA
                     | LOCK_XOR64mr
                     | LOCK_XOR8mi
                     | LOCK_XOR8mr
-                    | LODSB
-                    | LODSL
-                    | LODSQ
-                    | LODSW
                     | LOOP
                     | LOOPE
                     | LOOPNE
@@ -1070,6 +1108,14 @@ data X86Instruction = AAA
                     | LSS64rm
                     | LTRm
                     | LTRr
+                    | LWPINS32rmi
+                    | LWPINS32rri
+                    | LWPINS64rmi
+                    | LWPINS64rri
+                    | LWPVAL32rmi
+                    | LWPVAL32rri
+                    | LWPVAL64rmi
+                    | LWPVAL64rri
                     | LXADD16
                     | LXADD32
                     | LXADD64
@@ -1127,32 +1173,23 @@ data X86Instruction = AAA
                     | MMX_CVTPI2PSirm
                     | MMX_EMMS
                     | MONITOR
+                    | MONITORX
                     | MONITORXrrr
                     | MONITORrrr
                     | MONTMUL
                     | MORESTACK_RET
                     | MORESTACK_RET_RESTORE_R10
-                    | MOV16ao16
-                    | MOV16ao32
-                    | MOV16ao64
                     | MOV16mi
                     | MOV16mr
-                    | MOV16o16a
-                    | MOV16o32a
-                    | MOV16o64a
+                    | MOV16ms
                     | MOV16ri
                     | MOV16ri_alt
                     | MOV16rm
                     | MOV16rr
                     | MOV16rr_REV
-                    | MOV32ao16
-                    | MOV32ao32
-                    | MOV32ao64
+                    | MOV32ImmSExti8
                     | MOV32mi
                     | MOV32mr
-                    | MOV32o16a
-                    | MOV32o32a
-                    | MOV32o64a
                     | MOV32r0
                     | MOV32r1
                     | MOV32r_1
@@ -1162,12 +1199,9 @@ data X86Instruction = AAA
                     | MOV32rm
                     | MOV32rr
                     | MOV32rr_REV
-                    | MOV64ao32
-                    | MOV64ao64
+                    | MOV64ImmSExti8
                     | MOV64mi32
                     | MOV64mr
-                    | MOV64o32a
-                    | MOV64o64a
                     | MOV64ri
                     | MOV64ri32
                     | MOV64rm
@@ -1177,15 +1211,9 @@ data X86Instruction = AAA
                     | MOV64toPQIrr
                     | MOV64toSDrm
                     | MOV64toSDrr
-                    | MOV8ao16
-                    | MOV8ao32
-                    | MOV8ao64
                     | MOV8mi
                     | MOV8mr
                     | MOV8mr_NOREX
-                    | MOV8o16a
-                    | MOV8o32a
-                    | MOV8o64a
                     | MOV8ri
                     | MOV8ri_alt
                     | MOV8rm
@@ -1213,6 +1241,11 @@ data X86Instruction = AAA
                     | MOVDI2PDIrr
                     | MOVDI2SSrm
                     | MOVDI2SSrr
+                    | MOVDIR64B16
+                    | MOVDIR64B32
+                    | MOVDIR64B64
+                    | MOVDIRI32
+                    | MOVDIRI64
                     | MOVDQAmr
                     | MOVDQArm
                     | MOVDQArr
@@ -1221,6 +1254,7 @@ data X86Instruction = AAA
                     | MOVDQUrm
                     | MOVDQUrr
                     | MOVDQUrr_REV
+                    | MOVGOT64r
                     | MOVHLPSrr
                     | MOVHPDmr
                     | MOVHPDrm
@@ -1246,10 +1280,9 @@ data X86Instruction = AAA
                     | MOVPDI2DIrr
                     | MOVPQI2QImr
                     | MOVPQI2QIrr
-                    | MOVPQIto64rm
+                    | MOVPQIto64mr
                     | MOVPQIto64rr
                     | MOVQI2PQIrm
-                    | MOVSB
                     | MOVSDmr
                     | MOVSDrm
                     | MOVSDrr
@@ -1258,25 +1291,24 @@ data X86Instruction = AAA
                     | MOVSDto64rr
                     | MOVSHDUPrm
                     | MOVSHDUPrr
-                    | MOVSL
                     | MOVSLDUPrm
                     | MOVSLDUPrr
-                    | MOVSQ
                     | MOVSS2DImr
                     | MOVSS2DIrr
                     | MOVSSmr
                     | MOVSSrm
                     | MOVSSrr
                     | MOVSSrr_REV
-                    | MOVSW
+                    | MOVSX16rm16
                     | MOVSX16rm8
+                    | MOVSX16rr16
                     | MOVSX16rr8
-                    | MOVSX32_NOREXrm8
-                    | MOVSX32_NOREXrr8
                     | MOVSX32rm16
                     | MOVSX32rm8
+                    | MOVSX32rm8_NOREX
                     | MOVSX32rr16
                     | MOVSX32rr8
+                    | MOVSX32rr8_NOREX
                     | MOVSX64rm16
                     | MOVSX64rm32
                     | MOVSX64rm8
@@ -1291,17 +1323,17 @@ data X86Instruction = AAA
                     | MOVUPSrm
                     | MOVUPSrr
                     | MOVUPSrr_REV
-                    | MOVZPQILo2PQIrm
                     | MOVZPQILo2PQIrr
-                    | MOVZQI2PQIrm
+                    | MOVZX16rm16
                     | MOVZX16rm8
+                    | MOVZX16rr16
                     | MOVZX16rr8
-                    | MOVZX32_NOREXrm8
-                    | MOVZX32_NOREXrr8
                     | MOVZX32rm16
                     | MOVZX32rm8
+                    | MOVZX32rm8_NOREX
                     | MOVZX32rr16
                     | MOVZX32rr8
+                    | MOVZX32rr8_NOREX
                     | MOVZX64rm16
                     | MOVZX64rm8
                     | MOVZX64rr16
@@ -1332,7 +1364,7 @@ data X86Instruction = AAA
                     | MULX32rr
                     | MULX64rm
                     | MULX64rr
-                    | MWAITXrr
+                    | MWAITXrrr
                     | MWAITrr
                     | NEG16m
                     | NEG16r
@@ -1344,7 +1376,11 @@ data X86Instruction = AAA
                     | NEG8r
                     | NOOP
                     | NOOPL
+                    | NOOPLr
+                    | NOOPQ
+                    | NOOPQr
                     | NOOPW
+                    | NOOPWr
                     | NOT16m
                     | NOT16r
                     | NOT32m
@@ -1400,15 +1436,12 @@ data X86Instruction = AAA
                     | OUT32rr
                     | OUT8ir
                     | OUT8rr
-                    | OUTSB
-                    | OUTSL
-                    | OUTSW
-                    | PABSBrm128
-                    | PABSBrr128
-                    | PABSDrm128
-                    | PABSDrr128
-                    | PABSWrm128
-                    | PABSWrr128
+                    | PABSBrm
+                    | PABSBrr
+                    | PABSDrm
+                    | PABSDrr
+                    | PABSWrm
+                    | PABSWrr
                     | PACKSSDWrm
                     | PACKSSDWrr
                     | PACKSSWBrm
@@ -1433,12 +1466,19 @@ data X86Instruction = AAA
                     | PADDUSWrr
                     | PADDWrm
                     | PADDWrr
-                    | PALIGNR128rm
-                    | PALIGNR128rr
+                    | PALIGNRrmi
+                    | PALIGNRrri
                     | PANDNrm
                     | PANDNrr
                     | PANDrm
                     | PANDrr
+                    | PATCHABLE_EVENT_CALL
+                    | PATCHABLE_FUNCTION_ENTER
+                    | PATCHABLE_FUNCTION_EXIT
+                    | PATCHABLE_OP
+                    | PATCHABLE_RET
+                    | PATCHABLE_TAIL_CALL
+                    | PATCHABLE_TYPED_EVENT_CALL
                     | PATCHPOINT
                     | PAUSE
                     | PAVGBrm
@@ -1459,14 +1499,10 @@ data X86Instruction = AAA
                     | PCMPEQQrr
                     | PCMPEQWrm
                     | PCMPEQWrr
-                    | PCMPESTRIMEM
-                    | PCMPESTRIREG
                     | PCMPESTRIrm
                     | PCMPESTRIrr
-                    | PCMPESTRM128MEM
-                    | PCMPESTRM128REG
-                    | PCMPESTRM128rm
-                    | PCMPESTRM128rr
+                    | PCMPESTRMrm
+                    | PCMPESTRMrr
                     | PCMPGTBrm
                     | PCMPGTBrr
                     | PCMPGTDrm
@@ -1475,15 +1511,11 @@ data X86Instruction = AAA
                     | PCMPGTQrr
                     | PCMPGTWrm
                     | PCMPGTWrr
-                    | PCMPISTRIMEM
-                    | PCMPISTRIREG
                     | PCMPISTRIrm
                     | PCMPISTRIrr
-                    | PCMPISTRM128MEM
-                    | PCMPISTRM128REG
-                    | PCMPISTRM128rm
-                    | PCMPISTRM128rr
-                    | PCOMMIT
+                    | PCMPISTRMrm
+                    | PCMPISTRMrr
+                    | PCONFIG
                     | PDEP32rm
                     | PDEP32rr
                     | PDEP64rm
@@ -1499,21 +1531,21 @@ data X86Instruction = AAA
                     | PEXTRQmr
                     | PEXTRQrr
                     | PEXTRWmr
-                    | PEXTRWri
+                    | PEXTRWrr
                     | PEXTRWrr_REV
                     | PHADDDrm
                     | PHADDDrr
-                    | PHADDSWrm128
-                    | PHADDSWrr128
+                    | PHADDSWrm
+                    | PHADDSWrr
                     | PHADDWrm
                     | PHADDWrr
                     | PHI
-                    | PHMINPOSUWrm128
-                    | PHMINPOSUWrr128
+                    | PHMINPOSUWrm
+                    | PHMINPOSUWrr
                     | PHSUBDrm
                     | PHSUBDrr
-                    | PHSUBSWrm128
-                    | PHSUBSWrr128
+                    | PHSUBSWrm
+                    | PHSUBSWrr
                     | PHSUBWrm
                     | PHSUBWrr
                     | PINSRBrm
@@ -1522,10 +1554,10 @@ data X86Instruction = AAA
                     | PINSRDrr
                     | PINSRQrm
                     | PINSRQrr
-                    | PINSRWrmi
-                    | PINSRWrri
-                    | PMADDUBSWrm128
-                    | PMADDUBSWrr128
+                    | PINSRWrm
+                    | PINSRWrr
+                    | PMADDUBSWrm
+                    | PMADDUBSWrr
                     | PMADDWDrm
                     | PMADDWDrr
                     | PMAXSBrm
@@ -1579,8 +1611,8 @@ data X86Instruction = AAA
                     | PMOVZXWQrr
                     | PMULDQrm
                     | PMULDQrr
-                    | PMULHRSWrm128
-                    | PMULHRSWrr128
+                    | PMULHRSWrm
+                    | PMULHRSWrr
                     | PMULHUWrm
                     | PMULHUWrr
                     | PMULHWrm
@@ -1631,6 +1663,7 @@ data X86Instruction = AAA
                     | PREFETCHT1
                     | PREFETCHT2
                     | PREFETCHW
+                    | PREFETCHWT1
                     | PSADBWrm
                     | PSADBWrr
                     | PSHUFBrm
@@ -1691,6 +1724,10 @@ data X86Instruction = AAA
                     | PSUBWrr
                     | PTESTrm
                     | PTESTrr
+                    | PTWRITE64m
+                    | PTWRITE64r
+                    | PTWRITEm
+                    | PTWRITEr
                     | PUNPCKHBWrm
                     | PUNPCKHBWrr
                     | PUNPCKHDQrm
@@ -1804,6 +1841,8 @@ data X86Instruction = AAA
                     | RDGSBASE
                     | RDGSBASE64
                     | RDMSR
+                    | RDPID32
+                    | RDPID64
                     | RDPKRU
                     | RDPKRUr
                     | RDPMC
@@ -1813,56 +1852,19 @@ data X86Instruction = AAA
                     | RDSEED16r
                     | RDSEED32r
                     | RDSEED64r
+                    | RDSSPD
+                    | RDSSPQ
                     | RDTSC
                     | RDTSCP
                     | REG_SEQUENCE
-                    | RELEASE_ADD32mi
-                    | RELEASE_ADD32mr
-                    | RELEASE_ADD64mi32
-                    | RELEASE_ADD64mr
-                    | RELEASE_ADD8mi
-                    | RELEASE_ADD8mr
-                    | RELEASE_AND32mi
-                    | RELEASE_AND32mr
-                    | RELEASE_AND64mi32
-                    | RELEASE_AND64mr
-                    | RELEASE_AND8mi
-                    | RELEASE_AND8mr
-                    | RELEASE_DEC16m
-                    | RELEASE_DEC32m
-                    | RELEASE_DEC64m
-                    | RELEASE_DEC8m
                     | RELEASE_FADD32mr
                     | RELEASE_FADD64mr
-                    | RELEASE_INC16m
-                    | RELEASE_INC32m
-                    | RELEASE_INC64m
-                    | RELEASE_INC8m
-                    | RELEASE_MOV16mi
-                    | RELEASE_MOV16mr
-                    | RELEASE_MOV32mi
-                    | RELEASE_MOV32mr
-                    | RELEASE_MOV64mi32
-                    | RELEASE_MOV64mr
-                    | RELEASE_MOV8mi
-                    | RELEASE_MOV8mr
-                    | RELEASE_OR32mi
-                    | RELEASE_OR32mr
-                    | RELEASE_OR64mi32
-                    | RELEASE_OR64mr
-                    | RELEASE_OR8mi
-                    | RELEASE_OR8mr
-                    | RELEASE_XOR32mi
-                    | RELEASE_XOR32mr
-                    | RELEASE_XOR64mi32
-                    | RELEASE_XOR64mr
-                    | RELEASE_XOR8mi
-                    | RELEASE_XOR8mr
                     | REPNE_PREFIX
                     | REP_MOVSB_32
                     | REP_MOVSB_64
                     | REP_MOVSD_32
                     | REP_MOVSD_64
+                    | REP_MOVSQ_32
                     | REP_MOVSQ_64
                     | REP_MOVSW_32
                     | REP_MOVSW_64
@@ -1874,10 +1876,15 @@ data X86Instruction = AAA
                     | REP_STOSQ_64
                     | REP_STOSW_32
                     | REP_STOSW_64
+                    | RET
                     | RETIL
                     | RETIQ
                     | RETIW
                     | RETL
+                    | RETPOLINE_CALL32
+                    | RETPOLINE_CALL64
+                    | RETPOLINE_TCRETURN32
+                    | RETPOLINE_TCRETURN64
                     | RETQ
                     | RETW
                     | REX64_PREFIX
@@ -1938,9 +1945,11 @@ data X86Instruction = AAA
                     | ROUNDPSm
                     | ROUNDPSr
                     | ROUNDSDm
+                    | ROUNDSDm_Int
                     | ROUNDSDr
                     | ROUNDSDr_Int
                     | ROUNDSSm
+                    | ROUNDSSm_Int
                     | ROUNDSSr
                     | ROUNDSSr_Int
                     | RSM
@@ -1950,7 +1959,9 @@ data X86Instruction = AAA
                     | RSQRTSSm_Int
                     | RSQRTSSr
                     | RSQRTSSr_Int
+                    | RSTORSSP
                     | SAHF
+                    | SALC
                     | SAR16m1
                     | SAR16mCL
                     | SAR16mi
@@ -1979,6 +1990,7 @@ data X86Instruction = AAA
                     | SARX32rr
                     | SARX64rm
                     | SARX64rr
+                    | SAVEPREVSSP
                     | SBB16i16
                     | SBB16mi
                     | SBB16mi8
@@ -2063,6 +2075,7 @@ data X86Instruction = AAA
                     | SETOr
                     | SETPm
                     | SETPr
+                    | SETSSBSY
                     | SETSm
                     | SETSr
                     | SFENCE
@@ -2174,8 +2187,9 @@ data X86Instruction = AAA
                     | SLDT16m
                     | SLDT16r
                     | SLDT32r
-                    | SLDT64m
                     | SLDT64r
+                    | SLWPCB
+                    | SLWPCB64
                     | SMSW16m
                     | SMSW16r
                     | SMSW32r
@@ -2271,7 +2285,8 @@ data X86Instruction = AAA
                     | T1MSKC64rr
                     | TAILJMPd
                     | TAILJMPd64
-                    | TAILJMPd64_REX
+                    | TAILJMPd64_CC
+                    | TAILJMPd_CC
                     | TAILJMPm
                     | TAILJMPm64
                     | TAILJMPm64_REX
@@ -2280,33 +2295,35 @@ data X86Instruction = AAA
                     | TAILJMPr64_REX
                     | TCRETURNdi
                     | TCRETURNdi64
+                    | TCRETURNdi64cc
+                    | TCRETURNdicc
                     | TCRETURNmi
                     | TCRETURNmi64
                     | TCRETURNri
                     | TCRETURNri64
                     | TEST16i16
                     | TEST16mi
+                    | TEST16mr
                     | TEST16ri
-                    | TEST16rm
                     | TEST16rr
                     | TEST32i32
                     | TEST32mi
+                    | TEST32mr
                     | TEST32ri
-                    | TEST32rm
                     | TEST32rr
                     | TEST64i32
                     | TEST64mi32
+                    | TEST64mr
                     | TEST64ri32
-                    | TEST64rm
                     | TEST64rr
                     | TEST8i8
                     | TEST8mi
+                    | TEST8mr
                     | TEST8ri
-                    | TEST8ri_NOREX
-                    | TEST8rm
                     | TEST8rr
                     | TLSCall_32
                     | TLSCall_64
+                    | TPAUSE
                     | TRAP
                     | TZCNT16rm
                     | TZCNT16rr
@@ -2319,10 +2336,18 @@ data X86Instruction = AAA
                     | TZMSK64rm
                     | TZMSK64rr
                     | UCOMISDrm
+                    | UCOMISDrm_Int
                     | UCOMISDrr
+                    | UCOMISDrr_Int
                     | UCOMISSrm
+                    | UCOMISSrm_Int
                     | UCOMISSrr
+                    | UCOMISSrr_Int
                     | UD2B
+                    | UMONITOR16
+                    | UMONITOR32
+                    | UMONITOR64
+                    | UMWAIT
                     | UNPCKHPDrm
                     | UNPCKHPDrr
                     | UNPCKHPSrm
@@ -2356,12 +2381,20 @@ data X86Instruction = AAA
                     | VADDSUBPSYrr
                     | VADDSUBPSrm
                     | VADDSUBPSrr
+                    | VAESDECLASTYrm
+                    | VAESDECLASTYrr
                     | VAESDECLASTrm
                     | VAESDECLASTrr
+                    | VAESDECYrm
+                    | VAESDECYrr
                     | VAESDECrm
                     | VAESDECrr
+                    | VAESENCLASTYrm
+                    | VAESENCLASTYrr
                     | VAESENCLASTrm
                     | VAESENCLASTrr
+                    | VAESENCYrm
+                    | VAESENCYrr
                     | VAESENCrm
                     | VAESENCrr
                     | VAESIMCrm
@@ -2426,17 +2459,25 @@ data X86Instruction = AAA
                     | VCMPPSrri
                     | VCMPPSrri_alt
                     | VCMPSDrm
+                    | VCMPSDrm_Int
                     | VCMPSDrm_alt
                     | VCMPSDrr
+                    | VCMPSDrr_Int
                     | VCMPSDrr_alt
                     | VCMPSSrm
+                    | VCMPSSrm_Int
                     | VCMPSSrm_alt
                     | VCMPSSrr
+                    | VCMPSSrr_Int
                     | VCMPSSrr_alt
                     | VCOMISDrm
+                    | VCOMISDrm_Int
                     | VCOMISDrr
+                    | VCOMISDrr_Int
                     | VCOMISSrm
+                    | VCOMISSrm_Int
                     | VCOMISSrr
+                    | VCOMISSrr_Int
                     | VCVTDQ2PDYrm
                     | VCVTDQ2PDYrr
                     | VCVTDQ2PDrm
@@ -2445,13 +2486,13 @@ data X86Instruction = AAA
                     | VCVTDQ2PSYrr
                     | VCVTDQ2PSrm
                     | VCVTDQ2PSrr
-                    | VCVTPD2DQXrm
                     | VCVTPD2DQYrm
                     | VCVTPD2DQYrr
+                    | VCVTPD2DQrm
                     | VCVTPD2DQrr
-                    | VCVTPD2PSXrm
                     | VCVTPD2PSYrm
                     | VCVTPD2PSYrr
+                    | VCVTPD2PSrm
                     | VCVTPD2PSrr
                     | VCVTPH2PSYrm
                     | VCVTPH2PSYrr
@@ -2469,37 +2510,49 @@ data X86Instruction = AAA
                     | VCVTPS2PHYrr
                     | VCVTPS2PHmr
                     | VCVTPS2PHrr
-                    | VCVTSD2SI64Zrm
-                    | VCVTSD2SI64rm
-                    | VCVTSD2SI64rr
-                    | VCVTSD2SIZrm
-                    | VCVTSD2SIrm
-                    | VCVTSD2SIrr
+                    | VCVTSD2SI64Zrm_Int
+                    | VCVTSD2SI64rm_Int
+                    | VCVTSD2SI64rr_Int
+                    | VCVTSD2SIZrm_Int
+                    | VCVTSD2SIrm_Int
+                    | VCVTSD2SIrr_Int
                     | VCVTSD2SSrm
+                    | VCVTSD2SSrm_Int
                     | VCVTSD2SSrr
-                    | VCVTSD2USI64Zrm
-                    | VCVTSD2USIZrm
-                    | VCVTSI2SD64rm
-                    | VCVTSI2SD64rr
+                    | VCVTSD2SSrr_Int
+                    | VCVTSD2USI64Zrm_Int
+                    | VCVTSD2USIZrm_Int
                     | VCVTSI2SDrm
+                    | VCVTSI2SDrm_Int
                     | VCVTSI2SDrr
-                    | VCVTSI2SS64rm
-                    | VCVTSI2SS64rr
+                    | VCVTSI2SDrr_Int
                     | VCVTSI2SSrm
+                    | VCVTSI2SSrm_Int
                     | VCVTSI2SSrr
+                    | VCVTSI2SSrr_Int
+                    | VCVTSI642SDrm
+                    | VCVTSI642SDrm_Int
+                    | VCVTSI642SDrr
+                    | VCVTSI642SDrr_Int
+                    | VCVTSI642SSrm
+                    | VCVTSI642SSrm_Int
+                    | VCVTSI642SSrr
+                    | VCVTSI642SSrr_Int
                     | VCVTSS2SDrm
+                    | VCVTSS2SDrm_Int
                     | VCVTSS2SDrr
-                    | VCVTSS2SI64Zrm
-                    | VCVTSS2SI64rm
-                    | VCVTSS2SI64rr
-                    | VCVTSS2SIZrm
-                    | VCVTSS2SIrm
-                    | VCVTSS2SIrr
-                    | VCVTSS2USI64Zrm
-                    | VCVTSS2USIZrm
-                    | VCVTTPD2DQXrm
+                    | VCVTSS2SDrr_Int
+                    | VCVTSS2SI64Zrm_Int
+                    | VCVTSS2SI64rm_Int
+                    | VCVTSS2SI64rr_Int
+                    | VCVTSS2SIZrm_Int
+                    | VCVTSS2SIrm_Int
+                    | VCVTSS2SIrr_Int
+                    | VCVTSS2USI64Zrm_Int
+                    | VCVTSS2USIZrm_Int
                     | VCVTTPD2DQYrm
                     | VCVTTPD2DQYrr
+                    | VCVTTPD2DQrm
                     | VCVTTPD2DQrr
                     | VCVTTPS2DQYrm
                     | VCVTTPS2DQYrr
@@ -2508,11 +2561,15 @@ data X86Instruction = AAA
                     | VCVTTSD2SI64Zrm
                     | VCVTTSD2SI64Zrm_Int
                     | VCVTTSD2SI64rm
+                    | VCVTTSD2SI64rm_Int
                     | VCVTTSD2SI64rr
+                    | VCVTTSD2SI64rr_Int
                     | VCVTTSD2SIZrm
                     | VCVTTSD2SIZrm_Int
                     | VCVTTSD2SIrm
+                    | VCVTTSD2SIrm_Int
                     | VCVTTSD2SIrr
+                    | VCVTTSD2SIrr_Int
                     | VCVTTSD2USI64Zrm
                     | VCVTTSD2USI64Zrm_Int
                     | VCVTTSD2USIZrm
@@ -2520,11 +2577,15 @@ data X86Instruction = AAA
                     | VCVTTSS2SI64Zrm
                     | VCVTTSS2SI64Zrm_Int
                     | VCVTTSS2SI64rm
+                    | VCVTTSS2SI64rm_Int
                     | VCVTTSS2SI64rr
+                    | VCVTTSS2SI64rr_Int
                     | VCVTTSS2SIZrm
                     | VCVTTSS2SIZrm_Int
                     | VCVTTSS2SIrm
+                    | VCVTTSS2SIrm_Int
                     | VCVTTSS2SIrr
+                    | VCVTTSS2SIrr_Int
                     | VCVTTSS2USI64Zrm
                     | VCVTTSS2USI64Zrm_Int
                     | VCVTTSS2USIZrm
@@ -2561,458 +2622,418 @@ data X86Instruction = AAA
                     | VEXTRACTI128rr
                     | VEXTRACTPSmr
                     | VEXTRACTPSrr
+                    | VFMADD132PDYm
+                    | VFMADD132PDYr
+                    | VFMADD132PDm
+                    | VFMADD132PDr
+                    | VFMADD132PSYm
+                    | VFMADD132PSYr
+                    | VFMADD132PSm
+                    | VFMADD132PSr
+                    | VFMADD132SDm
+                    | VFMADD132SDm_Int
+                    | VFMADD132SDr
+                    | VFMADD132SDr_Int
+                    | VFMADD132SSm
+                    | VFMADD132SSm_Int
+                    | VFMADD132SSr
+                    | VFMADD132SSr_Int
+                    | VFMADD213PDYm
+                    | VFMADD213PDYr
+                    | VFMADD213PDm
+                    | VFMADD213PDr
+                    | VFMADD213PSYm
+                    | VFMADD213PSYr
+                    | VFMADD213PSm
+                    | VFMADD213PSr
+                    | VFMADD213SDm
+                    | VFMADD213SDm_Int
+                    | VFMADD213SDr
+                    | VFMADD213SDr_Int
+                    | VFMADD213SSm
+                    | VFMADD213SSm_Int
+                    | VFMADD213SSr
+                    | VFMADD213SSr_Int
+                    | VFMADD231PDYm
+                    | VFMADD231PDYr
+                    | VFMADD231PDm
+                    | VFMADD231PDr
+                    | VFMADD231PSYm
+                    | VFMADD231PSYr
+                    | VFMADD231PSm
+                    | VFMADD231PSr
+                    | VFMADD231SDm
+                    | VFMADD231SDm_Int
+                    | VFMADD231SDr
+                    | VFMADD231SDr_Int
+                    | VFMADD231SSm
+                    | VFMADD231SSm_Int
+                    | VFMADD231SSr
+                    | VFMADD231SSr_Int
+                    | VFMADDPD4Ymr
+                    | VFMADDPD4Yrm
+                    | VFMADDPD4Yrr
+                    | VFMADDPD4Yrr_REV
                     | VFMADDPD4mr
-                    | VFMADDPD4mrY
                     | VFMADDPD4rm
-                    | VFMADDPD4rmY
                     | VFMADDPD4rr
-                    | VFMADDPD4rrY
-                    | VFMADDPD4rrY_REV
                     | VFMADDPD4rr_REV
-                    | VFMADDPDr132m
-                    | VFMADDPDr132mY
-                    | VFMADDPDr132r
-                    | VFMADDPDr132rY
-                    | VFMADDPDr213m
-                    | VFMADDPDr213mY
-                    | VFMADDPDr213r
-                    | VFMADDPDr213rY
-                    | VFMADDPDr231m
-                    | VFMADDPDr231mY
-                    | VFMADDPDr231r
-                    | VFMADDPDr231rY
+                    | VFMADDPS4Ymr
+                    | VFMADDPS4Yrm
+                    | VFMADDPS4Yrr
+                    | VFMADDPS4Yrr_REV
                     | VFMADDPS4mr
-                    | VFMADDPS4mrY
                     | VFMADDPS4rm
-                    | VFMADDPS4rmY
                     | VFMADDPS4rr
-                    | VFMADDPS4rrY
-                    | VFMADDPS4rrY_REV
                     | VFMADDPS4rr_REV
-                    | VFMADDPSr132m
-                    | VFMADDPSr132mY
-                    | VFMADDPSr132r
-                    | VFMADDPSr132rY
-                    | VFMADDPSr213m
-                    | VFMADDPSr213mY
-                    | VFMADDPSr213r
-                    | VFMADDPSr213rY
-                    | VFMADDPSr231m
-                    | VFMADDPSr231mY
-                    | VFMADDPSr231r
-                    | VFMADDPSr231rY
                     | VFMADDSD4mr
                     | VFMADDSD4mr_Int
                     | VFMADDSD4rm
                     | VFMADDSD4rm_Int
                     | VFMADDSD4rr
                     | VFMADDSD4rr_Int
+                    | VFMADDSD4rr_Int_REV
                     | VFMADDSD4rr_REV
-                    | VFMADDSDr132m
-                    | VFMADDSDr132m_Int
-                    | VFMADDSDr132r
-                    | VFMADDSDr132r_Int
-                    | VFMADDSDr213m
-                    | VFMADDSDr213m_Int
-                    | VFMADDSDr213r
-                    | VFMADDSDr213r_Int
-                    | VFMADDSDr231m
-                    | VFMADDSDr231m_Int
-                    | VFMADDSDr231r
-                    | VFMADDSDr231r_Int
                     | VFMADDSS4mr
                     | VFMADDSS4mr_Int
                     | VFMADDSS4rm
                     | VFMADDSS4rm_Int
                     | VFMADDSS4rr
                     | VFMADDSS4rr_Int
+                    | VFMADDSS4rr_Int_REV
                     | VFMADDSS4rr_REV
-                    | VFMADDSSr132m
-                    | VFMADDSSr132m_Int
-                    | VFMADDSSr132r
-                    | VFMADDSSr132r_Int
-                    | VFMADDSSr213m
-                    | VFMADDSSr213m_Int
-                    | VFMADDSSr213r
-                    | VFMADDSSr213r_Int
-                    | VFMADDSSr231m
-                    | VFMADDSSr231m_Int
-                    | VFMADDSSr231r
-                    | VFMADDSSr231r_Int
+                    | VFMADDSUB132PDYm
+                    | VFMADDSUB132PDYr
+                    | VFMADDSUB132PDm
+                    | VFMADDSUB132PDr
+                    | VFMADDSUB132PSYm
+                    | VFMADDSUB132PSYr
+                    | VFMADDSUB132PSm
+                    | VFMADDSUB132PSr
+                    | VFMADDSUB213PDYm
+                    | VFMADDSUB213PDYr
+                    | VFMADDSUB213PDm
+                    | VFMADDSUB213PDr
+                    | VFMADDSUB213PSYm
+                    | VFMADDSUB213PSYr
+                    | VFMADDSUB213PSm
+                    | VFMADDSUB213PSr
+                    | VFMADDSUB231PDYm
+                    | VFMADDSUB231PDYr
+                    | VFMADDSUB231PDm
+                    | VFMADDSUB231PDr
+                    | VFMADDSUB231PSYm
+                    | VFMADDSUB231PSYr
+                    | VFMADDSUB231PSm
+                    | VFMADDSUB231PSr
+                    | VFMADDSUBPD4Ymr
+                    | VFMADDSUBPD4Yrm
+                    | VFMADDSUBPD4Yrr
+                    | VFMADDSUBPD4Yrr_REV
                     | VFMADDSUBPD4mr
-                    | VFMADDSUBPD4mrY
                     | VFMADDSUBPD4rm
-                    | VFMADDSUBPD4rmY
                     | VFMADDSUBPD4rr
-                    | VFMADDSUBPD4rrY
-                    | VFMADDSUBPD4rrY_REV
                     | VFMADDSUBPD4rr_REV
-                    | VFMADDSUBPDr132m
-                    | VFMADDSUBPDr132mY
-                    | VFMADDSUBPDr132r
-                    | VFMADDSUBPDr132rY
-                    | VFMADDSUBPDr213m
-                    | VFMADDSUBPDr213mY
-                    | VFMADDSUBPDr213r
-                    | VFMADDSUBPDr213rY
-                    | VFMADDSUBPDr231m
-                    | VFMADDSUBPDr231mY
-                    | VFMADDSUBPDr231r
-                    | VFMADDSUBPDr231rY
+                    | VFMADDSUBPS4Ymr
+                    | VFMADDSUBPS4Yrm
+                    | VFMADDSUBPS4Yrr
+                    | VFMADDSUBPS4Yrr_REV
                     | VFMADDSUBPS4mr
-                    | VFMADDSUBPS4mrY
                     | VFMADDSUBPS4rm
-                    | VFMADDSUBPS4rmY
                     | VFMADDSUBPS4rr
-                    | VFMADDSUBPS4rrY
-                    | VFMADDSUBPS4rrY_REV
                     | VFMADDSUBPS4rr_REV
-                    | VFMADDSUBPSr132m
-                    | VFMADDSUBPSr132mY
-                    | VFMADDSUBPSr132r
-                    | VFMADDSUBPSr132rY
-                    | VFMADDSUBPSr213m
-                    | VFMADDSUBPSr213mY
-                    | VFMADDSUBPSr213r
-                    | VFMADDSUBPSr213rY
-                    | VFMADDSUBPSr231m
-                    | VFMADDSUBPSr231mY
-                    | VFMADDSUBPSr231r
-                    | VFMADDSUBPSr231rY
+                    | VFMSUB132PDYm
+                    | VFMSUB132PDYr
+                    | VFMSUB132PDm
+                    | VFMSUB132PDr
+                    | VFMSUB132PSYm
+                    | VFMSUB132PSYr
+                    | VFMSUB132PSm
+                    | VFMSUB132PSr
+                    | VFMSUB132SDm
+                    | VFMSUB132SDm_Int
+                    | VFMSUB132SDr
+                    | VFMSUB132SDr_Int
+                    | VFMSUB132SSm
+                    | VFMSUB132SSm_Int
+                    | VFMSUB132SSr
+                    | VFMSUB132SSr_Int
+                    | VFMSUB213PDYm
+                    | VFMSUB213PDYr
+                    | VFMSUB213PDm
+                    | VFMSUB213PDr
+                    | VFMSUB213PSYm
+                    | VFMSUB213PSYr
+                    | VFMSUB213PSm
+                    | VFMSUB213PSr
+                    | VFMSUB213SDm
+                    | VFMSUB213SDm_Int
+                    | VFMSUB213SDr
+                    | VFMSUB213SDr_Int
+                    | VFMSUB213SSm
+                    | VFMSUB213SSm_Int
+                    | VFMSUB213SSr
+                    | VFMSUB213SSr_Int
+                    | VFMSUB231PDYm
+                    | VFMSUB231PDYr
+                    | VFMSUB231PDm
+                    | VFMSUB231PDr
+                    | VFMSUB231PSYm
+                    | VFMSUB231PSYr
+                    | VFMSUB231PSm
+                    | VFMSUB231PSr
+                    | VFMSUB231SDm
+                    | VFMSUB231SDm_Int
+                    | VFMSUB231SDr
+                    | VFMSUB231SDr_Int
+                    | VFMSUB231SSm
+                    | VFMSUB231SSm_Int
+                    | VFMSUB231SSr
+                    | VFMSUB231SSr_Int
+                    | VFMSUBADD132PDYm
+                    | VFMSUBADD132PDYr
+                    | VFMSUBADD132PDm
+                    | VFMSUBADD132PDr
+                    | VFMSUBADD132PSYm
+                    | VFMSUBADD132PSYr
+                    | VFMSUBADD132PSm
+                    | VFMSUBADD132PSr
+                    | VFMSUBADD213PDYm
+                    | VFMSUBADD213PDYr
+                    | VFMSUBADD213PDm
+                    | VFMSUBADD213PDr
+                    | VFMSUBADD213PSYm
+                    | VFMSUBADD213PSYr
+                    | VFMSUBADD213PSm
+                    | VFMSUBADD213PSr
+                    | VFMSUBADD231PDYm
+                    | VFMSUBADD231PDYr
+                    | VFMSUBADD231PDm
+                    | VFMSUBADD231PDr
+                    | VFMSUBADD231PSYm
+                    | VFMSUBADD231PSYr
+                    | VFMSUBADD231PSm
+                    | VFMSUBADD231PSr
+                    | VFMSUBADDPD4Ymr
+                    | VFMSUBADDPD4Yrm
+                    | VFMSUBADDPD4Yrr
+                    | VFMSUBADDPD4Yrr_REV
                     | VFMSUBADDPD4mr
-                    | VFMSUBADDPD4mrY
                     | VFMSUBADDPD4rm
-                    | VFMSUBADDPD4rmY
                     | VFMSUBADDPD4rr
-                    | VFMSUBADDPD4rrY
-                    | VFMSUBADDPD4rrY_REV
                     | VFMSUBADDPD4rr_REV
-                    | VFMSUBADDPDr132m
-                    | VFMSUBADDPDr132mY
-                    | VFMSUBADDPDr132r
-                    | VFMSUBADDPDr132rY
-                    | VFMSUBADDPDr213m
-                    | VFMSUBADDPDr213mY
-                    | VFMSUBADDPDr213r
-                    | VFMSUBADDPDr213rY
-                    | VFMSUBADDPDr231m
-                    | VFMSUBADDPDr231mY
-                    | VFMSUBADDPDr231r
-                    | VFMSUBADDPDr231rY
+                    | VFMSUBADDPS4Ymr
+                    | VFMSUBADDPS4Yrm
+                    | VFMSUBADDPS4Yrr
+                    | VFMSUBADDPS4Yrr_REV
                     | VFMSUBADDPS4mr
-                    | VFMSUBADDPS4mrY
                     | VFMSUBADDPS4rm
-                    | VFMSUBADDPS4rmY
                     | VFMSUBADDPS4rr
-                    | VFMSUBADDPS4rrY
-                    | VFMSUBADDPS4rrY_REV
                     | VFMSUBADDPS4rr_REV
-                    | VFMSUBADDPSr132m
-                    | VFMSUBADDPSr132mY
-                    | VFMSUBADDPSr132r
-                    | VFMSUBADDPSr132rY
-                    | VFMSUBADDPSr213m
-                    | VFMSUBADDPSr213mY
-                    | VFMSUBADDPSr213r
-                    | VFMSUBADDPSr213rY
-                    | VFMSUBADDPSr231m
-                    | VFMSUBADDPSr231mY
-                    | VFMSUBADDPSr231r
-                    | VFMSUBADDPSr231rY
+                    | VFMSUBPD4Ymr
+                    | VFMSUBPD4Yrm
+                    | VFMSUBPD4Yrr
+                    | VFMSUBPD4Yrr_REV
                     | VFMSUBPD4mr
-                    | VFMSUBPD4mrY
                     | VFMSUBPD4rm
-                    | VFMSUBPD4rmY
                     | VFMSUBPD4rr
-                    | VFMSUBPD4rrY
-                    | VFMSUBPD4rrY_REV
                     | VFMSUBPD4rr_REV
-                    | VFMSUBPDr132m
-                    | VFMSUBPDr132mY
-                    | VFMSUBPDr132r
-                    | VFMSUBPDr132rY
-                    | VFMSUBPDr213m
-                    | VFMSUBPDr213mY
-                    | VFMSUBPDr213r
-                    | VFMSUBPDr213rY
-                    | VFMSUBPDr231m
-                    | VFMSUBPDr231mY
-                    | VFMSUBPDr231r
-                    | VFMSUBPDr231rY
+                    | VFMSUBPS4Ymr
+                    | VFMSUBPS4Yrm
+                    | VFMSUBPS4Yrr
+                    | VFMSUBPS4Yrr_REV
                     | VFMSUBPS4mr
-                    | VFMSUBPS4mrY
                     | VFMSUBPS4rm
-                    | VFMSUBPS4rmY
                     | VFMSUBPS4rr
-                    | VFMSUBPS4rrY
-                    | VFMSUBPS4rrY_REV
                     | VFMSUBPS4rr_REV
-                    | VFMSUBPSr132m
-                    | VFMSUBPSr132mY
-                    | VFMSUBPSr132r
-                    | VFMSUBPSr132rY
-                    | VFMSUBPSr213m
-                    | VFMSUBPSr213mY
-                    | VFMSUBPSr213r
-                    | VFMSUBPSr213rY
-                    | VFMSUBPSr231m
-                    | VFMSUBPSr231mY
-                    | VFMSUBPSr231r
-                    | VFMSUBPSr231rY
                     | VFMSUBSD4mr
                     | VFMSUBSD4mr_Int
                     | VFMSUBSD4rm
                     | VFMSUBSD4rm_Int
                     | VFMSUBSD4rr
                     | VFMSUBSD4rr_Int
+                    | VFMSUBSD4rr_Int_REV
                     | VFMSUBSD4rr_REV
-                    | VFMSUBSDr132m
-                    | VFMSUBSDr132m_Int
-                    | VFMSUBSDr132r
-                    | VFMSUBSDr132r_Int
-                    | VFMSUBSDr213m
-                    | VFMSUBSDr213m_Int
-                    | VFMSUBSDr213r
-                    | VFMSUBSDr213r_Int
-                    | VFMSUBSDr231m
-                    | VFMSUBSDr231m_Int
-                    | VFMSUBSDr231r
-                    | VFMSUBSDr231r_Int
                     | VFMSUBSS4mr
                     | VFMSUBSS4mr_Int
                     | VFMSUBSS4rm
                     | VFMSUBSS4rm_Int
                     | VFMSUBSS4rr
                     | VFMSUBSS4rr_Int
+                    | VFMSUBSS4rr_Int_REV
                     | VFMSUBSS4rr_REV
-                    | VFMSUBSSr132m
-                    | VFMSUBSSr132m_Int
-                    | VFMSUBSSr132r
-                    | VFMSUBSSr132r_Int
-                    | VFMSUBSSr213m
-                    | VFMSUBSSr213m_Int
-                    | VFMSUBSSr213r
-                    | VFMSUBSSr213r_Int
-                    | VFMSUBSSr231m
-                    | VFMSUBSSr231m_Int
-                    | VFMSUBSSr231r
-                    | VFMSUBSSr231r_Int
+                    | VFNMADD132PDYm
+                    | VFNMADD132PDYr
+                    | VFNMADD132PDm
+                    | VFNMADD132PDr
+                    | VFNMADD132PSYm
+                    | VFNMADD132PSYr
+                    | VFNMADD132PSm
+                    | VFNMADD132PSr
+                    | VFNMADD132SDm
+                    | VFNMADD132SDm_Int
+                    | VFNMADD132SDr
+                    | VFNMADD132SDr_Int
+                    | VFNMADD132SSm
+                    | VFNMADD132SSm_Int
+                    | VFNMADD132SSr
+                    | VFNMADD132SSr_Int
+                    | VFNMADD213PDYm
+                    | VFNMADD213PDYr
+                    | VFNMADD213PDm
+                    | VFNMADD213PDr
+                    | VFNMADD213PSYm
+                    | VFNMADD213PSYr
+                    | VFNMADD213PSm
+                    | VFNMADD213PSr
+                    | VFNMADD213SDm
+                    | VFNMADD213SDm_Int
+                    | VFNMADD213SDr
+                    | VFNMADD213SDr_Int
+                    | VFNMADD213SSm
+                    | VFNMADD213SSm_Int
+                    | VFNMADD213SSr
+                    | VFNMADD213SSr_Int
+                    | VFNMADD231PDYm
+                    | VFNMADD231PDYr
+                    | VFNMADD231PDm
+                    | VFNMADD231PDr
+                    | VFNMADD231PSYm
+                    | VFNMADD231PSYr
+                    | VFNMADD231PSm
+                    | VFNMADD231PSr
+                    | VFNMADD231SDm
+                    | VFNMADD231SDm_Int
+                    | VFNMADD231SDr
+                    | VFNMADD231SDr_Int
+                    | VFNMADD231SSm
+                    | VFNMADD231SSm_Int
+                    | VFNMADD231SSr
+                    | VFNMADD231SSr_Int
+                    | VFNMADDPD4Ymr
+                    | VFNMADDPD4Yrm
+                    | VFNMADDPD4Yrr
+                    | VFNMADDPD4Yrr_REV
                     | VFNMADDPD4mr
-                    | VFNMADDPD4mrY
                     | VFNMADDPD4rm
-                    | VFNMADDPD4rmY
                     | VFNMADDPD4rr
-                    | VFNMADDPD4rrY
-                    | VFNMADDPD4rrY_REV
                     | VFNMADDPD4rr_REV
-                    | VFNMADDPDr132m
-                    | VFNMADDPDr132mY
-                    | VFNMADDPDr132r
-                    | VFNMADDPDr132rY
-                    | VFNMADDPDr213m
-                    | VFNMADDPDr213mY
-                    | VFNMADDPDr213r
-                    | VFNMADDPDr213rY
-                    | VFNMADDPDr231m
-                    | VFNMADDPDr231mY
-                    | VFNMADDPDr231r
-                    | VFNMADDPDr231rY
+                    | VFNMADDPS4Ymr
+                    | VFNMADDPS4Yrm
+                    | VFNMADDPS4Yrr
+                    | VFNMADDPS4Yrr_REV
                     | VFNMADDPS4mr
-                    | VFNMADDPS4mrY
                     | VFNMADDPS4rm
-                    | VFNMADDPS4rmY
                     | VFNMADDPS4rr
-                    | VFNMADDPS4rrY
-                    | VFNMADDPS4rrY_REV
                     | VFNMADDPS4rr_REV
-                    | VFNMADDPSr132m
-                    | VFNMADDPSr132mY
-                    | VFNMADDPSr132r
-                    | VFNMADDPSr132rY
-                    | VFNMADDPSr213m
-                    | VFNMADDPSr213mY
-                    | VFNMADDPSr213r
-                    | VFNMADDPSr213rY
-                    | VFNMADDPSr231m
-                    | VFNMADDPSr231mY
-                    | VFNMADDPSr231r
-                    | VFNMADDPSr231rY
                     | VFNMADDSD4mr
                     | VFNMADDSD4mr_Int
                     | VFNMADDSD4rm
                     | VFNMADDSD4rm_Int
                     | VFNMADDSD4rr
                     | VFNMADDSD4rr_Int
+                    | VFNMADDSD4rr_Int_REV
                     | VFNMADDSD4rr_REV
-                    | VFNMADDSDr132m
-                    | VFNMADDSDr132m_Int
-                    | VFNMADDSDr132r
-                    | VFNMADDSDr132r_Int
-                    | VFNMADDSDr213m
-                    | VFNMADDSDr213m_Int
-                    | VFNMADDSDr213r
-                    | VFNMADDSDr213r_Int
-                    | VFNMADDSDr231m
-                    | VFNMADDSDr231m_Int
-                    | VFNMADDSDr231r
-                    | VFNMADDSDr231r_Int
                     | VFNMADDSS4mr
                     | VFNMADDSS4mr_Int
                     | VFNMADDSS4rm
                     | VFNMADDSS4rm_Int
                     | VFNMADDSS4rr
                     | VFNMADDSS4rr_Int
+                    | VFNMADDSS4rr_Int_REV
                     | VFNMADDSS4rr_REV
-                    | VFNMADDSSr132m
-                    | VFNMADDSSr132m_Int
-                    | VFNMADDSSr132r
-                    | VFNMADDSSr132r_Int
-                    | VFNMADDSSr213m
-                    | VFNMADDSSr213m_Int
-                    | VFNMADDSSr213r
-                    | VFNMADDSSr213r_Int
-                    | VFNMADDSSr231m
-                    | VFNMADDSSr231m_Int
-                    | VFNMADDSSr231r
-                    | VFNMADDSSr231r_Int
+                    | VFNMSUB132PDYm
+                    | VFNMSUB132PDYr
+                    | VFNMSUB132PDm
+                    | VFNMSUB132PDr
+                    | VFNMSUB132PSYm
+                    | VFNMSUB132PSYr
+                    | VFNMSUB132PSm
+                    | VFNMSUB132PSr
+                    | VFNMSUB132SDm
+                    | VFNMSUB132SDm_Int
+                    | VFNMSUB132SDr
+                    | VFNMSUB132SDr_Int
+                    | VFNMSUB132SSm
+                    | VFNMSUB132SSm_Int
+                    | VFNMSUB132SSr
+                    | VFNMSUB132SSr_Int
+                    | VFNMSUB213PDYm
+                    | VFNMSUB213PDYr
+                    | VFNMSUB213PDm
+                    | VFNMSUB213PDr
+                    | VFNMSUB213PSYm
+                    | VFNMSUB213PSYr
+                    | VFNMSUB213PSm
+                    | VFNMSUB213PSr
+                    | VFNMSUB213SDm
+                    | VFNMSUB213SDm_Int
+                    | VFNMSUB213SDr
+                    | VFNMSUB213SDr_Int
+                    | VFNMSUB213SSm
+                    | VFNMSUB213SSm_Int
+                    | VFNMSUB213SSr
+                    | VFNMSUB213SSr_Int
+                    | VFNMSUB231PDYm
+                    | VFNMSUB231PDYr
+                    | VFNMSUB231PDm
+                    | VFNMSUB231PDr
+                    | VFNMSUB231PSYm
+                    | VFNMSUB231PSYr
+                    | VFNMSUB231PSm
+                    | VFNMSUB231PSr
+                    | VFNMSUB231SDm
+                    | VFNMSUB231SDm_Int
+                    | VFNMSUB231SDr
+                    | VFNMSUB231SDr_Int
+                    | VFNMSUB231SSm
+                    | VFNMSUB231SSm_Int
+                    | VFNMSUB231SSr
+                    | VFNMSUB231SSr_Int
+                    | VFNMSUBPD4Ymr
+                    | VFNMSUBPD4Yrm
+                    | VFNMSUBPD4Yrr
+                    | VFNMSUBPD4Yrr_REV
                     | VFNMSUBPD4mr
-                    | VFNMSUBPD4mrY
                     | VFNMSUBPD4rm
-                    | VFNMSUBPD4rmY
                     | VFNMSUBPD4rr
-                    | VFNMSUBPD4rrY
-                    | VFNMSUBPD4rrY_REV
                     | VFNMSUBPD4rr_REV
-                    | VFNMSUBPDr132m
-                    | VFNMSUBPDr132mY
-                    | VFNMSUBPDr132r
-                    | VFNMSUBPDr132rY
-                    | VFNMSUBPDr213m
-                    | VFNMSUBPDr213mY
-                    | VFNMSUBPDr213r
-                    | VFNMSUBPDr213rY
-                    | VFNMSUBPDr231m
-                    | VFNMSUBPDr231mY
-                    | VFNMSUBPDr231r
-                    | VFNMSUBPDr231rY
+                    | VFNMSUBPS4Ymr
+                    | VFNMSUBPS4Yrm
+                    | VFNMSUBPS4Yrr
+                    | VFNMSUBPS4Yrr_REV
                     | VFNMSUBPS4mr
-                    | VFNMSUBPS4mrY
                     | VFNMSUBPS4rm
-                    | VFNMSUBPS4rmY
                     | VFNMSUBPS4rr
-                    | VFNMSUBPS4rrY
-                    | VFNMSUBPS4rrY_REV
                     | VFNMSUBPS4rr_REV
-                    | VFNMSUBPSr132m
-                    | VFNMSUBPSr132mY
-                    | VFNMSUBPSr132r
-                    | VFNMSUBPSr132rY
-                    | VFNMSUBPSr213m
-                    | VFNMSUBPSr213mY
-                    | VFNMSUBPSr213r
-                    | VFNMSUBPSr213rY
-                    | VFNMSUBPSr231m
-                    | VFNMSUBPSr231mY
-                    | VFNMSUBPSr231r
-                    | VFNMSUBPSr231rY
                     | VFNMSUBSD4mr
                     | VFNMSUBSD4mr_Int
                     | VFNMSUBSD4rm
                     | VFNMSUBSD4rm_Int
                     | VFNMSUBSD4rr
                     | VFNMSUBSD4rr_Int
+                    | VFNMSUBSD4rr_Int_REV
                     | VFNMSUBSD4rr_REV
-                    | VFNMSUBSDr132m
-                    | VFNMSUBSDr132m_Int
-                    | VFNMSUBSDr132r
-                    | VFNMSUBSDr132r_Int
-                    | VFNMSUBSDr213m
-                    | VFNMSUBSDr213m_Int
-                    | VFNMSUBSDr213r
-                    | VFNMSUBSDr213r_Int
-                    | VFNMSUBSDr231m
-                    | VFNMSUBSDr231m_Int
-                    | VFNMSUBSDr231r
-                    | VFNMSUBSDr231r_Int
                     | VFNMSUBSS4mr
                     | VFNMSUBSS4mr_Int
                     | VFNMSUBSS4rm
                     | VFNMSUBSS4rm_Int
                     | VFNMSUBSS4rr
                     | VFNMSUBSS4rr_Int
+                    | VFNMSUBSS4rr_Int_REV
                     | VFNMSUBSS4rr_REV
-                    | VFNMSUBSSr132m
-                    | VFNMSUBSSr132m_Int
-                    | VFNMSUBSSr132r
-                    | VFNMSUBSSr132r_Int
-                    | VFNMSUBSSr213m
-                    | VFNMSUBSSr213m_Int
-                    | VFNMSUBSSr213r
-                    | VFNMSUBSSr213r_Int
-                    | VFNMSUBSSr231m
-                    | VFNMSUBSSr231m_Int
-                    | VFNMSUBSSr231r
-                    | VFNMSUBSSr231r_Int
+                    | VFRCZPDYrm
+                    | VFRCZPDYrr
                     | VFRCZPDrm
-                    | VFRCZPDrmY
                     | VFRCZPDrr
-                    | VFRCZPDrrY
+                    | VFRCZPSYrm
+                    | VFRCZPSYrr
                     | VFRCZPSrm
-                    | VFRCZPSrmY
                     | VFRCZPSrr
-                    | VFRCZPSrrY
                     | VFRCZSDrm
                     | VFRCZSDrr
                     | VFRCZSSrm
                     | VFRCZSSrr
-                    | VFsANDNPDrm
-                    | VFsANDNPDrr
-                    | VFsANDNPSrm
-                    | VFsANDNPSrr
-                    | VFsANDPDrm
-                    | VFsANDPDrr
-                    | VFsANDPSrm
-                    | VFsANDPSrr
-                    | VFsORPDrm
-                    | VFsORPDrr
-                    | VFsORPSrm
-                    | VFsORPSrr
-                    | VFsXORPDrm
-                    | VFsXORPDrr
-                    | VFsXORPSrm
-                    | VFsXORPSrr
-                    | VFvANDNPDYrm
-                    | VFvANDNPDYrr
-                    | VFvANDNPDrm
-                    | VFvANDNPDrr
-                    | VFvANDNPSYrm
-                    | VFvANDNPSYrr
-                    | VFvANDNPSrm
-                    | VFvANDNPSrr
-                    | VFvANDPDYrm
-                    | VFvANDPDYrr
-                    | VFvANDPDrm
-                    | VFvANDPDrr
-                    | VFvANDPSYrm
-                    | VFvANDPSYrr
-                    | VFvANDPSrm
-                    | VFvANDPSrr
-                    | VFvORPDYrm
-                    | VFvORPDYrr
-                    | VFvORPDrm
-                    | VFvORPDrr
-                    | VFvORPSYrm
-                    | VFvORPSYrr
-                    | VFvORPSrm
-                    | VFvORPSrr
-                    | VFvXORPDYrm
-                    | VFvXORPDYrr
-                    | VFvXORPDrm
-                    | VFvXORPDrr
-                    | VFvXORPSYrm
-                    | VFvXORPSYrr
-                    | VFvXORPSrm
-                    | VFvXORPSrr
                     | VGATHERDPDYrm
                     | VGATHERDPDrm
                     | VGATHERDPSYrm
@@ -3021,6 +3042,18 @@ data X86Instruction = AAA
                     | VGATHERQPDrm
                     | VGATHERQPSYrm
                     | VGATHERQPSrm
+                    | VGF2P8AFFINEINVQBYrmi
+                    | VGF2P8AFFINEINVQBYrri
+                    | VGF2P8AFFINEINVQBrmi
+                    | VGF2P8AFFINEINVQBrri
+                    | VGF2P8AFFINEQBYrmi
+                    | VGF2P8AFFINEQBYrri
+                    | VGF2P8AFFINEQBrmi
+                    | VGF2P8AFFINEQBrri
+                    | VGF2P8MULBYrm
+                    | VGF2P8MULBYrr
+                    | VGF2P8MULBrm
+                    | VGF2P8MULBrr
                     | VHADDPDYrm
                     | VHADDPDYrr
                     | VHADDPDrm
@@ -3189,7 +3222,7 @@ data X86Instruction = AAA
                     | VMOVPDI2DIrr
                     | VMOVPQI2QImr
                     | VMOVPQI2QIrr
-                    | VMOVPQIto64rm
+                    | VMOVPQIto64mr
                     | VMOVPQIto64rr
                     | VMOVQI2PQIrm
                     | VMOVSDmr
@@ -3228,18 +3261,16 @@ data X86Instruction = AAA
                     | VMOVUPSrm
                     | VMOVUPSrr
                     | VMOVUPSrr_REV
-                    | VMOVZPQILo2PQIrm
                     | VMOVZPQILo2PQIrr
-                    | VMOVZQI2PQIrm
                     | VMPSADBWYrmi
                     | VMPSADBWYrri
                     | VMPSADBWrmi
                     | VMPSADBWrri
                     | VMPTRLDm
                     | VMPTRSTm
-                    | VMREAD32rm
+                    | VMREAD32mr
                     | VMREAD32rr
-                    | VMREAD64rm
+                    | VMREAD64mr
                     | VMREAD64rr
                     | VMRESUME
                     | VMRUN32
@@ -3276,18 +3307,18 @@ data X86Instruction = AAA
                     | VORPSYrr
                     | VORPSrm
                     | VORPSrr
-                    | VPABSBrm128
-                    | VPABSBrm256
-                    | VPABSBrr128
-                    | VPABSBrr256
-                    | VPABSDrm128
-                    | VPABSDrm256
-                    | VPABSDrr128
-                    | VPABSDrr256
-                    | VPABSWrm128
-                    | VPABSWrm256
-                    | VPABSWrr128
-                    | VPABSWrr256
+                    | VPABSBYrm
+                    | VPABSBYrr
+                    | VPABSBrm
+                    | VPABSBrr
+                    | VPABSDYrm
+                    | VPABSDYrr
+                    | VPABSDrm
+                    | VPABSDrr
+                    | VPABSWYrm
+                    | VPABSWYrr
+                    | VPABSWrm
+                    | VPABSWrr
                     | VPACKSSDWYrm
                     | VPACKSSDWYrr
                     | VPACKSSDWrm
@@ -3336,10 +3367,10 @@ data X86Instruction = AAA
                     | VPADDWYrr
                     | VPADDWrm
                     | VPADDWrr
-                    | VPALIGNR128rm
-                    | VPALIGNR128rr
-                    | VPALIGNR256rm
-                    | VPALIGNR256rr
+                    | VPALIGNRYrmi
+                    | VPALIGNRYrri
+                    | VPALIGNRrmi
+                    | VPALIGNRrri
                     | VPANDNYrm
                     | VPANDNYrr
                     | VPANDNrm
@@ -3384,14 +3415,18 @@ data X86Instruction = AAA
                     | VPBROADCASTWYrr
                     | VPBROADCASTWrm
                     | VPBROADCASTWrr
+                    | VPCLMULQDQYrm
+                    | VPCLMULQDQYrr
                     | VPCLMULQDQrm
                     | VPCLMULQDQrr
-                    | VPCMOVmr
-                    | VPCMOVmrY
-                    | VPCMOVrm
-                    | VPCMOVrmY
-                    | VPCMOVrr
-                    | VPCMOVrrY
+                    | VPCMOVYrmr
+                    | VPCMOVYrrm
+                    | VPCMOVYrrr
+                    | VPCMOVYrrr_REV
+                    | VPCMOVrmr
+                    | VPCMOVrrm
+                    | VPCMOVrrr
+                    | VPCMOVrrr_REV
                     | VPCMPEQBYrm
                     | VPCMPEQBYrr
                     | VPCMPEQBrm
@@ -3408,14 +3443,10 @@ data X86Instruction = AAA
                     | VPCMPEQWYrr
                     | VPCMPEQWrm
                     | VPCMPEQWrr
-                    | VPCMPESTRIMEM
-                    | VPCMPESTRIREG
                     | VPCMPESTRIrm
                     | VPCMPESTRIrr
-                    | VPCMPESTRM128MEM
-                    | VPCMPESTRM128REG
-                    | VPCMPESTRM128rm
-                    | VPCMPESTRM128rr
+                    | VPCMPESTRMrm
+                    | VPCMPESTRMrr
                     | VPCMPGTBYrm
                     | VPCMPGTBYrr
                     | VPCMPGTBrm
@@ -3432,14 +3463,10 @@ data X86Instruction = AAA
                     | VPCMPGTWYrr
                     | VPCMPGTWrm
                     | VPCMPGTWrr
-                    | VPCMPISTRIMEM
-                    | VPCMPISTRIREG
                     | VPCMPISTRIrm
                     | VPCMPISTRIrr
-                    | VPCMPISTRM128MEM
-                    | VPCMPISTRM128REG
-                    | VPCMPISTRM128rm
-                    | VPCMPISTRM128rr
+                    | VPCMPISTRMrm
+                    | VPCMPISTRMrr
                     | VPCOMBmi
                     | VPCOMBmi_alt
                     | VPCOMBri
@@ -3478,18 +3505,22 @@ data X86Instruction = AAA
                     | VPERM2I128rr
                     | VPERMDYrm
                     | VPERMDYrr
+                    | VPERMIL2PDYmr
+                    | VPERMIL2PDYrm
+                    | VPERMIL2PDYrr
+                    | VPERMIL2PDYrr_REV
                     | VPERMIL2PDmr
-                    | VPERMIL2PDmrY
                     | VPERMIL2PDrm
-                    | VPERMIL2PDrmY
                     | VPERMIL2PDrr
-                    | VPERMIL2PDrrY
+                    | VPERMIL2PDrr_REV
+                    | VPERMIL2PSYmr
+                    | VPERMIL2PSYrm
+                    | VPERMIL2PSYrr
+                    | VPERMIL2PSYrr_REV
                     | VPERMIL2PSmr
-                    | VPERMIL2PSmrY
                     | VPERMIL2PSrm
-                    | VPERMIL2PSrmY
                     | VPERMIL2PSrr
-                    | VPERMIL2PSrrY
+                    | VPERMIL2PSrr_REV
                     | VPERMILPDYmi
                     | VPERMILPDYri
                     | VPERMILPDYrm
@@ -3519,7 +3550,7 @@ data X86Instruction = AAA
                     | VPEXTRQmr
                     | VPEXTRQrr
                     | VPEXTRWmr
-                    | VPEXTRWri
+                    | VPEXTRWrr
                     | VPEXTRWrr_REV
                     | VPGATHERDDYrm
                     | VPGATHERDDrm
@@ -3541,10 +3572,10 @@ data X86Instruction = AAA
                     | VPHADDDYrr
                     | VPHADDDrm
                     | VPHADDDrr
-                    | VPHADDSWrm128
-                    | VPHADDSWrm256
-                    | VPHADDSWrr128
-                    | VPHADDSWrr256
+                    | VPHADDSWYrm
+                    | VPHADDSWYrr
+                    | VPHADDSWrm
+                    | VPHADDSWrr
                     | VPHADDUBDrm
                     | VPHADDUBDrr
                     | VPHADDUBQrm
@@ -3565,8 +3596,8 @@ data X86Instruction = AAA
                     | VPHADDWYrr
                     | VPHADDWrm
                     | VPHADDWrr
-                    | VPHMINPOSUWrm128
-                    | VPHMINPOSUWrr128
+                    | VPHMINPOSUWrm
+                    | VPHMINPOSUWrr
                     | VPHSUBBWrm
                     | VPHSUBBWrr
                     | VPHSUBDQrm
@@ -3575,10 +3606,10 @@ data X86Instruction = AAA
                     | VPHSUBDYrr
                     | VPHSUBDrm
                     | VPHSUBDrr
-                    | VPHSUBSWrm128
-                    | VPHSUBSWrm256
-                    | VPHSUBSWrr128
-                    | VPHSUBSWrr256
+                    | VPHSUBSWYrm
+                    | VPHSUBSWYrr
+                    | VPHSUBSWrm
+                    | VPHSUBSWrr
                     | VPHSUBWDrm
                     | VPHSUBWDrr
                     | VPHSUBWYrm
@@ -3591,8 +3622,8 @@ data X86Instruction = AAA
                     | VPINSRDrr
                     | VPINSRQrm
                     | VPINSRQrr
-                    | VPINSRWrmi
-                    | VPINSRWrri
+                    | VPINSRWrm
+                    | VPINSRWrr
                     | VPMACSDDrm
                     | VPMACSDDrr
                     | VPMACSDQHrm
@@ -3617,10 +3648,10 @@ data X86Instruction = AAA
                     | VPMADCSSWDrr
                     | VPMADCSWDrm
                     | VPMADCSWDrr
-                    | VPMADDUBSWrm128
-                    | VPMADDUBSWrm256
-                    | VPMADDUBSWrr128
-                    | VPMADDUBSWrr256
+                    | VPMADDUBSWYrm
+                    | VPMADDUBSWYrr
+                    | VPMADDUBSWrm
+                    | VPMADDUBSWrr
                     | VPMADDWDYrm
                     | VPMADDWDYrr
                     | VPMADDWDrm
@@ -3735,10 +3766,10 @@ data X86Instruction = AAA
                     | VPMULDQYrr
                     | VPMULDQrm
                     | VPMULDQrr
-                    | VPMULHRSWrm128
-                    | VPMULHRSWrm256
-                    | VPMULHRSWrr128
-                    | VPMULHRSWrr256
+                    | VPMULHRSWYrm
+                    | VPMULHRSWYrr
+                    | VPMULHRSWrm
+                    | VPMULHRSWrr
                     | VPMULHUWYrm
                     | VPMULHUWYrr
                     | VPMULHUWrm
@@ -3763,29 +3794,34 @@ data X86Instruction = AAA
                     | VPORYrr
                     | VPORrm
                     | VPORrr
-                    | VPPERMmr
-                    | VPPERMrm
-                    | VPPERMrr
+                    | VPPERMrmr
+                    | VPPERMrrm
+                    | VPPERMrrr
+                    | VPPERMrrr_REV
                     | VPROTBmi
                     | VPROTBmr
                     | VPROTBri
                     | VPROTBrm
                     | VPROTBrr
+                    | VPROTBrr_REV
                     | VPROTDmi
                     | VPROTDmr
                     | VPROTDri
                     | VPROTDrm
                     | VPROTDrr
+                    | VPROTDrr_REV
                     | VPROTQmi
                     | VPROTQmr
                     | VPROTQri
                     | VPROTQrm
                     | VPROTQrr
+                    | VPROTQrr_REV
                     | VPROTWmi
                     | VPROTWmr
                     | VPROTWri
                     | VPROTWrm
                     | VPROTWrr
+                    | VPROTWrr_REV
                     | VPSADBWYrm
                     | VPSADBWYrr
                     | VPSADBWrm
@@ -3793,27 +3829,35 @@ data X86Instruction = AAA
                     | VPSHABmr
                     | VPSHABrm
                     | VPSHABrr
+                    | VPSHABrr_REV
                     | VPSHADmr
                     | VPSHADrm
                     | VPSHADrr
+                    | VPSHADrr_REV
                     | VPSHAQmr
                     | VPSHAQrm
                     | VPSHAQrr
+                    | VPSHAQrr_REV
                     | VPSHAWmr
                     | VPSHAWrm
                     | VPSHAWrr
+                    | VPSHAWrr_REV
                     | VPSHLBmr
                     | VPSHLBrm
                     | VPSHLBrr
+                    | VPSHLBrr_REV
                     | VPSHLDmr
                     | VPSHLDrm
                     | VPSHLDrr
+                    | VPSHLDrr_REV
                     | VPSHLQmr
                     | VPSHLQrm
                     | VPSHLQrr
+                    | VPSHLQrr_REV
                     | VPSHLWmr
                     | VPSHLWrm
                     | VPSHLWrr
+                    | VPSHLWrr_REV
                     | VPSHUFBYrm
                     | VPSHUFBYrr
                     | VPSHUFBrm
@@ -3994,20 +4038,22 @@ data X86Instruction = AAA
                     | VRCPSSm_Int
                     | VRCPSSr
                     | VRCPSSr_Int
+                    | VROUNDPDYm
+                    | VROUNDPDYr
                     | VROUNDPDm
                     | VROUNDPDr
+                    | VROUNDPSYm
+                    | VROUNDPSYr
                     | VROUNDPSm
                     | VROUNDPSr
                     | VROUNDSDm
+                    | VROUNDSDm_Int
                     | VROUNDSDr
                     | VROUNDSDr_Int
                     | VROUNDSSm
+                    | VROUNDSSm_Int
                     | VROUNDSSr
                     | VROUNDSSr_Int
-                    | VROUNDYPDm
-                    | VROUNDYPDr
-                    | VROUNDYPSm
-                    | VROUNDYPSr
                     | VRSQRTPSYm
                     | VRSQRTPSYr
                     | VRSQRTPSm
@@ -4066,9 +4112,13 @@ data X86Instruction = AAA
                     | VTESTPSrm
                     | VTESTPSrr
                     | VUCOMISDrm
+                    | VUCOMISDrm_Int
                     | VUCOMISDrr
+                    | VUCOMISDrr_Int
                     | VUCOMISSrm
+                    | VUCOMISSrm_Int
                     | VUCOMISSrr
+                    | VUCOMISSrr_Int
                     | VUNPCKHPDYrm
                     | VUNPCKHPDYrr
                     | VUNPCKHPDrm
@@ -4097,9 +4147,10 @@ data X86Instruction = AAA
                     | VZEROUPPER
                     | V_SET0
                     | V_SETALLONES
-                    | WAIT
                     | WBINVD
-                    | WIN_ALLOCA
+                    | WBNOINVD
+                    | WIN_ALLOCA_32
+                    | WIN_ALLOCA_64
                     | WRFLAGS32
                     | WRFLAGS64
                     | WRFSBASE
@@ -4109,7 +4160,12 @@ data X86Instruction = AAA
                     | WRMSR
                     | WRPKRU
                     | WRPKRUr
+                    | WRSSD
+                    | WRSSQ
+                    | WRUSSD
+                    | WRUSSQ
                     | XABORT
+                    | XABORT_DEF
                     | XACQUIRE_PREFIX
                     | XADD16rm
                     | XADD16rr
@@ -4126,7 +4182,6 @@ data X86Instruction = AAA
                     | XCHG16rm
                     | XCHG16rr
                     | XCHG32ar
-                    | XCHG32ar64
                     | XCHG32rm
                     | XCHG32rr
                     | XCHG64ar
@@ -4151,6 +4206,7 @@ data X86Instruction = AAA
                     | XOR16rm
                     | XOR16rr
                     | XOR16rr_REV
+                    | XOR32_FP
                     | XOR32i32
                     | XOR32mi
                     | XOR32mi8
@@ -4160,6 +4216,7 @@ data X86Instruction = AAA
                     | XOR32rm
                     | XOR32rr
                     | XOR32rr_REV
+                    | XOR64_FP
                     | XOR64i32
                     | XOR64mi32
                     | XOR64mi8
@@ -4246,6 +4303,54 @@ data X86Instruction = AAA
                     | SHL32ri_LEA
                     | SHL64r1_LEA
                     | SHL64ri_LEA
+                    | CMOVA16rr_swap
+                    | CMOVA32rr_swap
+                    | CMOVA64rr_swap
+                    | CMOVAE16rr_swap
+                    | CMOVAE32rr_swap
+                    | CMOVAE64rr_swap
+                    | CMOVB16rr_swap
+                    | CMOVB32rr_swap
+                    | CMOVB64rr_swap
+                    | CMOVBE16rr_swap
+                    | CMOVBE32rr_swap
+                    | CMOVBE64rr_swap
+                    | CMOVE16rr_swap
+                    | CMOVE32rr_swap
+                    | CMOVE64rr_swap
+                    | CMOVG16rr_swap
+                    | CMOVG32rr_swap
+                    | CMOVG64rr_swap
+                    | CMOVGE16rr_swap
+                    | CMOVGE32rr_swap
+                    | CMOVGE64rr_swap
+                    | CMOVL16rr_swap
+                    | CMOVL32rr_swap
+                    | CMOVL64rr_swap
+                    | CMOVLE16rr_swap
+                    | CMOVLE32rr_swap
+                    | CMOVLE64rr_swap
+                    | CMOVNE16rr_swap
+                    | CMOVNE32rr_swap
+                    | CMOVNE64rr_swap
+                    | CMOVNO16rr_swap
+                    | CMOVNO32rr_swap
+                    | CMOVNO64rr_swap
+                    | CMOVNP16rr_swap
+                    | CMOVNP32rr_swap
+                    | CMOVNP64rr_swap
+                    | CMOVNS16rr_swap
+                    | CMOVNS32rr_swap
+                    | CMOVNS64rr_swap
+                    | CMOVO16rr_swap
+                    | CMOVO32rr_swap
+                    | CMOVO64rr_swap
+                    | CMOVP16rr_swap
+                    | CMOVP32rr_swap
+                    | CMOVP64rr_swap
+                    | CMOVS16rr_swap
+                    | CMOVS32rr_swap
+                    | CMOVS64rr_swap
                     | ADC16mi_unison
                     | ADC16mi8_unison
                     | ADC16rm_unison
@@ -4469,16 +4574,12 @@ data X86Instruction = AAA
                     | CVTPD2PSrm_unison
                     | CVTPS2DQrm_unison
                     | CVTPS2PDrm_unison
-                    | CVTSD2SI64rm_unison
-                    | CVTSD2SIrm_unison
                     | CVTSD2SSrm_unison
-                    | CVTSI2SD64rm_unison
                     | CVTSI2SDrm_unison
-                    | CVTSI2SS64rm_unison
                     | CVTSI2SSrm_unison
+                    | CVTSI642SDrm_unison
+                    | CVTSI642SSrm_unison
                     | CVTSS2SDrm_unison
-                    | CVTSS2SI64rm_unison
-                    | CVTSS2SIrm_unison
                     | CVTTPD2DQrm_unison
                     | CVTTPS2DQrm_unison
                     | CVTTSD2SI64rm_unison
@@ -4497,22 +4598,6 @@ data X86Instruction = AAA
                     | DIVPSrm_unison
                     | DIVSDrm_unison
                     | DIVSSrm_unison
-                    | FsANDNPDrm_unison
-                    | FsANDNPSrm_unison
-                    | FsANDPDrm_unison
-                    | FsANDPSrm_unison
-                    | FsORPDrm_unison
-                    | FsORPSrm_unison
-                    | FsXORPDrm_unison
-                    | FsXORPSrm_unison
-                    | FvANDNPDrm_unison
-                    | FvANDNPSrm_unison
-                    | FvANDPDrm_unison
-                    | FvANDPSrm_unison
-                    | FvORPDrm_unison
-                    | FvORPSrm_unison
-                    | FvXORPDrm_unison
-                    | FvXORPSrm_unison
                     | HADDPDrm_unison
                     | HADDPSrm_unison
                     | HSUBPDrm_unison
@@ -4598,15 +4683,15 @@ data X86Instruction = AAA
                     | MOVDQUmr_unison
                     | MOVPDI2DImr_unison
                     | MOVPQI2QImr_unison
-                    | MOVPQIto64rm_unison
+                    | MOVPQIto64mr_unison
                     | MOVSDto64mr_unison
                     | MOVSHDUPrm_unison
                     | MOVSLDUPrm_unison
                     | MOVSS2DImr_unison
                     | MOVSX16rm8_unison
-                    | MOVSX32_NOREXrm8_unison
                     | MOVSX32rm16_unison
                     | MOVSX32rm8_unison
+                    | MOVSX32rm8_NOREX_unison
                     | MOVSX64rm16_unison
                     | MOVSX64rm32_unison
                     | MOVSX64rm8_unison
@@ -4614,11 +4699,10 @@ data X86Instruction = AAA
                     | MOVUPDmr_unison
                     | MOVUPSrm_unison
                     | MOVUPSmr_unison
-                    | MOVZPQILo2PQIrm_unison
                     | MOVZX16rm8_unison
-                    | MOVZX32_NOREXrm8_unison
                     | MOVZX32rm16_unison
                     | MOVZX32rm8_unison
+                    | MOVZX32rm8_NOREX_unison
                     | MOVZX64rm16_unison
                     | MOVZX64rm8_unison
                     | MPSADBWrmi_unison
@@ -4658,9 +4742,9 @@ data X86Instruction = AAA
                     | OR8mr_unison
                     | ORPDrm_unison
                     | ORPSrm_unison
-                    | PABSBrm128_unison
-                    | PABSDrm128_unison
-                    | PABSWrm128_unison
+                    | PABSBrm_unison
+                    | PABSDrm_unison
+                    | PABSWrm_unison
                     | PACKSSDWrm_unison
                     | PACKSSWBrm_unison
                     | PACKUSDWrm_unison
@@ -4673,7 +4757,7 @@ data X86Instruction = AAA
                     | PADDUSBrm_unison
                     | PADDUSWrm_unison
                     | PADDWrm_unison
-                    | PALIGNR128rm_unison
+                    | PALIGNRrmi_unison
                     | PANDNrm_unison
                     | PANDrm_unison
                     | PAVGBrm_unison
@@ -4686,13 +4770,13 @@ data X86Instruction = AAA
                     | PCMPEQQrm_unison
                     | PCMPEQWrm_unison
                     | PCMPESTRIrm_unison
-                    | PCMPESTRM128rm_unison
+                    | PCMPESTRMrm_unison
                     | PCMPGTBrm_unison
                     | PCMPGTDrm_unison
                     | PCMPGTQrm_unison
                     | PCMPGTWrm_unison
                     | PCMPISTRIrm_unison
-                    | PCMPISTRM128rm_unison
+                    | PCMPISTRMrm_unison
                     | PDEP32rm_unison
                     | PDEP64rm_unison
                     | PEXT32rm_unison
@@ -4700,15 +4784,15 @@ data X86Instruction = AAA
                     | PEXTRDmr_unison
                     | PEXTRQmr_unison
                     | PHADDDrm_unison
-                    | PHADDSWrm128_unison
+                    | PHADDSWrm_unison
                     | PHADDWrm_unison
-                    | PHMINPOSUWrm128_unison
+                    | PHMINPOSUWrm_unison
                     | PHSUBDrm_unison
-                    | PHSUBSWrm128_unison
+                    | PHSUBSWrm_unison
                     | PHSUBWrm_unison
                     | PINSRDrm_unison
                     | PINSRQrm_unison
-                    | PMADDUBSWrm128_unison
+                    | PMADDUBSWrm_unison
                     | PMADDWDrm_unison
                     | PMAXSBrm_unison
                     | PMAXSDrm_unison
@@ -4735,7 +4819,7 @@ data X86Instruction = AAA
                     | PMOVZXWDrm_unison
                     | PMOVZXWQrm_unison
                     | PMULDQrm_unison
-                    | PMULHRSWrm128_unison
+                    | PMULHRSWrm_unison
                     | PMULHUWrm_unison
                     | PMULHWrm_unison
                     | PMULLDrm_unison
@@ -4937,7 +5021,6 @@ data X86Instruction = AAA
                     | SHUFPDrmi_unison
                     | SHUFPSrmi_unison
                     | SLDT16m_unison
-                    | SLDT64m_unison
                     | SMSW16m_unison
                     | SQRTPDm_unison
                     | SQRTPSm_unison
@@ -4971,13 +5054,13 @@ data X86Instruction = AAA
                     | TCRETURNmi_unison
                     | TCRETURNmi64_unison
                     | TEST16mi_unison
-                    | TEST16rm_unison
+                    | TEST16mr_unison
                     | TEST32mi_unison
-                    | TEST32rm_unison
+                    | TEST32mr_unison
                     | TEST64mi32_unison
-                    | TEST64rm_unison
+                    | TEST64mr_unison
                     | TEST8mi_unison
-                    | TEST8rm_unison
+                    | TEST8mr_unison
                     | TZCNT16rm_unison
                     | TZCNT32rm_unison
                     | TZCNT64rm_unison
@@ -5051,16 +5134,6 @@ data X86Instruction = AAA
                     | VCVTPS2PDrm_unison
                     | VCVTPS2PHYmr_unison
                     | VCVTPS2PHmr_unison
-                    | VCVTSD2SI64rm_unison
-                    | VCVTSD2SIrm_unison
-                    | VCVTSD2SSrm_unison
-                    | VCVTSI2SD64rm_unison
-                    | VCVTSI2SDrm_unison
-                    | VCVTSI2SS64rm_unison
-                    | VCVTSI2SSrm_unison
-                    | VCVTSS2SDrm_unison
-                    | VCVTSS2SI64rm_unison
-                    | VCVTSS2SIrm_unison
                     | VCVTTPD2DQYrm_unison
                     | VCVTTPS2DQYrm_unison
                     | VCVTTPS2DQrm_unison
@@ -5080,196 +5153,76 @@ data X86Instruction = AAA
                     | VERWm_unison
                     | VEXTRACTF128mr_unison
                     | VEXTRACTI128mr_unison
+                    | VFMADDPD4Yrm_unison
+                    | VFMADDPD4Ymr_unison
                     | VFMADDPD4rm_unison
                     | VFMADDPD4mr_unison
-                    | VFMADDPD4rmY_unison
-                    | VFMADDPD4mrY_unison
-                    | VFMADDPDr132m_unison
-                    | VFMADDPDr132mY_unison
-                    | VFMADDPDr213m_unison
-                    | VFMADDPDr213mY_unison
-                    | VFMADDPDr231m_unison
-                    | VFMADDPDr231mY_unison
+                    | VFMADDPS4Yrm_unison
+                    | VFMADDPS4Ymr_unison
                     | VFMADDPS4rm_unison
                     | VFMADDPS4mr_unison
-                    | VFMADDPS4rmY_unison
-                    | VFMADDPS4mrY_unison
-                    | VFMADDPSr132m_unison
-                    | VFMADDPSr132mY_unison
-                    | VFMADDPSr213m_unison
-                    | VFMADDPSr213mY_unison
-                    | VFMADDPSr231m_unison
-                    | VFMADDPSr231mY_unison
                     | VFMADDSD4rm_unison
                     | VFMADDSD4mr_unison
-                    | VFMADDSDr132m_unison
-                    | VFMADDSDr213m_unison
-                    | VFMADDSDr231m_unison
                     | VFMADDSS4rm_unison
                     | VFMADDSS4mr_unison
-                    | VFMADDSSr132m_unison
-                    | VFMADDSSr213m_unison
-                    | VFMADDSSr231m_unison
+                    | VFMADDSUBPD4Yrm_unison
+                    | VFMADDSUBPD4Ymr_unison
                     | VFMADDSUBPD4rm_unison
                     | VFMADDSUBPD4mr_unison
-                    | VFMADDSUBPD4rmY_unison
-                    | VFMADDSUBPD4mrY_unison
-                    | VFMADDSUBPDr132m_unison
-                    | VFMADDSUBPDr132mY_unison
-                    | VFMADDSUBPDr213m_unison
-                    | VFMADDSUBPDr213mY_unison
-                    | VFMADDSUBPDr231m_unison
-                    | VFMADDSUBPDr231mY_unison
+                    | VFMADDSUBPS4Yrm_unison
+                    | VFMADDSUBPS4Ymr_unison
                     | VFMADDSUBPS4rm_unison
                     | VFMADDSUBPS4mr_unison
-                    | VFMADDSUBPS4rmY_unison
-                    | VFMADDSUBPS4mrY_unison
-                    | VFMADDSUBPSr132m_unison
-                    | VFMADDSUBPSr132mY_unison
-                    | VFMADDSUBPSr213m_unison
-                    | VFMADDSUBPSr213mY_unison
-                    | VFMADDSUBPSr231m_unison
-                    | VFMADDSUBPSr231mY_unison
+                    | VFMSUBADDPD4Yrm_unison
+                    | VFMSUBADDPD4Ymr_unison
                     | VFMSUBADDPD4rm_unison
                     | VFMSUBADDPD4mr_unison
-                    | VFMSUBADDPD4rmY_unison
-                    | VFMSUBADDPD4mrY_unison
-                    | VFMSUBADDPDr132m_unison
-                    | VFMSUBADDPDr132mY_unison
-                    | VFMSUBADDPDr213m_unison
-                    | VFMSUBADDPDr213mY_unison
-                    | VFMSUBADDPDr231m_unison
-                    | VFMSUBADDPDr231mY_unison
+                    | VFMSUBADDPS4Yrm_unison
+                    | VFMSUBADDPS4Ymr_unison
                     | VFMSUBADDPS4rm_unison
                     | VFMSUBADDPS4mr_unison
-                    | VFMSUBADDPS4rmY_unison
-                    | VFMSUBADDPS4mrY_unison
-                    | VFMSUBADDPSr132m_unison
-                    | VFMSUBADDPSr132mY_unison
-                    | VFMSUBADDPSr213m_unison
-                    | VFMSUBADDPSr213mY_unison
-                    | VFMSUBADDPSr231m_unison
-                    | VFMSUBADDPSr231mY_unison
+                    | VFMSUBPD4Yrm_unison
+                    | VFMSUBPD4Ymr_unison
                     | VFMSUBPD4rm_unison
                     | VFMSUBPD4mr_unison
-                    | VFMSUBPD4rmY_unison
-                    | VFMSUBPD4mrY_unison
-                    | VFMSUBPDr132m_unison
-                    | VFMSUBPDr132mY_unison
-                    | VFMSUBPDr213m_unison
-                    | VFMSUBPDr213mY_unison
-                    | VFMSUBPDr231m_unison
-                    | VFMSUBPDr231mY_unison
+                    | VFMSUBPS4Yrm_unison
+                    | VFMSUBPS4Ymr_unison
                     | VFMSUBPS4rm_unison
                     | VFMSUBPS4mr_unison
-                    | VFMSUBPS4rmY_unison
-                    | VFMSUBPS4mrY_unison
-                    | VFMSUBPSr132m_unison
-                    | VFMSUBPSr132mY_unison
-                    | VFMSUBPSr213m_unison
-                    | VFMSUBPSr213mY_unison
-                    | VFMSUBPSr231m_unison
-                    | VFMSUBPSr231mY_unison
                     | VFMSUBSD4rm_unison
                     | VFMSUBSD4mr_unison
-                    | VFMSUBSDr132m_unison
-                    | VFMSUBSDr213m_unison
-                    | VFMSUBSDr231m_unison
                     | VFMSUBSS4rm_unison
                     | VFMSUBSS4mr_unison
-                    | VFMSUBSSr132m_unison
-                    | VFMSUBSSr213m_unison
-                    | VFMSUBSSr231m_unison
+                    | VFNMADDPD4Yrm_unison
+                    | VFNMADDPD4Ymr_unison
                     | VFNMADDPD4rm_unison
                     | VFNMADDPD4mr_unison
-                    | VFNMADDPD4rmY_unison
-                    | VFNMADDPD4mrY_unison
-                    | VFNMADDPDr132m_unison
-                    | VFNMADDPDr132mY_unison
-                    | VFNMADDPDr213m_unison
-                    | VFNMADDPDr213mY_unison
-                    | VFNMADDPDr231m_unison
-                    | VFNMADDPDr231mY_unison
+                    | VFNMADDPS4Yrm_unison
+                    | VFNMADDPS4Ymr_unison
                     | VFNMADDPS4rm_unison
                     | VFNMADDPS4mr_unison
-                    | VFNMADDPS4rmY_unison
-                    | VFNMADDPS4mrY_unison
-                    | VFNMADDPSr132m_unison
-                    | VFNMADDPSr132mY_unison
-                    | VFNMADDPSr213m_unison
-                    | VFNMADDPSr213mY_unison
-                    | VFNMADDPSr231m_unison
-                    | VFNMADDPSr231mY_unison
                     | VFNMADDSD4rm_unison
                     | VFNMADDSD4mr_unison
-                    | VFNMADDSDr132m_unison
-                    | VFNMADDSDr213m_unison
-                    | VFNMADDSDr231m_unison
                     | VFNMADDSS4rm_unison
                     | VFNMADDSS4mr_unison
-                    | VFNMADDSSr132m_unison
-                    | VFNMADDSSr213m_unison
-                    | VFNMADDSSr231m_unison
+                    | VFNMSUBPD4Yrm_unison
+                    | VFNMSUBPD4Ymr_unison
                     | VFNMSUBPD4rm_unison
                     | VFNMSUBPD4mr_unison
-                    | VFNMSUBPD4rmY_unison
-                    | VFNMSUBPD4mrY_unison
-                    | VFNMSUBPDr132m_unison
-                    | VFNMSUBPDr132mY_unison
-                    | VFNMSUBPDr213m_unison
-                    | VFNMSUBPDr213mY_unison
-                    | VFNMSUBPDr231m_unison
-                    | VFNMSUBPDr231mY_unison
+                    | VFNMSUBPS4Yrm_unison
+                    | VFNMSUBPS4Ymr_unison
                     | VFNMSUBPS4rm_unison
                     | VFNMSUBPS4mr_unison
-                    | VFNMSUBPS4rmY_unison
-                    | VFNMSUBPS4mrY_unison
-                    | VFNMSUBPSr132m_unison
-                    | VFNMSUBPSr132mY_unison
-                    | VFNMSUBPSr213m_unison
-                    | VFNMSUBPSr213mY_unison
-                    | VFNMSUBPSr231m_unison
-                    | VFNMSUBPSr231mY_unison
                     | VFNMSUBSD4rm_unison
                     | VFNMSUBSD4mr_unison
-                    | VFNMSUBSDr132m_unison
-                    | VFNMSUBSDr213m_unison
-                    | VFNMSUBSDr231m_unison
                     | VFNMSUBSS4rm_unison
                     | VFNMSUBSS4mr_unison
-                    | VFNMSUBSSr132m_unison
-                    | VFNMSUBSSr213m_unison
-                    | VFNMSUBSSr231m_unison
+                    | VFRCZPDYrm_unison
                     | VFRCZPDrm_unison
-                    | VFRCZPDrmY_unison
+                    | VFRCZPSYrm_unison
                     | VFRCZPSrm_unison
-                    | VFRCZPSrmY_unison
                     | VFRCZSDrm_unison
                     | VFRCZSSrm_unison
-                    | VFsANDNPDrm_unison
-                    | VFsANDNPSrm_unison
-                    | VFsANDPDrm_unison
-                    | VFsANDPSrm_unison
-                    | VFsORPDrm_unison
-                    | VFsORPSrm_unison
-                    | VFsXORPDrm_unison
-                    | VFsXORPSrm_unison
-                    | VFvANDNPDYrm_unison
-                    | VFvANDNPDrm_unison
-                    | VFvANDNPSYrm_unison
-                    | VFvANDNPSrm_unison
-                    | VFvANDPDYrm_unison
-                    | VFvANDPDrm_unison
-                    | VFvANDPSYrm_unison
-                    | VFvANDPSrm_unison
-                    | VFvORPDYrm_unison
-                    | VFvORPDrm_unison
-                    | VFvORPSYrm_unison
-                    | VFvORPSrm_unison
-                    | VFvXORPDYrm_unison
-                    | VFvXORPDrm_unison
-                    | VFvXORPSYrm_unison
-                    | VFvXORPSrm_unison
                     | VHADDPDYrm_unison
                     | VHADDPDrm_unison
                     | VHADDPSYrm_unison
@@ -5329,7 +5282,7 @@ data X86Instruction = AAA
                     | VMOVDQUmr_unison
                     | VMOVPDI2DImr_unison
                     | VMOVPQI2QImr_unison
-                    | VMOVPQIto64rm_unison
+                    | VMOVPQIto64mr_unison
                     | VMOVSDto64mr_unison
                     | VMOVSHDUPYrm_unison
                     | VMOVSHDUPrm_unison
@@ -5344,11 +5297,10 @@ data X86Instruction = AAA
                     | VMOVUPSYmr_unison
                     | VMOVUPSrm_unison
                     | VMOVUPSmr_unison
-                    | VMOVZPQILo2PQIrm_unison
                     | VMPSADBWYrmi_unison
                     | VMPSADBWrmi_unison
-                    | VMREAD32rm_unison
-                    | VMREAD64rm_unison
+                    | VMREAD32mr_unison
+                    | VMREAD64mr_unison
                     | VMULPDYrm_unison
                     | VMULPDrm_unison
                     | VMULPSYrm_unison
@@ -5361,12 +5313,11 @@ data X86Instruction = AAA
                     | VORPDrm_unison
                     | VORPSYrm_unison
                     | VORPSrm_unison
-                    | VPABSBrm128_unison
-                    | VPABSBrm256_unison
-                    | VPABSDrm128_unison
-                    | VPABSDrm256_unison
-                    | VPABSWrm128_unison
-                    | VPABSWrm256_unison
+                    | VPABSBYrm_unison
+                    | VPABSBrm_unison
+                    | VPABSDYrm_unison
+                    | VPABSDrm_unison
+                    | VPABSWrm_unison
                     | VPACKSSDWYrm_unison
                     | VPACKSSDWrm_unison
                     | VPACKSSWBYrm_unison
@@ -5391,8 +5342,8 @@ data X86Instruction = AAA
                     | VPADDUSWrm_unison
                     | VPADDWYrm_unison
                     | VPADDWrm_unison
-                    | VPALIGNR128rm_unison
-                    | VPALIGNR256rm_unison
+                    | VPALIGNRYrmi_unison
+                    | VPALIGNRrmi_unison
                     | VPANDNYrm_unison
                     | VPANDNrm_unison
                     | VPANDYrm_unison
@@ -5416,10 +5367,6 @@ data X86Instruction = AAA
                     | VPBROADCASTWYrm_unison
                     | VPBROADCASTWrm_unison
                     | VPCLMULQDQrm_unison
-                    | VPCMOVrm_unison
-                    | VPCMOVmr_unison
-                    | VPCMOVrmY_unison
-                    | VPCMOVmrY_unison
                     | VPCMPEQBYrm_unison
                     | VPCMPEQBrm_unison
                     | VPCMPEQDYrm_unison
@@ -5429,7 +5376,7 @@ data X86Instruction = AAA
                     | VPCMPEQWYrm_unison
                     | VPCMPEQWrm_unison
                     | VPCMPESTRIrm_unison
-                    | VPCMPESTRM128rm_unison
+                    | VPCMPESTRMrm_unison
                     | VPCMPGTBYrm_unison
                     | VPCMPGTBrm_unison
                     | VPCMPGTDYrm_unison
@@ -5439,7 +5386,7 @@ data X86Instruction = AAA
                     | VPCMPGTWYrm_unison
                     | VPCMPGTWrm_unison
                     | VPCMPISTRIrm_unison
-                    | VPCMPISTRM128rm_unison
+                    | VPCMPISTRMrm_unison
                     | VPCOMBmi_unison
                     | VPCOMBmi_alt_unison
                     | VPCOMDmi_unison
@@ -5478,8 +5425,8 @@ data X86Instruction = AAA
                     | VPHADDDQrm_unison
                     | VPHADDDYrm_unison
                     | VPHADDDrm_unison
-                    | VPHADDSWrm128_unison
-                    | VPHADDSWrm256_unison
+                    | VPHADDSWYrm_unison
+                    | VPHADDSWrm_unison
                     | VPHADDUBDrm_unison
                     | VPHADDUBQrm_unison
                     | VPHADDUBWrm_unison
@@ -5490,13 +5437,13 @@ data X86Instruction = AAA
                     | VPHADDWQrm_unison
                     | VPHADDWYrm_unison
                     | VPHADDWrm_unison
-                    | VPHMINPOSUWrm128_unison
+                    | VPHMINPOSUWrm_unison
                     | VPHSUBBWrm_unison
                     | VPHSUBDQrm_unison
                     | VPHSUBDYrm_unison
                     | VPHSUBDrm_unison
-                    | VPHSUBSWrm128_unison
-                    | VPHSUBSWrm256_unison
+                    | VPHSUBSWYrm_unison
+                    | VPHSUBSWrm_unison
                     | VPHSUBWDrm_unison
                     | VPHSUBWYrm_unison
                     | VPHSUBWrm_unison
@@ -5514,8 +5461,8 @@ data X86Instruction = AAA
                     | VPMACSWWrm_unison
                     | VPMADCSSWDrm_unison
                     | VPMADCSWDrm_unison
-                    | VPMADDUBSWrm128_unison
-                    | VPMADDUBSWrm256_unison
+                    | VPMADDUBSWYrm_unison
+                    | VPMADDUBSWrm_unison
                     | VPMADDWDYrm_unison
                     | VPMADDWDrm_unison
                     | VPMAXSBYrm_unison
@@ -5568,8 +5515,8 @@ data X86Instruction = AAA
                     | VPMOVZXWQrm_unison
                     | VPMULDQYrm_unison
                     | VPMULDQrm_unison
-                    | VPMULHRSWrm128_unison
-                    | VPMULHRSWrm256_unison
+                    | VPMULHRSWYrm_unison
+                    | VPMULHRSWrm_unison
                     | VPMULHUWYrm_unison
                     | VPMULHUWrm_unison
                     | VPMULHWYrm_unison
@@ -5582,8 +5529,6 @@ data X86Instruction = AAA
                     | VPMULUDQrm_unison
                     | VPORYrm_unison
                     | VPORrm_unison
-                    | VPPERMrm_unison
-                    | VPPERMmr_unison
                     | VPROTBmi_unison
                     | VPROTBrm_unison
                     | VPROTBmr_unison
@@ -5693,10 +5638,10 @@ data X86Instruction = AAA
                     | VRCPPSYm_unison
                     | VRCPPSm_unison
                     | VRCPSSm_unison
+                    | VROUNDPDYm_unison
                     | VROUNDPDm_unison
+                    | VROUNDPSYm_unison
                     | VROUNDPSm_unison
-                    | VROUNDYPDm_unison
-                    | VROUNDYPSm_unison
                     | VRSQRTPSYm_unison
                     | VRSQRTPSm_unison
                     | VRSQRTSSm_unison
@@ -5734,14 +5679,6 @@ data X86Instruction = AAA
                     | VXORPDrm_unison
                     | VXORPSYrm_unison
                     | VXORPSrm_unison
-                    | XADD16rm_unison
-                    | XADD32rm_unison
-                    | XADD64rm_unison
-                    | XADD8rm_unison
-                    | XCHG16rm_unison
-                    | XCHG32rm_unison
-                    | XCHG64rm_unison
-                    | XCHG8rm_unison
                     | XOR16mi_unison
                     | XOR16mi8_unison
                     | XOR16rm_unison
@@ -5760,54 +5697,6 @@ data X86Instruction = AAA
                     | XOR8mr_unison
                     | XORPDrm_unison
                     | XORPSrm_unison
-                    | CMOVA16rr_swap
-                    | CMOVA32rr_swap
-                    | CMOVA64rr_swap
-                    | CMOVAE16rr_swap
-                    | CMOVAE32rr_swap
-                    | CMOVAE64rr_swap
-                    | CMOVB16rr_swap
-                    | CMOVB32rr_swap
-                    | CMOVB64rr_swap
-                    | CMOVBE16rr_swap
-                    | CMOVBE32rr_swap
-                    | CMOVBE64rr_swap
-                    | CMOVE16rr_swap
-                    | CMOVE32rr_swap
-                    | CMOVE64rr_swap
-                    | CMOVG16rr_swap
-                    | CMOVG32rr_swap
-                    | CMOVG64rr_swap
-                    | CMOVGE16rr_swap
-                    | CMOVGE32rr_swap
-                    | CMOVGE64rr_swap
-                    | CMOVL16rr_swap
-                    | CMOVL32rr_swap
-                    | CMOVL64rr_swap
-                    | CMOVLE16rr_swap
-                    | CMOVLE32rr_swap
-                    | CMOVLE64rr_swap
-                    | CMOVNE16rr_swap
-                    | CMOVNE32rr_swap
-                    | CMOVNE64rr_swap
-                    | CMOVNO16rr_swap
-                    | CMOVNO32rr_swap
-                    | CMOVNO64rr_swap
-                    | CMOVNP16rr_swap
-                    | CMOVNP32rr_swap
-                    | CMOVNP64rr_swap
-                    | CMOVNS16rr_swap
-                    | CMOVNS32rr_swap
-                    | CMOVNS64rr_swap
-                    | CMOVO16rr_swap
-                    | CMOVO32rr_swap
-                    | CMOVO64rr_swap
-                    | CMOVP16rr_swap
-                    | CMOVP32rr_swap
-                    | CMOVP64rr_swap
-                    | CMOVS16rr_swap
-                    | CMOVS32rr_swap
-                    | CMOVS64rr_swap
                     | MOV8ri_source
                     | MOV8ri_demat
                     | MOV8ri_remat

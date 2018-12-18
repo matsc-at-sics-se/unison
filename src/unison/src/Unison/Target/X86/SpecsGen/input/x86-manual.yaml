@@ -267,7 +267,7 @@ instruction-set:
            - RSP:             register
           affected-by:
            - RSP:             register
-          itinerary:          SKLWriteResGroup34
+          itinerary:          WriteFPUSH32
 
         - id:                 FPUSH
           parent:             SUB64ri8
@@ -462,6 +462,198 @@ instruction-set:
           defines:            [dst]
           affects:
           affected-by:
+
+        - id:                 CMOVA16rr_swap
+          parent:             CMOVBE16rr
+          defines:            [src2]
+
+        - id:                 CMOVA32rr_swap
+          parent:             CMOVBE32rr
+          defines:            [src2]
+
+        - id:                 CMOVA64rr_swap
+          parent:             CMOVBE64rr
+          defines:            [src2]
+
+        - id:                 CMOVAE16rr_swap
+          parent:             CMOVB16rr
+          defines:            [src2]
+
+        - id:                 CMOVAE32rr_swap
+          parent:             CMOVB32rr
+          defines:            [src2]
+
+        - id:                 CMOVAE64rr_swap
+          parent:             CMOVB64rr
+          defines:            [src2]
+
+        - id:                 CMOVB16rr_swap
+          parent:             CMOVAE16rr
+          defines:            [src2]
+
+        - id:                 CMOVB32rr_swap
+          parent:             CMOVAE32rr
+          defines:            [src2]
+
+        - id:                 CMOVB64rr_swap
+          parent:             CMOVAE64rr
+          defines:            [src2]
+
+        - id:                 CMOVBE16rr_swap
+          parent:             CMOVA16rr
+          defines:            [src2]
+
+        - id:                 CMOVBE32rr_swap
+          parent:             CMOVA32rr
+          defines:            [src2]
+
+        - id:                 CMOVBE64rr_swap
+          parent:             CMOVA64rr
+          defines:            [src2]
+
+        - id:                 CMOVE16rr_swap
+          parent:             CMOVNE16rr
+          defines:            [src2]
+
+        - id:                 CMOVE32rr_swap
+          parent:             CMOVNE32rr
+          defines:            [src2]
+
+        - id:                 CMOVE64rr_swap
+          parent:             CMOVNE64rr
+          defines:            [src2]
+
+        - id:                 CMOVG16rr_swap
+          parent:             CMOVLE16rr
+          defines:            [src2]
+
+        - id:                 CMOVG32rr_swap
+          parent:             CMOVLE32rr
+          defines:            [src2]
+
+        - id:                 CMOVG64rr_swap
+          parent:             CMOVLE64rr
+          defines:            [src2]
+
+        - id:                 CMOVGE16rr_swap
+          parent:             CMOVL16rr
+          defines:            [src2]
+
+        - id:                 CMOVGE32rr_swap
+          parent:             CMOVL32rr
+          defines:            [src2]
+
+        - id:                 CMOVGE64rr_swap
+          parent:             CMOVL64rr
+          defines:            [src2]
+
+        - id:                 CMOVL16rr_swap
+          parent:             CMOVGE16rr
+          defines:            [src2]
+
+        - id:                 CMOVL32rr_swap
+          parent:             CMOVGE32rr
+          defines:            [src2]
+
+        - id:                 CMOVL64rr_swap
+          parent:             CMOVGE64rr
+          defines:            [src2]
+
+        - id:                 CMOVLE16rr_swap
+          parent:             CMOVG16rr
+          defines:            [src2]
+
+        - id:                 CMOVLE32rr_swap
+          parent:             CMOVG32rr
+          defines:            [src2]
+
+        - id:                 CMOVLE64rr_swap
+          parent:             CMOVG64rr
+          defines:            [src2]
+
+        - id:                 CMOVNE16rr_swap
+          parent:             CMOVE16rr
+          defines:            [src2]
+
+        - id:                 CMOVNE32rr_swap
+          parent:             CMOVE32rr
+          defines:            [src2]
+
+        - id:                 CMOVNE64rr_swap
+          parent:             CMOVE64rr
+          defines:            [src2]
+
+        - id:                 CMOVNO16rr_swap
+          parent:             CMOVO16rr
+          defines:            [src2]
+
+        - id:                 CMOVNO32rr_swap
+          parent:             CMOVO32rr
+          defines:            [src2]
+
+        - id:                 CMOVNO64rr_swap
+          parent:             CMOVO64rr
+          defines:            [src2]
+
+        - id:                 CMOVNP16rr_swap
+          parent:             CMOVP16rr
+          defines:            [src2]
+
+        - id:                 CMOVNP32rr_swap
+          parent:             CMOVP32rr
+          defines:            [src2]
+
+        - id:                 CMOVNP64rr_swap
+          parent:             CMOVP64rr
+          defines:            [src2]
+
+        - id:                 CMOVNS16rr_swap
+          parent:             CMOVS16rr
+          defines:            [src2]
+
+        - id:                 CMOVNS32rr_swap
+          parent:             CMOVS32rr
+          defines:            [src2]
+
+        - id:                 CMOVNS64rr_swap
+          parent:             CMOVS64rr
+          defines:            [src2]
+
+        - id:                 CMOVO16rr_swap
+          parent:             CMOVNO16rr
+          defines:            [src2]
+
+        - id:                 CMOVO32rr_swap
+          parent:             CMOVNO32rr
+          defines:            [src2]
+
+        - id:                 CMOVO64rr_swap
+          parent:             CMOVNO64rr
+          defines:            [src2]
+
+        - id:                 CMOVP16rr_swap
+          parent:             CMOVNP16rr
+          defines:            [src2]
+
+        - id:                 CMOVP32rr_swap
+          parent:             CMOVNP32rr
+          defines:            [src2]
+
+        - id:                 CMOVP64rr_swap
+          parent:             CMOVNP64rr
+          defines:            [src2]
+
+        - id:                 CMOVS16rr_swap
+          parent:             CMOVNS16rr
+          defines:            [src2]
+
+        - id:                 CMOVS32rr_swap
+          parent:             CMOVNS32rr
+          defines:            [src2]
+
+        - id:                 CMOVS64rr_swap
+          parent:             CMOVNS64rr
+          defines:            [src2]
 
         - id:                 ADC16mi_unison
           parent:             ADC16mi
@@ -786,17 +978,17 @@ instruction-set:
         - id:                 ADOX32rm_unison
           parent:             ADOX32rm
           operands:
-           - src1:            [register, def, GR32]
+           - src1:            [register, usedef, GR32]
            - src2:            [register, use, M32]
-          uses:               [src2]
+          uses:               [src1, src2]
           defines:            [src1]
 
         - id:                 ADOX64rm_unison
           parent:             ADOX64rm
           operands:
-           - src1:            [register, def, GR64]
+           - src1:            [register, usedef, GR64]
            - src2:            [register, use, M64]
-          uses:               [src2]
+          uses:               [src1, src2]
           defines:            [src1]
 
         - id:                 AESDECLASTrm_unison
@@ -1363,146 +1555,146 @@ instruction-set:
         - id:                 BTC16mi8_unison
           parent:             BTC16mi8
           operands:
-           - src1:            [register, use, M16]
+           - src1:            [register, usedef, M16]
            - src2:            bound
           uses:               [src1, src2]
-          defines:            []
+          defines:            [src1]
 
         - id:                 BTC16mr_unison
           parent:             BTC16mr
           operands:
-           - src1:            [register, use, M16]
+           - src1:            [register, usedef, M16]
            - src2:            [register, use, GR16]
           uses:               [src1, src2]
-          defines:            []
+          defines:            [src1]
 
         - id:                 BTC32mi8_unison
           parent:             BTC32mi8
           operands:
-           - src1:            [register, use, M32]
+           - src1:            [register, usedef, M32]
            - src2:            bound
           uses:               [src1, src2]
-          defines:            []
+          defines:            [src1]
 
         - id:                 BTC32mr_unison
           parent:             BTC32mr
           operands:
-           - src1:            [register, use, M32]
+           - src1:            [register, usedef, M32]
            - src2:            [register, use, GR32]
           uses:               [src1, src2]
-          defines:            []
+          defines:            [src1]
 
         - id:                 BTC64mi8_unison
           parent:             BTC64mi8
           operands:
-           - src1:            [register, use, M64]
+           - src1:            [register, usedef, M64]
            - src2:            bound
           uses:               [src1, src2]
-          defines:            []
+          defines:            [src1]
 
         - id:                 BTC64mr_unison
           parent:             BTC64mr
           operands:
-           - src1:            [register, use, M64]
+           - src1:            [register, usedef, M64]
            - src2:            [register, use, GR64]
           uses:               [src1, src2]
-          defines:            []
+          defines:            [src1]
 
         - id:                 BTR16mi8_unison
           parent:             BTR16mi8
           operands:
-           - src1:            [register, use, M16]
+           - src1:            [register, usedef, M16]
            - src2:            bound
           uses:               [src1, src2]
-          defines:            []
+          defines:            [src1]
 
         - id:                 BTR16mr_unison
           parent:             BTR16mr
           operands:
-           - src1:            [register, use, M16]
+           - src1:            [register, usedef, M16]
            - src2:            [register, use, GR16]
           uses:               [src1, src2]
-          defines:            []
+          defines:            [src1]
 
         - id:                 BTR32mi8_unison
           parent:             BTR32mi8
           operands:
-           - src1:            [register, use, M32]
+           - src1:            [register, usedef, M32]
            - src2:            bound
           uses:               [src1, src2]
-          defines:            []
+          defines:            [src1]
 
         - id:                 BTR32mr_unison
           parent:             BTR32mr
           operands:
-           - src1:            [register, use, M32]
+           - src1:            [register, usedef, M32]
            - src2:            [register, use, GR32]
           uses:               [src1, src2]
-          defines:            []
+          defines:            [src1]
 
         - id:                 BTR64mi8_unison
           parent:             BTR64mi8
           operands:
-           - src1:            [register, use, M64]
+           - src1:            [register, usedef, M64]
            - src2:            bound
           uses:               [src1, src2]
-          defines:            []
+          defines:            [src1]
 
         - id:                 BTR64mr_unison
           parent:             BTR64mr
           operands:
-           - src1:            [register, use, M64]
+           - src1:            [register, usedef, M64]
            - src2:            [register, use, GR64]
           uses:               [src1, src2]
-          defines:            []
+          defines:            [src1]
 
         - id:                 BTS16mi8_unison
           parent:             BTS16mi8
           operands:
-           - src1:            [register, use, M16]
+           - src1:            [register, usedef, M16]
            - src2:            bound
           uses:               [src1, src2]
-          defines:            []
+          defines:            [src1]
 
         - id:                 BTS16mr_unison
           parent:             BTS16mr
           operands:
-           - src1:            [register, use, M16]
+           - src1:            [register, usedef, M16]
            - src2:            [register, use, GR16]
           uses:               [src1, src2]
-          defines:            []
+          defines:            [src1]
 
         - id:                 BTS32mi8_unison
           parent:             BTS32mi8
           operands:
-           - src1:            [register, use, M32]
+           - src1:            [register, usedef, M32]
            - src2:            bound
           uses:               [src1, src2]
-          defines:            []
+          defines:            [src1]
 
         - id:                 BTS32mr_unison
           parent:             BTS32mr
           operands:
-           - src1:            [register, use, M32]
+           - src1:            [register, usedef, M32]
            - src2:            [register, use, GR32]
           uses:               [src1, src2]
-          defines:            []
+          defines:            [src1]
 
         - id:                 BTS64mi8_unison
           parent:             BTS64mi8
           operands:
-           - src1:            [register, use, M64]
+           - src1:            [register, usedef, M64]
            - src2:            bound
           uses:               [src1, src2]
-          defines:            []
+          defines:            [src1]
 
         - id:                 BTS64mr_unison
           parent:             BTS64mr
           operands:
-           - src1:            [register, use, M64]
+           - src1:            [register, usedef, M64]
            - src2:            [register, use, GR64]
           uses:               [src1, src2]
-          defines:            []
+          defines:            [src1]
 
         - id:                 BZHI32rm_unison
           parent:             BZHI32rm
@@ -2263,34 +2455,10 @@ instruction-set:
           uses:               [src2]
           defines:            [src1]
 
-        - id:                 CVTSD2SI64rm_unison
-          parent:             CVTSD2SI64rm
-          operands:
-           - src1:            [register, def, GR64]
-           - src2:            [register, use, M128]
-          uses:               [src2]
-          defines:            [src1]
-
-        - id:                 CVTSD2SIrm_unison
-          parent:             CVTSD2SIrm
-          operands:
-           - src1:            [register, def, GR32]
-           - src2:            [register, use, M128]
-          uses:               [src2]
-          defines:            [src1]
-
         - id:                 CVTSD2SSrm_unison
           parent:             CVTSD2SSrm
           operands:
            - src1:            [register, def, FR32]
-           - src2:            [register, use, M64]
-          uses:               [src2]
-          defines:            [src1]
-
-        - id:                 CVTSI2SD64rm_unison
-          parent:             CVTSI2SD64rm
-          operands:
-           - src1:            [register, def, FR64]
            - src2:            [register, use, M64]
           uses:               [src2]
           defines:            [src1]
@@ -2303,14 +2471,6 @@ instruction-set:
           uses:               [src2]
           defines:            [src1]
 
-        - id:                 CVTSI2SS64rm_unison
-          parent:             CVTSI2SS64rm
-          operands:
-           - src1:            [register, def, FR32]
-           - src2:            [register, use, M64]
-          uses:               [src2]
-          defines:            [src1]
-
         - id:                 CVTSI2SSrm_unison
           parent:             CVTSI2SSrm
           operands:
@@ -2319,27 +2479,27 @@ instruction-set:
           uses:               [src2]
           defines:            [src1]
 
+        - id:                 CVTSI642SDrm_unison
+          parent:             CVTSI642SDrm
+          operands:
+           - src1:            [register, def, FR64]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 CVTSI642SSrm_unison
+          parent:             CVTSI642SSrm
+          operands:
+           - src1:            [register, def, FR32]
+           - src2:            [register, use, M64]
+          uses:               [src2]
+          defines:            [src1]
+
         - id:                 CVTSS2SDrm_unison
           parent:             CVTSS2SDrm
           operands:
            - src1:            [register, def, FR64]
            - src2:            [register, use, M32]
-          uses:               [src2]
-          defines:            [src1]
-
-        - id:                 CVTSS2SI64rm_unison
-          parent:             CVTSS2SI64rm
-          operands:
-           - src1:            [register, def, GR64]
-           - src2:            [register, use, M128]
-          uses:               [src2]
-          defines:            [src1]
-
-        - id:                 CVTSS2SIrm_unison
-          parent:             CVTSS2SIrm
-          operands:
-           - src1:            [register, def, GR32]
-           - src2:            [register, use, M128]
           uses:               [src2]
           defines:            [src1]
 
@@ -2476,134 +2636,6 @@ instruction-set:
           operands:
            - src1:            [register, usedef, FR32]
            - src2:            [register, use, M32]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 FsANDNPDrm_unison
-          parent:             FsANDNPDrm
-          operands:
-           - src1:            [register, usedef, FR64]
-           - src2:            [register, use, M64]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 FsANDNPSrm_unison
-          parent:             FsANDNPSrm
-          operands:
-           - src1:            [register, usedef, FR32]
-           - src2:            [register, use, M32]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 FsANDPDrm_unison
-          parent:             FsANDPDrm
-          operands:
-           - src1:            [register, usedef, FR64]
-           - src2:            [register, use, M64]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 FsANDPSrm_unison
-          parent:             FsANDPSrm
-          operands:
-           - src1:            [register, usedef, FR32]
-           - src2:            [register, use, M32]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 FsORPDrm_unison
-          parent:             FsORPDrm
-          operands:
-           - src1:            [register, usedef, FR64]
-           - src2:            [register, use, M64]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 FsORPSrm_unison
-          parent:             FsORPSrm
-          operands:
-           - src1:            [register, usedef, FR32]
-           - src2:            [register, use, M32]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 FsXORPDrm_unison
-          parent:             FsXORPDrm
-          operands:
-           - src1:            [register, usedef, FR64]
-           - src2:            [register, use, M64]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 FsXORPSrm_unison
-          parent:             FsXORPSrm
-          operands:
-           - src1:            [register, usedef, FR32]
-           - src2:            [register, use, M32]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 FvANDNPDrm_unison
-          parent:             FvANDNPDrm
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, M128]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 FvANDNPSrm_unison
-          parent:             FvANDNPSrm
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, M128]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 FvANDPDrm_unison
-          parent:             FvANDPDrm
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, M128]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 FvANDPSrm_unison
-          parent:             FvANDPSrm
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, M128]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 FvORPDrm_unison
-          parent:             FvORPDrm
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, M128]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 FvORPSrm_unison
-          parent:             FvORPSrm
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, M128]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 FvXORPDrm_unison
-          parent:             FvXORPDrm
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, M128]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 FvXORPSrm_unison
-          parent:             FvXORPSrm
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, M128]
           uses:               [src1, src2]
           defines:            [src1]
 
@@ -2889,7 +2921,7 @@ instruction-set:
           parent:             LSL64rm
           operands:
            - src1:            [register, def, GR64]
-           - src2:            [register, use, M64]
+           - src2:            [register, use, M32]
           uses:               [src2]
           defines:            [src1]
 
@@ -3277,8 +3309,8 @@ instruction-set:
           uses:               [src2]
           defines:            [src1]
 
-        - id:                 MOVPQIto64rm_unison
-          parent:             MOVPQIto64rm
+        - id:                 MOVPQIto64mr_unison
+          parent:             MOVPQIto64mr
           operands:
            - src1:            [register, def, M64]
            - src2:            [register, use, VR128]
@@ -3325,14 +3357,6 @@ instruction-set:
           uses:               [src2]
           defines:            [src1]
 
-        - id:                 MOVSX32_NOREXrm8_unison
-          parent:             MOVSX32_NOREXrm8
-          operands:
-           - src1:            [register, def, GR32_NOREX]
-           - src2:            [register, use, M8]
-          uses:               [src2]
-          defines:            [src1]
-
         - id:                 MOVSX32rm16_unison
           parent:             MOVSX32rm16
           operands:
@@ -3345,6 +3369,14 @@ instruction-set:
           parent:             MOVSX32rm8
           operands:
            - src1:            [register, def, GR32]
+           - src2:            [register, use, M8]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVSX32rm8_NOREX_unison
+          parent:             MOVSX32rm8_NOREX
+          operands:
+           - src1:            [register, def, GR32_NOREX]
            - src2:            [register, use, M8]
           uses:               [src2]
           defines:            [src1]
@@ -3405,26 +3437,10 @@ instruction-set:
           uses:               [src2]
           defines:            [src1]
 
-        - id:                 MOVZPQILo2PQIrm_unison
-          parent:             MOVZPQILo2PQIrm
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, M128]
-          uses:               [src2]
-          defines:            [src1]
-
         - id:                 MOVZX16rm8_unison
           parent:             MOVZX16rm8
           operands:
            - src1:            [register, def, GR16]
-           - src2:            [register, use, M8]
-          uses:               [src2]
-          defines:            [src1]
-
-        - id:                 MOVZX32_NOREXrm8_unison
-          parent:             MOVZX32_NOREXrm8
-          operands:
-           - src1:            [register, def, GR32_NOREX]
            - src2:            [register, use, M8]
           uses:               [src2]
           defines:            [src1]
@@ -3441,6 +3457,14 @@ instruction-set:
           parent:             MOVZX32rm8
           operands:
            - src1:            [register, def, GR32]
+           - src2:            [register, use, M8]
+          uses:               [src2]
+          defines:            [src1]
+
+        - id:                 MOVZX32rm8_NOREX_unison
+          parent:             MOVZX32rm8_NOREX
+          operands:
+           - src1:            [register, def, GR32_NOREX]
            - src2:            [register, use, M8]
           uses:               [src2]
           defines:            [src1]
@@ -3748,24 +3772,24 @@ instruction-set:
           uses:               [src1, src2]
           defines:            [src1]
 
-        - id:                 PABSBrm128_unison
-          parent:             PABSBrm128
+        - id:                 PABSBrm_unison
+          parent:             PABSBrm
           operands:
            - src1:            [register, def, VR128]
            - src2:            [register, use, M128]
           uses:               [src2]
           defines:            [src1]
 
-        - id:                 PABSDrm128_unison
-          parent:             PABSDrm128
+        - id:                 PABSDrm_unison
+          parent:             PABSDrm
           operands:
            - src1:            [register, def, VR128]
            - src2:            [register, use, M128]
           uses:               [src2]
           defines:            [src1]
 
-        - id:                 PABSWrm128_unison
-          parent:             PABSWrm128
+        - id:                 PABSWrm_unison
+          parent:             PABSWrm
           operands:
            - src1:            [register, def, VR128]
            - src2:            [register, use, M128]
@@ -3868,8 +3892,8 @@ instruction-set:
           uses:               [src1, src2]
           defines:            [src1]
 
-        - id:                 PALIGNR128rm_unison
-          parent:             PALIGNR128rm
+        - id:                 PALIGNRrmi_unison
+          parent:             PALIGNRrmi
           operands:
            - src1:            [register, usedef, VR128]
            - src2:            [register, use, M128]
@@ -3976,8 +4000,8 @@ instruction-set:
           uses:               [src1, src2, src3]
           defines:            []
 
-        - id:                 PCMPESTRM128rm_unison
-          parent:             PCMPESTRM128rm
+        - id:                 PCMPESTRMrm_unison
+          parent:             PCMPESTRMrm
           operands:
            - src1:            [register, use, VR128]
            - src2:            [register, use, M128]
@@ -4026,8 +4050,8 @@ instruction-set:
           uses:               [src1, src2, src3]
           defines:            []
 
-        - id:                 PCMPISTRM128rm_unison
-          parent:             PCMPISTRM128rm
+        - id:                 PCMPISTRMrm_unison
+          parent:             PCMPISTRMrm
           operands:
            - src1:            [register, use, VR128]
            - src2:            [register, use, M128]
@@ -4097,8 +4121,8 @@ instruction-set:
           uses:               [src1, src2]
           defines:            [src1]
 
-        - id:                 PHADDSWrm128_unison
-          parent:             PHADDSWrm128
+        - id:                 PHADDSWrm_unison
+          parent:             PHADDSWrm
           operands:
            - src1:            [register, usedef, VR128]
            - src2:            [register, use, M128]
@@ -4113,8 +4137,8 @@ instruction-set:
           uses:               [src1, src2]
           defines:            [src1]
 
-        - id:                 PHMINPOSUWrm128_unison
-          parent:             PHMINPOSUWrm128
+        - id:                 PHMINPOSUWrm_unison
+          parent:             PHMINPOSUWrm
           operands:
            - src1:            [register, def, VR128]
            - src2:            [register, use, M128]
@@ -4129,8 +4153,8 @@ instruction-set:
           uses:               [src1, src2]
           defines:            [src1]
 
-        - id:                 PHSUBSWrm128_unison
-          parent:             PHSUBSWrm128
+        - id:                 PHSUBSWrm_unison
+          parent:             PHSUBSWrm
           operands:
            - src1:            [register, usedef, VR128]
            - src2:            [register, use, M128]
@@ -4163,8 +4187,8 @@ instruction-set:
           uses:               [src1, src2, src3]
           defines:            [src1]
 
-        - id:                 PMADDUBSWrm128_unison
-          parent:             PMADDUBSWrm128
+        - id:                 PMADDUBSWrm_unison
+          parent:             PMADDUBSWrm
           operands:
            - src1:            [register, usedef, VR128]
            - src2:            [register, use, M128]
@@ -4379,8 +4403,8 @@ instruction-set:
           uses:               [src1, src2]
           defines:            [src1]
 
-        - id:                 PMULHRSWrm128_unison
-          parent:             PMULHRSWrm128
+        - id:                 PMULHRSWrm_unison
+          parent:             PMULHRSWrm
           operands:
            - src1:            [register, usedef, VR128]
            - src2:            [register, use, M128]
@@ -5938,13 +5962,6 @@ instruction-set:
           uses:               []
           defines:            [src1]
 
-        - id:                 SLDT64m_unison
-          parent:             SLDT64m
-          operands:
-           - src1:            [register, def, M64]
-          uses:               []
-          defines:            [src1]
-
         - id:                 SMSW16m_unison
           parent:             SMSW16m
           operands:
@@ -6205,11 +6222,11 @@ instruction-set:
           uses:               [src1, src2]
           defines:            []
 
-        - id:                 TEST16rm_unison
-          parent:             TEST16rm
+        - id:                 TEST16mr_unison
+          parent:             TEST16mr
           operands:
-           - src1:            [register, use, GR16]
-           - src2:            [register, use, M16]
+           - src1:            [register, use, M16]
+           - src2:            [register, use, GR16]
           uses:               [src1, src2]
           defines:            []
 
@@ -6221,11 +6238,11 @@ instruction-set:
           uses:               [src1, src2]
           defines:            []
 
-        - id:                 TEST32rm_unison
-          parent:             TEST32rm
+        - id:                 TEST32mr_unison
+          parent:             TEST32mr
           operands:
-           - src1:            [register, use, GR32]
-           - src2:            [register, use, M32]
+           - src1:            [register, use, M32]
+           - src2:            [register, use, GR32]
           uses:               [src1, src2]
           defines:            []
 
@@ -6237,11 +6254,11 @@ instruction-set:
           uses:               [src1, src2]
           defines:            []
 
-        - id:                 TEST64rm_unison
-          parent:             TEST64rm
+        - id:                 TEST64mr_unison
+          parent:             TEST64mr
           operands:
-           - src1:            [register, use, GR64]
-           - src2:            [register, use, M64]
+           - src1:            [register, use, M64]
+           - src2:            [register, use, GR64]
           uses:               [src1, src2]
           defines:            []
 
@@ -6253,11 +6270,11 @@ instruction-set:
           uses:               [src1, src2]
           defines:            []
 
-        - id:                 TEST8rm_unison
-          parent:             TEST8rm
+        - id:                 TEST8mr_unison
+          parent:             TEST8mr
           operands:
-           - src1:            [register, use, GR8]
-           - src2:            [register, use, M8]
+           - src1:            [register, use, M8]
+           - src2:            [register, use, GR8]
           uses:               [src1, src2]
           defines:            []
 
@@ -6910,92 +6927,6 @@ instruction-set:
           uses:               [src2, src3]
           defines:            [src1]
 
-        - id:                 VCVTSD2SI64rm_unison
-          parent:             VCVTSD2SI64rm
-          operands:
-           - src1:            [register, def, GR64]
-           - src2:            [register, use, M128]
-          uses:               [src2]
-          defines:            [src1]
-
-        - id:                 VCVTSD2SIrm_unison
-          parent:             VCVTSD2SIrm
-          operands:
-           - src1:            [register, def, GR32]
-           - src2:            [register, use, M128]
-          uses:               [src2]
-          defines:            [src1]
-
-        - id:                 VCVTSD2SSrm_unison
-          parent:             VCVTSD2SSrm
-          operands:
-           - src1:            [register, def, FR32]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M64]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VCVTSI2SD64rm_unison
-          parent:             VCVTSI2SD64rm
-          operands:
-           - src1:            [register, def, FR64]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M64]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VCVTSI2SDrm_unison
-          parent:             VCVTSI2SDrm
-          operands:
-           - src1:            [register, def, FR64]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M32]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VCVTSI2SS64rm_unison
-          parent:             VCVTSI2SS64rm
-          operands:
-           - src1:            [register, def, FR32]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M64]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VCVTSI2SSrm_unison
-          parent:             VCVTSI2SSrm
-          operands:
-           - src1:            [register, def, FR32]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M32]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VCVTSS2SDrm_unison
-          parent:             VCVTSS2SDrm
-          operands:
-           - src1:            [register, def, FR64]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M32]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VCVTSS2SI64rm_unison
-          parent:             VCVTSS2SI64rm
-          operands:
-           - src1:            [register, def, GR64]
-           - src2:            [register, use, M128]
-          uses:               [src2]
-          defines:            [src1]
-
-        - id:                 VCVTSS2SIrm_unison
-          parent:             VCVTSS2SIrm
-          operands:
-           - src1:            [register, def, GR32]
-           - src2:            [register, use, M128]
-          uses:               [src2]
-          defines:            [src1]
-
         - id:                 VCVTTPD2DQYrm_unison
           parent:             VCVTTPD2DQYrm
           operands:
@@ -7161,6 +7092,26 @@ instruction-set:
           uses:               [src2, src3]
           defines:            [src1]
 
+        - id:                 VFMADDPD4Yrm_unison
+          parent:             VFMADDPD4Yrm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, VR256]
+           - src3:            [register, use, VR256]
+           - src4:            [register, use, M256]
+          uses:               [src2, src3, src4]
+          defines:            [src1]
+
+        - id:                 VFMADDPD4Ymr_unison
+          parent:             VFMADDPD4Ymr
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, VR256]
+           - src3:            [register, use, M256]
+           - src4:            [register, use, VR256]
+          uses:               [src2, src3, src4]
+          defines:            [src1]
+
         - id:                 VFMADDPD4rm_unison
           parent:             VFMADDPD4rm
           operands:
@@ -7181,8 +7132,8 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFMADDPD4rmY_unison
-          parent:             VFMADDPD4rmY
+        - id:                 VFMADDPS4Yrm_unison
+          parent:             VFMADDPS4Yrm
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
@@ -7191,68 +7142,14 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFMADDPD4mrY_unison
-          parent:             VFMADDPD4mrY
+        - id:                 VFMADDPS4Ymr_unison
+          parent:             VFMADDPS4Ymr
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
            - src3:            [register, use, M256]
            - src4:            [register, use, VR256]
           uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFMADDPDr132m_unison
-          parent:             VFMADDPDr132m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDPDr132mY_unison
-          parent:             VFMADDPDr132mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDPDr213m_unison
-          parent:             VFMADDPDr213m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDPDr213mY_unison
-          parent:             VFMADDPDr213mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDPDr231m_unison
-          parent:             VFMADDPDr231m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDPDr231mY_unison
-          parent:             VFMADDPDr231mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
           defines:            [src1]
 
         - id:                 VFMADDPS4rm_unison
@@ -7275,80 +7172,6 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFMADDPS4rmY_unison
-          parent:             VFMADDPS4rmY
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, VR256]
-           - src4:            [register, use, M256]
-          uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFMADDPS4mrY_unison
-          parent:             VFMADDPS4mrY
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-           - src4:            [register, use, VR256]
-          uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFMADDPSr132m_unison
-          parent:             VFMADDPSr132m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDPSr132mY_unison
-          parent:             VFMADDPSr132mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDPSr213m_unison
-          parent:             VFMADDPSr213m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDPSr213mY_unison
-          parent:             VFMADDPSr213mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDPSr231m_unison
-          parent:             VFMADDPSr231m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDPSr231mY_unison
-          parent:             VFMADDPSr231mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
         - id:                 VFMADDSD4rm_unison
           parent:             VFMADDSD4rm
           operands:
@@ -7367,33 +7190,6 @@ instruction-set:
            - src3:            [register, use, M64]
            - src4:            [register, use, FR64]
           uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFMADDSDr132m_unison
-          parent:             VFMADDSDr132m
-          operands:
-           - src1:            [register, usedef, FR64]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M64]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDSDr213m_unison
-          parent:             VFMADDSDr213m
-          operands:
-           - src1:            [register, usedef, FR64]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M64]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDSDr231m_unison
-          parent:             VFMADDSDr231m
-          operands:
-           - src1:            [register, usedef, FR64]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M64]
-          uses:               [src1, src2, src3]
           defines:            [src1]
 
         - id:                 VFMADDSS4rm_unison
@@ -7416,31 +7212,24 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFMADDSSr132m_unison
-          parent:             VFMADDSSr132m
+        - id:                 VFMADDSUBPD4Yrm_unison
+          parent:             VFMADDSUBPD4Yrm
           operands:
-           - src1:            [register, usedef, FR32]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M32]
-          uses:               [src1, src2, src3]
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, VR256]
+           - src3:            [register, use, VR256]
+           - src4:            [register, use, M256]
+          uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFMADDSSr213m_unison
-          parent:             VFMADDSSr213m
+        - id:                 VFMADDSUBPD4Ymr_unison
+          parent:             VFMADDSUBPD4Ymr
           operands:
-           - src1:            [register, usedef, FR32]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M32]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDSSr231m_unison
-          parent:             VFMADDSSr231m
-          operands:
-           - src1:            [register, usedef, FR32]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M32]
-          uses:               [src1, src2, src3]
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, VR256]
+           - src3:            [register, use, M256]
+           - src4:            [register, use, VR256]
+          uses:               [src2, src3, src4]
           defines:            [src1]
 
         - id:                 VFMADDSUBPD4rm_unison
@@ -7463,8 +7252,8 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFMADDSUBPD4rmY_unison
-          parent:             VFMADDSUBPD4rmY
+        - id:                 VFMADDSUBPS4Yrm_unison
+          parent:             VFMADDSUBPS4Yrm
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
@@ -7473,68 +7262,14 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFMADDSUBPD4mrY_unison
-          parent:             VFMADDSUBPD4mrY
+        - id:                 VFMADDSUBPS4Ymr_unison
+          parent:             VFMADDSUBPS4Ymr
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
            - src3:            [register, use, M256]
            - src4:            [register, use, VR256]
           uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFMADDSUBPDr132m_unison
-          parent:             VFMADDSUBPDr132m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDSUBPDr132mY_unison
-          parent:             VFMADDSUBPDr132mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDSUBPDr213m_unison
-          parent:             VFMADDSUBPDr213m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDSUBPDr213mY_unison
-          parent:             VFMADDSUBPDr213mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDSUBPDr231m_unison
-          parent:             VFMADDSUBPDr231m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDSUBPDr231mY_unison
-          parent:             VFMADDSUBPDr231mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
           defines:            [src1]
 
         - id:                 VFMADDSUBPS4rm_unison
@@ -7557,8 +7292,8 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFMADDSUBPS4rmY_unison
-          parent:             VFMADDSUBPS4rmY
+        - id:                 VFMSUBADDPD4Yrm_unison
+          parent:             VFMSUBADDPD4Yrm
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
@@ -7567,68 +7302,14 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFMADDSUBPS4mrY_unison
-          parent:             VFMADDSUBPS4mrY
+        - id:                 VFMSUBADDPD4Ymr_unison
+          parent:             VFMSUBADDPD4Ymr
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
            - src3:            [register, use, M256]
            - src4:            [register, use, VR256]
           uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFMADDSUBPSr132m_unison
-          parent:             VFMADDSUBPSr132m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDSUBPSr132mY_unison
-          parent:             VFMADDSUBPSr132mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDSUBPSr213m_unison
-          parent:             VFMADDSUBPSr213m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDSUBPSr213mY_unison
-          parent:             VFMADDSUBPSr213mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDSUBPSr231m_unison
-          parent:             VFMADDSUBPSr231m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMADDSUBPSr231mY_unison
-          parent:             VFMADDSUBPSr231mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
           defines:            [src1]
 
         - id:                 VFMSUBADDPD4rm_unison
@@ -7651,8 +7332,8 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFMSUBADDPD4rmY_unison
-          parent:             VFMSUBADDPD4rmY
+        - id:                 VFMSUBADDPS4Yrm_unison
+          parent:             VFMSUBADDPS4Yrm
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
@@ -7661,68 +7342,14 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFMSUBADDPD4mrY_unison
-          parent:             VFMSUBADDPD4mrY
+        - id:                 VFMSUBADDPS4Ymr_unison
+          parent:             VFMSUBADDPS4Ymr
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
            - src3:            [register, use, M256]
            - src4:            [register, use, VR256]
           uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFMSUBADDPDr132m_unison
-          parent:             VFMSUBADDPDr132m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBADDPDr132mY_unison
-          parent:             VFMSUBADDPDr132mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBADDPDr213m_unison
-          parent:             VFMSUBADDPDr213m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBADDPDr213mY_unison
-          parent:             VFMSUBADDPDr213mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBADDPDr231m_unison
-          parent:             VFMSUBADDPDr231m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBADDPDr231mY_unison
-          parent:             VFMSUBADDPDr231mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
           defines:            [src1]
 
         - id:                 VFMSUBADDPS4rm_unison
@@ -7745,8 +7372,8 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFMSUBADDPS4rmY_unison
-          parent:             VFMSUBADDPS4rmY
+        - id:                 VFMSUBPD4Yrm_unison
+          parent:             VFMSUBPD4Yrm
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
@@ -7755,68 +7382,14 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFMSUBADDPS4mrY_unison
-          parent:             VFMSUBADDPS4mrY
+        - id:                 VFMSUBPD4Ymr_unison
+          parent:             VFMSUBPD4Ymr
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
            - src3:            [register, use, M256]
            - src4:            [register, use, VR256]
           uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFMSUBADDPSr132m_unison
-          parent:             VFMSUBADDPSr132m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBADDPSr132mY_unison
-          parent:             VFMSUBADDPSr132mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBADDPSr213m_unison
-          parent:             VFMSUBADDPSr213m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBADDPSr213mY_unison
-          parent:             VFMSUBADDPSr213mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBADDPSr231m_unison
-          parent:             VFMSUBADDPSr231m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBADDPSr231mY_unison
-          parent:             VFMSUBADDPSr231mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
           defines:            [src1]
 
         - id:                 VFMSUBPD4rm_unison
@@ -7839,8 +7412,8 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFMSUBPD4rmY_unison
-          parent:             VFMSUBPD4rmY
+        - id:                 VFMSUBPS4Yrm_unison
+          parent:             VFMSUBPS4Yrm
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
@@ -7849,68 +7422,14 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFMSUBPD4mrY_unison
-          parent:             VFMSUBPD4mrY
+        - id:                 VFMSUBPS4Ymr_unison
+          parent:             VFMSUBPS4Ymr
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
            - src3:            [register, use, M256]
            - src4:            [register, use, VR256]
           uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFMSUBPDr132m_unison
-          parent:             VFMSUBPDr132m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBPDr132mY_unison
-          parent:             VFMSUBPDr132mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBPDr213m_unison
-          parent:             VFMSUBPDr213m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBPDr213mY_unison
-          parent:             VFMSUBPDr213mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBPDr231m_unison
-          parent:             VFMSUBPDr231m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBPDr231mY_unison
-          parent:             VFMSUBPDr231mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
           defines:            [src1]
 
         - id:                 VFMSUBPS4rm_unison
@@ -7933,80 +7452,6 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFMSUBPS4rmY_unison
-          parent:             VFMSUBPS4rmY
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, VR256]
-           - src4:            [register, use, M256]
-          uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFMSUBPS4mrY_unison
-          parent:             VFMSUBPS4mrY
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-           - src4:            [register, use, VR256]
-          uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFMSUBPSr132m_unison
-          parent:             VFMSUBPSr132m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBPSr132mY_unison
-          parent:             VFMSUBPSr132mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBPSr213m_unison
-          parent:             VFMSUBPSr213m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBPSr213mY_unison
-          parent:             VFMSUBPSr213mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBPSr231m_unison
-          parent:             VFMSUBPSr231m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBPSr231mY_unison
-          parent:             VFMSUBPSr231mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
         - id:                 VFMSUBSD4rm_unison
           parent:             VFMSUBSD4rm
           operands:
@@ -8025,33 +7470,6 @@ instruction-set:
            - src3:            [register, use, M64]
            - src4:            [register, use, FR64]
           uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFMSUBSDr132m_unison
-          parent:             VFMSUBSDr132m
-          operands:
-           - src1:            [register, usedef, FR64]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M64]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBSDr213m_unison
-          parent:             VFMSUBSDr213m
-          operands:
-           - src1:            [register, usedef, FR64]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M64]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBSDr231m_unison
-          parent:             VFMSUBSDr231m
-          operands:
-           - src1:            [register, usedef, FR64]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M64]
-          uses:               [src1, src2, src3]
           defines:            [src1]
 
         - id:                 VFMSUBSS4rm_unison
@@ -8074,31 +7492,24 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFMSUBSSr132m_unison
-          parent:             VFMSUBSSr132m
+        - id:                 VFNMADDPD4Yrm_unison
+          parent:             VFNMADDPD4Yrm
           operands:
-           - src1:            [register, usedef, FR32]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M32]
-          uses:               [src1, src2, src3]
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, VR256]
+           - src3:            [register, use, VR256]
+           - src4:            [register, use, M256]
+          uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFMSUBSSr213m_unison
-          parent:             VFMSUBSSr213m
+        - id:                 VFNMADDPD4Ymr_unison
+          parent:             VFNMADDPD4Ymr
           operands:
-           - src1:            [register, usedef, FR32]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M32]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFMSUBSSr231m_unison
-          parent:             VFMSUBSSr231m
-          operands:
-           - src1:            [register, usedef, FR32]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M32]
-          uses:               [src1, src2, src3]
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, VR256]
+           - src3:            [register, use, M256]
+           - src4:            [register, use, VR256]
+          uses:               [src2, src3, src4]
           defines:            [src1]
 
         - id:                 VFNMADDPD4rm_unison
@@ -8121,8 +7532,8 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFNMADDPD4rmY_unison
-          parent:             VFNMADDPD4rmY
+        - id:                 VFNMADDPS4Yrm_unison
+          parent:             VFNMADDPS4Yrm
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
@@ -8131,68 +7542,14 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFNMADDPD4mrY_unison
-          parent:             VFNMADDPD4mrY
+        - id:                 VFNMADDPS4Ymr_unison
+          parent:             VFNMADDPS4Ymr
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
            - src3:            [register, use, M256]
            - src4:            [register, use, VR256]
           uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFNMADDPDr132m_unison
-          parent:             VFNMADDPDr132m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMADDPDr132mY_unison
-          parent:             VFNMADDPDr132mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMADDPDr213m_unison
-          parent:             VFNMADDPDr213m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMADDPDr213mY_unison
-          parent:             VFNMADDPDr213mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMADDPDr231m_unison
-          parent:             VFNMADDPDr231m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMADDPDr231mY_unison
-          parent:             VFNMADDPDr231mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
           defines:            [src1]
 
         - id:                 VFNMADDPS4rm_unison
@@ -8215,80 +7572,6 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFNMADDPS4rmY_unison
-          parent:             VFNMADDPS4rmY
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, VR256]
-           - src4:            [register, use, M256]
-          uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFNMADDPS4mrY_unison
-          parent:             VFNMADDPS4mrY
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-           - src4:            [register, use, VR256]
-          uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFNMADDPSr132m_unison
-          parent:             VFNMADDPSr132m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMADDPSr132mY_unison
-          parent:             VFNMADDPSr132mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMADDPSr213m_unison
-          parent:             VFNMADDPSr213m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMADDPSr213mY_unison
-          parent:             VFNMADDPSr213mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMADDPSr231m_unison
-          parent:             VFNMADDPSr231m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMADDPSr231mY_unison
-          parent:             VFNMADDPSr231mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
         - id:                 VFNMADDSD4rm_unison
           parent:             VFNMADDSD4rm
           operands:
@@ -8307,33 +7590,6 @@ instruction-set:
            - src3:            [register, use, M64]
            - src4:            [register, use, FR64]
           uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFNMADDSDr132m_unison
-          parent:             VFNMADDSDr132m
-          operands:
-           - src1:            [register, usedef, FR64]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M64]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMADDSDr213m_unison
-          parent:             VFNMADDSDr213m
-          operands:
-           - src1:            [register, usedef, FR64]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M64]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMADDSDr231m_unison
-          parent:             VFNMADDSDr231m
-          operands:
-           - src1:            [register, usedef, FR64]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M64]
-          uses:               [src1, src2, src3]
           defines:            [src1]
 
         - id:                 VFNMADDSS4rm_unison
@@ -8356,31 +7612,24 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFNMADDSSr132m_unison
-          parent:             VFNMADDSSr132m
+        - id:                 VFNMSUBPD4Yrm_unison
+          parent:             VFNMSUBPD4Yrm
           operands:
-           - src1:            [register, usedef, FR32]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M32]
-          uses:               [src1, src2, src3]
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, VR256]
+           - src3:            [register, use, VR256]
+           - src4:            [register, use, M256]
+          uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFNMADDSSr213m_unison
-          parent:             VFNMADDSSr213m
+        - id:                 VFNMSUBPD4Ymr_unison
+          parent:             VFNMSUBPD4Ymr
           operands:
-           - src1:            [register, usedef, FR32]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M32]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMADDSSr231m_unison
-          parent:             VFNMADDSSr231m
-          operands:
-           - src1:            [register, usedef, FR32]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M32]
-          uses:               [src1, src2, src3]
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, VR256]
+           - src3:            [register, use, M256]
+           - src4:            [register, use, VR256]
+          uses:               [src2, src3, src4]
           defines:            [src1]
 
         - id:                 VFNMSUBPD4rm_unison
@@ -8403,8 +7652,8 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFNMSUBPD4rmY_unison
-          parent:             VFNMSUBPD4rmY
+        - id:                 VFNMSUBPS4Yrm_unison
+          parent:             VFNMSUBPS4Yrm
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
@@ -8413,68 +7662,14 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFNMSUBPD4mrY_unison
-          parent:             VFNMSUBPD4mrY
+        - id:                 VFNMSUBPS4Ymr_unison
+          parent:             VFNMSUBPS4Ymr
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
            - src3:            [register, use, M256]
            - src4:            [register, use, VR256]
           uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFNMSUBPDr132m_unison
-          parent:             VFNMSUBPDr132m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMSUBPDr132mY_unison
-          parent:             VFNMSUBPDr132mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMSUBPDr213m_unison
-          parent:             VFNMSUBPDr213m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMSUBPDr213mY_unison
-          parent:             VFNMSUBPDr213mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMSUBPDr231m_unison
-          parent:             VFNMSUBPDr231m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMSUBPDr231mY_unison
-          parent:             VFNMSUBPDr231mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
           defines:            [src1]
 
         - id:                 VFNMSUBPS4rm_unison
@@ -8497,80 +7692,6 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFNMSUBPS4rmY_unison
-          parent:             VFNMSUBPS4rmY
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, VR256]
-           - src4:            [register, use, M256]
-          uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFNMSUBPS4mrY_unison
-          parent:             VFNMSUBPS4mrY
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-           - src4:            [register, use, VR256]
-          uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFNMSUBPSr132m_unison
-          parent:             VFNMSUBPSr132m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMSUBPSr132mY_unison
-          parent:             VFNMSUBPSr132mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMSUBPSr213m_unison
-          parent:             VFNMSUBPSr213m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMSUBPSr213mY_unison
-          parent:             VFNMSUBPSr213mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMSUBPSr231m_unison
-          parent:             VFNMSUBPSr231m
-          operands:
-           - src1:            [register, usedef, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMSUBPSr231mY_unison
-          parent:             VFNMSUBPSr231mY
-          operands:
-           - src1:            [register, usedef, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
         - id:                 VFNMSUBSD4rm_unison
           parent:             VFNMSUBSD4rm
           operands:
@@ -8589,33 +7710,6 @@ instruction-set:
            - src3:            [register, use, M64]
            - src4:            [register, use, FR64]
           uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VFNMSUBSDr132m_unison
-          parent:             VFNMSUBSDr132m
-          operands:
-           - src1:            [register, usedef, FR64]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M64]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMSUBSDr213m_unison
-          parent:             VFNMSUBSDr213m
-          operands:
-           - src1:            [register, usedef, FR64]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M64]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMSUBSDr231m_unison
-          parent:             VFNMSUBSDr231m
-          operands:
-           - src1:            [register, usedef, FR64]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M64]
-          uses:               [src1, src2, src3]
           defines:            [src1]
 
         - id:                 VFNMSUBSS4rm_unison
@@ -8638,31 +7732,12 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VFNMSUBSSr132m_unison
-          parent:             VFNMSUBSSr132m
+        - id:                 VFRCZPDYrm_unison
+          parent:             VFRCZPDYrm
           operands:
-           - src1:            [register, usedef, FR32]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M32]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMSUBSSr213m_unison
-          parent:             VFNMSUBSSr213m
-          operands:
-           - src1:            [register, usedef, FR32]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M32]
-          uses:               [src1, src2, src3]
-          defines:            [src1]
-
-        - id:                 VFNMSUBSSr231m_unison
-          parent:             VFNMSUBSSr231m
-          operands:
-           - src1:            [register, usedef, FR32]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M32]
-          uses:               [src1, src2, src3]
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M256]
+          uses:               [src2]
           defines:            [src1]
 
         - id:                 VFRCZPDrm_unison
@@ -8673,8 +7748,8 @@ instruction-set:
           uses:               [src2]
           defines:            [src1]
 
-        - id:                 VFRCZPDrmY_unison
-          parent:             VFRCZPDrmY
+        - id:                 VFRCZPSYrm_unison
+          parent:             VFRCZPSYrm
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, M256]
@@ -8686,14 +7761,6 @@ instruction-set:
           operands:
            - src1:            [register, def, VR128]
            - src2:            [register, use, M128]
-          uses:               [src2]
-          defines:            [src1]
-
-        - id:                 VFRCZPSrmY_unison
-          parent:             VFRCZPSrmY
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, M256]
           uses:               [src2]
           defines:            [src1]
 
@@ -8711,222 +7778,6 @@ instruction-set:
            - src1:            [register, def, VR128]
            - src2:            [register, use, M128]
           uses:               [src2]
-          defines:            [src1]
-
-        - id:                 VFsANDNPDrm_unison
-          parent:             VFsANDNPDrm
-          operands:
-           - src1:            [register, def, FR64]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M64]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFsANDNPSrm_unison
-          parent:             VFsANDNPSrm
-          operands:
-           - src1:            [register, def, FR32]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M32]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFsANDPDrm_unison
-          parent:             VFsANDPDrm
-          operands:
-           - src1:            [register, def, FR64]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M64]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFsANDPSrm_unison
-          parent:             VFsANDPSrm
-          operands:
-           - src1:            [register, def, FR32]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M32]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFsORPDrm_unison
-          parent:             VFsORPDrm
-          operands:
-           - src1:            [register, def, FR64]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M64]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFsORPSrm_unison
-          parent:             VFsORPSrm
-          operands:
-           - src1:            [register, def, FR32]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M32]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFsXORPDrm_unison
-          parent:             VFsXORPDrm
-          operands:
-           - src1:            [register, def, FR64]
-           - src2:            [register, use, FR64]
-           - src3:            [register, use, M64]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFsXORPSrm_unison
-          parent:             VFsXORPSrm
-          operands:
-           - src1:            [register, def, FR32]
-           - src2:            [register, use, FR32]
-           - src3:            [register, use, M32]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFvANDNPDYrm_unison
-          parent:             VFvANDNPDYrm
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFvANDNPDrm_unison
-          parent:             VFvANDNPDrm
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFvANDNPSYrm_unison
-          parent:             VFvANDNPSYrm
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFvANDNPSrm_unison
-          parent:             VFvANDNPSrm
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFvANDPDYrm_unison
-          parent:             VFvANDPDYrm
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFvANDPDrm_unison
-          parent:             VFvANDPDrm
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFvANDPSYrm_unison
-          parent:             VFvANDPSYrm
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFvANDPSrm_unison
-          parent:             VFvANDPSrm
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFvORPDYrm_unison
-          parent:             VFvORPDYrm
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFvORPDrm_unison
-          parent:             VFvORPDrm
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFvORPSYrm_unison
-          parent:             VFvORPSYrm
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFvORPSrm_unison
-          parent:             VFvORPSrm
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFvXORPDYrm_unison
-          parent:             VFvXORPDYrm
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFvXORPDrm_unison
-          parent:             VFvXORPDrm
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFvXORPSYrm_unison
-          parent:             VFvXORPSYrm
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VFvXORPSrm_unison
-          parent:             VFvXORPSrm
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src2, src3]
           defines:            [src1]
 
         - id:                 VHADDPDYrm_unison
@@ -9439,8 +8290,8 @@ instruction-set:
           uses:               [src2]
           defines:            [src1]
 
-        - id:                 VMOVPQIto64rm_unison
-          parent:             VMOVPQIto64rm
+        - id:                 VMOVPQIto64mr_unison
+          parent:             VMOVPQIto64mr
           operands:
            - src1:            [register, def, M64]
            - src2:            [register, use, VR128]
@@ -9559,14 +8410,6 @@ instruction-set:
           uses:               [src2]
           defines:            [src1]
 
-        - id:                 VMOVZPQILo2PQIrm_unison
-          parent:             VMOVZPQILo2PQIrm
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, M128]
-          uses:               [src2]
-          defines:            [src1]
-
         - id:                 VMPSADBWYrmi_unison
           parent:             VMPSADBWYrmi
           operands:
@@ -9587,16 +8430,16 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VMREAD32rm_unison
-          parent:             VMREAD32rm
+        - id:                 VMREAD32mr_unison
+          parent:             VMREAD32mr
           operands:
            - src1:            [register, def, M32]
            - src2:            [register, use, GR32]
           uses:               [src2]
           defines:            [src1]
 
-        - id:                 VMREAD64rm_unison
-          parent:             VMREAD64rm
+        - id:                 VMREAD64mr_unison
+          parent:             VMREAD64mr
           operands:
            - src1:            [register, def, M64]
            - src2:            [register, use, GR64]
@@ -9709,51 +8552,43 @@ instruction-set:
           uses:               [src2, src3]
           defines:            [src1]
 
-        - id:                 VPABSBrm128_unison
-          parent:             VPABSBrm128
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, M128]
-          uses:               [src2]
-          defines:            [src1]
-
-        - id:                 VPABSBrm256_unison
-          parent:             VPABSBrm256
+        - id:                 VPABSBYrm_unison
+          parent:             VPABSBYrm
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, M256]
           uses:               [src2]
           defines:            [src1]
 
-        - id:                 VPABSDrm128_unison
-          parent:             VPABSDrm128
+        - id:                 VPABSBrm_unison
+          parent:             VPABSBrm
           operands:
            - src1:            [register, def, VR128]
            - src2:            [register, use, M128]
           uses:               [src2]
           defines:            [src1]
 
-        - id:                 VPABSDrm256_unison
-          parent:             VPABSDrm256
+        - id:                 VPABSDYrm_unison
+          parent:             VPABSDYrm
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, M256]
           uses:               [src2]
           defines:            [src1]
 
-        - id:                 VPABSWrm128_unison
-          parent:             VPABSWrm128
+        - id:                 VPABSDrm_unison
+          parent:             VPABSDrm
           operands:
            - src1:            [register, def, VR128]
            - src2:            [register, use, M128]
           uses:               [src2]
           defines:            [src1]
 
-        - id:                 VPABSWrm256_unison
-          parent:             VPABSWrm256
+        - id:                 VPABSWrm_unison
+          parent:             VPABSWrm
           operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, M256]
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, M128]
           uses:               [src2]
           defines:            [src1]
 
@@ -9973,22 +8808,22 @@ instruction-set:
           uses:               [src2, src3]
           defines:            [src1]
 
-        - id:                 VPALIGNR128rm_unison
-          parent:             VPALIGNR128rm
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-           - src4:            bound
-          uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VPALIGNR256rm_unison
-          parent:             VPALIGNR256rm
+        - id:                 VPALIGNRYrmi_unison
+          parent:             VPALIGNRYrmi
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
            - src3:            [register, use, M256]
+           - src4:            bound
+          uses:               [src2, src3, src4]
+          defines:            [src1]
+
+        - id:                 VPALIGNRrmi_unison
+          parent:             VPALIGNRrmi
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, VR128]
+           - src3:            [register, use, M128]
            - src4:            bound
           uses:               [src2, src3, src4]
           defines:            [src1]
@@ -10199,46 +9034,6 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VPCMOVrm_unison
-          parent:             VPCMOVrm
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, VR128]
-           - src4:            [register, use, M128]
-          uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VPCMOVmr_unison
-          parent:             VPCMOVmr
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-           - src4:            [register, use, VR128]
-          uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VPCMOVrmY_unison
-          parent:             VPCMOVrmY
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, VR256]
-           - src4:            [register, use, M256]
-          uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VPCMOVmrY_unison
-          parent:             VPCMOVmrY
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, VR256]
-           - src3:            [register, use, M256]
-           - src4:            [register, use, VR256]
-          uses:               [src2, src3, src4]
-          defines:            [src1]
-
         - id:                 VPCMPEQBYrm_unison
           parent:             VPCMPEQBYrm
           operands:
@@ -10320,8 +9115,8 @@ instruction-set:
           uses:               [src1, src2, src3]
           defines:            []
 
-        - id:                 VPCMPESTRM128rm_unison
-          parent:             VPCMPESTRM128rm
+        - id:                 VPCMPESTRMrm_unison
+          parent:             VPCMPESTRMrm
           operands:
            - src1:            [register, use, VR128]
            - src2:            [register, use, M128]
@@ -10410,8 +9205,8 @@ instruction-set:
           uses:               [src1, src2, src3]
           defines:            []
 
-        - id:                 VPCMPISTRM128rm_unison
-          parent:             VPCMPISTRM128rm
+        - id:                 VPCMPISTRMrm_unison
+          parent:             VPCMPISTRMrm
           operands:
            - src1:            [register, use, VR128]
            - src2:            [register, use, M128]
@@ -10775,21 +9570,21 @@ instruction-set:
           uses:               [src2, src3]
           defines:            [src1]
 
-        - id:                 VPHADDSWrm128_unison
-          parent:             VPHADDSWrm128
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VPHADDSWrm256_unison
-          parent:             VPHADDSWrm256
+        - id:                 VPHADDSWYrm_unison
+          parent:             VPHADDSWYrm
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
            - src3:            [register, use, M256]
+          uses:               [src2, src3]
+          defines:            [src1]
+
+        - id:                 VPHADDSWrm_unison
+          parent:             VPHADDSWrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, VR128]
+           - src3:            [register, use, M128]
           uses:               [src2, src3]
           defines:            [src1]
 
@@ -10875,8 +9670,8 @@ instruction-set:
           uses:               [src2, src3]
           defines:            [src1]
 
-        - id:                 VPHMINPOSUWrm128_unison
-          parent:             VPHMINPOSUWrm128
+        - id:                 VPHMINPOSUWrm_unison
+          parent:             VPHMINPOSUWrm
           operands:
            - src1:            [register, def, VR128]
            - src2:            [register, use, M128]
@@ -10917,21 +9712,21 @@ instruction-set:
           uses:               [src2, src3]
           defines:            [src1]
 
-        - id:                 VPHSUBSWrm128_unison
-          parent:             VPHSUBSWrm128
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VPHSUBSWrm256_unison
-          parent:             VPHSUBSWrm256
+        - id:                 VPHSUBSWYrm_unison
+          parent:             VPHSUBSWYrm
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
            - src3:            [register, use, M256]
+          uses:               [src2, src3]
+          defines:            [src1]
+
+        - id:                 VPHSUBSWrm_unison
+          parent:             VPHSUBSWrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, VR128]
+           - src3:            [register, use, M128]
           uses:               [src2, src3]
           defines:            [src1]
 
@@ -11101,21 +9896,21 @@ instruction-set:
           uses:               [src2, src3, src4]
           defines:            [src1]
 
-        - id:                 VPMADDUBSWrm128_unison
-          parent:             VPMADDUBSWrm128
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VPMADDUBSWrm256_unison
-          parent:             VPMADDUBSWrm256
+        - id:                 VPMADDUBSWYrm_unison
+          parent:             VPMADDUBSWYrm
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
            - src3:            [register, use, M256]
+          uses:               [src2, src3]
+          defines:            [src1]
+
+        - id:                 VPMADDUBSWrm_unison
+          parent:             VPMADDUBSWrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, VR128]
+           - src3:            [register, use, M128]
           uses:               [src2, src3]
           defines:            [src1]
 
@@ -11563,21 +10358,21 @@ instruction-set:
           uses:               [src2, src3]
           defines:            [src1]
 
-        - id:                 VPMULHRSWrm128_unison
-          parent:             VPMULHRSWrm128
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VPMULHRSWrm256_unison
-          parent:             VPMULHRSWrm256
+        - id:                 VPMULHRSWYrm_unison
+          parent:             VPMULHRSWYrm
           operands:
            - src1:            [register, def, VR256]
            - src2:            [register, use, VR256]
            - src3:            [register, use, M256]
+          uses:               [src2, src3]
+          defines:            [src1]
+
+        - id:                 VPMULHRSWrm_unison
+          parent:             VPMULHRSWrm
+          operands:
+           - src1:            [register, def, VR128]
+           - src2:            [register, use, VR128]
+           - src3:            [register, use, M128]
           uses:               [src2, src3]
           defines:            [src1]
 
@@ -11687,26 +10482,6 @@ instruction-set:
            - src2:            [register, use, VR128]
            - src3:            [register, use, M128]
           uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VPPERMrm_unison
-          parent:             VPPERMrm
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, VR128]
-           - src4:            [register, use, M128]
-          uses:               [src2, src3, src4]
-          defines:            [src1]
-
-        - id:                 VPPERMmr_unison
-          parent:             VPPERMmr
-          operands:
-           - src1:            [register, def, VR128]
-           - src2:            [register, use, VR128]
-           - src3:            [register, use, M128]
-           - src4:            [register, use, VR128]
-          uses:               [src2, src3, src4]
           defines:            [src1]
 
         - id:                 VPROTBmi_unison
@@ -12686,6 +11461,15 @@ instruction-set:
           uses:               [src2, src3]
           defines:            [src1]
 
+        - id:                 VROUNDPDYm_unison
+          parent:             VROUNDPDYm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M256]
+           - src3:            bound
+          uses:               [src2, src3]
+          defines:            [src1]
+
         - id:                 VROUNDPDm_unison
           parent:             VROUNDPDm
           operands:
@@ -12695,29 +11479,20 @@ instruction-set:
           uses:               [src2, src3]
           defines:            [src1]
 
+        - id:                 VROUNDPSYm_unison
+          parent:             VROUNDPSYm
+          operands:
+           - src1:            [register, def, VR256]
+           - src2:            [register, use, M256]
+           - src3:            bound
+          uses:               [src2, src3]
+          defines:            [src1]
+
         - id:                 VROUNDPSm_unison
           parent:             VROUNDPSm
           operands:
            - src1:            [register, def, VR128]
            - src2:            [register, use, M128]
-           - src3:            bound
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VROUNDYPDm_unison
-          parent:             VROUNDYPDm
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, M256]
-           - src3:            bound
-          uses:               [src2, src3]
-          defines:            [src1]
-
-        - id:                 VROUNDYPSm_unison
-          parent:             VROUNDYPSm
-          operands:
-           - src1:            [register, def, VR256]
-           - src2:            [register, use, M256]
            - src3:            bound
           uses:               [src2, src3]
           defines:            [src1]
@@ -13047,70 +11822,6 @@ instruction-set:
           uses:               [src2, src3]
           defines:            [src1]
 
-        - id:                 XADD16rm_unison
-          parent:             XADD16rm
-          operands:
-           - src1:            [register, def, M16]
-           - src2:            [register, use, GR16]
-          uses:               [src2]
-          defines:            [src1]
-
-        - id:                 XADD32rm_unison
-          parent:             XADD32rm
-          operands:
-           - src1:            [register, def, M32]
-           - src2:            [register, use, GR32]
-          uses:               [src2]
-          defines:            [src1]
-
-        - id:                 XADD64rm_unison
-          parent:             XADD64rm
-          operands:
-           - src1:            [register, def, M64]
-           - src2:            [register, use, GR64]
-          uses:               [src2]
-          defines:            [src1]
-
-        - id:                 XADD8rm_unison
-          parent:             XADD8rm
-          operands:
-           - src1:            [register, def, M8]
-           - src2:            [register, use, GR8]
-          uses:               [src2]
-          defines:            [src1]
-
-        - id:                 XCHG16rm_unison
-          parent:             XCHG16rm
-          operands:
-           - src1:            [register, usedef, GR16]
-           - src2:            [register, use, M16]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 XCHG32rm_unison
-          parent:             XCHG32rm
-          operands:
-           - src1:            [register, usedef, GR32]
-           - src2:            [register, use, M32]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 XCHG64rm_unison
-          parent:             XCHG64rm
-          operands:
-           - src1:            [register, usedef, GR64]
-           - src2:            [register, use, M64]
-          uses:               [src1, src2]
-          defines:            [src1]
-
-        - id:                 XCHG8rm_unison
-          parent:             XCHG8rm
-          operands:
-           - src1:            [register, usedef, GR8]
-           - src2:            [register, use, M8]
-          uses:               [src1, src2]
-          defines:            [src1]
-
         - id:                 XOR16mi_unison
           parent:             XOR16mi
           operands:
@@ -13254,196 +11965,4 @@ instruction-set:
            - src2:            [register, use, M128]
           uses:               [src1, src2]
           defines:            [src1]
-
-        - id:                 CMOVA16rr_swap
-          parent:             CMOVBE16rr
-          defines:            [src2]
-
-        - id:                 CMOVA32rr_swap
-          parent:             CMOVBE32rr
-          defines:            [src2]
-
-        - id:                 CMOVA64rr_swap
-          parent:             CMOVBE64rr
-          defines:            [src2]
-
-        - id:                 CMOVAE16rr_swap
-          parent:             CMOVB16rr
-          defines:            [src2]
-
-        - id:                 CMOVAE32rr_swap
-          parent:             CMOVB32rr
-          defines:            [src2]
-
-        - id:                 CMOVAE64rr_swap
-          parent:             CMOVB64rr
-          defines:            [src2]
-
-        - id:                 CMOVB16rr_swap
-          parent:             CMOVAE16rr
-          defines:            [src2]
-
-        - id:                 CMOVB32rr_swap
-          parent:             CMOVAE32rr
-          defines:            [src2]
-
-        - id:                 CMOVB64rr_swap
-          parent:             CMOVAE64rr
-          defines:            [src2]
-
-        - id:                 CMOVBE16rr_swap
-          parent:             CMOVA16rr
-          defines:            [src2]
-
-        - id:                 CMOVBE32rr_swap
-          parent:             CMOVA32rr
-          defines:            [src2]
-
-        - id:                 CMOVBE64rr_swap
-          parent:             CMOVA64rr
-          defines:            [src2]
-
-        - id:                 CMOVE16rr_swap
-          parent:             CMOVNE16rr
-          defines:            [src2]
-
-        - id:                 CMOVE32rr_swap
-          parent:             CMOVNE32rr
-          defines:            [src2]
-
-        - id:                 CMOVE64rr_swap
-          parent:             CMOVNE64rr
-          defines:            [src2]
-
-        - id:                 CMOVG16rr_swap
-          parent:             CMOVLE16rr
-          defines:            [src2]
-
-        - id:                 CMOVG32rr_swap
-          parent:             CMOVLE32rr
-          defines:            [src2]
-
-        - id:                 CMOVG64rr_swap
-          parent:             CMOVLE64rr
-          defines:            [src2]
-
-        - id:                 CMOVGE16rr_swap
-          parent:             CMOVL16rr
-          defines:            [src2]
-
-        - id:                 CMOVGE32rr_swap
-          parent:             CMOVL32rr
-          defines:            [src2]
-
-        - id:                 CMOVGE64rr_swap
-          parent:             CMOVL64rr
-          defines:            [src2]
-
-        - id:                 CMOVL16rr_swap
-          parent:             CMOVGE16rr
-          defines:            [src2]
-
-        - id:                 CMOVL32rr_swap
-          parent:             CMOVGE32rr
-          defines:            [src2]
-
-        - id:                 CMOVL64rr_swap
-          parent:             CMOVGE64rr
-          defines:            [src2]
-
-        - id:                 CMOVLE16rr_swap
-          parent:             CMOVG16rr
-          defines:            [src2]
-
-        - id:                 CMOVLE32rr_swap
-          parent:             CMOVG32rr
-          defines:            [src2]
-
-        - id:                 CMOVLE64rr_swap
-          parent:             CMOVG64rr
-          defines:            [src2]
-
-        - id:                 CMOVNE16rr_swap
-          parent:             CMOVE16rr
-          defines:            [src2]
-
-        - id:                 CMOVNE32rr_swap
-          parent:             CMOVE32rr
-          defines:            [src2]
-
-        - id:                 CMOVNE64rr_swap
-          parent:             CMOVE64rr
-          defines:            [src2]
-
-        - id:                 CMOVNO16rr_swap
-          parent:             CMOVO16rr
-          defines:            [src2]
-
-        - id:                 CMOVNO32rr_swap
-          parent:             CMOVO32rr
-          defines:            [src2]
-
-        - id:                 CMOVNO64rr_swap
-          parent:             CMOVO64rr
-          defines:            [src2]
-
-        - id:                 CMOVNP16rr_swap
-          parent:             CMOVP16rr
-          defines:            [src2]
-
-        - id:                 CMOVNP32rr_swap
-          parent:             CMOVP32rr
-          defines:            [src2]
-
-        - id:                 CMOVNP64rr_swap
-          parent:             CMOVP64rr
-          defines:            [src2]
-
-        - id:                 CMOVNS16rr_swap
-          parent:             CMOVS16rr
-          defines:            [src2]
-
-        - id:                 CMOVNS32rr_swap
-          parent:             CMOVS32rr
-          defines:            [src2]
-
-        - id:                 CMOVNS64rr_swap
-          parent:             CMOVS64rr
-          defines:            [src2]
-
-        - id:                 CMOVO16rr_swap
-          parent:             CMOVNO16rr
-          defines:            [src2]
-
-        - id:                 CMOVO32rr_swap
-          parent:             CMOVNO32rr
-          defines:            [src2]
-
-        - id:                 CMOVO64rr_swap
-          parent:             CMOVNO64rr
-          defines:            [src2]
-
-        - id:                 CMOVP16rr_swap
-          parent:             CMOVNP16rr
-          defines:            [src2]
-
-        - id:                 CMOVP32rr_swap
-          parent:             CMOVNP32rr
-          defines:            [src2]
-
-        - id:                 CMOVP64rr_swap
-          parent:             CMOVNP64rr
-          defines:            [src2]
-
-        - id:                 CMOVS16rr_swap
-          parent:             CMOVNS16rr
-          defines:            [src2]
-
-        - id:                 CMOVS32rr_swap
-          parent:             CMOVNS32rr
-          defines:            [src2]
-
-        - id:                 CMOVS64rr_swap
-          parent:             CMOVNS64rr
-          defines:            [src2]
 

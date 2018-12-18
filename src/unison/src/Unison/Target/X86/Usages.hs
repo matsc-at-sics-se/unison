@@ -37,16 +37,48 @@ size i
 isVoidInstruction i
   | isSourceInstr i || isDematInstr i = True
   | i `elem`
-      [SPILL32, SPILL, NOFPUSH, NOFPOP, BUNDLE, CATCHPAD, CATCHRET, CFI_INSTRUCTION,
-       CS_PREFIX, DATA16_PREFIX, DBG_VALUE, DS_PREFIX, EH_LABEL,
-       EH_RESTORE, ES_PREFIX, EXTRACT_SUBREG, FAULTING_LOAD_OP, FS_PREFIX,
-       GC_LABEL, GS_PREFIX, IMPLICIT_DEF, INLINEASM,
+      [SPILL32,
+       SPILL,
+       NOFPUSH,
+       NOFPOP,
+       BUNDLE,
+       CATCHPAD,
+       CATCHRET,
+       CFI_INSTRUCTION,
+       CS_PREFIX,
+       DATA16_PREFIX,
+       DBG_VALUE,
+       DS_PREFIX,
+       EH_LABEL,
+       EH_RESTORE,
+       ES_PREFIX,
+       EXTRACT_SUBREG,
+       FS_PREFIX,
+       GC_LABEL,
+       GS_PREFIX,
+       IMPLICIT_DEF,
+       INLINEASM,
        INSERT_SUBREG,
-       LIFETIME_END, LIFETIME_START, LOCAL_ESCAPE, LOCK_PREFIX, MONITOR,
-       PHI, REPNE_PREFIX, REP_PREFIX, REX64_PREFIX,
-       SEH_EndPrologue, SEH_Epilogue,
-       SS_PREFIX, SUBREG_TO_REG,
-       XRELEASE_PREFIX, XACQUIRE_PREFIX] = True
+       Int_MemBarrier,
+       Int_eh_sjlj_setup_dispatch,
+       LIFETIME_END,
+       LIFETIME_START,
+       LOCAL_ESCAPE,
+       LOCK_PREFIX,
+       MONITOR,
+       PATCHABLE_FUNCTION_ENTER,
+       PATCHABLE_FUNCTION_EXIT,
+       PHI,
+       REPNE_PREFIX,
+       REP_PREFIX,
+       REX64_PREFIX,
+       SEH_EndPrologue,
+       SEH_Epilogue,
+       SS_PREFIX,
+       SUBREG_TO_REG,
+       XACQUIRE_PREFIX,
+       XRELEASE_PREFIX
+       ] = True
   | otherwise = False
 
 pipeDuration i
@@ -84,4 +116,5 @@ superResources SKLPort015 = [SKLPort0156]
 superResources SKLPort237 = []
 superResources SKLPort0156 = []
 superResources SKLDivider = []
+superResources SKLFPDivider = []
 superResources ExePort = []

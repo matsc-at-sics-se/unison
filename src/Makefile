@@ -160,7 +160,7 @@ run-specsgen-arm:
 	         --infiniteregclass RM32 --infiniteregclass RM64 \
 	         --rematfile=$(SGARMREMATYAML)
 
-run-specsgen-x86:
+run-specsgen-x86: $(SGX86INPUTYAML) $(SGX86AUXYAML) $(SGX86ITINERARYYAML) $(SGX86ROOTDIR)/ItineraryProperties.hs
 	specsgen --targetname=X86 $(SGX86INPUTYAML) $(SGX86AUXYAML) \
 	         --outputdir=$(SGX86ROOTDIR) \
 	         --infiniteregclass M8 \
@@ -202,13 +202,60 @@ run-specsgen-x86:
 SKLGENROOTDIR = $(SGX86ROOTDIR)/input/skylake/llvm-resource-model
 SKLGENSPEC    = $(SKLGENROOTDIR)/output/X86SchedSkylakeClient-parser_output.json
 
-run-x86-skylake-generator:
-	$(SKLGENROOTDIR)/X86SchedSkylakeClient-parser.py $(SGX86INPUTYAML) \
-		$(SKLGENROOTDIR)/input/X86SchedSkylakeClient.td \
-		$(SKLGENROOTDIR)/input/manual_instruction_mapping.json \
-		$(SKLGENROOTDIR)/output/tablegen-parser_output.json > \
-		$(SKLGENSPEC)
-	$(SKLGENROOTDIR)/produce-itinerary-map.py $(SKLGENSPEC) > \
-		$(SGX86ITINERARYYAML)
-	$(SKLGENROOTDIR)/produce-itinerary-properties.py $(SKLGENSPEC) > \
-		$(SGX86ROOTDIR)/ItineraryProperties.hs
+# run-x86-skylake-generator:
+# 	$(SKLGENROOTDIR)/X86SchedSkylakeClient-parser.py $(SGX86INPUTYAML) \
+# 		$(SKLGENROOTDIR)/input/X86SchedSkylakeClient.td \
+# 		$(SKLGENROOTDIR)/input/manual_instruction_mapping.json \
+# 		$(SKLGENROOTDIR)/output/tablegen-parser_output.json > \
+# 		$(SKLGENSPEC)
+# 	$(SKLGENROOTDIR)/produce-itinerary-map.py $(SKLGENSPEC) > \
+# 		$(SGX86ITINERARYYAML)
+# 	$(SKLGENROOTDIR)/produce-itinerary-properties.py $(SKLGENSPEC) > \
+# 		$(SGX86ROOTDIR)/ItineraryProperties.hs
+
+# $(SGX86ROOTDIR)/input/x86_raw.yaml: $(LLVM_DIR)/lib/Target/X86/X86.td
+# 	llvm-tblgen $(LLVM_DIR)/lib/Target/X86/X86.td \
+# 	-InstrInfo -I $(LLVM_DIR)/include -I $(LLVM_DIR)/lib/Target/X86 \
+# 	-o $@
+
+# $(SKLGENROOTDIR)/output/tablegen-parser_output.json: $(SKLGENROOTDIR)/tablegen-parser.py $(SGX86ROOTDIR)/input/x86_raw.yaml
+# 	$(SKLGENROOTDIR)/tablegen-parser.py < $(SGX86ROOTDIR)/input/x86_raw.yaml > $@
+
+# $(SKLGENSPEC): $(SKLGENROOTDIR)/X86SchedSkylakeClient-parser.py \
+# 	        $(SGX86INPUTYAML) \
+# 		$(LLVM_DIR)/lib/Target/X86/X86SchedSkylakeClient.td \
+# 		$(SKLGENROOTDIR)/input/manual_instruction_mapping.json \
+# 		$(SKLGENROOTDIR)/output/tablegen-parser_output.json
+# 	$(SKLGENROOTDIR)/X86SchedSkylakeClient-parser.py \
+# 	        $(SGX86INPUTYAML) \
+# 		$(LLVM_DIR)/lib/Target/X86/X86SchedSkylakeClient.td \
+# 		$(SKLGENROOTDIR)/input/manual_instruction_mapping.json \
+# 		$(SKLGENROOTDIR)/output/tablegen-parser_output.json > $@
+
+# additions by Mats
+# Typical workflow:
+# make run-specsgen-x86
+# make build-unison
+# sudo make install-unison
+
+LLVM_DIR = /home/matsc/llvm
+
+$(SGX86ROOTDIR)/input/x86.yaml: $(SGX86ROOTDIR)/input/x86_all.yaml $(SKLGENROOTDIR)/filter-yaml.py
+	$(SKLGENROOTDIR)/filter-yaml.py < $(SGX86ROOTDIR)/input/x86_all.yaml > $@
+
+$(SGX86ROOTDIR)/input/x86_all.yaml: $(LLVM_DIR)/lib/Target/X86/X86.td
+	llvm-tblgen -unison $(LLVM_DIR)/lib/Target/X86/X86.td \
+	-I $(LLVM_DIR)/include -I $(LLVM_DIR)/lib/Target/X86 \
+	-o $@
+
+$(SGX86ROOTDIR)/ItineraryProperties.hs: $(SKLGENROOTDIR)/produce-itinerary-properties.py $(SKLGENSPEC)
+	$(SKLGENROOTDIR)/produce-itinerary-properties.py $(SKLGENSPEC) > $@
+
+$(SGX86ITINERARYYAML): $(SKLGENROOTDIR)/produce-itinerary-map.py $(SKLGENSPEC)
+	$(SKLGENROOTDIR)/produce-itinerary-map.py $(SKLGENSPEC) > $@
+
+$(SKLGENROOTDIR)/output/tablegen_raw.yaml: $(LLVM_DIR)/lib/Target/X86/X86SchedSkylakeClient.td $(SKLGENROOTDIR)/input/myclient.td
+	llvm-tblgen $(SKLGENROOTDIR)/input/myclient.td -I $(LLVM_DIR)/include -I $(LLVM_DIR)/lib/Target/X86 > $@
+
+$(SKLGENSPEC): $(SKLGENROOTDIR)/tablegen-parser.py $(SKLGENROOTDIR)/output/tablegen_raw.yaml $(SGX86INPUTYAML)
+	$(SKLGENROOTDIR)/tablegen-parser.py $(SGX86INPUTYAML) < $(SKLGENROOTDIR)/output/tablegen_raw.yaml > $@

@@ -18,7 +18,7 @@ branchInfo (Branch {oBranchIs = is, oBranchUs = (BlockRef l:_)})
     BranchInfo Unconditional (Just l)
 branchInfo (Branch {oBranchIs = is})
   | targetInst is `elem` [JMP16m, JMP16r, JMP32m, JMP32r, JMP64m, JMP64r,
-                          RETIL, RETIQ, RETIW, RETL, RETQ, RETW, LEAVE, LEAVE64] =
+                          RET, RETIL, RETIQ, RETIW, RETL, RETQ, RETW, LEAVE, LEAVE64] =
     BranchInfo Unconditional Nothing
 
 branchInfo o = error ("unmatched pattern: branchInfo " ++ show (mkSingleOperation (-1) (Natural o)))

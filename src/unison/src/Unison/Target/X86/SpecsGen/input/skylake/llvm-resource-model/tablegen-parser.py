@@ -33,21 +33,43 @@
 #
 
 import json
-import pyparsing as pp
+import yaml
+# import pyparsing as pp
 import sys
-
-#To envoke this program correctly, execute:
-#llvm-tblgen /.../llvm-6.0.0.src/lib/Target/X86/X86.td -InstrInfo -I /.../llvm-6.0.0.src/include -I /.../llvm-6.0.0.src/lib/Target/X86 | ./tablegen-instruction-parser.py
-#With local paths to llvm 6.0.0 (non-compiled version)
+# import logging, sys
+    # logging.debug("splitSchedRW %s", str)
 
 # Main
 def main():
-    tablegenDefs = extractInstructions(readIn())
-    print(json.dumps(tablegenDefs, indent=4))
+    # logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+    iset = yaml.load(open(sys.argv[1], 'r'))
+    selected = {}
+    for insn in iset['instruction-set'][0]['instructions']:
+        selected[insn['id']] = True
+    del iset
+    lines = readIn()
+    defs, undefs, usedItineraries = extractInstructions(lines, selected)
+    schedAliases = extractSchedAliases(lines)
+    resGroups = extractResourceGroups(lines, schedAliases, usedItineraries)
+    output = {
+            'ResourceGroups': resGroups,
+            'DefinedInstructions': defs,
+            'UndefinedInstructions': undefs
+            }
+    print(json.dumps(output, indent=4))
 
-# Extract each instruction outputed by tablegen and its respective SchedRW definition
-def extractInstructions(tablegenDefs):
-    extractedInstructions = []
+def splitSchedRW(str):
+    str = str.strip("[]")
+    if str.find(",") >= 0:
+        return str.split(",")[0], True
+    else:
+        return str, False
+        
+# Extract each instruction output by tablegen and its respective SchedRW definition
+def extractInstructions(lines, selected):
+    definedInstructions = []
+    undefinedInstructions = []
+    usedItineraries = {}
     currentInstruction = ""
     currentSchedRW = None
     instructionDefined = False
@@ -55,11 +77,10 @@ def extractInstructions(tablegenDefs):
     firstInstruction = True
     instruction = {
             'Instruction' : None,
-            'SchedRW' : None
+            'ResourceGroup' : None,
+            'ReadAdvance' : None
             }
-    for line in tablegenDefs:
-        #Dictionary to hold definitions
-        #Current line is a def of an instruction
+    for line in lines:
         if line.find("def") >= 0:
 
             if firstInstruction:
@@ -70,9 +91,16 @@ def extractInstructions(tablegenDefs):
 
             #Found a new instruction, with earlier instruction having a defined SchedRW
             if schedRWDefined:
-                instruction['Instruction'] = currentInstruction
-                instruction['SchedRW'] = currentSchedRW
-                extractedInstructions.append(instruction.copy())
+                if currentSchedRW == "?" or not (currentInstruction in selected):
+                    undefinedInstructions.append({'Instruction' : currentInstruction})
+                else:
+                    rg, adv = splitSchedRW(currentSchedRW)
+                    instruction['Instruction'] = currentInstruction
+                    instruction['ResourceGroup'] = rg
+                    instruction['ReadAdvance'] = adv
+                    usedItineraries[rg] = True
+                    definedInstructions.append(instruction.copy())
+                    
                 currentInstruction = line.split(" ")[1]
                 currentSchedRW = None
                 instructionDefined = True
@@ -103,12 +131,103 @@ def extractInstructions(tablegenDefs):
 
     #Append last instruction in file as well
     if currentInstruction and currentSchedRW:
-        instruction['Instruction'] = currentInstruction
-        instruction['SchedRW'] = currentSchedRW
-        extractedInstructions.append(instruction.copy())
+        if currentSchedRW == "?" or not selected[currentInstruction]:
+            undefinedInstructions.append({'Instruction' : currentInstruction})
+        else:
+            rg, adv = splitSchedRW(currentSchedRW)
+            instruction['Instruction'] = currentInstruction
+            instruction['ResourceGroup'] = rg
+            instruction['ReadAdvance'] = adv
+            usedItineraries[rg] = True
+            definedInstructions.append(instruction.copy())
 
+    return definedInstructions, undefinedInstructions, usedItineraries
 
-    return extractedInstructions
+def makeStringList(str):
+    str = str.strip("[];")
+    if len(str)>0:
+        return str.split(", ")
+    else:
+        return []
+
+def makeIntList(str):
+    str = str.strip("[];")
+    if len(str)>0:
+        return list(map(int, str.split(", ")))
+    else:
+        return []
+
+def makeInt(str):
+    str = str.strip(";")
+    return int(str)
+
+# Extract each resource group definition
+def extractResourceGroups(lines, schedAliases, usedItineraries):
+    resourceGroups = []
+    inside = False
+    latency = False
+    resourceGroup = {
+        'Name' : None,
+        'Latency' : None,
+        'Resources' : None,
+        'ResourceCycles' : None
+        }
+
+    for line in lines:
+        if line.find("def") == 0 and (line.find("// SchedReadWrite") >= 0 or line.find("// ProcWriteResources") >= 0):
+            inside = True
+            resourceGroup['Name'] = line.split(" ")[1]
+        elif inside and latency and line.find("}") == 0:
+            name = resourceGroup['Name']
+            if name in usedItineraries:
+                resourceGroups.append(resourceGroup.copy())
+            if name in schedAliases:
+                for alias in schedAliases[name]:
+                    if alias in usedItineraries:
+                        resourceGroup['Name'] = alias
+                        resourceGroups.append(resourceGroup.copy())
+            inside = False
+            latency = False
+        elif line.find("}") == 0:
+            inside = False
+        elif inside and line.find("ProcResources = ") >= 0:
+            resourceGroup['Resources'] = makeStringList(line.split(" = ")[1])
+        elif inside and line.find("ResourceCycles = ") >= 0:
+            cycles = makeIntList(line.split(" = ")[1])
+            if cycles == []:
+                cycles = [1 for x in resourceGroup['Resources']]
+            resourceGroup['ResourceCycles'] = cycles
+        elif inside and line.find("Latency = ") >= 0:
+            resourceGroup['Latency'] = makeInt(line.split(" = ")[1])
+            latency = True
+        elif inside and line.find("WriteType = ") >= 0:
+            resourceGroup['Name'] = line.split(" = ")[1].strip(";")
+    # add ad-hoc for pseudos
+    resourceGroups.append({'Name' : "WriteFPUSH32", 'Latency' : 3, 'Resources' : ["SKLPort0156"], 'ResourceCycles' : [3]})
+    return resourceGroups
+
+# Extract each resource group alias
+def extractSchedAliases(lines):
+    schedAliases = {}
+    inside = False
+    match = None
+    alias = None
+
+    for line in lines:
+        if line.find("def") == 0 and line.find("// SchedAlias") >= 0:
+            inside = True
+        elif inside and line.find("}") == 0:
+            if alias in schedAliases:
+                schedAliases[alias].append(match)
+            else:
+                schedAliases[alias] = [match]
+            inside = False
+        elif inside and line.find("MatchRW = ") >= 0:
+            match = line.split(" = ")[1].strip(";")
+        elif inside and line.find("AliasRW = ") >= 0:
+            alias = line.split(" = ")[1].strip(";")
+
+    return schedAliases
 
 # Read from output of tablegen and extract all the defs of instructions
 def readIn():

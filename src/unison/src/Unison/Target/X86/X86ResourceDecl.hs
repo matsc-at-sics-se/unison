@@ -18,5 +18,6 @@ data X86Resource =
   SKLPort237 |
   SKLPort0156 |
   SKLDivider |
+  SKLFPDivider |
   ExePort
   deriving (Eq, Ord, Show, Read)

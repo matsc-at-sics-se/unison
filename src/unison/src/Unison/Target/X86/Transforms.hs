@@ -36,6 +36,8 @@ module Unison.Target.X86.Transforms
      addYMMReads,
      addSpillIndicators,
      addVzeroupper,
+     addLiveSSP,
+     addDefineSSP,
      removeDeadEflags) where
 
 import qualified Data.Map as M
@@ -585,15 +587,15 @@ expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc AVX_SET0,
   = [[mi {msOpcode = mkMachineTargetOpc VXORPSYrr,
           msOperands = [dst, dst, dst]}]]
 
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FsFLD0SD,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc FsXORPDrr,
-          msOperands = [dst, dst, dst]}]]
+-- expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FsFLD0SD,
+--                                    msOperands = [dst]}
+--   = [[mi {msOpcode = mkMachineTargetOpc FsXORPDrr,
+--           msOperands = [dst, dst, dst]}]]
 
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FsFLD0SS,
-                                   msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc FsXORPSrr,
-          msOperands = [dst, dst, dst]}]]
+-- expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc FsFLD0SS,
+--                                    msOperands = [dst]}
+--   = [[mi {msOpcode = mkMachineTargetOpc FsXORPSrr,
+--           msOperands = [dst, dst, dst]}]]
 
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C8r,
                                    msOperands = [dst]}
@@ -614,9 +616,6 @@ expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc SETB_C64r,
                                    msOperands = [dst]}
   = [[mi {msOpcode = mkMachineTargetOpc SBB64rr,
           msOperands = [dst, dst, dst]}]]
-
-expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc TEST8ri_NOREX}
-  = [[mi {msOpcode = mkMachineTargetOpc TEST8ri}]]
 
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc V_SET0,
                                    msOperands = [dst]}
@@ -670,6 +669,24 @@ maybeAdjustSP off
     in [[mkMachineSingle (mkMachineTargetOpc SUB64ri32) [] [sp, sp, mkMachineImm (-off)]]]
 
 {-
+    o13: [] <- RET [n]
+    o18: [] <- (out) [...]
+->
+    o13: [] <- RETQ [n]
+    o18: [] <- (out) [...]
+-}
+
+extractReturnRegs _ (
+  j @ SingleOperation {oOpr = Natural bj @ Branch {
+                          oBranchIs = [TargetInstruction RET]}}
+  :
+  rest) _ =
+   (
+    rest,
+    [j {oOpr = Natural bj {oBranchIs = [TargetInstruction RETQ]}}]
+   )
+
+{-
     o12: [eax] <- (copy) [t4]
     o13: [] <- RETQ [eax]
     o18: [] <- (out) [...]
@@ -696,25 +713,6 @@ extractReturnRegs _ (
     [j {oOpr = Natural bj {oBranchUs = [mkBound (mkMachineImm 42)]}},
      o {oOpr = Virtual (Delimiter od {oOuts = outs ++
                                               [preAssign t (Register ret)]})}]
-   )
-
-{-
-    o13: [] <- RETQ []
-    o18: [] <- (out) [...]
-->
-    o13: [] <- RETQ [42]
-    o18: [] <- (out) [...]
--}
-
-extractReturnRegs _ (
-  j @ SingleOperation {oOpr = Natural bj @ Branch {
-                          oBranchIs = [TargetInstruction RETQ],
-                          oBranchUs = []}}
-  :
-  rest) _ =
-   (
-    rest,
-    [j {oOpr = Natural bj {oBranchUs = [mkBound (mkMachineImm 42)]}}]
    )
 
 {-
@@ -1292,6 +1290,42 @@ ymmPreassigned p =
     Nothing -> False
     Just (Register (TargetRegister r)) -> r `elem` registers (RegisterClass VR256)
 
+-- Register ssp occurs out of the blue in contexts like:
+--     o66: [ssp,ymm0] <- (fun) [ssp,ymm0] (call: o65)
+-- Fix: convert:
+--     o0:  [rdi,rsi,edx,umm0] <- (in) []
+-- to:
+--     o0:  [rdi,rsi,edx,umm0,ssp] <- (in) []
+-- Unfortunately, I got:
+-- uni: multiple defs reach a register use: need phi functions!
+
+addLiveSSP f @ Function {fCode = code} =
+  let (b0 : bs) = code
+      (Block {bCode = (bo0 : bos)}) = b0
+      (SingleOperation {oOpr = o}) = bo0
+      (Virtual (Delimiter (In {oIns = indefs}))) = o
+      indefs' = indefs ++ [Register (TargetRegister SSP)]
+      o' = (Virtual (Delimiter (In {oIns = indefs'})))
+      bo0' = bo0 {oOpr = o'}
+      code' = (b0 {bCode = (bo0' : bos)} : bs)
+  in f {fCode = code'}
+
+-- Register ssp occurs out of the blue in contexts like:
+--     o66: [ssp,ymm0] <- (fun) [ssp,ymm0] (call: o65)
+-- Fix: add right before calls:
+--     o..: [ssp] <- (define) []
+
+addDefineSSP f @ Function {fCode = code} =
+  let callInsns = filter isCall (flatten code)
+      code'  = foldl insertDefineSSP code callInsns
+  in f {fCode = code'}
+
+insertDefineSSP code o =
+  let (_, oid, _) = newIndexes $ flatten code
+      vds = mkDefine oid [Register (TargetRegister SSP)]
+      code' = map (insertOperationInBlock before (isIdOf o) vds) code
+   in code'
+
 -- In order to remove many false dependencies, this transform juggles EFLAGS side-effects:
 -- reads eflags -> writes eflags
 -- writes eflags, LIVE -> writes eflags
@@ -1341,4 +1375,3 @@ oFlipWriteEflags o @ (SingleOperation {oAs = atts @ Attributes {aReads = rs, aWr
   = let ws' = delete (OtherSideEffect EFLAGS) ws
         rs' = [OtherSideEffect EFLAGS] ++ rs
   in o {oAs = atts {aReads = rs', aWrites = ws'}}
-
