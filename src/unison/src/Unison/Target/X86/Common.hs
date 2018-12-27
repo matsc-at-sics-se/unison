@@ -1597,6 +1597,8 @@ memTempVersions = M.fromList
    (XORPDrr, MemTempTuple (Just XORPDrm_unison) Nothing ),
    (XORPSrr, MemTempTuple (Just XORPSrm_unison) Nothing )]
 
+-- KILL is some pragma instruction that just disappears
+itProperties KILL _ = Nothing
 itProperties i it =
   case M.lookup it itineraryProperties of
    Just properties -> Just properties
