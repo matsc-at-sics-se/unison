@@ -14,7 +14,7 @@ ncores='1'
 statflag='-s'
 lbflag=''
 toflag=''
-toprefix='-t '
+toprefix='--fzn-flag --time-out --fzn-flag '
 freeflag=''
 freedefault='--fzn-flag -f'
 rndflag=''
@@ -131,7 +131,6 @@ if [ $dznfile == '-' ]; then
   shift
   echo "json2dzn('${EXTJSON}'),halt." | sicstus -f --nologo --noinfo -l $MINIZINC_DIR/model2dzn.pl
 fi
-cat $MINIZINC_DIR/code-generation.mzn $MINIZINC_DIR/${search} > $DIRBASENAME.mzn
 if [ $mzn = 'mzn-gecode' ]; then
   pflag='-p'
   pvalue=${ncores}
@@ -145,5 +144,25 @@ fi
 if [ $setuponly = true ]; then
     exit 0
 fi
+
+radznfile=$DIRBASENAME.ra.dzn
+isdznfile=$DIRBASENAME.is.dzn
+
 set -x
-time ${mzn} ${allsolns} ${statflag} ${pflag} ${pvalue} ${freeflag} ${rndflag} ${toflag} ${nogoods} -D good_cumulative=${cumulative} -D good_diffn=${diffn} -D good_member=${member} ${tail} $DIRBASENAME.mzn $dznfile | $COMMON_DIR/outfilter.pl ${OUTJSON}.last ${lbfile} | aeson-pretty > ${OUTJSON}
+
+cp $dznfile $radznfile
+printf "ii_soln = [];\n" >> $radznfile
+printf "rt_soln = [];\n" >> $radznfile
+printf "y_soln = [];\n" >> $radznfile
+printf "r_soln = [];\n" >> $radznfile
+
+cat $MINIZINC_DIR/code-generation-twophase.mzn $MINIZINC_DIR/${search} > $DIRBASENAME.mzn
+
+time ${mzn} ${allsolns} ${statflag} ${pflag} ${pvalue} ${freeflag} ${rndflag} ${toflag} ${nogoods} -D good_cumulative=${cumulative} -D good_diffn=${diffn} -D good_member=${member} -D phase=1 ${tail} $DIRBASENAME.mzn $radznfile | $COMMON_DIR/outfilter.pl ${OUTJSON}.last ${lbfile} > ${OUTJSON}.ra
+
+cp $dznfile $isdznfile
+grep _soln $OUTJSON.ra | sed 's/;,/;/g' >> $isdznfile
+
+time ${mzn} ${allsolns} ${statflag} ${pflag} ${pvalue} ${freeflag} ${rndflag} ${toflag} ${nogoods} -D good_cumulative=${cumulative} -D good_diffn=${diffn} -D good_member=${member} -D phase=2 ${tail} $DIRBASENAME.mzn $isdznfile | $COMMON_DIR/outfilter.pl ${OUTJSON}.last ${lbfile} > ${OUTJSON}.is
+
+grep -v _soln $OUTJSON.is | aeson-pretty > $OUTJSON
