@@ -119,6 +119,7 @@ parameters oldModel (_, dgs, _, _, ra, _)
       ("temp_domain", toJSON temp_domain),
       ("value_precede_chains", toJSON value_precede_chains),
       ("wcet", toJSON wcet)
+
      ]
 
 dominatedUses pg
