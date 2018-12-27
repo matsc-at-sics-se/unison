@@ -579,7 +579,7 @@ expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc ADD64rr_DB}
 
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc AVX2_SETALLONES,
                                    msOperands = [dst]}
-  = [[mi {msOpcode = mkMachineTargetOpc VPCMPEQDrr,
+  = [[mi {msOpcode = mkMachineTargetOpc VPCMPEQDYrr,
           msOperands = [dst, dst, dst]}]]
 
 expandPseudo _ mi @ MachineSingle {msOpcode = MachineTargetOpc AVX_SET0,
