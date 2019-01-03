@@ -451,7 +451,7 @@ fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL32r1_LEA], oUs = [r], oD
             oUs = [mkBound MachineNullReg,
                    mkBound (mkMachineImm 2),
                    mkBound (toMachineOperand (reg32ToReg64 r)),
-                   mkBound (toMachineOperand 0),
+                   mkBound (mkMachineImm 0),
                    mkBound MachineNullReg],
             oDs = [d]}
 fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL32ri_LEA], oUs = [r,i], oDs = [d]})
@@ -459,7 +459,7 @@ fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL32ri_LEA], oUs = [r,i], 
             oUs = [mkBound MachineNullReg,
                    mkBound (mkMachineImm (logToMul i)),
                    mkBound (toMachineOperand (reg32ToReg64 r)),
-                   mkBound (toMachineOperand 0),
+                   mkBound (mkMachineImm 0),
                    mkBound MachineNullReg],
             oDs = [d]}
 fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL64r1_LEA], oUs = [r], oDs = [d]})
@@ -467,7 +467,7 @@ fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL64r1_LEA], oUs = [r], oD
             oUs = [mkBound MachineNullReg,
                    mkBound (mkMachineImm 2),
                    mkBound (toMachineOperand r),
-                   mkBound (toMachineOperand 0),
+                   mkBound (mkMachineImm 0),
                    mkBound MachineNullReg],
             oDs = [d]}
 fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL64ri_LEA], oUs = [r,i], oDs = [d]})
@@ -475,7 +475,7 @@ fromCopy _ (Natural Linear {oIs = [TargetInstruction SHL64ri_LEA], oUs = [r,i], 
             oUs = [mkBound MachineNullReg,
                    mkBound (mkMachineImm (logToMul i)),
                    mkBound (toMachineOperand r),
-                   mkBound (toMachineOperand 0),
+                   mkBound (mkMachineImm 0),
                    mkBound MachineNullReg],
             oDs = [d]}
 fromCopy _ (Natural o @ Linear {oIs = [TargetInstruction ti], oUs = [src1,src2]})
