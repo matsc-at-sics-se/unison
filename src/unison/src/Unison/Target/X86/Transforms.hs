@@ -678,7 +678,8 @@ maybeAdjustSP off
 
 extractReturnRegs _ (
   j @ SingleOperation {oOpr = Natural bj @ Branch {
-                          oBranchIs = [TargetInstruction RET]}}
+                          oBranchIs = [TargetInstruction RET],
+                          oBranchUs = [_]}}
   :
   rest) _ =
    (
@@ -688,10 +689,10 @@ extractReturnRegs _ (
 
 {-
     o12: [eax] <- (copy) [t4]
-    o13: [] <- RETQ [eax]
+    o13: [] <- RET [n, eax]
     o18: [] <- (out) [...]
 ->
-    o13: [] <- RETQ [42]
+    o13: [] <- RETQ [n]
     o18: [] <- (out) [..., t4:eax]
 -}
 
@@ -701,8 +702,8 @@ extractReturnRegs _ (
                       oVirtualCopyD = Register ret}}
   :
   j @ SingleOperation {oOpr = Natural bj @ Branch {
-                          oBranchIs = [TargetInstruction RETQ],
-                          oBranchUs = [Register ret']}}
+                          oBranchIs = [TargetInstruction RET],
+                          oBranchUs = [n, Register ret']}}
   :
   o @ SingleOperation {oOpr = Virtual
                                (Delimiter od @ Out {oOuts = outs})}
@@ -710,7 +711,7 @@ extractReturnRegs _ (
   rest) _ | ret == ret' =
    (
     rest,
-    [j {oOpr = Natural bj {oBranchUs = [mkBound (mkMachineImm 42)]}},
+    [j {oOpr = Natural bj {oBranchIs = [TargetInstruction RETQ], oBranchUs = [n]}},
      o {oOpr = Virtual (Delimiter od {oOuts = outs ++
                                               [preAssign t (Register ret)]})}]
    )
