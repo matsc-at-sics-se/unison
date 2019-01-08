@@ -56,6 +56,7 @@ Model::set_var_array(int n, const IntSet & glb, const IntSet & lub) {
 
 BoolVar Model::adhoc_constraint_var(UnisonConstraintExpr & e) {
   BoolVar v(*this, 0, 1);
+  BoolVar vt(*this, 1, 1);
   switch (e.id) {
   case OR_EXPR:
   case AND_EXPR:
@@ -85,7 +86,10 @@ BoolVar Model::adhoc_constraint_var(UnisonConstraintExpr & e) {
   case IMPLEMENTS_EXPR:
     return imp(e.data[0], e.data[1]);
   case DISTANCE_EXPR:
-    return var(c(e.data[1]) >= (c(e.data[0]) + e.data[2]));
+    if (e.data[2] >= 0)		// inverted precedences are not reliable in Skylake experiments
+      return var(c(e.data[1]) >= (c(e.data[0]) + e.data[2]));
+    else
+      return vt;
   case SHARE_EXPR:
     // This is fine because the temps of one will always be a prefix of the
     // temps of the other
@@ -1150,7 +1154,7 @@ void Model::post_improved_model_constraints(block b) {
     post_disjoint_component_operand_constraints(b);
     if (!options->disable_space_capacity_constraints())
       post_space_capacity_constraints(b);
-    post_branch_issue_cycle_constraints(b);
+    // post_branch_issue_cycle_constraints(b); // the dist may not be sharp, e.g. Skylake RETQ
     post_active_first_copy_constraints(b);
     post_callee_saved_symmetry_breaking_constraints(b);
     if (!options->disable_precedence_variables()) {

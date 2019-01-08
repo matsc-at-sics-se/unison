@@ -492,7 +492,8 @@ predicate eval_expr(int: l) = (
 	else if tag=5 then a[arg1]
 	else if tag=6 then temp_eq(arg1,arg2)
 	else if tag=7 then insn_eq(arg1,arg2)
-	else if tag=8 then c[arg2] >= c[arg1] + arg3
+	else if tag=8 then
+	  if arg3 >= 0 then c[arg2] >= c[arg1] + arg3 else true endif
 	else if tag=9 then same_temp(arg1,arg2)
 	else if tag=10 then operand_live_overlap(arg1,arg2)
 	else if tag=11 then live_overlap(arg1,arg2)

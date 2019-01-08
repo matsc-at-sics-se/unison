@@ -85,18 +85,31 @@ pipeDuration i
   | i == FPUSH32 = 3
   | otherwise = 1
 
+-- skylakeUsage i it =
+--   let original = case itProperties i it of
+--                   Just (_, resources) -> resources
+--                   Nothing -> []
+--       expanded = concatMap expandResource original
+--       combined = mergeAllUsages [mkUsage r 1 d | (r, d) <- expanded]
+--   in combined
+
+-- expandResource :: (X86Resource, Integer) -> [(X86Resource, Integer)]
+-- expandResource (r, d) = nub [(r', d) | r' <- resourceHierarchy r]
+
+-- For multiple uops, i:th uop gets offset i
 skylakeUsage i it =
   let original = case itProperties i it of
                   Just (_, resources) -> resources
                   Nothing -> []
-      expanded = concatMap expandResource original
-      combined = mergeAllUsages [mkUsage r 1 d | (r, d) <- expanded]
+      original' = zip original [0..]
+      expanded = concatMap expandResource original'
+      combined = mergeAllUsages [(Usage r 1 d o) | ((r, d), o) <- expanded]
   in combined
 
 mergeAllUsages usages = mergeUsages usages []
 
-expandResource :: (X86Resource, Integer) -> [(X86Resource, Integer)]
-expandResource (r, d) = nub [(r', d) | r' <- resourceHierarchy r]
+expandResource :: ((X86Resource, Integer), Integer) -> [((X86Resource, Integer), Integer)]
+expandResource ((r, d), o) = nub [((r', d), o) | r' <- resourceHierarchy r]
 
 resourceHierarchy :: X86Resource -> [X86Resource]
 resourceHierarchy r = r : concatMap resourceHierarchy (superResources r)
