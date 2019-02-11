@@ -1264,8 +1264,9 @@ branchInfo' bo @ SingleOperation {oOpr = Natural i}
 insertVzeroupper code o =
   let (_, oid, _) = newIndexes $ flatten code
       vzu = mkLinear oid [TargetInstruction VZEROUPPER] [] []
-      vzu' = mapToWrites (++ [OtherSideEffect YMM0]) vzu
-      code' = map (insertOperationInBlock before (isIdOf o) vzu') code
+      vzu'  = mapToWrites (++ [OtherSideEffect YMM0]) vzu
+      vzu'' = mapToReads  (++ [ControlSideEffect]) vzu'
+      code' = map (insertOperationInBlock before (isIdOf o) vzu'') code
    in code'
 
 insertCandidate icfg controlInsns id =
