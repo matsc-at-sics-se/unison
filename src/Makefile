@@ -78,6 +78,7 @@ install-solver:
 	cp $(SOLVERBIN) $(BINDIR)
 	cp solvers/multi_backend/portfolio-solver $(BINDIR)
 	cp solvers/multi_backend/minizinc/minizinc-solver $(BINDIR)
+	cp solvers/multi_backend/common/outfilter.pl $(BINDIR)
 
 install-presolver:
 	cp $(PRESOLVERBIN) $(BINDIR)

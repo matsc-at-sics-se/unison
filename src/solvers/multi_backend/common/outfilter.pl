@@ -54,7 +54,19 @@ my @buf = ();
 
 while (my $line = <STDIN>) {
     chomp($line);
-    if ($line =~ "========") {
+    if ($line =~ "=====UNSATISFIABLE=====") {
+	print STDERR "$line\n";
+	$state = 1;
+	$proven = 1;
+    } elsif ($line =~ "=====UNKNOWN=====") {
+	print STDERR "$line\n";
+	$state = 1;
+	$proven = 0;
+    } elsif ($line =~ "=====ERROR=====") {
+	print STDERR "$line\n";
+	$state = 1;
+	$proven = 0;
+    } elsif ($line =~ "========") {
 	print STDERR "$line\n";
 	$state = 1;
 	$proven = 1;

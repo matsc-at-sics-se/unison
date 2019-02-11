@@ -3,7 +3,6 @@
 # Unison repo
 MULTIBACKEND_DIR=$UNISON_DIR/src/solvers/multi_backend
 MINIZINC_DIR=$MULTIBACKEND_DIR/minizinc
-COMMON_DIR=$MULTIBACKEND_DIR/common
 search='topdown.mzn'
 allsolns='-a'
 mzn='mzn-gecode'
@@ -146,4 +145,4 @@ if [ $setuponly = true ]; then
     exit 0
 fi
 set -x
-time ${mzn} ${allsolns} ${statflag} ${pflag} ${pvalue} ${freeflag} ${rndflag} ${toflag} ${nogoods} -D good_cumulative=${cumulative} -D good_diffn=${diffn} -D good_member=${member} ${tail} $DIRBASENAME.mzn $dznfile | $COMMON_DIR/outfilter.pl ${OUTJSON}.last ${lbfile} | aeson-pretty > ${OUTJSON}
+time ${mzn} ${allsolns} ${statflag} ${pflag} ${pvalue} ${freeflag} ${rndflag} ${toflag} ${nogoods} -D good_cumulative=${cumulative} -D good_diffn=${diffn} -D good_member=${member} ${tail} $DIRBASENAME.mzn $dznfile | outfilter.pl ${OUTJSON}.last ${lbfile} | aeson-pretty > ${OUTJSON}
