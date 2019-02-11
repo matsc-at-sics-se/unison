@@ -340,16 +340,30 @@ predicate smart_alldiff(array[int] of var int: X) =
     all_different(X)
   endif endif;
 
+% BROKEN, desirable
+% predicate ra_diffn_cumu(array[int] of var int: R,
+% 			array[int] of int: W,
+%                         array[int] of set of int: D,
+% 			array[int] of var int: LS,
+% 			array[int] of var int: LD,
+% 			int: v) =
+%       let {array[int] of set of int: I = [D[i] intersect (max(0,v-W[i]+1)..v) | i in index_set(R)],
+%            set of int: J = {i | i in index_set(R) where card(I[i])>0}}
+%       in if card(J)>1 then
+% 	  cumulative([LS[i] | i in J], [LD[i] | i in J], [R[i] in I[i] | i in J], 1)
+%          else true endif;
+
 predicate ra_diffn_cumu(array[int] of var int: R,
 			array[int] of int: W,
                         array[int] of set of int: D,
 			array[int] of var int: LS,
 			array[int] of var int: LD,
 			int: v) =
-      let {set of int: J = {i | i in index_set(R) where card(D[i] intersect max(0,v-W[i]+1)..v)>0}}
-      in cumulative([LS[i] | i in J], [LD[i] | i in J],
-                    [if W[i]=1 then R[i]=v else R[i] in max(0,v-W[i]+1)..v endif | i in J],
-                    1);
+      let {array[int] of set of int: I = [D[i] intersect (max(0,v-W[i]+1)..v) | i in index_set(R)],
+           set of int: J = {i | i in index_set(R) where card(I[i])>0}}
+      in if card(J)>1 then
+	  cumulative([LS[i] | i in J], [LD[i] | i in J], [R[i] in (max(0,v-W[i]+1)..v) | i in J], 1)
+         else true endif;
 
 predicate ra_diffn(array[int] of var int: R,
                    array[int] of int: W,
@@ -368,16 +382,25 @@ predicate ra_diffn(array[int] of var int: R,
   else if good_diffn then
     diffn_nonstrict(R, LS, W, LD)
   else
-    forall(i,j in index_set(R) where i < j)(
+    forall(i,j in index_set(R) where i < j /\ can_clash(W[i],W[j],D[i],D[j]))(
         LD[i] = 0 \/ LD[j] = 0 \/
         R[i] + W[i] <= R[j] \/ LE[i] <= LS[j] \/
         R[j] + W[j] <= R[i] \/ LE[j] <= LS[i]
     )
   endif endif ;
 
+predicate can_clash(int: Wi, int: Wj, set of int: Di, set of int: Dj) =
+  let {set of int: D2i = if Wi>Wj then Di union {x+Wj | x in Di} else Di endif,
+       set of int: D2j = if Wi<Wj then Dj union {x+Wi | x in Dj} else Dj endif}
+  in card(D2i intersect D2j)>0;
+
 predicate disjoint1(array[int] of var int: x,
                       array[int] of var int: w) =
-  diffn(x, [1 | i in index_set(x)], w, [1 | i in index_set(x)]) ;
+  if good_cumulative then
+      cumulative(x, w, [1 | i in index_set(x)], 1)
+  else
+      diffn(x, [1 | i in index_set(x)], w, [1 | i in index_set(x)])
+  endif;
 
 predicate noverlap(array[int] of var int: x,
                    array[int] of var int: w) = (
